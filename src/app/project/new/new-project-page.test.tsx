@@ -98,7 +98,8 @@ describe('NewProjectPage Component', () => {
     fireEvent.click(generateBtn)
 
     const passwordInput = screen.getByPlaceholderText('Min. 6 characters') as HTMLInputElement
-    expect(passwordInput.value).toContain('John-2026-')
+    // Password is now 12 random alphanumeric characters (crypto.getRandomValues)
+    expect(passwordInput.value).toMatch(/^[a-zA-Z0-9]{12}$/)
   })
 
   it('displays error if free plan is limited to 3 projects and count is exceeded', async () => {

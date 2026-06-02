@@ -27,18 +27,29 @@ export default function NewProjectPage() {
   const [loading, setLoading]             = useState(false)
   const [error, setError]                 = useState('')
   const [createdProjectId, setCreatedProjectId] = useState<string | null>(null)
+  const [clientExisted, setClientExisted]       = useState(false)
   const [copied, setCopied]               = useState<'email' | 'password' | 'url' | null>(null)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => () => { if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current) }, [])
 
   function handleGeneratePassword() {
-    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    const numbers = '0123456789'
-    const base = clientName ? clientName.split(' ')[0].replace(/[^a-zA-Z]/g, '') : 'Client'
-    const randomLetter = letters[Math.floor(Math.random() * letters.length)].toUpperCase()
-    const randomNumber = Array.from({ length: 4 }, () => numbers[Math.floor(Math.random() * numbers.length)]).join('')
-    setClientPassword(`${base}-2026-${randomLetter}${randomNumber}`)
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    // Rejection sampling: discard bytes in the biased tail (>= 248 for a 62-char set)
+    // so every character is uniformly distributed. 256 % 62 != 0, so a naive
+    // `byte % 62` would over-represent the first 8 characters.
+    const maxUnbiased = 256 - (256 % charset.length)
+    const out: string[] = []
+    while (out.length < 12) {
+      const buf = crypto.getRandomValues(new Uint8Array(16))
+      for (const b of buf) {
+        if (b < maxUnbiased) {
+          out.push(charset[b % charset.length])
+          if (out.length === 12) break
+        }
+      }
+    }
+    setClientPassword(out.join(''))
   }
 
   async function handleSubmit(e: { preventDefault(): void }) {
@@ -67,7 +78,13 @@ export default function NewProjectPage() {
         body: JSON.stringify({ email: clientEmail, password: clientPassword }),
       })
       const result = await res.json()
-      if (!res.ok) {
+      if (res.status === 409) {
+        // Client email already has a portal account. Still create the project, but
+        // the generated password is NOT valid for the existing account — flag it so
+        // the success screen tells the freelancer to share the existing login instead
+        // of handing the client a password that was never set.
+        setClientExisted(true)
+      } else if (!res.ok) {
         setError(result.error ?? 'Failed to create client account.')
         setLoading(false)
         return
@@ -118,12 +135,21 @@ export default function NewProjectPage() {
             </div>
             <h2 className="text-lg font-bold text-slate-900 mb-1">Project created</h2>
             <p className="text-slate-500 text-sm mb-6">
-              {clientEmail && clientPassword
+              {clientExisted
+                ? 'This client already has a ClientPulse account. They can sign in with their existing password — no new credentials were created.'
+                : clientEmail && clientPassword
                 ? 'Share these credentials with your client so they can access their portal.'
                 : 'Your project is ready. You can invite clients via status page links or add credentials in settings.'}
             </p>
 
-            {clientEmail && clientPassword && (
+            {clientExisted && clientEmail && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
+                <span className="font-medium">{clientEmail}</span> already has a login. Send them to{' '}
+                <span className="font-mono text-xs">{window.location.origin}/client/login</span> to access this project.
+              </div>
+            )}
+
+            {!clientExisted && clientEmail && clientPassword && (
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6 space-y-3">
                 <div>
                   <div className="text-xs text-slate-500 mb-1.5">Login URL</div>

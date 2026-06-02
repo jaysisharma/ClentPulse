@@ -21,14 +21,12 @@ export async function POST(request: Request) {
   })
 
   if (error) {
-    // Client already has an account — update their password so the freelancer's chosen one is set
     if (error.message.toLowerCase().includes('already registered')) {
-      const { data: list } = await admin.auth.admin.listUsers({ perPage: 1000 })
-      const existing = list?.users.find(u => u.email === email)
-      if (existing) {
-        await admin.auth.admin.updateUserById(existing.id, { password, user_metadata: { role: 'client' } })
-        return NextResponse.json({ existed: true })
-      }
+      return NextResponse.json({
+        error: 'This client already has a ClientPulse account. Share the login link with them instead.',
+        existed: true,
+        loginUrl: `${process.env.NEXT_PUBLIC_APP_URL}/client/login`,
+      }, { status: 409 })
     }
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
