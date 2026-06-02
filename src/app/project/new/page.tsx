@@ -1,0 +1,288 @@
+'use client'
+
+import { useState, useRef, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { AppLayout } from '@/components/layout/app-layout'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { generateSlug } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { ArrowLeft, Copy, Check, ArrowRight, Key } from 'lucide-react'
+
+const COLORS = [
+  '#6366F1', '#8B5CF6', '#EC4899', '#EF4444',
+  '#F97316', '#EAB308', '#22C55E', '#14B8A6', '#3B82F6',
+]
+
+export default function NewProjectPage() {
+  const router = useRouter()
+  const [clientName, setClientName]       = useState('')
+  const [clientEmail, setClientEmail]     = useState('')
+  const [clientPassword, setClientPassword] = useState('')
+  const [projectName, setProjectName]     = useState('')
+  const [budget, setBudget]               = useState('')
+  const [hourlyRate, setHourlyRate]       = useState('')
+  const [color, setColor]                 = useState(COLORS[0])
+  const [loading, setLoading]             = useState(false)
+  const [error, setError]                 = useState('')
+  const [createdProjectId, setCreatedProjectId] = useState<string | null>(null)
+  const [copied, setCopied]               = useState<'email' | 'password' | 'url' | null>(null)
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current) }, [])
+
+  function handleGeneratePassword() {
+    const letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    const numbers = '0123456789'
+    const base = clientName ? clientName.split(' ')[0].replace(/[^a-zA-Z]/g, '') : 'Client'
+    const randomLetter = letters[Math.floor(Math.random() * letters.length)].toUpperCase()
+    const randomNumber = Array.from({ length: 4 }, () => numbers[Math.floor(Math.random() * numbers.length)]).join('')
+    setClientPassword(`${base}-2026-${randomLetter}${randomNumber}`)
+  }
+
+  async function handleSubmit(e: { preventDefault(): void }) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) { router.push('/auth/login'); return }
+
+    const { data: profile } = await supabase.from('users').select('plan').eq('id', user.id).single()
+    if (profile?.plan !== 'pro') {
+      const { count } = await supabase.from('projects').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
+      if ((count ?? 0) >= 3) {
+        setError('Free plan is limited to 3 projects. Upgrade to Pro for unlimited projects.')
+        setLoading(false)
+        return
+      }
+    }
+
+    if (clientEmail && clientPassword) {
+      const res = await fetch('/api/create-client', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: clientEmail, password: clientPassword }),
+      })
+      const result = await res.json()
+      if (!res.ok) {
+        setError(result.error ?? 'Failed to create client account.')
+        setLoading(false)
+        return
+      }
+    }
+
+    const slug = generateSlug(projectName)
+    const { data, error: err } = await supabase
+      .from('projects')
+      .insert({
+        user_id: user.id,
+        client_name: clientName,
+        client_email: clientEmail || null,
+        project_name: projectName,
+        slug,
+        color,
+        status: 'active',
+        budget: budget ? parseFloat(budget) : null,
+        hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
+      })
+      .select()
+      .single()
+
+    if (err) {
+      setError(err.message)
+      setLoading(false)
+    } else {
+      setCreatedProjectId(data.id)
+      setLoading(false)
+    }
+  }
+
+  function copyToClipboard(text: string, field: 'email' | 'password' | 'url') {
+    navigator.clipboard.writeText(text)
+    setCopied(field)
+    if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
+    copiedTimerRef.current = setTimeout(() => setCopied(null), 2000)
+  }
+
+  // Success state
+  if (createdProjectId) {
+    return (
+      <AppLayout>
+        <div className="max-w-lg mx-auto animate-fade-in py-8">
+          <div className="bg-white rounded-xl border border-slate-200 p-8">
+            <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center mb-5">
+              <Check className="w-5 h-5 text-emerald-600" />
+            </div>
+            <h2 className="text-lg font-bold text-slate-900 mb-1">Project created</h2>
+            <p className="text-slate-500 text-sm mb-6">
+              {clientEmail && clientPassword
+                ? 'Share these credentials with your client so they can access their portal.'
+                : 'Your project is ready. You can invite clients via status page links or add credentials in settings.'}
+            </p>
+
+            {clientEmail && clientPassword && (
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6 space-y-3">
+                <div>
+                  <div className="text-xs text-slate-500 mb-1.5">Login URL</div>
+                  <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                    <span className="font-mono text-xs truncate">{window.location.origin}/auth/login</span>
+                    <button onClick={() => copyToClipboard(`${window.location.origin}/auth/login`, 'url')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
+                      {copied === 'url' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <div className="text-xs text-slate-500 mb-1.5">Email</div>
+                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                      <span className="truncate text-xs">{clientEmail}</span>
+                      <button onClick={() => copyToClipboard(clientEmail, 'email')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
+                        {copied === 'email' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-xs text-slate-500 mb-1.5">Password</div>
+                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                      <span className="truncate font-mono text-xs">{clientPassword}</span>
+                      <button onClick={() => copyToClipboard(clientPassword, 'password')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
+                        {copied === 'password' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <Button onClick={() => router.push(`/project/${createdProjectId}`)} className="w-full justify-center">
+              Open project <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </AppLayout>
+    )
+  }
+
+  return (
+    <AppLayout>
+      <div className="animate-fade-in max-w-xl pb-10">
+
+        <Link href="/project" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-700 transition-colors mb-6">
+          <ArrowLeft className="w-4 h-4" /> Back to projects
+        </Link>
+
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-slate-900">New project</h1>
+          <p className="text-slate-500 text-sm mt-1">Set up a client project to start tracking updates, time, and invoices.</p>
+        </div>
+
+        <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+
+            {/* Client */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-100 pb-2">Client</h3>
+              <Input
+                label="Client name"
+                placeholder="Acme Corporation"
+                value={clientName}
+                onChange={e => setClientName(e.target.value)}
+                required
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input
+                  label="Client email (optional)"
+                  type="email"
+                  placeholder="client@acme.com"
+                  value={clientEmail}
+                  onChange={e => setClientEmail(e.target.value)}
+                />
+                <div className="relative">
+                  <Input
+                    label="Portal password (optional)"
+                    type="text"
+                    placeholder="Min. 6 characters"
+                    value={clientPassword}
+                    onChange={e => setClientPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleGeneratePassword}
+                    className="absolute right-3 top-[34px] p-1 text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                    title="Generate password"
+                  >
+                    <Key className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              {(clientEmail || clientPassword) && (
+                <p className="text-xs text-slate-400">
+                  Adding email + password gives the client access to their portal at /client/dashboard.
+                </p>
+              )}
+            </div>
+
+            {/* Project */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-100 pb-2">Project</h3>
+              <Input
+                label="Project name"
+                placeholder="Website Redesign"
+                value={projectName}
+                onChange={e => setProjectName(e.target.value)}
+                required
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input
+                  label="Budget (optional)"
+                  type="number"
+                  placeholder="5000"
+                  value={budget}
+                  onChange={e => setBudget(e.target.value)}
+                />
+                <Input
+                  label="Hourly rate (optional)"
+                  type="number"
+                  placeholder="150"
+                  value={hourlyRate}
+                  onChange={e => setHourlyRate(e.target.value)}
+                />
+              </div>
+
+              {/* Color */}
+              <div>
+                <label className="text-sm font-medium text-slate-700 block mb-2">Accent color</label>
+                <div className="flex gap-2 flex-wrap">
+                  {COLORS.map(c => (
+                    <button
+                      key={c}
+                      type="button"
+                      onClick={() => setColor(c)}
+                      className="w-7 h-7 rounded-full transition-transform hover:scale-110 focus:outline-none cursor-pointer"
+                      style={{
+                        backgroundColor: c,
+                        outline: color === c ? `3px solid ${c}` : 'none',
+                        outlineOffset: '2px',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</div>
+            )}
+
+            <Button type="submit" loading={loading} className="w-full justify-center">
+              Create project
+            </Button>
+          </form>
+        </div>
+      </div>
+    </AppLayout>
+  )
+}
