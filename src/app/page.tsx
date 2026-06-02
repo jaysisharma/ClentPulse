@@ -25,7 +25,7 @@ const steps = [
   },
 ]
 
-const freeFeatures = ['1 Active project', 'Public status hub page', 'Manual copy-paste plain email text']
+const freeFeatures = ['3 active projects', 'Public status hub page', 'Manual copy-paste plain email text']
 const proFeatures = [
   'Unlimited projects',
   'Automated email sending via Resend',

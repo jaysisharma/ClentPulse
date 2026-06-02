@@ -21,7 +21,7 @@
 | Project detail | `/project/[id]` — updates, hours, budget, approvals |
 | Project settings — edit + delete | `/project/[id]/settings` — includes budget field |
 | Project status toggle | Dropdown: active → paused → completed |
-| Free plan enforcement | Max 1 project for free users |
+| Free plan enforcement | Max 3 projects for free users |
 | Archive page | `/archive` — completed projects only |
 
 ### Updates
