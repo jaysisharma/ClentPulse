@@ -4,10 +4,21 @@ import { NextResponse } from 'next/server'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
 
-export async function POST() {
+export async function POST(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const body = await request.json().catch(() => ({}))
+  const billing: 'monthly' | 'annual' = body.billing === 'annual' ? 'annual' : 'monthly'
+
+  const priceId = billing === 'annual'
+    ? process.env.STRIPE_PRO_ANNUAL_PRICE_ID!
+    : process.env.STRIPE_PRO_PRICE_ID!
+
+  if (!priceId) {
+    return NextResponse.json({ error: `Missing price ID for ${billing} billing` }, { status: 500 })
+  }
 
   const { data: profile } = await supabase
     .from('users')
@@ -31,11 +42,11 @@ export async function POST() {
     mode: 'subscription',
     payment_method_types: ['card'],
     line_items: [{
-      price: process.env.STRIPE_PRO_PRICE_ID!,
+      price: priceId,
       quantity: 1,
     }],
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings?upgraded=1`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/settings`,
+    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/upgrade`,
   })
 
   return NextResponse.json({ url: session.url })

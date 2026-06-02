@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Check, Zap } from 'lucide-react'
 
 const FREE_FEATURES = [
-  'Up to 3 projects',
+  '3 active projects',
   'Copy-paste email updates',
   'Public client status page',
   'Basic invoicing',
@@ -42,13 +42,23 @@ export default function UpgradePage() {
   async function handleUpgrade() {
     setLoading(true)
     setError('')
-    const res = await fetch('/api/upgrade', { method: 'POST' })
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ billing }),
+    })
     if (!res.ok) {
       setError('Something went wrong. Please try again.')
       setLoading(false)
       return
     }
-    router.push('/dashboard?upgraded=1')
+    const data = await res.json()
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      setError('Failed to start checkout. Please try again.')
+      setLoading(false)
+    }
   }
 
   const monthlyPrice = 12
@@ -105,9 +115,6 @@ export default function UpgradePage() {
 
           {/* Pro */}
           <div className="bg-indigo-600 rounded-2xl p-6 text-white relative overflow-hidden">
-            <div className="absolute top-3 right-3 bg-white/20 text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-              Free during beta
-            </div>
             <div className="mb-4">
               <div className="text-sm font-medium text-indigo-200 mb-1">Pro</div>
               {billing === 'monthly' ? (
@@ -136,13 +143,13 @@ export default function UpgradePage() {
         <div className="space-y-2">
           <Button onClick={handleUpgrade} loading={loading} className="w-full justify-center text-base py-3">
             <Zap className="w-4 h-4" />
-            Upgrade to Pro — free for now
+            Upgrade to Pro
           </Button>
           {error && <p className="text-sm text-red-600 text-center">{error}</p>}
         </div>
 
         <p className="text-center text-xs text-slate-400 mt-4">
-          No credit card required during beta. You'll be notified before any charges begin.
+          Secure checkout via Stripe. Cancel anytime.
         </p>
       </div>
     </AppLayout>
