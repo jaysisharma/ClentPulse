@@ -204,7 +204,7 @@ export default async function PublicPortfolioPage({ params }: { params: Promise<
               {testimonials!.map(t => (
                 <div key={t.id} className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col">
                   <Quote className="w-6 h-6 text-slate-200 mb-3 flex-shrink-0" />
-                  <p className="text-slate-700 text-sm leading-relaxed flex-1 mb-4">"{t.content}"</p>
+                  <p className="text-slate-700 text-sm leading-relaxed flex-1 mb-4">&quot;{t.content}&quot;</p>
                   <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                     <div>
                       <div className="font-semibold text-slate-900 text-sm">{t.client_name}</div>
@@ -246,7 +246,7 @@ export default async function PublicPortfolioPage({ params }: { params: Promise<
         {owner.email && (
           <section className="rounded-2xl p-10 text-center" style={{ backgroundColor: `${accent}10`, border: `1px solid ${accent}25` }}>
             <h2 className="text-xl font-bold text-slate-900 mb-2">Interested in working together?</h2>
-            <p className="text-slate-500 text-sm mb-6">Reach out and let's talk about your project.</p>
+            <p className="text-slate-500 text-sm mb-6">Reach out and let&apos;s talk about your project.</p>
             <a
               href={`mailto:${owner.email}`}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm text-white transition-opacity hover:opacity-90"

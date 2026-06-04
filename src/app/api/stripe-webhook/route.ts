@@ -4,7 +4,7 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 function esc(str: string | null | undefined): string {
@@ -40,17 +40,25 @@ export async function POST(request: Request) {
     if (session.metadata?.type === 'invoice_payment') {
       const invoiceId = session.metadata.invoice_id
       if (invoiceId) {
-        await supabase
+        const { error } = await supabase
           .from('invoices')
           .update({ status: 'paid' })
           .eq('id', invoiceId)
+        if (error) {
+          console.error('Failed to update invoice status:', error)
+          return NextResponse.json({ error: error.message }, { status: 500 })
+        }
       }
     } else {
       const customerId = session.customer as string
-      await supabase
+      const { error } = await supabase
         .from('users')
         .update({ plan: 'pro' })
         .eq('stripe_customer_id', customerId)
+      if (error) {
+        console.error('Failed to update user plan on checkout:', error)
+        return NextResponse.json({ error: error.message }, { status: 500 })
+      }
     }
   }
 
@@ -58,10 +66,14 @@ export async function POST(request: Request) {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
 
-    await supabase
+    const { error } = await supabase
       .from('users')
       .update({ plan: 'free' })
       .eq('stripe_customer_id', customerId)
+    if (error) {
+      console.error('Failed to update user plan on subscription delete:', error)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
   }
 
   if (event.type === 'customer.subscription.updated') {
@@ -74,10 +86,14 @@ export async function POST(request: Request) {
     const entitled = ['active', 'trialing', 'past_due']
     const plan = entitled.includes(subscription.status) ? 'pro' : 'free'
 
-    await supabase
+    const { error } = await supabase
       .from('users')
       .update({ plan })
       .eq('stripe_customer_id', customerId)
+    if (error) {
+      console.error('Failed to update user plan on subscription update:', error)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
   }
 
   if (event.type === 'invoice.payment_failed') {

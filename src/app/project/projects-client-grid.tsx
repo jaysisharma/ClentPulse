@@ -9,7 +9,7 @@ interface Update { id: string; created_at: string; sent_at: string | null }
 interface Approval { id: string; status: string }
 interface Contract { id: string; signed_at: string | null }
 interface Milestone { id: string; done: boolean }
-interface Project {
+export interface Project {
   id: string
   project_name: string
   client_name: string

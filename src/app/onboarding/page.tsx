@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { generateSlug } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import {
-  Zap, User, FolderPlus, Link2, Check, ArrowRight,
+  User, FolderPlus, Link2, Check, ArrowRight,
   ArrowLeft, Clock, FileText, LayoutDashboard, Sparkles,
 } from 'lucide-react'
 
@@ -186,7 +186,7 @@ export default function OnboardingPage() {
             <div className="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center mb-5">
               <User className="w-5 h-5 text-indigo-600" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">What's your name?</h1>
+            <h1 className="text-2xl font-bold text-slate-900 mb-1">What&apos;s your name?</h1>
             <p className="text-slate-500 text-sm mb-6">
               This appears on your invoices, emails, and client status pages.
             </p>
@@ -292,7 +292,7 @@ export default function OnboardingPage() {
               <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Sparkles className="w-7 h-7 text-emerald-600" />
               </div>
-              <h1 className="text-2xl font-bold text-slate-900 mb-1">You're all set, {name.split(' ')[0]}!</h1>
+              <h1 className="text-2xl font-bold text-slate-900 mb-1">You&apos;re all set, {name.split(' ')[0]}!</h1>
               <p className="text-slate-500 text-sm">
                 {skipped
                   ? 'Your account is ready. Here\'s where to start.'

@@ -25,21 +25,17 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [userId, setUserId] = useState('')
+  const [billingError, setBillingError] = useState('')
   const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => () => { if (savedTimerRef.current) clearTimeout(savedTimerRef.current) }, [])
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [logoUploading, setLogoUploading] = useState(false)
-  const [justUpgraded, setJustUpgraded] = useState(false)
+  const justUpgraded =
+    typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('upgraded') === '1'
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search)
-      if (params.get('upgraded') === '1') {
-        setJustUpgraded(true)
-        window.history.replaceState({}, '', '/settings')
-      }
-    }
+    if (justUpgraded) window.history.replaceState({}, '', '/settings')
 
     const supabase = createClient()
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -56,7 +52,7 @@ export default function SettingsPage() {
           }
         })
     })
-  }, [])
+  }, [justUpgraded])
 
   async function handleSave(e: { preventDefault(): void }) {
     e.preventDefault()
@@ -101,9 +97,11 @@ export default function SettingsPage() {
   }
 
   async function handleManageBilling() {
+    setBillingError('')
     const res = await fetch('/api/billing-portal', { method: 'POST' })
-    const { url } = await res.json()
-    if (url) window.location.href = url
+    const json = await res.json()
+    if (json.url) { window.location.href = json.url; return }
+    setBillingError(json.error ?? 'Failed to open billing portal.')
   }
 
   return (
@@ -117,7 +115,7 @@ export default function SettingsPage() {
           <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-4 flex items-center gap-3">
             <Check className="w-5 h-5 text-emerald-600 flex-shrink-0" />
             <div>
-              <div className="font-semibold text-emerald-900 text-sm">You're now on Pro!</div>
+              <div className="font-semibold text-emerald-900 text-sm">You&apos;re now on Pro!</div>
               <div className="text-emerald-700 text-xs mt-0.5">All Pro features are unlocked. Billing will be set up when payment processing launches.</div>
             </div>
           </div>
@@ -238,6 +236,9 @@ export default function SettingsPage() {
                 <Button variant="secondary" size="sm" onClick={handleManageBilling}>Manage billing</Button>
               )}
             </div>
+            {billingError && (
+              <p className="text-xs text-red-600 mt-3">{billingError}</p>
+            )}
           </CardContent>
         </Card>
       </div>

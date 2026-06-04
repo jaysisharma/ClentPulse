@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(request: Request) {
   const supabase = await createClient()
@@ -20,13 +20,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: `Missing price ID for ${billing} billing` }, { status: 500 })
   }
 
-  const { data: profile } = await supabase
+  const { data: profile, error: profileError } = await supabase
     .from('users')
     .select('stripe_customer_id, email')
     .eq('id', user.id)
     .single()
 
-  let customerId = profile?.stripe_customer_id
+  if (profileError || !profile) {
+    return NextResponse.json({ error: 'User profile not found' }, { status: 400 })
+  }
+
+  let customerId = profile.stripe_customer_id
 
   if (!customerId) {
     const customer = await stripe.customers.create({
@@ -34,7 +38,11 @@ export async function POST(request: Request) {
       metadata: { supabase_user_id: user.id },
     })
     customerId = customer.id
-    await supabase.from('users').update({ stripe_customer_id: customerId }).eq('id', user.id)
+    const { error: updateError } = await supabase.from('users').update({ stripe_customer_id: customerId }).eq('id', user.id)
+    if (updateError) {
+      console.error('Failed to store Stripe customer ID:', updateError)
+      return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })
+    }
   }
 
   const session = await stripe.checkout.sessions.create({

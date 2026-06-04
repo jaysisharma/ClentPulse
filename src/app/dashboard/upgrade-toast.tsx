@@ -8,16 +8,15 @@ import { Zap } from 'lucide-react'
 export function UpgradeToast() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(searchParams.get('upgraded') === '1')
 
   useEffect(() => {
-    if (searchParams.get('upgraded') === '1') {
-      setShow(true)
-      router.replace('/dashboard')
-      const t = setTimeout(() => setShow(false), 5000)
-      return () => clearTimeout(t)
-    }
-  }, [searchParams, router])
+    const upgraded = searchParams.get('upgraded')
+    if (upgraded !== '1') return
+    router.replace('/dashboard')
+    const t = setTimeout(() => setShow(false), 5000)
+    return () => clearTimeout(t)
+  }, [])
 
   if (!show) return null
 

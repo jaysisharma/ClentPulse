@@ -233,6 +233,7 @@ export default function TimePage() {
     if (t) { setTimerDesc(t.description ?? ''); setTimerProject(t.project_id ?? '') }
   }, [])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { load() }, [load])
 
   // clock tick every second when timer is running

@@ -152,7 +152,7 @@ export default function DocDetailPage() {
               )}
             </div>
             {doc.response_note && (
-              <p className="text-sm text-slate-600 mt-2 ml-6">"{doc.response_note}"</p>
+              <p className="text-sm text-slate-600 mt-2 ml-6">&quot;{doc.response_note}&quot;</p>
             )}
           </div>
         )}

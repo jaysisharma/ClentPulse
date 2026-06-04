@@ -1,9 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Check, Play, Square, Timer, FileText, Send } from 'lucide-react'
+import { Check, Play, Square, Timer, FileText, Send, Briefcase } from 'lucide-react'
 
-type TabId = 'updates' | 'time' | 'invoices'
+type TabId = 'updates' | 'time' | 'invoices' | 'portfolio'
 
 export function FeaturesTabs() {
   const [activeTab, setActiveTab] = useState<TabId>('updates')
@@ -37,14 +37,15 @@ export function FeaturesTabs() {
   const subtotal = invoiceItems.reduce((sum, item) => sum + item.price, 0)
 
   return (
-    <div className="space-y-8 bg-slate-50 border border-slate-200/80 rounded-3xl p-6 shadow-sm">
-      
+    <div className="space-y-8 bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 rounded-3xl p-6 shadow-sm dark:shadow-lg dark:shadow-slate-900/20 transition-colors">
+
       {/* Dynamic Tabs Headers */}
-      <div className="flex border-b border-slate-200 overflow-x-auto select-none gap-2">
+      <div className="flex border-b border-slate-200 dark:border-slate-700 overflow-x-auto select-none gap-2 transition-colors">
         {[
           { id: 'updates', label: 'Status Updates', icon: Send },
           { id: 'time', label: 'Time Tracking', icon: Timer },
           { id: 'invoices', label: 'Smart Invoices', icon: FileText },
+          { id: 'portfolio', label: 'Portfolio Pages', icon: Briefcase },
         ].map((tab) => {
           const Icon = tab.icon
           const active = activeTab === tab.id
@@ -54,8 +55,8 @@ export function FeaturesTabs() {
               onClick={() => setActiveTab(tab.id as TabId)}
               className={`flex items-center gap-2 px-6 py-4 text-xs font-bold uppercase tracking-wider border-b-2 transition-all whitespace-nowrap ${
                 active
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-200'
+                  ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
+                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-200 dark:hover:border-slate-600'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -72,17 +73,17 @@ export function FeaturesTabs() {
         <div className="space-y-4">
           {activeTab === 'updates' && (
             <>
-              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded uppercase tracking-wider">Communication</span>
-              <h3 className="text-xl font-bold text-slate-900 leading-tight">No more manual status emails</h3>
-              <p className="text-slate-500 text-sm leading-relaxed font-medium">
+              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded uppercase tracking-wider">Communication</span>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">No more manual status emails</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
                 Draft 3 accomplishments and any blockers. ClientPulse converts them into a beautiful, styled status portal and forwards it to your client's inbox immediately.
               </p>
-              <div className="space-y-2 pt-2 text-slate-600 text-xs font-semibold">
+              <div className="space-y-2 pt-2 text-slate-600 dark:text-slate-400 text-xs font-semibold">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-indigo-600" /> Automatically tracks weekly metrics
+                  <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Automatically tracks weekly metrics
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-indigo-600" /> Interactive 👍/👎 approval feedback triggers
+                  <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Clients approve or request changes
                 </div>
               </div>
             </>
@@ -90,17 +91,17 @@ export function FeaturesTabs() {
 
           {activeTab === 'time' && (
             <>
-              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded uppercase tracking-wider">Task Logger</span>
-              <h3 className="text-xl font-bold text-slate-900 leading-tight">Time tracking built for freelancers</h3>
-              <p className="text-slate-500 text-sm leading-relaxed font-medium">
-                Log billable hours manually or spin up a background active timer. Logged times immediately link to project budgets and unpaid invoices, so nothing slips through the cracks.
+              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded uppercase tracking-wider">Task Logger</span>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">Time tracking that actually helps</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
+                Log hours manually or use a background timer. Track time against project budgets and automatically link to invoices. Get alerts when you're approaching budget limits.
               </p>
-              <div className="space-y-2 pt-2 text-slate-600 text-xs font-semibold">
+              <div className="space-y-2 pt-2 text-slate-600 dark:text-slate-400 text-xs font-semibold">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-indigo-600" /> Ticking background timers logged instantly
+                  <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Active timers and manual logging
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-indigo-600" /> Budget alarm signals when caps are exceeded
+                  <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Budget tracking and alerts
                 </div>
               </div>
             </>
@@ -108,17 +109,35 @@ export function FeaturesTabs() {
 
           {activeTab === 'invoices' && (
             <>
-              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded uppercase tracking-wider">Financial Hub</span>
-              <h3 className="text-xl font-bold text-slate-900 leading-tight">Smart invoices that get paid faster</h3>
-              <p className="text-slate-500 text-sm leading-relaxed font-medium">
-                Draft professional invoices with multi-line items. Clients pay directly via our secure Stripe checkout links, triggering email receipts and updating your dashboard earnings.
+              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded uppercase tracking-wider">Financial Hub</span>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">Smart invoices that get paid faster</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
+                Draft professional invoices with multi-line items. Clients pay directly via secure checkout links, triggering email receipts and updating your dashboard earnings.
               </p>
-              <div className="space-y-2 pt-2 text-slate-600 text-xs font-semibold">
+              <div className="space-y-2 pt-2 text-slate-600 dark:text-slate-400 text-xs font-semibold">
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-indigo-600" /> Integrated Stripe payment checkouts
+                  <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Secure payment processing
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-indigo-600" /> Professional print-ready downloadable PDFs
+                  <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Professional downloadable PDFs
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === 'portfolio' && (
+            <>
+              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded uppercase tracking-wider">Showcase Work</span>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">Public portfolio & case studies</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
+                Build a beautiful portfolio to showcase your work, collect client testimonials, and link to live projects. Stand out to potential clients with your best work.
+              </p>
+              <div className="space-y-2 pt-2 text-slate-600 dark:text-slate-400 text-xs font-semibold">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Branded portfolio pages
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" /> Client testimonials & ratings
                 </div>
               </div>
             </>
@@ -216,14 +235,14 @@ export function FeaturesTabs() {
 
                   <div className="flex justify-between items-center text-xs pb-2 border-b border-slate-800">
                     <span className="font-bold text-slate-300">INV-2026-X04</span>
-                    <button 
+                    <button
                       onClick={() => setInvoiceStatus(invoiceStatus === 'sent' ? 'paid' : 'sent')}
                       className="text-[10px] font-bold uppercase tracking-wider bg-slate-950 border border-slate-700 rounded px-2.5 py-1 text-slate-400 hover:text-white hover:border-slate-500 transition-all"
                     >
                       Toggle Stamp
                     </button>
                   </div>
-                  
+
                   <div className="space-y-1.5 text-xs">
                     {invoiceItems.map((item, idx) => (
                       <div key={idx} className="flex justify-between items-center text-slate-400">
@@ -236,6 +255,47 @@ export function FeaturesTabs() {
                   <div className="pt-2 border-t border-slate-800 flex justify-between items-center text-xs font-bold">
                     <span className="text-slate-400">Total Invoice Sum</span>
                     <span className="text-white text-sm">${subtotal}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Portfolio Tab Simulation */}
+            {activeTab === 'portfolio' && (
+              <div className="space-y-4">
+                <div className="bg-slate-900 border border-slate-800/60 rounded-xl p-4 space-y-3">
+                  <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider pb-2 border-b border-slate-800">Your Portfolio</div>
+                  <div className="space-y-3">
+                    <div className="bg-slate-950 rounded-lg p-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-500 rounded" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-white">Website Redesign</div>
+                          <div className="text-[10px] text-slate-400">Acme Corp</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-slate-950 rounded-lg p-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-white">Mobile App MVP</div>
+                          <div className="text-[10px] text-slate-400">TechStart Inc</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-slate-950 rounded-lg p-3 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-pink-500 rounded" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs font-bold text-white">Brand Identity</div>
+                          <div className="text-[10px] text-slate-400">Studio Co</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-center text-[10px] text-slate-500 font-semibold bg-slate-900/40 p-2.5 rounded-lg border border-dashed border-slate-800/60">
+                    Share your public portfolio with prospects
                   </div>
                 </div>
               </div>

@@ -48,8 +48,8 @@ export default function SubscribePage({ params }: { params: Promise<{ slug: stri
             <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Check className="w-7 h-7 text-emerald-600" />
             </div>
-            <h1 className="text-xl font-bold text-slate-900 mb-2">You're subscribed!</h1>
-            <p className="text-slate-500 text-sm mb-6">You'll get an email every time a new update is posted.</p>
+            <h1 className="text-xl font-bold text-slate-900 mb-2">You&apos;re subscribed!</h1>
+            <p className="text-slate-500 text-sm mb-6">You&apos;ll get an email every time a new update is posted.</p>
             <Link href={`/p/${slug}`} className="text-sm text-indigo-600 font-medium hover:underline">
               ← Back to status page
             </Link>

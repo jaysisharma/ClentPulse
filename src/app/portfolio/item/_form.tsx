@@ -8,15 +8,9 @@ import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
-  ArrowLeft, Upload, X, Code2, Globe, Play,
+  ArrowLeft, Upload, X, Code2, Globe,
   Image as ImageIcon, Plus, Loader2,
 } from 'lucide-react'
-
-interface PortfolioItem {
-  id: string; title: string; description: string | null
-  live_url: string | null; github_url: string | null; video_url: string | null
-  screenshots: string[]; tags: string[]
-}
 
 // Extract embed URL from YouTube or Loom share links
 function getEmbedUrl(url: string): string | null {
@@ -75,7 +69,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
   // Keep a ref so the unmount cleanup always sees the latest previews without
   // re-running the effect (and revoking still-displayed URLs) on every state change.
   const pendingPreviewsRef = useRef(pendingPreviews)
-  pendingPreviewsRef.current = pendingPreviews
+  useEffect(() => { pendingPreviewsRef.current = pendingPreviews })
   useEffect(() => () => { pendingPreviewsRef.current.forEach(url => URL.revokeObjectURL(url)) }, [])
 
   function addFiles(files: FileList | null) {

@@ -205,7 +205,7 @@ export default function PortfolioPage() {
                         ))}
                       </div>
                     </div>
-                    <p className="text-xs text-slate-500 line-clamp-2">"{t.content}"</p>
+                    <p className="text-xs text-slate-500 line-clamp-2">&quot;{t.content}&quot;</p>
                   </div>
                 ))}
                 {testimonials.length > 3 && (

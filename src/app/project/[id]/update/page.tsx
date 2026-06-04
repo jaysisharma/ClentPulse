@@ -247,7 +247,7 @@ Best,`
                 {/* Email Body */}
                 <div className="text-sm text-slate-600 space-y-4 leading-relaxed">
                   <p className="font-medium">Hi {project?.client_name || 'Client Name'},</p>
-                  <p>Here's a breakdown of the achievements we shipped on **{project?.project_name || 'your project'}** this week:</p>
+                  <p>Here&apos;s a breakdown of the achievements we shipped on **{project?.project_name || 'your project'}** this week:</p>
                   
                   {/* Dynamic Bullets */}
                   <div className="space-y-3 pl-1">

@@ -234,12 +234,12 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
       {/* Powered by — hidden for Pro users */}
       {owner?.plan !== 'pro' && (
         <div className="border-t border-slate-100 py-6 text-center">
-          <a href="/" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 transition-colors">
+          <Link href="/" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 transition-colors">
             <div className="w-4 h-4 bg-indigo-600 rounded flex items-center justify-center">
               <Zap className="w-2.5 h-2.5 text-white" />
             </div>
             Powered by ClientPulse
-          </a>
+          </Link>
         </div>
       )}
     </div>

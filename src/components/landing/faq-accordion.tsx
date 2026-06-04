@@ -40,34 +40,31 @@ export function FAQAccordion() {
         return (
           <div
             key={i}
-            className={`bg-white border rounded-2xl transition-all duration-200 ${
-              isOpen ? 'border-indigo-500 shadow-sm' : 'border-slate-200 hover:border-slate-300'
-            }`}
+            className={`bg-white dark:bg-slate-800 border rounded-2xl transition-all duration-200 ${isOpen ? 'border-indigo-500 dark:border-indigo-400 shadow-sm dark:shadow-lg dark:shadow-slate-900/30' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'
+              }`}
           >
             <button
               onClick={() => toggle(i)}
-              className="w-full flex items-center justify-between px-5 py-4 text-left focus:outline-none"
+              className="w-full flex items-center justify-between px-5 py-4 text-left focus:outline-none transition-colors"
             >
               <div className="flex items-center gap-3">
-                <HelpCircle className={`w-4.5 h-4.5 transition-colors ${isOpen ? 'text-indigo-600' : 'text-slate-400'}`} />
-                <span className="text-sm font-bold text-slate-800 leading-tight">
+                <HelpCircle className={`w-4.5 h-4.5 transition-colors ${isOpen ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`} />
+                <span className="text-sm font-bold text-slate-800 dark:text-white leading-tight">
                   {faq.question}
                 </span>
               </div>
-              <span className={`w-6 h-6 rounded-lg flex items-center justify-center border text-slate-400 transition-colors flex-shrink-0 ml-4 ${
-                isOpen ? 'bg-indigo-50 border-indigo-200 text-indigo-600' : 'bg-slate-50 border-slate-200'
-              }`}>
+              <span className={`w-6 h-6 rounded-lg flex items-center justify-center border transition-colors flex-shrink-0 ml-4 ${isOpen ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-400/30 text-indigo-600 dark:text-indigo-400' : 'bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500'
+                }`}>
                 {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
               </span>
             </button>
 
             {/* Answer body with smooth collapse */}
             <div
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                isOpen ? 'max-h-48 border-t border-slate-100' : 'max-h-0'
-              }`}
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-48 border-t border-slate-100 dark:border-slate-700' : 'max-h-0'
+                }`}
             >
-              <div className="px-5 py-4 text-xs md:text-sm text-slate-500 leading-relaxed font-medium bg-slate-50/50 rounded-b-2xl">
+              <div className="px-5 py-4 text-xs md:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium bg-white dark:bg-slate-800 rounded-b-2xl">
                 {faq.answer}
               </div>
             </div>

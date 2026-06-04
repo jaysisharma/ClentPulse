@@ -40,6 +40,7 @@ export default function MeetingNotesPage({ params }: { params: Promise<{ id: str
     setNotes(data ?? [])
   }, [id, router])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { load() }, [load])
 
   function updateList(list: string[], setter: (v: string[]) => void, i: number, val: string) {

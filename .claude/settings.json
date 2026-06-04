@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pkill -f \"next dev\")",
+      "Bash(curl -s http://localhost:3000 --connect-timeout 5)",
+      "Bash(git diff *)",
+      "Read(//tmp/**)"
+    ]
+  }
+}

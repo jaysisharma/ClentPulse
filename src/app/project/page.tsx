@@ -4,7 +4,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { Plus, FolderOpen } from 'lucide-react'
-import { ProjectsClientGrid } from './projects-client-grid'
+import { ProjectsClientGrid, type Project } from './projects-client-grid'
 
 export default async function ProjectsPage() {
   const supabase = await createClient()
@@ -55,7 +55,7 @@ export default async function ProjectsPage() {
             </Link>
           </div>
         ) : (
-          <ProjectsClientGrid projects={allProjects as any} />
+          <ProjectsClientGrid projects={allProjects as unknown as Project[]} />
         )}
 
       </div>

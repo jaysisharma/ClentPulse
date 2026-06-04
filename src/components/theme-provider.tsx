@@ -1,0 +1,88 @@
+'use client'
+
+import { createContext, useContext, useEffect, useState } from 'react'
+
+type Theme = 'light' | 'dark'
+
+interface ThemeContextType {
+  theme: Theme
+  toggleTheme: () => void
+}
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
+
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<Theme>('light')
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    // Clear any corrupted localStorage values
+    const stored = localStorage.getItem('theme')
+
+    // Only accept 'light' or 'dark' as valid values
+    const isValidTheme = stored === 'light' || stored === 'dark'
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+    // Use system preference if no valid stored theme
+    const initial: Theme = isValidTheme ? (stored as Theme) : (prefersDark ? 'dark' : 'light')
+
+    setTheme(initial)
+
+    // Apply theme to DOM
+    if (initial === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+
+    setMounted(true)
+  }, [])
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => {
+      const newTheme = prevTheme === 'light' ? 'dark' : 'light'
+
+      // Update localStorage
+      localStorage.setItem('theme', newTheme)
+
+      // Update DOM - remove first, then add
+      document.documentElement.classList.remove('dark')
+
+      if (newTheme === 'dark') {
+        document.documentElement.classList.add('dark')
+      }
+
+      return newTheme
+    })
+  }
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  )
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext)
+
+  if (!context) {
+    return {
+      theme: 'light' as Theme,
+      toggleTheme: () => {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const current = prefersDark ? 'dark' : 'light'
+        const newTheme = current === 'light' ? 'dark' : 'light'
+
+        localStorage.setItem('theme', newTheme)
+        if (newTheme === 'dark') {
+          document.documentElement.classList.add('dark')
+        } else {
+          document.documentElement.classList.remove('dark')
+        }
+      },
+    }
+  }
+
+  return context
+}
