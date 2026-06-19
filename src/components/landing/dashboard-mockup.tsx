@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react'
-import { 
+import {
   Clock, Folder, FileText, Users, TrendingUp, Search, Bell,
   Plus, AlertCircle, Timer, CheckCircle2, Send,
   DollarSign, ChevronRight
@@ -16,21 +16,21 @@ export function DashboardMockup() {
       if (!containerRef.current) return
       const rect = containerRef.current.getBoundingClientRect()
       const viewportHeight = window.innerHeight
-      
+
       // Absolute top of the element relative to the document
       const absoluteTop = rect.top + window.scrollY
       const scrollTop = window.scrollY
-      
+
       // Animation starts when the top of the element enters the bottom 90% of the viewport,
       // and completes when it reaches 45% of the viewport (near the center of the screen).
       // This prevents issues where the page bottom halts scrolling before expansion finishes.
       const startScroll = absoluteTop - viewportHeight
       const endScroll = absoluteTop - (viewportHeight * 0.45)
-      
+
       const progress = Math.max(0, Math.min(1, (scrollTop - startScroll) / (endScroll - startScroll)))
       setScrollProgress(progress)
     }
-    
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
@@ -45,7 +45,7 @@ export function DashboardMockup() {
   const opacity = 0.85 + scrollProgress * 0.15; // Opacity from 0.85 to 1
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="relative origin-top z-30"
       style={{
@@ -59,12 +59,12 @@ export function DashboardMockup() {
       }}
     >
       {/* Ambient Glow behind Mockup (fade out when full screen) */}
-      <div 
+      <div
         className="absolute inset-0 bg-indigo-500/5 dark:bg-indigo-500/10 blur-3xl -z-10 rounded-3xl transition-opacity duration-300 pointer-events-none"
         style={{ opacity: 1 - scrollProgress }}
       />
-      
-      <div 
+
+      <div
         className="bg-slate-900 text-white overflow-hidden border border-slate-800 shadow-2xl p-1 bg-gradient-to-b from-slate-800 to-slate-950 flex flex-col h-full w-full"
         style={{
           borderRadius: `${borderRadius}px`,
@@ -82,10 +82,10 @@ export function DashboardMockup() {
             frevio.cloud/dashboard
           </div>
         </div>
-        
+
         {/* App Layout Simulation */}
         <div className="bg-slate-950 flex flex-1 text-left overflow-hidden">
-          
+
           {/* Sidebar (Desktop only) */}
           <div className="hidden md:flex w-52 bg-slate-900 border-r border-slate-800/60 p-4 flex-col justify-between select-none flex-shrink-0">
             <div className="space-y-6">
@@ -94,7 +94,7 @@ export function DashboardMockup() {
                 <img src="/logo.svg" alt="Frevio" className="w-5 h-5" />
                 <span className="font-bold text-xs text-slate-200">Creative Studio</span>
               </div>
-              
+
               {/* Sidebar Menu */}
               <div className="space-y-1.5 text-[11px] font-bold text-slate-400">
                 <div className="flex items-center gap-2.5 px-2.5 py-1.5 bg-slate-800 text-white rounded-lg">
@@ -119,7 +119,7 @@ export function DashboardMockup() {
                 </div>
               </div>
             </div>
-            
+
             {/* Pro Badge & Profile */}
             <div className="space-y-3">
               <div className="bg-gradient-to-br from-indigo-950 to-indigo-900/40 border border-indigo-800/40 rounded-xl p-3 text-[10px] space-y-1">
@@ -135,10 +135,10 @@ export function DashboardMockup() {
               </div>
             </div>
           </div>
-          
+
           {/* Main Workspace Area */}
           <div className="flex-1 p-4 md:p-6 flex flex-col gap-6 overflow-hidden">
-            
+
             {/* Top Header */}
             <div className="flex items-start justify-between flex-shrink-0">
               <div>
@@ -160,7 +160,7 @@ export function DashboardMockup() {
                 </div>
               </div>
             </div>
-            
+
             {/* Metrics Cards Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 flex-shrink-0">
               {/* Outstanding */}
@@ -192,6 +192,7 @@ export function DashboardMockup() {
                 </div>
               </div>
             </div>
+
 
             {/* Needs attention */}
             <div className="bg-slate-900 rounded-xl border border-slate-800/60 overflow-hidden flex-shrink-0">
@@ -234,10 +235,10 @@ export function DashboardMockup() {
                 </div>
               </div>
             </div>
-            
+
             {/* Main grid */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 items-start">
-              
+
               {/* Projects List Column — 2 cols */}
               <div className="lg:col-span-2 space-y-3">
                 <div className="flex items-center justify-between mb-1 select-none">
@@ -246,7 +247,7 @@ export function DashboardMockup() {
                     View all <ChevronRight className="w-3 h-3" />
                   </span>
                 </div>
-                
+
                 <div className="space-y-2">
                   <div className="flex items-center gap-3 bg-slate-900 rounded-xl border border-slate-800/60 px-4 py-3 hover:border-slate-700 transition-colors group cursor-pointer">
                     <div className="w-1 h-8 rounded-full bg-amber-500 flex-shrink-0" />
@@ -309,7 +310,7 @@ export function DashboardMockup() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Sidebar column — 1 col */}
               <div className="space-y-4 w-full">
                 {/* Active timer */}
@@ -393,7 +394,7 @@ export function DashboardMockup() {
             </div>
 
           </div>
-          
+
         </div>
       </div>
     </div>

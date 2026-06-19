@@ -63,7 +63,10 @@
       "Bash(md5 -q public/logo.png)",
       "Bash(md5 -q)",
       "Bash(command -v gh)",
-      "Bash(gh run *)"
+      "Bash(gh run *)",
+      "Bash(git commit -q -m 'chore: point Caddy at frevio.cloud apex + www redirect *)",
+      "Bash(dig +short frevio.cloud)",
+      "Bash(dig +short www.frevio.cloud)"
     ],
     "additionalDirectories": [
       "/tmp"
