@@ -183,6 +183,7 @@ export function DashboardMockup() {
                 <div className="text-xl md:text-2xl font-bold text-white">3</div>
                 <div className="text-[10px] text-slate-500 font-medium">of 4 total</div>
               </div>
+
               {/* Hours this week */}
               <div className="bg-slate-900 border border-slate-800/60 rounded-xl p-4 space-y-1">
                 <div className="text-[10px] text-slate-400 uppercase tracking-wider">Hours this week</div>

@@ -36,7 +36,7 @@ export default async function LandingPage() {
   const isLoggedIn = !!user
 
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 relative overflow-hidden font-sans pb-12 transition-colors">
+    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 relative overflow-hidden font-sans transition-colors">
       
       {/* Background Radial Glow Accent */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-50/60 via-white to-white dark:from-indigo-950/30 dark:via-slate-950 dark:to-slate-950 pointer-events-none z-0" />
@@ -81,7 +81,7 @@ export default async function LandingPage() {
         <div className="max-w-3xl mx-auto space-y-8 flex flex-col items-center">
           <div className="inline-flex items-center gap-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>The client OS for freelancers</span>
+            <span>Professional client portals & invoicing</span>
           </div>
 
           <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight max-w-3xl mx-auto">

@@ -191,7 +191,7 @@ export default function LoginPage() {
 
         {/* footer */}
         <p className="text-sm text-slate-500">
-          The client OS for freelancers.
+          Professional client portals & invoicing.
         </p>
       </div>
 
