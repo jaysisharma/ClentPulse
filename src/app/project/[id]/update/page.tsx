@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Send, Copy, Check, Mail, Eye, Sparkles, Lock } from 'lucide-react'
+import { ArrowLeft, Send, Copy, Check, Mail, Eye, Sparkles, Lock, Plus, Trash2 } from 'lucide-react'
 import { getWeekOf } from '@/lib/utils'
 
 export default function UpdatePage({ params }: { params: Promise<{ id: string }> }) {
@@ -55,15 +55,18 @@ export default function UpdatePage({ params }: { params: Promise<{ id: string }>
   function generateEmailText() {
     if (!project) return ''
     const week = getWeekOf(new Date())
+    const activeBullets = bullets.filter(b => b.trim().length > 0)
+    const bulletsText = activeBullets.length > 0
+      ? activeBullets.map(b => `• ${b}`).join('\n')
+      : '• [No accomplishments listed]'
+
     return `Subject: ${project.project_name} — ${week}
 
 Hi ${project.client_name},
 
 Here's your weekly update on ${project.project_name}:
 
-• ${bullets[0] || '[First progress item]'}
-• ${bullets[1] || '[Second progress item]'}
-• ${bullets[2] || '[Third progress item]'}
+${bulletsText}
 ${note ? `\nNote: ${note}` : ''}
 
 View full status page: ${typeof window !== 'undefined' ? window.location.origin : ''}/p/${project?.slug}
@@ -99,6 +102,13 @@ Best,`
     setLoading(true)
     setError('')
 
+    const filteredBullets = bullets.filter(b => b.trim().length > 0)
+    if (filteredBullets.length === 0) {
+      setError('Please enter at least one progress update.')
+      setLoading(false)
+      return
+    }
+
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/auth/login'); return }
@@ -107,7 +117,7 @@ Best,`
       const { error: err } = await supabase
         .from('updates')
         .update({
-          bullets,
+          bullets: filteredBullets,
           note: note || null,
           ...(send ? { sent_at: new Date().toISOString() } : {}),
         })
@@ -129,7 +139,7 @@ Best,`
         .from('updates')
         .insert({
           project_id: id,
-          bullets,
+          bullets: filteredBullets,
           note: note || null,
           sent_at: send ? new Date().toISOString() : null,
         })
@@ -149,10 +159,10 @@ Best,`
       }
     }
 
-    router.push(`/project/${id}`)
+    router.push(`/project/${id}?${send ? 'sent=true' : 'saved=true'}`)
   }
 
-  const bulletsFilled = bullets.every(b => b.trim().length > 0)
+  const hasContent = bullets.some(b => b.trim().length > 0)
   const currentWeek = getWeekOf(new Date())
 
   return (
@@ -214,9 +224,9 @@ Best,`
 
               <div className="space-y-3">
                 {bullets.map((bullet, i) => (
-                  <div key={i} className="flex gap-3 items-start bg-slate-50 border border-slate-100 p-3 rounded-xl focus-within:bg-white focus-within:border-indigo-200 transition-all">
+                  <div key={i} className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3 rounded-xl focus-within:bg-white focus-within:border-indigo-200 transition-all">
                     <span 
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5"
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                       style={{ backgroundColor: `${project?.color ?? '#6366F1'}15`, color: project?.color ?? '#6366F1' }}
                     >
                       {i + 1}
@@ -231,8 +241,32 @@ Best,`
                         setBullets(next)
                       }}
                     />
+                    {bullets.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const next = bullets.filter((_, idx) => idx !== i)
+                          setBullets(next)
+                        }}
+                        className="text-slate-400 hover:text-rose-600 transition-colors p-1"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 ))}
+              </div>
+
+              <div className="flex justify-end pt-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setBullets([...bullets, ''])}
+                  className="text-xs text-indigo-600 hover:text-indigo-700 font-semibold"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" /> Add progress item
+                </Button>
               </div>
             </div>
 
@@ -255,7 +289,7 @@ Best,`
                 variant="secondary"
                 onClick={() => handleSubmit(false)}
                 loading={loading}
-                disabled={!bulletsFilled}
+                disabled={!hasContent}
                 className="flex-1 justify-center py-2.5"
               >
                 {isEditing ? 'Save changes' : 'Save draft'}
@@ -263,7 +297,7 @@ Best,`
               <Button
                 onClick={() => handleSubmit(true)}
                 loading={loading}
-                disabled={!bulletsFilled}
+                disabled={!hasContent}
                 className="flex-1 justify-center py-2.5 shadow-sm"
               >
                 <Send className="w-4 h-4" />
@@ -350,7 +384,7 @@ Best,`
             </div>
 
             {/* Raw Plain-Text Box (Toggle/Accordian styling) */}
-            {bulletsFilled && (
+            {hasContent && (
               <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-3 shadow-sm">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-slate-500 flex items-center gap-1.5">

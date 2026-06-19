@@ -80,6 +80,8 @@ export function MilestonesWidget({
 
   return (
     <CollapsibleCard
+      projectId={projectId}
+      hideColumn="hide_milestones"
       defaultOpen={defaultOpen}
       icon={<Flag className="w-4 h-4 text-slate-400 flex-shrink-0" />}
       title="Milestones"

@@ -8,7 +8,6 @@ import Link from 'next/link'
 import {
   ArrowLeft, Plus, Link2, Check, Send,
   Clock, AlertTriangle, FileSignature, CheckCircle2, ChevronRight,
-  ThumbsUp, ThumbsDown, MessageSquare,
 } from 'lucide-react'
 import { CopyLinkButton } from './copy-link-button'
 import { StatusToggle } from './status-toggle'
@@ -20,9 +19,19 @@ import { ProjectActionsMenu } from './project-actions-menu'
 import { CollapsibleSection } from './collapsible-section'
 import { CollapsibleCard } from './collapsible-card'
 import { UpdateCommentForm } from '@/app/p/[slug]/update-comment-form'
+import { ClientFeedbackList } from './client-feedback-list'
+import { UpdatesList } from './updates-list'
+import { NotificationToast } from './notification-toast'
 
-export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function ProjectPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>
+  searchParams: Promise<{ sent?: string; saved?: string }>
+}) {
   const { id } = await params
+  const { sent, saved } = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
@@ -50,6 +59,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
   ])
 
   if (!project) notFound()
+
+  const hasNewFeedback = (clientFeedback ?? []).some(
+    fb => (Date.now() - new Date(fb.created_at).getTime()) < 24 * 60 * 60 * 1000
+  )
 
   const { data: owner } = await supabase.from('users').select('name').eq('id', user.id).single()
   const ownerName = owner?.name || (user.email?.split('@')[0] ?? 'You')
@@ -82,6 +95,20 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     <AppLayout>
       <DarkShell>
         <div className="relative z-10 animate-fade-in pb-12">
+
+        {sent === 'true' && (
+          <div className="mb-6 rounded-2xl border border-emerald-250 bg-emerald-50 px-5 py-4 flex items-center gap-3 text-emerald-900 shadow-sm animate-fade-in">
+            <Check className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+            <span className="text-sm font-semibold">Weekly status update email has been sent to client via Resend.</span>
+          </div>
+        )}
+
+        {saved === 'true' && (
+          <div className="mb-6 rounded-2xl border border-blue-200 bg-blue-50 px-5 py-4 flex items-center gap-3 text-blue-900 shadow-sm animate-fade-in">
+            <Check className="w-5 h-5 text-blue-600 flex-shrink-0" />
+            <span className="text-sm font-semibold">Draft status update has been saved successfully.</span>
+          </div>
+        )}
 
         {/* Back navigation */}
         <div className="mb-8">
@@ -165,11 +192,6 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <CollapsibleSection
               title="Updates"
               count={updates?.length ?? 0}
-              action={
-                <Link href={`/project/${id}/update`}>
-                  <Button variant="secondary" size="sm"><Plus className="w-4 h-4" />New</Button>
-                </Link>
-              }
             >
               {!updates?.length ? (
                 <div className="bg-white border border-dashed border-slate-200/80 rounded-2xl p-12 text-center shadow-xs">
@@ -179,103 +201,30 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                   </Link>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {updates.map(update => (
-                    <div key={update.id} className="bg-white border border-slate-200/60 shadow-sm rounded-2xl p-6 hover:shadow-md transition-shadow">
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-sm font-semibold text-slate-900">{getWeekOf(update.created_at)}</span>
-                        <div className="flex items-center gap-2">
-                          {update.sent_at ? (
-                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">
-                              <Check className="w-3 h-3" />Sent {formatDate(update.sent_at)}
-                            </span>
-                          ) : (
-                            <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Draft</span>
-                          )}
-                          <UpdateActions updateId={update.id} projectId={id} />
-                        </div>
-                      </div>
-                      <ul className="space-y-2.5">
-                        {(update.bullets ?? []).filter(Boolean).map((b: string, i: number) => (
-                          <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700 leading-relaxed">
-                            <div className="w-1.5 h-1.5 rounded-full mt-[7px] flex-shrink-0" style={{ backgroundColor: project.color }} />
-                            {b}
-                          </li>
-                        ))}
-                      </ul>
-                      {update.note && (
-                        <p className="text-sm text-slate-500 italic border-t border-slate-100 pt-3 mt-4">{update.note}</p>
-                      )}
-                      <UpdateCommentForm
-                        updateId={update.id}
-                        projectId={id}
-                        accentColor={project.color}
-                        existingComments={(updateComments ?? []).filter((c: any) => c.update_id === update.id)}
-                        defaultAuthorName={ownerName}
-                      />
-                    </div>
-                  ))}
-                </div>
+                <UpdatesList
+                  updates={updates}
+                  projectColor={project.color}
+                  projectId={id}
+                  updateComments={updateComments ?? []}
+                  ownerName={ownerName}
+                />
               )}
             </CollapsibleSection>
 
             {/* Approvals */}
-            <div id="approvals" className="scroll-mt-6">
-              <ApprovalsSection projectId={project.id} initialApprovals={approvals ?? []} />
-            </div>
+            {!project.hide_approvals && (
+              <div id="approvals" className="scroll-mt-6">
+                <ApprovalsSection projectId={project.id} initialApprovals={approvals ?? []} />
+              </div>
+            )}
 
             {/* Client Feedback */}
             <CollapsibleSection
               title="Client Feedback"
               count={clientFeedback?.length ?? 0}
+              defaultOpen={hasNewFeedback}
             >
-              {!clientFeedback?.length ? (
-                <div className="bg-white border border-dashed border-slate-200/80 rounded-2xl p-8 text-center shadow-xs">
-                  <p className="text-sm text-slate-400">No feedback submitted by the client yet.</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {clientFeedback.map(fb => (
-                    <div key={fb.id} className="bg-white border border-slate-200/60 shadow-sm rounded-2xl p-5 flex items-start gap-4">
-                      {fb.type === 'thumbs_up' && (
-                        <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
-                          <ThumbsUp className="w-5 h-5" />
-                        </div>
-                      )}
-                      {fb.type === 'thumbs_down' && (
-                        <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
-                          <ThumbsDown className="w-5 h-5" />
-                        </div>
-                      )}
-                      {fb.type === 'question' && (
-                        <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
-                          <MessageSquare className="w-5 h-5" />
-                        </div>
-                      )}
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2 mb-1">
-                          <span className="text-sm font-semibold text-slate-900">
-                            {fb.type === 'thumbs_up' && 'Looking good'}
-                            {fb.type === 'thumbs_down' && 'Has concerns'}
-                            {fb.type === 'question' && 'Message left'}
-                          </span>
-                          <span className="text-xs text-slate-400">
-                            {formatDate(fb.created_at)}
-                          </span>
-                        </div>
-                        {fb.message ? (
-                          <p className="text-sm text-slate-600 bg-slate-50 border border-slate-100 rounded-xl px-3.5 py-2 mt-2 leading-relaxed">
-                            {fb.message}
-                          </p>
-                        ) : (
-                          <p className="text-xs text-slate-400 italic mt-0.5">No message attached.</p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <ClientFeedbackList feedback={clientFeedback ?? []} />
             </CollapsibleSection>
 
             {/* Testimonial — completed only */}
@@ -296,52 +245,63 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
           <div className="space-y-6 lg:sticky lg:top-6 self-start">
 
             {/* Kickoff — floated to the top while the project is young */}
-            {isYoung && <KickoffChecklist projectId={project.id} />}
+            {isYoung && !project.hide_kickoff && <KickoffChecklist projectId={project.id} />}
 
             {/* Progress: milestones */}
-            <MilestonesWidget
-              projectId={project.id}
-              color={project.color}
-              initialMilestones={milestones ?? []}
-            />
+            {!project.hide_milestones && (
+              <MilestonesWidget
+                projectId={project.id}
+                color={project.color}
+                initialMilestones={milestones ?? []}
+              />
+            )}
 
             {/* Client access: status page + contract status, grouped together */}
-            <CollapsibleCard icon={<Link2 className="w-4 h-4 text-slate-400 flex-shrink-0" />} title="Client access" defaultOpen={false}>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-slate-700">Status page</span>
-                    <div className="flex items-center gap-1.5">
-                      <CopyLinkButton url={publicUrl} />
-                      <a href={publicUrl} target="_blank" rel="noopener noreferrer">
-                        <Button variant="ghost" size="sm">View</Button>
-                      </a>
+            {!project.hide_client_access && (
+              <CollapsibleCard
+                projectId={project.id}
+                hideColumn="hide_client_access"
+                icon={<Link2 className="w-4 h-4 text-slate-400 flex-shrink-0" />}
+                title="Client access"
+                defaultOpen={false}
+              >
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-slate-700">Status page</span>
+                      <div className="flex items-center gap-1.5">
+                        <CopyLinkButton url={publicUrl} />
+                        <a href={publicUrl} target="_blank" rel="noopener noreferrer">
+                          <Button variant="ghost" size="sm">View</Button>
+                        </a>
+                      </div>
                     </div>
+                    <p className="text-xs text-slate-400 truncate bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">{publicUrl}</p>
                   </div>
-                  <p className="text-xs text-slate-400 truncate bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">{publicUrl}</p>
-                </div>
 
-                <Link href={`/project/${id}/contract`} className="border-t border-slate-100 pt-4 flex items-center justify-between group">
-                  <div className="flex items-center gap-2">
-                    <FileSignature className="w-4 h-4 text-slate-400" />
-                    <span className="text-sm font-semibold text-slate-700">Contract</span>
-                  </div>
-                  {unsignedContracts > 0 ? (
-                    <span className="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">Unsigned</span>
-                  ) : hasContracts ? (
-                    <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">Signed</span>
-                  ) : (
-                    <span className="text-xs font-medium text-indigo-600 group-hover:text-indigo-700 inline-flex items-center gap-1">Add <ChevronRight className="w-3 h-3" /></span>
-                  )}
-                </Link>
-              </div>
-            </CollapsibleCard>
+                  <Link href={`/project/${id}/contract`} className="border-t border-slate-100 pt-4 flex items-center justify-between group">
+                    <div className="flex items-center gap-2">
+                      <FileSignature className="w-4 h-4 text-slate-400" />
+                      <span className="text-sm font-semibold text-slate-700">Contract</span>
+                    </div>
+                    {unsignedContracts > 0 ? (
+                      <span className="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">Unsigned</span>
+                    ) : hasContracts ? (
+                      <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">Signed</span>
+                    ) : (
+                      <span className="text-xs font-medium text-indigo-600 group-hover:text-indigo-700 inline-flex items-center gap-1">Add <ChevronRight className="w-3 h-3" /></span>
+                    )}
+                  </Link>
+                </div>
+              </CollapsibleCard>
+            )}
 
             {/* Kickoff — drops to the bottom once the project is lived-in */}
-            {!isYoung && <KickoffChecklist projectId={project.id} />}
+            {!isYoung && !project.hide_kickoff && <KickoffChecklist projectId={project.id} />}
           </div>
 
         </div>
+        <NotificationToast projectId={project.id} />
         </div>
       </DarkShell>
     </AppLayout>

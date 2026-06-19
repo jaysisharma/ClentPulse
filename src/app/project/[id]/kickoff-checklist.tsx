@@ -107,6 +107,8 @@ export function KickoffChecklist({ projectId }: { projectId: string }) {
 
   return (
     <CollapsibleCard
+      projectId={projectId}
+      hideColumn="hide_kickoff"
       key={loading ? 'loading' : 'loaded'}
       icon={<ClipboardList className="w-4 h-4 text-slate-400 flex-shrink-0" />}
       title="Kickoff Checklist"

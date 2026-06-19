@@ -51,6 +51,8 @@ export function ApprovalsSection({
 
   return (
     <CollapsibleSection
+      projectId={projectId}
+      hideColumn="hide_approvals"
       defaultOpen={defaultOpen}
       title="Approval requests"
       count={approvals.length}

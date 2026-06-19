@@ -23,6 +23,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [clientEmail, setClientEmail] = useState('')
   const [budget, setBudget] = useState('')
   const [hourlyRate, setHourlyRate] = useState('')
+  const [hideMilestones, setHideMilestones] = useState(false)
+  const [hideClientAccess, setHideClientAccess] = useState(false)
+  const [hideKickoff, setHideKickoff] = useState(false)
+  const [hideApprovals, setHideApprovals] = useState(false)
   const [color, setColor] = useState(COLORS[0])
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -55,6 +59,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       setBudget(data.budget ? String(data.budget) : '')
       setHourlyRate(data.hourly_rate ? String(data.hourly_rate) : '')
       setColor(data.color)
+      setHideMilestones(data.hide_milestones ?? false)
+      setHideClientAccess(data.hide_client_access ?? false)
+      setHideKickoff(data.hide_kickoff ?? false)
+      setHideApprovals(data.hide_approvals ?? false)
     })
   }, [id])
 
@@ -65,7 +73,18 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
     const supabase = createClient()
     const { error: err } = await supabase
       .from('projects')
-      .update({ project_name: projectName, client_name: clientName, client_email: clientEmail || null, color, budget: budget ? parseFloat(budget) : null, hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null })
+      .update({
+        project_name: projectName,
+        client_name: clientName,
+        client_email: clientEmail || null,
+        color,
+        budget: budget ? parseFloat(budget) : null,
+        hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
+        hide_milestones: hideMilestones,
+        hide_client_access: hideClientAccess,
+        hide_kickoff: hideKickoff,
+        hide_approvals: hideApprovals,
+      })
       .eq('id', id)
     if (err) { setError(err.message); setLoading(false); return }
     setLoading(false)
@@ -228,13 +247,69 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                   placeholder="client@example.com"
                 />
               </div>
-              <p className="text-[11px] text-slate-400">
-                Updating the client email assigns status updates and invoicing channels directly to this address.
-              </p>
+            </div>
+            {/* Visibility Settings */}
+            <div className="space-y-4 pt-4 border-t border-slate-100">
+              <h3 className="text-sm font-semibold text-slate-700 pb-2 border-b border-slate-100 font-sans">Dashboard Layout Visibility</h3>
+              <p className="text-xs text-slate-500 font-sans">Configure which widgets and sections are visible on your project dashboard.</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
+                  <input
+                    type="checkbox"
+                    checked={!hideMilestones}
+                    onChange={e => setHideMilestones(!e.target.checked)}
+                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                  />
+                  <div>
+                    <span className="text-sm font-semibold text-slate-900 block leading-tight">Milestones Widget</span>
+                    <span className="text-[11px] text-slate-400">Show milestones list and progress.</span>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
+                  <input
+                    type="checkbox"
+                    checked={!hideClientAccess}
+                    onChange={e => setHideClientAccess(!e.target.checked)}
+                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                  />
+                  <div>
+                    <span className="text-sm font-semibold text-slate-900 block leading-tight">Client Access Card</span>
+                    <span className="text-[11px] text-slate-400">Show status page URL and contract links.</span>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
+                  <input
+                    type="checkbox"
+                    checked={!hideKickoff}
+                    onChange={e => setHideKickoff(!e.target.checked)}
+                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                  />
+                  <div>
+                    <span className="text-sm font-semibold text-slate-900 block leading-tight">Kickoff Checklist</span>
+                    <span className="text-[11px] text-slate-400">Show freelancer and client setup checklists.</span>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
+                  <input
+                    type="checkbox"
+                    checked={!hideApprovals}
+                    onChange={e => setHideApprovals(!e.target.checked)}
+                    className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
+                  />
+                  <div>
+                    <span className="text-sm font-semibold text-slate-900 block leading-tight">Approval Requests</span>
+                    <span className="text-[11px] text-slate-400">Show client deliverables and sign-offs.</span>
+                  </div>
+                </label>
+              </div>
             </div>
 
             {error && (
-              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>
+              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3 font-sans">{error}</div>
             )}
 
             <Button type="submit" loading={loading} className="px-5 shadow-sm">
