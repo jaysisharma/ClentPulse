@@ -8,6 +8,7 @@ import Link from 'next/link'
 import {
   ArrowLeft, Plus, Link2, Check, Send,
   Clock, AlertTriangle, FileSignature, CheckCircle2, ChevronRight,
+  ThumbsUp, ThumbsDown, MessageSquare,
 } from 'lucide-react'
 import { CopyLinkButton } from './copy-link-button'
 import { StatusToggle } from './status-toggle'
@@ -35,6 +36,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     { data: approvals },
     { data: contracts },
     { data: updateComments },
+    { data: clientFeedback },
   ] = await Promise.all([
     supabase.from('projects').select('*').eq('id', id).eq('user_id', user.id).single(),
     supabase.from('updates').select('*').eq('project_id', id).order('created_at', { ascending: false }),
@@ -44,6 +46,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     supabase.from('approvals').select('*').eq('project_id', id).order('created_at', { ascending: false }),
     supabase.from('contracts').select('id, signed_at').eq('project_id', id),
     supabase.from('update_comments').select('*').eq('project_id', id).order('created_at', { ascending: true }),
+    supabase.from('feedback').select('*').eq('project_id', id).order('created_at', { ascending: false }),
   ])
 
   if (!project) notFound()
@@ -220,6 +223,60 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
             <div id="approvals" className="scroll-mt-6">
               <ApprovalsSection projectId={project.id} initialApprovals={approvals ?? []} />
             </div>
+
+            {/* Client Feedback */}
+            <CollapsibleSection
+              title="Client Feedback"
+              count={clientFeedback?.length ?? 0}
+            >
+              {!clientFeedback?.length ? (
+                <div className="bg-white border border-dashed border-slate-200/80 rounded-2xl p-8 text-center shadow-xs">
+                  <p className="text-sm text-slate-400">No feedback submitted by the client yet.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {clientFeedback.map(fb => (
+                    <div key={fb.id} className="bg-white border border-slate-200/60 shadow-sm rounded-2xl p-5 flex items-start gap-4">
+                      {fb.type === 'thumbs_up' && (
+                        <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                          <ThumbsUp className="w-5 h-5" />
+                        </div>
+                      )}
+                      {fb.type === 'thumbs_down' && (
+                        <div className="w-9 h-9 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
+                          <ThumbsDown className="w-5 h-5" />
+                        </div>
+                      )}
+                      {fb.type === 'question' && (
+                        <div className="w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
+                          <MessageSquare className="w-5 h-5" />
+                        </div>
+                      )}
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <span className="text-sm font-semibold text-slate-900">
+                            {fb.type === 'thumbs_up' && 'Looking good'}
+                            {fb.type === 'thumbs_down' && 'Has concerns'}
+                            {fb.type === 'question' && 'Message left'}
+                          </span>
+                          <span className="text-xs text-slate-400">
+                            {formatDate(fb.created_at)}
+                          </span>
+                        </div>
+                        {fb.message ? (
+                          <p className="text-sm text-slate-600 bg-slate-50 border border-slate-100 rounded-xl px-3.5 py-2 mt-2 leading-relaxed">
+                            {fb.message}
+                          </p>
+                        ) : (
+                          <p className="text-xs text-slate-400 italic mt-0.5">No message attached.</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CollapsibleSection>
 
             {/* Testimonial — completed only */}
             {project.status === 'completed' && (
