@@ -1,10 +1,16 @@
 # Frevio reverse proxy — automatic HTTPS via Let's Encrypt.
 # Install: sudo cp deploy/Caddyfile /etc/caddy/Caddyfile && sudo systemctl reload caddy
 #
-# Replace app.frevio.cloud with your real subdomain (must have an A record
-# pointing at this EC2 instance's public IP before reloading Caddy).
+# DNS required (already set in Hostinger):
+#   A     @     65.2.193.255
+#   CNAME www   frevio.cloud
 
-app.frevio.cloud {
+frevio.cloud {
 	encode gzip
 	reverse_proxy localhost:3000
+}
+
+# Send www → apex over HTTPS
+www.frevio.cloud {
+	redir https://frevio.cloud{uri} permanent
 }
