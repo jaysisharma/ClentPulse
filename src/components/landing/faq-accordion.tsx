@@ -10,7 +10,7 @@ const FAQS = [
   },
   {
     question: 'Can I connect my own domain for client pages?',
-    answer: 'Yes! ClientPulse Pro supports custom domains, allowing you to route client portals through your own subdomains (e.g. status.youragency.com) so the client portal looks like a native extension of your primary website.',
+    answer: 'Yes! Frevio Pro supports custom domains, allowing you to route client portals through your own subdomains (e.g. status.youragency.com) so the client portal looks like a native extension of your primary website.',
   },
   {
     question: 'Is client feedback approval logged and recorded?',
@@ -18,7 +18,7 @@ const FAQS = [
   },
   {
     question: 'Is Stripe secure for handling invoicing?',
-    answer: 'Yes. ClientPulse integrates directly with Stripe Checkout. All invoice payments are handled securely through Stripe\'s compliant billing portals. ClientPulse never stores, processes, or captures your client\'s raw credit card information.',
+    answer: 'Yes. Frevio integrates directly with Stripe Checkout. All invoice payments are handled securely through Stripe\'s compliant billing portals. Frevio never stores, processes, or captures your client\'s raw credit card information.',
   },
   {
     question: 'What is the limit on free accounts?',

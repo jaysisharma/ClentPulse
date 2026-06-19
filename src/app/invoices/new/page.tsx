@@ -31,10 +31,11 @@ export default function NewInvoicePage() {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (!user) return
       supabase.from('projects').select('id,project_name,client_name,client_email').eq('user_id', user.id).eq('status', 'active')
-        .then(({ data }) => setProjects(data ?? []))
+        .then(({ data }: { data: any }) => setProjects(data ?? []))
       const year = new Date().getFullYear()
       const rand = Math.random().toString(36).slice(2, 5).toUpperCase()
       setInvoiceNumber(`INV-${year}-${rand}`)
@@ -63,7 +64,7 @@ export default function NewInvoicePage() {
     setError('')
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
+    if (!user) { router.push('/auth/login'); return }
 
     const { data, error: err } = await supabase.from('invoices').insert({
       user_id: user.id,

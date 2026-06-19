@@ -11,6 +11,7 @@ interface Invoice { id: string; status: string; client_email: string | null }
 
 export function InvoiceActions({ invoice }: { invoice: Invoice }) {
   const [loading, setLoading] = useState(false)
+  const [actionError, setActionError] = useState('')
   const [sendStatus, setSendStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const [reminderStatus, setReminderStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const router = useRouter()
@@ -38,9 +39,11 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
 
   async function markPaid() {
     setLoading(true)
+    setActionError('')
     const supabase = createClient()
-    await supabase.from('invoices').update({ status: 'paid' }).eq('id', invoice.id)
+    const { error } = await supabase.from('invoices').update({ status: 'paid', paid_at: new Date().toISOString() }).eq('id', invoice.id)
     setLoading(false)
+    if (error) { setActionError('Could not mark this invoice as paid. Please try again.'); return }
     router.refresh()
   }
 
@@ -64,8 +67,10 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
   async function handleDelete() {
     if (!confirm('Delete this invoice? This cannot be undone.')) return
     setLoading(true)
+    setActionError('')
     const supabase = createClient()
-    await supabase.from('invoices').delete().eq('id', invoice.id)
+    const { error } = await supabase.from('invoices').delete().eq('id', invoice.id)
+    if (error) { setActionError('Could not delete this invoice. Please try again.'); setLoading(false); return }
     router.push('/invoices')
   }
 
@@ -100,9 +105,11 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
             size="sm"
             onClick={async () => {
               setLoading(true)
+              setActionError('')
               const supabase = createClient()
-              await supabase.from('invoices').update({ status: 'sent' }).eq('id', invoice.id)
+              const { error } = await supabase.from('invoices').update({ status: 'sent' }).eq('id', invoice.id)
               setLoading(false)
+              if (error) { setActionError('Could not update this invoice. Please try again.'); return }
               router.refresh()
             }}
             loading={loading}
@@ -137,6 +144,7 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
       {(sendStatus === 'error' || reminderStatus === 'error') && (
         <span className="text-xs text-red-600">Failed to send — check client email</span>
       )}
+      {actionError && <span className="text-xs text-red-600">{actionError}</span>}
 
       <button
         onClick={handleDelete}

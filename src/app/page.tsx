@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowRight, Sparkles, ShieldCheck, Clock, Folder, FileText, Users, TrendingUp, Plus, Search, Bell, Moon, Sun } from 'lucide-react'
+import { ArrowRight, Sparkles, ShieldCheck, Send, FileText, FileSignature, Clock, Image, Receipt } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { FeaturesTabs } from '@/components/landing/features-tabs'
 import { FAQAccordion } from '@/components/landing/faq-accordion'
@@ -8,23 +8,23 @@ import { PricingSection } from '@/components/landing/pricing-section'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 const steps = [
-  { 
-    number: '01', 
-    title: 'Initialize Project', 
-    desc: 'Input client details, optional budget tracking parameters, and assign your unique brand accent color.',
-    badge: 'Quick Setup'
+  {
+    number: '01',
+    title: 'Bring each client into one workspace',
+    desc: 'Updates, invoices, contracts, time, and files live together — no more spreadsheet, inbox, and four other tabs per client.',
+    badge: '2-min setup'
   },
-  { 
-    number: '02', 
-    title: 'Log Weekly Accomplishments', 
-    desc: 'Jot down three high-impact progress bullets and add any warm context notes for the client in less than 2 minutes.',
-    badge: 'Saves Hours'
+  {
+    number: '02',
+    title: 'Share updates, get sign-off & bill',
+    desc: 'Send a branded status link, collect approvals and signatures, track billable hours, and send invoices that get paid online.',
+    badge: 'Clients stay looped in'
   },
-  { 
-    number: '03', 
-    title: 'Dispatch Instant Status Pages', 
-    desc: 'Automatically generate beautifully branded HTML updates that send instantly to client email channels.',
-    badge: 'Clients Love It'
+  {
+    number: '03',
+    title: 'See exactly what needs attention',
+    desc: 'Your dashboard surfaces overdue updates, unsigned contracts, and unpaid invoices — so nothing slips through the cracks.',
+    badge: 'Never drop a ball'
   },
 ]
 
@@ -45,8 +45,8 @@ export default async function LandingPage() {
       <div className="sticky top-4 z-50 px-4 max-w-6xl mx-auto w-full select-none">
         <nav className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white/75 dark:bg-slate-900/75 backdrop-blur-md shadow-sm px-6 h-16 flex items-center justify-between transition-all">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="ClientPulse Logo" className="w-8 h-8 rounded-lg object-cover" />
-            <span className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">ClientPulse</span>
+            <img src="/logo.png" alt="Frevio Logo" className="w-8 h-8 rounded-lg object-cover" />
+            <span className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">Frevio</span>
           </div>
 
           {/* Centered Navigation Links */}
@@ -67,7 +67,7 @@ export default async function LandingPage() {
                 <Link href="/auth/login" className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
                   Sign in
                 </Link>
-                <Link href="/auth/login" className="bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-xl hover:bg-indigo-700 hover:shadow-md transition-all">
+                <Link href="/auth/login?mode=signup" className="bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-xl hover:bg-indigo-700 hover:shadow-md transition-all">
                   Start free
                 </Link>
               </>
@@ -81,20 +81,20 @@ export default async function LandingPage() {
         <div className="max-w-3xl mx-auto space-y-8 flex flex-col items-center">
           <div className="inline-flex items-center gap-2 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider px-3.5 py-1.5 rounded-full shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>For Modern Agencies & Freelancers</span>
+            <span>The client OS for freelancers</span>
           </div>
-          
+
           <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight max-w-3xl mx-auto">
-            Stop writing status emails.<br />
-            Send updates <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">in one click.</span>
+            Run every client from<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">one calm dashboard.</span>
           </h1>
-          
+
           <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto font-medium">
-            ClientPulse automatically compiles and ships beautifully branded project status dashboards to clients weekly. Keep projects aligned, track budgets, and win hours back.
+            Send branded updates, invoices, and contracts — then let Frevio flag exactly what needs your attention. Stop juggling five tools and a dozen email threads.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Link href={isLoggedIn ? '/dashboard' : '/auth/login'} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-600 text-white text-sm font-bold uppercase tracking-wider px-8 py-3.5 rounded-xl hover:bg-indigo-700 hover:shadow-md transition-all">
+            <Link href={isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-600 text-white text-sm font-bold uppercase tracking-wider px-8 py-3.5 rounded-xl hover:bg-indigo-700 hover:shadow-md transition-all">
               {isLoggedIn ? 'Go to dashboard' : 'Create free account'}
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -112,9 +112,9 @@ export default async function LandingPage() {
       <section className="py-24 px-6 bg-slate-50 dark:bg-slate-900/40 relative border-y border-slate-100 dark:border-slate-800/80 transition-colors">
         <div className="max-w-5xl mx-auto space-y-16">
           <div className="text-center space-y-3">
-            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/40 px-3.5 py-1 rounded-full">Streamlined Workflow</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">How ClientPulse operates</h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-md mx-auto text-sm font-medium">Three simple steps to fully automated client updates and invoicing.</p>
+            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/40 px-3.5 py-1 rounded-full">How it works</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">Three steps to calmer client work</h2>
+            <p className="text-slate-500 dark:text-slate-400 max-w-md mx-auto text-sm font-medium">Set each client up once, run the work in the open, and let the dashboard catch what slips.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -139,7 +139,7 @@ export default async function LandingPage() {
         <div className="max-w-5xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/40 px-3.5 py-1 rounded-full">Interactive Demo</span>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">Experience ClientPulse Live</h2>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">Experience Frevio Live</h2>
             <p className="text-slate-500 dark:text-slate-400 text-sm max-w-sm mx-auto font-medium">Test our core features right now. Click the tabs below to play around with our interactive simulator.</p>
           </div>
           <FeaturesTabs />
@@ -225,6 +225,36 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* Replaces-your-stack Section */}
+      <section className="py-24 px-6 bg-white dark:bg-slate-950 transition-colors">
+        <div className="max-w-5xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/40 px-3.5 py-1 rounded-full">One tool, not five</span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">Everything you duct-tape together, in one place</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto font-medium">Most freelancers run client work across a spreadsheet, an inbox, a docs tool, and a separate invoicer. Frevio is all of it — built to talk to each other.</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[
+              { icon: Send,          title: 'Status updates',  replaces: 'Replaces the weekly “any progress?” email' },
+              { icon: Receipt,       title: 'Invoices',        replaces: 'Replaces your separate invoicing app' },
+              { icon: FileSignature, title: 'Contracts',       replaces: 'Replaces clunky e-sign tools' },
+              { icon: Clock,         title: 'Time tracking',   replaces: 'Replaces the stopwatch spreadsheet' },
+              { icon: FileText,      title: 'Proposals & docs',replaces: 'Replaces scattered Google Docs links' },
+              { icon: Image,         title: 'Portfolio',       replaces: 'Replaces your one-off personal site' },
+            ].map(({ icon: Icon, title, replaces }) => (
+              <div key={title} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center mb-4">
+                  <Icon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">{title}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium leading-relaxed">{replaces}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Section */}
       <PricingSection />
 
@@ -244,15 +274,15 @@ export default async function LandingPage() {
       <footer className="border-t border-slate-100 py-12 px-6 bg-slate-950 text-slate-400">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="ClientPulse Logo" className="w-6 h-6 rounded object-cover" />
-            <span className="font-bold text-slate-200 text-sm tracking-tight">ClientPulse</span>
+            <img src="/logo.png" alt="Frevio Logo" className="w-6 h-6 rounded object-cover" />
+            <span className="font-bold text-slate-200 text-sm tracking-tight">Frevio</span>
           </div>
           <div className="flex items-center gap-8 text-xs font-semibold uppercase tracking-wider">
             <a href="#features" className="hover:text-white transition-colors">Features</a>
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
             <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
             <span className="text-slate-700 select-none">|</span>
-            <p className="text-slate-600 font-medium lowercase tracking-normal">© 2026 ClientPulse. All rights reserved.</p>
+            <p className="text-slate-600 font-medium lowercase tracking-normal">© 2026 Frevio. All rights reserved.</p>
           </div>
         </div>
       </footer>

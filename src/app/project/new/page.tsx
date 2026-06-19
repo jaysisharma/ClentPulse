@@ -1,201 +1,28 @@
-'use client'
-
-import { useState, useRef, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { generateSlug } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Copy, Check, ArrowRight, Key } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Lock } from 'lucide-react'
+import { NewProjectForm } from './new-project-form'
+import { FREE_PROJECT_LIMIT as FREE_LIMIT } from '@/lib/plans'
 
-const COLORS = [
-  '#6366F1', '#8B5CF6', '#EC4899', '#EF4444',
-  '#F97316', '#EAB308', '#22C55E', '#14B8A6', '#3B82F6',
-]
+export default async function NewProjectPage() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/auth/login')
 
-export default function NewProjectPage() {
-  const router = useRouter()
-  const [clientName, setClientName]       = useState('')
-  const [clientEmail, setClientEmail]     = useState('')
-  const [clientPassword, setClientPassword] = useState('')
-  const [projectName, setProjectName]     = useState('')
-  const [budget, setBudget]               = useState('')
-  const [hourlyRate, setHourlyRate]       = useState('')
-  const [color, setColor]                 = useState(COLORS[0])
-  const [loading, setLoading]             = useState(false)
-  const [error, setError]                 = useState('')
-  const [createdProjectId, setCreatedProjectId] = useState<string | null>(null)
-  const [clientExisted, setClientExisted]       = useState(false)
-  const [copied, setCopied]               = useState<'email' | 'password' | 'url' | null>(null)
-  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [{ data: profile }, { count }] = await Promise.all([
+    supabase.from('users').select('plan').eq('id', user.id).single(),
+    supabase.from('projects').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+  ])
 
-  useEffect(() => () => { if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current) }, [])
-
-  function handleGeneratePassword() {
-    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    // Rejection sampling: discard bytes in the biased tail (>= 248 for a 62-char set)
-    // so every character is uniformly distributed. 256 % 62 != 0, so a naive
-    // `byte % 62` would over-represent the first 8 characters.
-    const maxUnbiased = 256 - (256 % charset.length)
-    const out: string[] = []
-    while (out.length < 12) {
-      const buf = crypto.getRandomValues(new Uint8Array(16))
-      for (const b of buf) {
-        if (b < maxUnbiased) {
-          out.push(charset[b % charset.length])
-          if (out.length === 12) break
-        }
-      }
-    }
-    setClientPassword(out.join(''))
-  }
-
-  async function handleSubmit(e: { preventDefault(): void }) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/auth/login'); return }
-
-    const { data: profile } = await supabase.from('users').select('plan').eq('id', user.id).single()
-    if (profile?.plan !== 'pro') {
-      const { count } = await supabase.from('projects').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
-      if ((count ?? 0) >= 3) {
-        setError('Free plan is limited to 3 projects. Upgrade to Pro for unlimited projects.')
-        setLoading(false)
-        return
-      }
-    }
-
-    if (clientEmail && clientPassword) {
-      const res = await fetch('/api/create-client', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: clientEmail, password: clientPassword }),
-      })
-      const result = await res.json()
-      if (res.status === 409) {
-        // Client email already has a portal account. Still create the project, but
-        // the generated password is NOT valid for the existing account — flag it so
-        // the success screen tells the freelancer to share the existing login instead
-        // of handing the client a password that was never set.
-        setClientExisted(true)
-      } else if (!res.ok) {
-        setError(result.error ?? 'Failed to create client account.')
-        setLoading(false)
-        return
-      }
-    }
-
-    const slug = generateSlug(projectName)
-    const { data, error: err } = await supabase
-      .from('projects')
-      .insert({
-        user_id: user.id,
-        client_name: clientName,
-        client_email: clientEmail || null,
-        project_name: projectName,
-        slug,
-        color,
-        status: 'active',
-        budget: budget ? parseFloat(budget) : null,
-        hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
-      })
-      .select()
-      .single()
-
-    if (err) {
-      setError(err.message)
-      setLoading(false)
-    } else {
-      setCreatedProjectId(data.id)
-      setLoading(false)
-    }
-  }
-
-  function copyToClipboard(text: string, field: 'email' | 'password' | 'url') {
-    navigator.clipboard.writeText(text)
-    setCopied(field)
-    if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
-    copiedTimerRef.current = setTimeout(() => setCopied(null), 2000)
-  }
-
-  // Success state
-  if (createdProjectId) {
-    return (
-      <AppLayout>
-        <div className="max-w-lg mx-auto animate-fade-in py-8">
-          <div className="bg-white rounded-xl border border-slate-200 p-8">
-            <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center mb-5">
-              <Check className="w-5 h-5 text-emerald-600" />
-            </div>
-            <h2 className="text-lg font-bold text-slate-900 mb-1">Project created</h2>
-            <p className="text-slate-500 text-sm mb-6">
-              {clientExisted
-                ? 'This client already has a ClientPulse account. They can sign in with their existing password — no new credentials were created.'
-                : clientEmail && clientPassword
-                ? 'Share these credentials with your client so they can access their portal.'
-                : 'Your project is ready. You can invite clients via status page links or add credentials in settings.'}
-            </p>
-
-            {clientExisted && clientEmail && (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-sm text-amber-800">
-                <span className="font-medium">{clientEmail}</span> already has a login. Send them to{' '}
-                <span className="font-mono text-xs">{window.location.origin}/client/login</span> to access this project.
-              </div>
-            )}
-
-            {!clientExisted && clientEmail && clientPassword && (
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6 space-y-3">
-                <div>
-                  <div className="text-xs text-slate-500 mb-1.5">Login URL</div>
-                  <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
-                    <span className="font-mono text-xs truncate">{window.location.origin}/auth/login</span>
-                    <button onClick={() => copyToClipboard(`${window.location.origin}/auth/login`, 'url')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
-                      {copied === 'url' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                    </button>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <div className="text-xs text-slate-500 mb-1.5">Email</div>
-                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
-                      <span className="truncate text-xs">{clientEmail}</span>
-                      <button onClick={() => copyToClipboard(clientEmail, 'email')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
-                        {copied === 'email' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-slate-500 mb-1.5">Password</div>
-                    <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
-                      <span className="truncate font-mono text-xs">{clientPassword}</span>
-                      <button onClick={() => copyToClipboard(clientPassword, 'password')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
-                        {copied === 'password' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <Button onClick={() => router.push(`/project/${createdProjectId}`)} className="w-full justify-center">
-              Open project <ArrowRight className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      </AppLayout>
-    )
-  }
+  const isPro = profile?.plan === 'pro'
+  const used = count ?? 0
+  const atLimit = !isPro && used >= FREE_LIMIT
 
   return (
     <AppLayout>
       <div className="animate-fade-in max-w-xl pb-10">
-
         <Link href="/project" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-700 transition-colors mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to projects
         </Link>
@@ -205,109 +32,34 @@ export default function NewProjectPage() {
           <p className="text-slate-500 text-sm mt-1">Set up a client project to start tracking updates, time, and invoices.</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Free-plan usage — shown up front, not as a post-submit error */}
+        {!isPro && (
+          <div className={`rounded-xl border px-4 py-3 mb-5 text-sm flex items-center justify-between gap-3 ${
+            atLimit ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-slate-50 border-slate-200 text-slate-600'
+          }`}>
+            <span className="font-medium">{used} of {FREE_LIMIT} free projects used</span>
+            <Link href="/upgrade" className="font-semibold text-indigo-600 hover:text-indigo-700 inline-flex items-center gap-1 flex-shrink-0">
+              Upgrade <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
 
-            {/* Client */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-100 pb-2">Client</h3>
-              <Input
-                label="Client name"
-                placeholder="Acme Corporation"
-                value={clientName}
-                onChange={e => setClientName(e.target.value)}
-                required
-              />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input
-                  label="Client email (optional)"
-                  type="email"
-                  placeholder="client@acme.com"
-                  value={clientEmail}
-                  onChange={e => setClientEmail(e.target.value)}
-                />
-                <div className="relative">
-                  <Input
-                    label="Portal password (optional)"
-                    type="text"
-                    placeholder="Min. 6 characters"
-                    value={clientPassword}
-                    onChange={e => setClientPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    onClick={handleGeneratePassword}
-                    className="absolute right-3 top-[34px] p-1 text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
-                    title="Generate password"
-                  >
-                    <Key className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-              {(clientEmail || clientPassword) && (
-                <p className="text-xs text-slate-400">
-                  Adding email + password gives the client access to their portal at /client/dashboard.
-                </p>
-              )}
+        {atLimit ? (
+          <div className="rounded-2xl bg-white border border-slate-200/80 shadow-sm py-14 px-6 flex flex-col items-center text-center">
+            <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+              <Lock className="w-5 h-5 text-amber-500" />
             </div>
-
-            {/* Project */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-100 pb-2">Project</h3>
-              <Input
-                label="Project name"
-                placeholder="Website Redesign"
-                value={projectName}
-                onChange={e => setProjectName(e.target.value)}
-                required
-              />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Input
-                  label="Budget (optional)"
-                  type="number"
-                  placeholder="5000"
-                  value={budget}
-                  onChange={e => setBudget(e.target.value)}
-                />
-                <Input
-                  label="Hourly rate (optional)"
-                  type="number"
-                  placeholder="150"
-                  value={hourlyRate}
-                  onChange={e => setHourlyRate(e.target.value)}
-                />
-              </div>
-
-              {/* Color */}
-              <div>
-                <label className="text-sm font-medium text-slate-700 block mb-2">Accent color</label>
-                <div className="flex gap-2 flex-wrap">
-                  {COLORS.map(c => (
-                    <button
-                      key={c}
-                      type="button"
-                      onClick={() => setColor(c)}
-                      className="w-7 h-7 rounded-full transition-transform hover:scale-110 focus:outline-none cursor-pointer"
-                      style={{
-                        backgroundColor: c,
-                        outline: color === c ? `3px solid ${c}` : 'none',
-                        outlineOffset: '2px',
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {error && (
-              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-4 py-3">{error}</div>
-            )}
-
-            <Button type="submit" loading={loading} className="w-full justify-center">
-              Create project
-            </Button>
-          </form>
-        </div>
+            <h2 className="text-lg font-bold text-slate-900 mt-4">You&apos;ve hit the free limit</h2>
+            <p className="text-sm text-slate-500 mt-2 max-w-sm">
+              The free plan covers {FREE_LIMIT} projects. Upgrade to Pro for unlimited projects, then come back to create this one.
+            </p>
+            <Link href="/upgrade" className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold px-4 py-2.5 hover:bg-indigo-700 hover:shadow-md transition-all">
+              Upgrade to Pro <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        ) : (
+          <NewProjectForm />
+        )}
       </div>
     </AppLayout>
   )

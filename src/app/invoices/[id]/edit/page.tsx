@@ -33,12 +33,13 @@ export default function EditInvoicePage() {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (!user) return
       Promise.all([
         supabase.from('projects').select('id,project_name,client_name,client_email').eq('user_id', user.id).eq('status', 'active'),
         supabase.from('invoices').select('*').eq('id', id).eq('user_id', user.id).single(),
-      ]).then(([{ data: projs }, { data: inv }]) => {
+      ]).then(([{ data: projs }, { data: inv }]: any[]) => {
         setProjects(projs ?? [])
         if (inv) {
           setProjectId(inv.project_id ?? '')

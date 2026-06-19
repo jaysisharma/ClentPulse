@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Check, Trash2, ShieldAlert, Copy, Loader2 } from 'lucide-react'
+import { ArrowLeft, Check, Trash2, ShieldAlert, Copy, Loader2, Key, ShieldCheck } from 'lucide-react'
 
 const COLORS = [
   '#6366F1', '#8B5CF6', '#EC4899', '#EF4444',
@@ -32,11 +32,22 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [notFound, setNotFound] = useState(false)
   const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  useEffect(() => () => { if (savedTimerRef.current) clearTimeout(savedTimerRef.current) }, [])
+  // Portal access (set/update the client's login password)
+  const [portalPassword, setPortalPassword] = useState('')
+  const [portalSaving, setPortalSaving] = useState(false)
+  const [portalError, setPortalError] = useState('')
+  const [portalShare, setPortalShare] = useState<{ email: string; password: string; updated: boolean } | null>(null)
+  const [copied, setCopied] = useState<'url' | 'email' | 'password' | null>(null)
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => {
+    if (savedTimerRef.current) clearTimeout(savedTimerRef.current)
+    if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
+  }, [])
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.from('projects').select('*').eq('id', id).single().then(({ data }) => {
+    supabase.from('projects').select('*').eq('id', id).single().then(({ data }: { data: any }) => {
       if (!data) { setNotFound(true); return }
       setProjectName(data.project_name)
       setClientName(data.client_name)
@@ -77,6 +88,41 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
     else setError(data.error ?? 'Failed to duplicate project.')
   }
 
+  function generatePortalPassword() {
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    const maxUnbiased = 256 - (256 % charset.length)
+    const out: string[] = []
+    while (out.length < 12) {
+      for (const b of crypto.getRandomValues(new Uint8Array(16))) {
+        if (b < maxUnbiased) { out.push(charset[b % charset.length]); if (out.length === 12) break }
+      }
+    }
+    setPortalPassword(out.join(''))
+  }
+
+  async function handleSetPortalPassword(e: { preventDefault(): void }) {
+    e.preventDefault()
+    if (portalPassword.length < 6) { setPortalError('Password must be at least 6 characters.'); return }
+    setPortalSaving(true)
+    setPortalError('')
+    const res = await fetch('/api/client-access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projectId: id, password: portalPassword }),
+    })
+    const data = await res.json()
+    setPortalSaving(false)
+    if (!res.ok) { setPortalError(data.error ?? 'Could not set portal access.'); return }
+    setPortalShare({ email: data.email, password: portalPassword, updated: data.updated })
+  }
+
+  function copyPortal(text: string, field: 'url' | 'email' | 'password') {
+    navigator.clipboard.writeText(text)
+    setCopied(field)
+    if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
+    copiedTimerRef.current = setTimeout(() => setCopied(null), 2000)
+  }
+
   async function handleDelete() {
     if (!confirm(`Delete this project and all its updates? This cannot be undone.`)) return
     setDeleting(true)
@@ -91,10 +137,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
     </AppLayout>
   )
 
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+
   return (
     <AppLayout>
       <div className="max-w-2xl mx-auto animate-fade-in space-y-6 py-6">
-        
+
         {/* Back Link */}
         <Link href={`/project/${id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to project details
@@ -193,6 +241,92 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
               {saved ? <><Check className="w-4 h-4 text-emerald-100" /> Changes Saved</> : 'Save changes'}
             </Button>
           </form>
+        </div>
+
+        {/* Portal access */}
+        <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="w-5 h-5 text-indigo-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-semibold text-slate-900 text-sm">Portal access</h3>
+              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                Give {clientName || 'your client'} a login to view updates, sign documents, pay invoices, and message you.
+                Setting a password again updates their existing login.
+              </p>
+            </div>
+          </div>
+
+          {!clientEmail.trim() ? (
+            <p className="text-sm text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+              Add a client email above and save changes first, then you can create a portal login.
+            </p>
+          ) : (
+            <form onSubmit={handleSetPortalPassword} className="space-y-3">
+              <div className="text-xs text-slate-500">
+                Login email: <span className="font-medium text-slate-700">{clientEmail}</span>
+              </div>
+              <div className="relative max-w-sm">
+                <Input
+                  label="Portal password"
+                  type="text"
+                  placeholder="Min. 6 characters"
+                  value={portalPassword}
+                  onChange={e => setPortalPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={generatePortalPassword}
+                  title="Generate password"
+                  className="absolute right-3 top-[34px] p-1 text-slate-400 hover:text-indigo-600 transition-colors cursor-pointer"
+                >
+                  <Key className="w-4 h-4" />
+                </button>
+              </div>
+              {portalError && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{portalError}</div>
+              )}
+              <Button type="submit" variant="secondary" size="sm" loading={portalSaving}>
+                Set portal password
+              </Button>
+            </form>
+          )}
+
+          {portalShare && (
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+              <p className="text-sm font-medium text-slate-800">
+                {portalShare.updated ? 'Password updated.' : 'Portal access created.'} Share these with {clientName || 'your client'}:
+              </p>
+              <div>
+                <div className="text-xs text-slate-500 mb-1">Login URL</div>
+                <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                  <span className="font-mono text-xs truncate">{origin}/auth/login</span>
+                  <button type="button" onClick={() => copyPortal(`${origin}/auth/login`, 'url')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
+                    {copied === 'url' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <div className="text-xs text-slate-500 mb-1">Email</div>
+                  <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                    <span className="truncate text-xs">{portalShare.email}</span>
+                    <button type="button" onClick={() => copyPortal(portalShare.email, 'email')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
+                      {copied === 'email' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs text-slate-500 mb-1">Password</div>
+                  <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                    <span className="truncate font-mono text-xs">{portalShare.password}</span>
+                    <button type="button" onClick={() => copyPortal(portalShare.password, 'password')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
+                      {copied === 'password' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Duplicate project */}

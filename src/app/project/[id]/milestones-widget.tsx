@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { CheckCircle2, Circle, Plus, Trash2, Flag } from 'lucide-react'
+import { CollapsibleCard } from './collapsible-card'
 
 interface Milestone {
   id: string
@@ -19,7 +20,17 @@ function isOverdue(m: Milestone) {
   return !m.done && !!m.due_date && new Date(m.due_date) < new Date(new Date().toDateString())
 }
 
-export function MilestonesWidget({ projectId, color, initialMilestones }: { projectId: string; color: string; initialMilestones: Milestone[] }) {
+export function MilestonesWidget({
+  projectId,
+  color,
+  initialMilestones,
+  defaultOpen = initialMilestones.length > 0,
+}: {
+  projectId: string
+  color: string
+  initialMilestones: Milestone[]
+  defaultOpen?: boolean
+}) {
   const [milestones, setMilestones] = useState<Milestone[]>(initialMilestones)
   const [userId, setUserId] = useState('')
   const [adding, setAdding] = useState(false)
@@ -29,7 +40,8 @@ export function MilestonesWidget({ projectId, color, initialMilestones }: { proj
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (user) setUserId(user.id)
     })
   }, [])
@@ -67,22 +79,20 @@ export function MilestonesWidget({ projectId, color, initialMilestones }: { proj
   const total = milestones.length
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 mb-4">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Flag className="w-4 h-4 text-slate-400" />
-          <span className="text-sm font-semibold text-slate-900">Milestones</span>
-          {total > 0 && (
-            <span className="text-xs text-slate-400">{done}/{total} complete</span>
-          )}
-        </div>
+    <CollapsibleCard
+      defaultOpen={defaultOpen}
+      icon={<Flag className="w-4 h-4 text-slate-400 flex-shrink-0" />}
+      title="Milestones"
+      meta={total > 0 ? `${done}/${total} complete` : undefined}
+      action={
         <button
           onClick={() => setAdding(a => !a)}
           className="text-xs font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
         >
           {adding ? 'Cancel' : '+ Add'}
         </button>
-      </div>
+      }
+    >
 
       {/* Progress bar */}
       {total > 0 && (
@@ -156,6 +166,6 @@ export function MilestonesWidget({ projectId, color, initialMilestones }: { proj
           })}
         </div>
       )}
-    </div>
+    </CollapsibleCard>
   )
 }

@@ -104,7 +104,9 @@ describe('POST /api/stripe-webhook', () => {
     )
     const { POST } = await import('./route')
     await POST(makeRequest())
-    expect(mockSupabaseUpdate).toHaveBeenCalledWith({ status: 'paid' })
+    expect(mockSupabaseUpdate).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'paid', paid_at: expect.any(String) })
+    )
   })
 
   it('revokes Pro on customer.subscription.deleted', async () => {

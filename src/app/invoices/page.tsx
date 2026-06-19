@@ -16,11 +16,15 @@ export default async function InvoicesPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: invoices } = await supabase
+  const { data: invoices, error } = await supabase
     .from('invoices')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+
+  // Fail honestly: surface a DB error rather than rendering an empty "no
+  // invoices" state that hides the real problem.
+  if (error) throw new Error(`Failed to load invoices: ${error.message}`)
 
   return (
     <AppLayout>

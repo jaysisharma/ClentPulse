@@ -11,12 +11,14 @@ export default async function ArchivePage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: projects } = await supabase
+  const { data: projects, error } = await supabase
     .from('projects')
     .select('*, updates(id, sent_at)')
     .eq('user_id', user.id)
     .eq('status', 'completed')
     .order('created_at', { ascending: false })
+
+  if (error) throw new Error(`Failed to load archive: ${error.message}`)
 
   return (
     <AppLayout>
@@ -59,7 +61,7 @@ export default async function ArchivePage() {
                   </div>
                   <div className="text-right flex-shrink-0 text-xs text-slate-400">
                     <div>{sentCount} update{sentCount !== 1 ? 's' : ''} sent</div>
-                    <div>Completed {formatDate(project.created_at)}</div>
+                    <div>Created {formatDate(project.created_at)}</div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-slate-400 transition-colors ml-2" />
                 </Link>

@@ -280,13 +280,14 @@ export default function NewDocPage() {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (!user) return
       setUserId(user.id)
       supabase.from('users').select('name').eq('id', user.id).single()
-        .then(({ data }) => setFreelancerName(data?.name ?? ''))
+        .then(({ data }: { data: any }) => setFreelancerName(data?.name ?? ''))
       supabase.from('projects').select('id,project_name,client_name,client_email').eq('user_id', user.id).eq('status', 'active')
-        .then(({ data }) => setProjects(data ?? []))
+        .then(({ data }: { data: any }) => setProjects(data ?? []))
     })
   }, [])
 

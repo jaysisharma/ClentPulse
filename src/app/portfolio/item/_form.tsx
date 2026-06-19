@@ -26,6 +26,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
   const fileRef = useRef<HTMLInputElement>(null)
 
   const [userId, setUserId]   = useState('')
+  const [createdId, setCreatedId] = useState<string | null>(null) // id once a new item is inserted — keeps retries from re-inserting
   const [loading, setLoading] = useState(!!editId)
   const [saving, setSaving]   = useState(false)
   const [error, setError]     = useState('')
@@ -46,12 +47,13 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (!user) return
       setUserId(user.id)
       if (!editId) { setLoading(false); return }
       supabase.from('portfolio_items').select('*').eq('id', editId).eq('user_id', user.id).single()
-        .then(({ data }) => {
+        .then(({ data }: { data: any }) => {
           if (data) {
             setTitle(data.title)
             setDesc(data.description ?? '')
@@ -98,23 +100,25 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
     }
   }
 
-  async function uploadScreenshots(itemId: string): Promise<string[]> {
-    if (!pendingFiles.length) return []
+  // Returns the uploaded public URLs plus the indices (into pendingFiles) that
+  // failed, so the caller can surface failures instead of silently dropping them.
+  async function uploadScreenshots(itemId: string): Promise<{ urls: string[]; failedIdx: number[] }> {
+    if (!pendingFiles.length) return { urls: [], failedIdx: [] }
     setUploading(true)
     const supabase = createClient()
     const urls: string[] = []
+    const failedIdx: number[] = []
     for (let i = 0; i < pendingFiles.length; i++) {
       const file = pendingFiles[i]
       const ext  = file.name.split('.').pop()
       const path = `${userId}/${itemId}/${Date.now()}-${i}.${ext}`
       const { error } = await supabase.storage.from('portfolio-screenshots').upload(path, file, { upsert: true })
-      if (!error) {
-        const { data: { publicUrl } } = supabase.storage.from('portfolio-screenshots').getPublicUrl(path)
-        urls.push(publicUrl)
-      }
+      if (error) { failedIdx.push(i); continue }
+      const { data: { publicUrl } } = supabase.storage.from('portfolio-screenshots').getPublicUrl(path)
+      urls.push(publicUrl)
     }
     setUploading(false)
-    return urls
+    return { urls, failedIdx }
   }
 
   async function handleSave() {
@@ -122,18 +126,9 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
     setSaving(true); setError('')
     const supabase = createClient()
 
-    if (editId) {
-      // Upload new screenshots then merge
-      const newUrls = await uploadScreenshots(editId)
-      const allShots = [...existingShots, ...newUrls]
-      const { error: err } = await supabase.from('portfolio_items').update({
-        title: title.trim(), description: description || null,
-        live_url: liveUrl || null, github_url: githubUrl || null,
-        video_url: videoUrl || null, screenshots: allShots, tags,
-      }).eq('id', editId)
-      if (err) { setError(err.message); setSaving(false); return }
-    } else {
-      // Insert first to get ID, then upload screenshots
+    // Insert on first save; reuse the id on retries so we never create duplicates.
+    let itemId = editId ?? createdId
+    if (!itemId) {
       const { data, error: insertErr } = await supabase.from('portfolio_items').insert({
         user_id: userId, title: title.trim(),
         description: description || null,
@@ -141,10 +136,32 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
         video_url: videoUrl || null, screenshots: [], tags,
       }).select().single()
       if (insertErr || !data) { setError(insertErr?.message ?? 'Insert failed'); setSaving(false); return }
-      const newUrls = await uploadScreenshots(data.id)
-      if (newUrls.length) {
-        await supabase.from('portfolio_items').update({ screenshots: newUrls }).eq('id', data.id)
-      }
+      itemId = data.id
+      setCreatedId(data.id)
+    }
+    if (!itemId) { setSaving(false); return }  // guaranteed set above; narrows the type
+
+    const { urls: newUrls, failedIdx } = await uploadScreenshots(itemId)
+    const allShots = [...existingShots, ...newUrls]
+
+    const { error: err } = await supabase.from('portfolio_items').update({
+      title: title.trim(), description: description || null,
+      live_url: liveUrl || null, github_url: githubUrl || null,
+      video_url: videoUrl || null, screenshots: allShots, tags,
+    }).eq('id', itemId)
+    if (err) { setError(err.message); setSaving(false); return }
+
+    // Some screenshots failed to upload — keep only those still selected so the
+    // user can retry, and don't navigate away pretending everything saved.
+    if (failedIdx.length) {
+      const failed = new Set(failedIdx)
+      pendingPreviews.forEach((url, i) => { if (!failed.has(i)) URL.revokeObjectURL(url) })
+      setPendingFiles(prev => prev.filter((_, i) => failed.has(i)))
+      setPendingPreviews(prev => prev.filter((_, i) => failed.has(i)))
+      setExistingShots(allShots)
+      setError(`${failedIdx.length} screenshot${failedIdx.length > 1 ? 's' : ''} couldn't be uploaded. They're still selected — please try saving again.`)
+      setSaving(false)
+      return
     }
 
     setSaving(false)

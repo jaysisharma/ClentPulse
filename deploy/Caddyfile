@@ -1,0 +1,10 @@
+# Frevio reverse proxy — automatic HTTPS via Let's Encrypt.
+# Install: sudo cp deploy/Caddyfile /etc/caddy/Caddyfile && sudo systemctl reload caddy
+#
+# Replace app.frevio.cloud with your real subdomain (must have an A record
+# pointing at this EC2 instance's public IP before reloading Caddy).
+
+app.frevio.cloud {
+	encode gzip
+	reverse_proxy localhost:3000
+}

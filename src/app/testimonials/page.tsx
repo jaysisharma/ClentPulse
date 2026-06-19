@@ -9,11 +9,13 @@ export default async function TestimonialsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: testimonials } = await supabase
+  const { data: testimonials, error } = await supabase
     .from('testimonials')
     .select('*, projects(project_name)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+
+  if (error) throw new Error(`Failed to load testimonials: ${error.message}`)
 
   const pending   = (testimonials ?? []).filter(t => !t.approved)
   const approved  = (testimonials ?? []).filter(t => t.approved)

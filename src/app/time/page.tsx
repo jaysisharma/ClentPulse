@@ -290,7 +290,9 @@ export default function TimePage() {
     const rawHours = hoursFromTimer(timer.started_at)
     const hours = Math.max(0.01, Math.round(rawHours * 100) / 100)
     const supabase = createClient()
-    await supabase.from('timers').delete().eq('user_id', userId)
+    // Persist the entry FIRST so a failure never loses tracked time — the timer
+    // stays running and the user can retry. Only delete the timer once the
+    // entry is safely saved. (A DB-side RPC would make this fully atomic.)
     const { error: insertErr } = await supabase.from('time_entries').insert({
       user_id: userId,
       project_id: timer.project_id || null,
@@ -303,6 +305,7 @@ export default function TimePage() {
       setStopping(false)
       return
     }
+    await supabase.from('timers').delete().eq('user_id', userId)
     setTimer(null)
     setTimerDesc('')
     setTimerProject('')
@@ -336,13 +339,15 @@ export default function TimePage() {
 
   async function deleteEntry(id: string) {
     const supabase = createClient()
-    await supabase.from('time_entries').delete().eq('id', id)
+    const { error } = await supabase.from('time_entries').delete().eq('id', id)
+    if (error) { await load(); return }   // write failed — resync from the server
     setEntries(prev => prev.filter(e => e.id !== id))
   }
 
   async function saveEdit(id: string, desc: string, hours: number) {
     const supabase = createClient()
-    await supabase.from('time_entries').update({ description: desc, hours }).eq('id', id)
+    const { error } = await supabase.from('time_entries').update({ description: desc, hours }).eq('id', id)
+    if (error) { await load(); return }   // write failed — resync from the server
     setEntries(prev => prev.map(e => e.id === id ? { ...e, description: desc, hours } : e))
   }
 

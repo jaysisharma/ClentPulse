@@ -2,6 +2,20 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ─────────────────────────────────────────────────────────────────────────
+   Design basis — semantic color tokens.
+   Neutral scale stays Tailwind `slate`. Use these intent tokens (bg-accent,
+   text-positive, …) instead of raw palette literals so the brand accent is
+   swappable in one place and surfaces stay consistent. See DESIGN.md.
+   ───────────────────────────────────────────────────────────────────────── */
+@theme {
+  --color-accent: #4f46e5;        /* indigo-600  — primary actions, links */
+  --color-accent-hover: #4338ca;  /* indigo-700  — primary hover */
+  --color-positive: #059669;      /* emerald-600 — paid, growth, net profit */
+  --color-danger: #e11d48;        /* rose-600    — money owed, destructive */
+  --color-attention: #d97706;     /* amber-600   — pending, needs attention */
+}
+
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
@@ -58,5 +72,14 @@ body {
     animation-timeline: view();
     animation-range: entry 10% cover 30%;
   }
+}
+
+@keyframes slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

@@ -39,7 +39,7 @@ export default function SubscribePage({ params }: { params: Promise<{ slug: stri
         <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
           <Zap className="w-4 h-4 text-white" />
         </div>
-        <span className="font-semibold text-slate-900">ClientPulse</span>
+        <span className="font-semibold text-slate-900">Frevio</span>
       </Link>
 
       <div className="w-full max-w-sm bg-white rounded-2xl border border-slate-200 shadow-sm p-8">

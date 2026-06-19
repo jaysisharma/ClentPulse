@@ -238,7 +238,7 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
             <div className="w-4 h-4 bg-indigo-600 rounded flex items-center justify-center">
               <Zap className="w-2.5 h-2.5 text-white" />
             </div>
-            Powered by ClientPulse
+            Powered by Frevio
           </Link>
         </div>
       )}

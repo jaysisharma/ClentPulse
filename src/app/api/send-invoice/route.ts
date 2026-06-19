@@ -91,7 +91,7 @@ export async function POST(request: Request) {
   </div>
 
   <div style="padding:20px 32px;border-top:1px solid #f1f5f9;text-align:center;font-size:12px;color:#94a3b8">
-    Sent by ${owner?.name ?? 'your freelancer'} via ClientPulse
+    Sent by ${owner?.name ?? 'your freelancer'} via Frevio
   </div>
 </div>
 </body>
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
     : `Invoice ${invoice.invoice_number} — ${fmt(total)} due`
 
   const { error: sendErr } = await resend.emails.send({
-    from: `${owner?.name ?? 'ClientPulse'} <invoices@clientpulse.app>`,
+    from: `${owner?.name ?? 'Frevio'} <invoices@frevio.cloud>`,
     to: [invoice.client_email],
     subject,
     html,

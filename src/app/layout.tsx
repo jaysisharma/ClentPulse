@@ -7,7 +7,7 @@ import { PageLoading } from "@/components/page-loading";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ClientPulse — Weekly Project Updates for Freelancers",
+  title: "Frevio — Weekly Project Updates for Freelancers",
   description: "Send beautiful weekly project updates to clients with one click. Stop writing status emails manually.",
 };
 

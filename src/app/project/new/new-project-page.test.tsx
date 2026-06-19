@@ -1,7 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import NewProjectPage from './page'
+import { NewProjectForm } from './new-project-form'
 import React from 'react'
+
+// The page (`./page`) is an async server component that gates on the free-project
+// limit and then renders <NewProjectForm/>. The form holds all interactive
+// behaviour, so that's what we exercise here. The free-limit gate lives in the
+// server page and is not reachable from the form.
 
 // Mock router
 const mockPush = vi.fn()
@@ -20,15 +25,8 @@ vi.mock('next/link', () => ({
   }
 }))
 
-// Test state variables for Supabase mocks
-let mockProjectCount = 1
-let mockPlan = 'pro'
-
 // Mock Supabase client
 const mockGetUser = vi.fn().mockResolvedValue({ data: { user: { id: 'user-123' } } })
-const mockSingle = vi.fn().mockImplementation(() => Promise.resolve({ data: { plan: mockPlan } }))
-const mockEq = vi.fn().mockReturnValue({ single: mockSingle })
-const mockSelect = vi.fn().mockReturnValue({ eq: mockEq })
 const mockInsert = vi.fn()
 
 const mockSupabase = {
@@ -36,16 +34,8 @@ const mockSupabase = {
     getUser: mockGetUser
   },
   from: vi.fn((table: string) => {
-    if (table === 'users') {
-      return { select: mockSelect }
-    }
     if (table === 'projects') {
-      return {
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockImplementation(() => Promise.resolve({ count: mockProjectCount }))
-        }),
-        insert: mockInsert
-      }
+      return { insert: mockInsert }
     }
     return {} as any
   })
@@ -64,21 +54,19 @@ Object.defineProperty(navigator, 'clipboard', {
   writable: true
 })
 
-describe('NewProjectPage Component', () => {
+describe('NewProjectForm Component', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockProjectCount = 1
-    mockPlan = 'pro'
     global.fetch = vi.fn().mockResolvedValue({
       ok: true,
+      status: 200,
       json: async () => ({ success: true })
     }) as any
   })
 
   it('renders all form inputs and initial states correctly', () => {
-    render(<NewProjectPage />)
+    render(<NewProjectForm />)
 
-    expect(screen.getByText('New project')).toBeDefined()
     expect(screen.getByPlaceholderText('Acme Corporation')).toBeDefined()
     expect(screen.getByPlaceholderText('client@acme.com')).toBeDefined()
     expect(screen.getByPlaceholderText('Min. 6 characters')).toBeDefined()
@@ -89,7 +77,7 @@ describe('NewProjectPage Component', () => {
   })
 
   it('generates a password dynamically when generate button is clicked', () => {
-    render(<NewProjectPage />)
+    render(<NewProjectForm />)
 
     const clientNameInput = screen.getByPlaceholderText('Acme Corporation')
     fireEvent.change(clientNameInput, { target: { value: 'John Doe' } })
@@ -102,34 +90,13 @@ describe('NewProjectPage Component', () => {
     expect(passwordInput.value).toMatch(/^[a-zA-Z0-9]{12}$/)
   })
 
-  it('displays error if free plan is limited to 3 projects and count is exceeded', async () => {
-    mockPlan = 'free'
-    mockProjectCount = 3
-
-    render(<NewProjectPage />)
-
-    // Fill form
-    fireEvent.change(screen.getByPlaceholderText('Acme Corporation'), { target: { value: 'Acme' } })
-    fireEvent.change(screen.getByPlaceholderText('Website Redesign'), { target: { value: 'Rebranding' } })
-
-    const createBtn = screen.getByRole('button', { name: /create project/i })
-    fireEvent.click(createBtn)
-
-    await waitFor(() => {
-      expect(screen.getByText(/Free plan is limited to 3 projects/i)).toBeDefined()
-    })
-  })
-
   it('submits form successfully and displays shareable credentials success state', async () => {
-    mockPlan = 'pro'
-    mockProjectCount = 1
-
     // Mock project creation successful insertion
     const mockSingleSelect = vi.fn().mockResolvedValue({ data: { id: 'proj-999' }, error: null })
     const mockSelectChain = vi.fn().mockReturnValue({ single: mockSingleSelect })
     mockInsert.mockReturnValue({ select: mockSelectChain })
 
-    render(<NewProjectPage />)
+    render(<NewProjectForm />)
 
     // Fill out all fields
     fireEvent.change(screen.getByPlaceholderText('Acme Corporation'), { target: { value: 'Globex' } })
@@ -177,14 +144,11 @@ describe('NewProjectPage Component', () => {
   })
 
   it('allows copying login details to clipboard', async () => {
-    mockPlan = 'pro'
-    mockProjectCount = 1
-
     const mockSingleSelect = vi.fn().mockResolvedValue({ data: { id: 'proj-999' }, error: null })
     const mockSelectChain = vi.fn().mockReturnValue({ single: mockSingleSelect })
     mockInsert.mockReturnValue({ select: mockSelectChain })
 
-    render(<NewProjectPage />)
+    render(<NewProjectForm />)
 
     fireEvent.change(screen.getByPlaceholderText('Acme Corporation'), { target: { value: 'Globex' } })
     fireEvent.change(screen.getByPlaceholderText('client@acme.com'), { target: { value: 'globex@corp.com' } })

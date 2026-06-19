@@ -40,6 +40,7 @@ export default function DocDetailPage() {
   const [content, setContent] = useState('')
   const [title, setTitle]   = useState('')
   const [saving, setSaving] = useState(false)
+  const [actionError, setActionError] = useState('')
   const [copied, setCopied] = useState(false)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -48,7 +49,7 @@ export default function DocDetailPage() {
   useEffect(() => {
     let cancelled = false
     const supabase = createClient()
-    supabase.from('documents').select('*').eq('id', id).single().then(({ data }) => {
+    supabase.from('documents').select('*').eq('id', id).single().then(({ data }: { data: any }) => {
       if (cancelled || !data) return
       setDoc(data); setContent(data.content); setTitle(data.title)
     })
@@ -66,22 +67,29 @@ export default function DocDetailPage() {
 
   async function saveEdit() {
     setSaving(true)
+    setActionError('')
     const supabase = createClient()
-    await supabase.from('documents').update({ title, content }).eq('id', id)
+    const { error } = await supabase.from('documents').update({ title, content }).eq('id', id)
+    setSaving(false)
+    if (error) { setActionError('Could not save your changes. Please try again.'); return }
     setDoc(d => d ? { ...d, title, content } : d)
-    setEditing(false); setSaving(false)
+    setEditing(false)
   }
 
   async function markSent() {
+    setActionError('')
     const supabase = createClient()
-    await supabase.from('documents').update({ status: 'sent' }).eq('id', id)
+    const { error } = await supabase.from('documents').update({ status: 'sent' }).eq('id', id)
+    if (error) { setActionError('Could not update the status. Please try again.'); return }
     setDoc(d => d ? { ...d, status: 'sent' } : d)
   }
 
   async function handleDelete() {
     if (!confirm('Delete this document? This cannot be undone.')) return
+    setActionError('')
     const supabase = createClient()
-    await supabase.from('documents').delete().eq('id', id)
+    const { error } = await supabase.from('documents').delete().eq('id', id)
+    if (error) { setActionError('Could not delete this document. Please try again.'); return }
     router.push('/docs')
   }
 
@@ -132,6 +140,10 @@ export default function DocDetailPage() {
             </button>
           </div>
         </div>
+
+        {actionError && (
+          <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mb-5 print:hidden">{actionError}</div>
+        )}
 
         {/* Client response banner */}
         {responded && (

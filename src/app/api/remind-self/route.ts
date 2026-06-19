@@ -54,14 +54,14 @@ export async function POST(request: Request) {
     </div>
   </div>
   <div style="padding:16px 32px;border-top:1px solid #f1f5f9;text-align:center;font-size:12px;color:#94a3b8">
-    ClientPulse · You requested this reminder
+    Frevio · You requested this reminder
   </div>
 </div>
 </body>
 </html>`
 
   const { error } = await resend.emails.send({
-    from: 'ClientPulse <reminders@clientpulse.app>',
+    from: 'Frevio <reminders@frevio.cloud>',
     to: [user.email!],
     subject: `Reminder: send an update for ${project.project_name}`,
     html,

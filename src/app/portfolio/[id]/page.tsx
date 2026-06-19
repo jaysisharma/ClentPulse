@@ -259,7 +259,7 @@ export default async function PublicPortfolioPage({ params }: { params: Promise<
       </div>
 
       <div className="border-t border-slate-100 py-6 text-center text-xs text-slate-400">
-        Built with <span className="font-medium text-slate-500">ClientPulse</span>
+        Built with <span className="font-medium text-slate-500">Frevio</span>
       </div>
     </div>
   )

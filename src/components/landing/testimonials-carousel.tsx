@@ -4,12 +4,12 @@ import { useEffect } from 'react'
 
 const TESTIMONIALS = [
   {
-    quote: "ClientPulse cut my admin time in half. No more writing status emails from scratch.",
+    quote: "Frevio cut my admin time in half. No more writing status emails from scratch.",
     name: "Sarah Chen",
     role: "Product Designer & Freelancer",
   },
   {
-    quote: "We manage 12+ projects. ClientPulse keeps everyone aligned with clients seamlessly.",
+    quote: "We manage 12+ projects. Frevio keeps everyone aligned with clients seamlessly.",
     name: "Marcus Rodriguez",
     role: "Creative Director, Design Agency",
   },
@@ -29,7 +29,7 @@ const TESTIMONIALS = [
     role: "Founder, Digital Studio",
   },
   {
-    quote: "ClientPulse replaced three tools I was juggling. Less context switching, better organization.",
+    quote: "Frevio replaced three tools I was juggling. Less context switching, better organization.",
     name: "David Thompson",
     role: "Consultant & Freelancer",
   },

@@ -6,22 +6,7 @@ import { useRouter } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Button } from '@/components/ui/button'
 import { Check, Zap } from 'lucide-react'
-
-const FREE_FEATURES = [
-  '3 active projects',
-  'Copy-paste email updates',
-  'Public client status page',
-  'Basic invoicing',
-]
-
-const PRO_FEATURES = [
-  'Unlimited projects',
-  'Auto email sending to clients',
-  'Custom branding, logo & accent color',
-  'White-label status pages',
-  'Hourly rate + billable tracking',
-  'Priority support',
-]
+import { FREE_FEATURES, PRO_FEATURES, PRICING } from '@/lib/plans'
 
 export default function UpgradePage() {
   const router = useRouter()
@@ -31,9 +16,10 @@ export default function UpgradePage() {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (!user) { router.push('/auth/login'); return }
-      supabase.from('users').select('plan').eq('id', user.id).single().then(({ data }) => {
+      supabase.from('users').select('plan').eq('id', user.id).single().then(({ data }: { data: any }) => {
         if (data?.plan === 'pro') router.push('/settings')
       })
     })
@@ -61,8 +47,8 @@ export default function UpgradePage() {
     }
   }
 
-  const monthlyPrice = 12
-  const annualPrice  = 99
+  const monthlyPrice = PRICING.monthly
+  const annualPrice  = PRICING.annual
   const annualSaving = monthlyPrice * 12 - annualPrice
 
   return (

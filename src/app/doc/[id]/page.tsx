@@ -28,13 +28,14 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
   // Proposal / requirements response
   const [note, setNote]           = useState('')
   const [responding, setResponding] = useState(false)
+  const [actionError, setActionError] = useState('')
 
   useEffect(() => {
     const supabase = createClient()
     supabase.from('documents')
       .select('*, users(name, accent_color, logo_url)')
       .eq('id', id).single()
-      .then(({ data }) => { setDoc(data); setLoading(false) })
+      .then(({ data }: { data: any }) => { setDoc(data); setLoading(false) })
   }, [id])
 
   if (loading) return <div className="min-h-screen bg-slate-50 flex items-center justify-center text-sm text-slate-400">Loading…</div>
@@ -85,25 +86,33 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
     e.preventDefault()
     if (!agreed || !signName.trim()) return
     setSigning(true)
+    setActionError('')
     const supabase = createClient()
-    await supabase.from('documents').update({
+    const { error } = await supabase.from('documents').update({
       status: 'signed',
       signed_name: signName.trim(),
       signed_at: new Date().toISOString(),
     }).eq('id', id)
-    setOutcome('signed'); setDone(true); setSigning(false)
+    setSigning(false)
+    // Never show "signed!" unless it actually persisted — this is a binding
+    // signature; a false confirmation is worse than an error.
+    if (error) { setActionError('We couldn’t record your signature. Please try again.'); return }
+    setOutcome('signed'); setDone(true)
   }
 
   // ── Proposal / requirements: accept or decline ───────────────────────────
 
   async function respond(action: 'accepted' | 'declined') {
     setResponding(true)
+    setActionError('')
     const supabase = createClient()
-    await supabase.from('documents').update({
+    const { error } = await supabase.from('documents').update({
       status: action,
       response_note: note.trim() || null,
     }).eq('id', id)
-    setOutcome(action); setDone(true); setResponding(false)
+    setResponding(false)
+    if (error) { setActionError('We couldn’t record your response. Please try again.'); return }
+    setOutcome(action); setDone(true)
   }
 
   const TYPE_LABELS: Record<string, string> = {
@@ -190,6 +199,9 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
               >
                 Sign agreement
               </Button>
+              {actionError && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{actionError}</div>
+              )}
             </form>
             <p className="text-xs text-slate-400 mt-3 text-center">Your name and timestamp will be recorded.</p>
           </div>
@@ -240,12 +252,15 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
                 {doc.type === 'proposal' ? 'Accept proposal' : 'Approve & sign off'}
               </Button>
             </div>
+            {actionError && (
+              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2 mt-4">{actionError}</div>
+            )}
           </div>
         )}
       </div>
 
       <div className="py-6 text-center text-xs text-slate-400">
-        Delivered by <span className="font-medium text-slate-500">{freelancer}</span> via ClientPulse
+        Delivered by <span className="font-medium text-slate-500">{freelancer}</span> via Frevio
       </div>
     </div>
   )

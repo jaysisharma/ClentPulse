@@ -3,17 +3,13 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Check } from 'lucide-react'
-
-const freeFeatures = ['3 active projects', 'Public status hub page', 'Manual copy-paste plain email text']
-const proFeatures = [
-  'Unlimited projects',
-  'Automated email sending via Resend',
-  'Accent color branding integrations',
-  'Active background timers tracking',
-  'Dynamic budget progress widgets',
-  'Contract signature tracking',
-  'Premium priority support'
-]
+import {
+  FREE_FEATURES as freeFeatures,
+  PRO_FEATURES as proFeatures,
+  PRICING,
+  ANNUAL_MONTHLY_EQUIV,
+  ANNUAL_DISCOUNT_PCT,
+} from '@/lib/plans'
 
 export function PricingSection() {
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly')
@@ -61,7 +57,7 @@ export function PricingSection() {
                     ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300'
                     : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400'
                   }`}>
-                  -30%
+                  -{ANNUAL_DISCOUNT_PCT}%
                 </span>
               </button>
             </div>
@@ -88,7 +84,7 @@ export function PricingSection() {
               </ul>
             </div>
             <div className="pt-8">
-              <Link href="/auth/login" className="block text-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase tracking-wider py-3 rounded-xl transition-all">
+              <Link href="/auth/login?mode=signup" className="block text-center bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 text-xs font-bold uppercase tracking-wider py-3 rounded-xl transition-all">
                 Get started free
               </Link>
             </div>
@@ -105,7 +101,7 @@ export function PricingSection() {
                   <h3 className="text-sm font-bold text-indigo-200 uppercase tracking-wider">Pro Plan</h3>
                   <div className="flex items-baseline gap-1 mt-2">
                     <span className="text-4xl font-black text-white transition-all duration-300">
-                      {billingPeriod === 'monthly' ? '$12' : '$99'}
+                      {billingPeriod === 'monthly' ? `$${PRICING.monthly}` : `$${PRICING.annual}`}
                     </span>
                     <span className="text-xs text-indigo-200 font-semibold transition-all duration-300">
                       {billingPeriod === 'monthly' ? '/mo' : '/yr'}
@@ -116,8 +112,8 @@ export function PricingSection() {
                       <span>billed monthly</span>
                     ) : (
                       <div className="flex items-center gap-1.5">
-                        <span className="text-indigo-300/80 line-through decoration-indigo-200/40">$12</span>
-                        <span className="text-white font-bold">$8.25</span>
+                        <span className="text-indigo-300/80 line-through decoration-indigo-200/40">${PRICING.monthly}</span>
+                        <span className="text-white font-bold">${ANNUAL_MONTHLY_EQUIV}</span>
                         <span className="text-indigo-200/90">/mo</span>
                       </div>
                     )}
@@ -136,8 +132,8 @@ export function PricingSection() {
               </ul>
             </div>
             <div className="pt-8 relative z-10">
-              <Link href="/auth/login" className="block text-center bg-white hover:bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-wider py-3 rounded-xl shadow-md transition-all">
-                Start free pro trial
+              <Link href="/auth/login?mode=signup" className="block text-center bg-white hover:bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-wider py-3 rounded-xl shadow-md transition-all">
+                Get started with Pro
               </Link>
             </div>
           </div>

@@ -47,7 +47,7 @@ export async function GET(request: Request) {
       created_at:     inv.created_at.slice(0, 10),
     }))
     csv = toCSV(rows)
-    filename = 'clientpulse-earnings.csv'
+    filename = 'frevio-earnings.csv'
   } else {
     const { data: entries } = await supabase
       .from('time_entries')
@@ -65,7 +65,7 @@ export async function GET(request: Request) {
       }
     })
     csv = toCSV(rows)
-    filename = 'clientpulse-time.csv'
+    filename = 'frevio-time.csv'
   }
 
   return new NextResponse(csv, {

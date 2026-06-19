@@ -44,7 +44,8 @@ export default function PortfolioPage() {
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (!user) return
       setUserId(user.id)
 
@@ -53,7 +54,7 @@ export default function PortfolioPage() {
         supabase.from('testimonials').select('*, projects(project_name)').eq('user_id', user.id).eq('approved', true).order('created_at', { ascending: false }),
         supabase.from('projects').select('id, project_name, color, status').eq('user_id', user.id).eq('status', 'completed').order('created_at', { ascending: false }),
         supabase.from('portfolio_items').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-      ]).then(([{ data: u }, { data: t }, { data: p }, { data: itms }]) => {
+      ]).then(([{ data: u }, { data: t }, { data: p }, { data: itms }]: any[]) => {
         if (u) {
           setName(u.name ?? '')
           setBio(u.portfolio_bio ?? '')

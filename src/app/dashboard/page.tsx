@@ -2,15 +2,18 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Button } from '@/components/ui/button'
-import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import {
-  Plus, FolderOpen, AlertCircle,
-  FileText, Timer, CheckCircle2, FileSignature, Send,
-  DollarSign, ChevronRight,
+  Plus, Timer, FolderOpen, DollarSign, Wallet,
+  FileSignature, CheckCircle2, Send, ChevronRight, ArrowRight, Sparkles, FileText,
 } from 'lucide-react'
 import { UpgradeToast } from './upgrade-toast'
 import { RemindSelfButton } from './remind-self-button'
+import { DarkShell } from '@/components/layout/dark-shell'
+import { Greeting } from '@/components/dashboard/greeting'
+import { StatCard } from '@/components/ui/stat-card'
+import { RevenueChart } from '@/components/dashboard/revenue-chart'
+import { cn } from '@/lib/utils'
 
 function localWeekStart() {
   const d = new Date()
@@ -58,6 +61,23 @@ function fmtHours(h: number) {
   return parts.join(' ')
 }
 
+function pctChange(now: number, prev: number) {
+  return Math.round((Math.abs(now - prev) / Math.max(Math.abs(prev), 1)) * 100)
+}
+
+// Human "when is this due" label relative to today, e.g. "Due in 3 days",
+// "Due today", "5 days overdue". Returns null when the invoice has no due date.
+function dueLabel(due: string | null): { text: string; overdue: boolean } | null {
+  if (!due) return { text: 'No due date', overdue: false }
+  const today = new Date(); today.setHours(0, 0, 0, 0)
+  const d = new Date(due); d.setHours(0, 0, 0, 0)
+  const days = Math.round((d.getTime() - today.getTime()) / 86_400_000)
+  if (days < 0)  return { text: `${-days} day${days === -1 ? '' : 's'} overdue`, overdue: true }
+  if (days === 0) return { text: 'Due today', overdue: true }
+  if (days === 1) return { text: 'Due tomorrow', overdue: false }
+  return { text: `Due in ${days} days`, overdue: false }
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -70,63 +90,95 @@ export default async function DashboardPage() {
   const cutoff7d       = sevenDaysAgo()
 
   const [
-    { data: projects },
-    { data: profile },
-    { data: invoices },
-    { data: lastMonthInvoices },
-    { data: timeEntries },
-    { data: lastWeekEntries },
-    { data: activeTimer },
+    projectsRes,
+    profileRes,
+    invoicesRes,
+    lastMonthRes,
+    timeRes,
+    lastWeekRes,
+    expensesRes,
   ] = await Promise.all([
     supabase
       .from('projects')
-      .select('id, project_name, client_name, color, status, created_at, updates(id, created_at, sent_at), approvals(id, title, status), contracts(id, title, signed_at)')
+      .select('id, project_name, client_name, color, status, created_at, updates(id, sent_at), approvals(id, title, status), contracts(id, title, signed_at)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false }),
     supabase.from('users').select('name, plan').eq('id', user.id).single(),
-    supabase.from('invoices').select('id, invoice_number, status, items, client_name, due_date, created_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-    supabase.from('invoices').select('status, items, created_at').eq('user_id', user.id).eq('status', 'paid').gte('created_at', lastMonthStart).lt('created_at', monthStart),
+    supabase.from('invoices').select('id, invoice_number, client_name, status, items, due_date, created_at, paid_at').eq('user_id', user.id).order('created_at', { ascending: false }),
+    supabase.from('invoices').select('items').eq('user_id', user.id).eq('status', 'paid').gte('created_at', lastMonthStart).lt('created_at', monthStart),
     supabase.from('time_entries').select('hours').eq('user_id', user.id).gte('date', weekStart),
     supabase.from('time_entries').select('hours').eq('user_id', user.id).gte('date', lastWeekStart).lt('date', weekStart),
-    supabase.from('timers').select('*').eq('user_id', user.id).maybeSingle(),
+    supabase.from('expenses').select('date, amount').eq('user_id', user.id),
   ])
 
-  type Update   = { id: string; created_at: string; sent_at: string | null }
+  // Fail honestly: a DB error on the core data must surface as an error state,
+  // not masquerade as an empty dashboard. error.tsx catches this.
+  const criticalError = projectsRes.error || invoicesRes.error || expensesRes.error
+  if (criticalError) throw new Error(`Failed to load dashboard data: ${criticalError.message}`)
+
+  const projects          = projectsRes.data
+  const profile           = profileRes.data
+  const invoices          = invoicesRes.data
+  const lastMonthInvoices = lastMonthRes.data
+  const timeEntries       = timeRes.data
+  const lastWeekEntries   = lastWeekRes.data
+  const expenses          = expensesRes.data
+
+  type Update   = { id: string; sent_at: string | null }
   type Approval = { id: string; title: string; status: string }
   type Contract = { id: string; title: string; signed_at: string | null }
   type Project  = { id: string; project_name: string; client_name: string; color: string; status: string; created_at: string; updates: Update[]; approvals: Approval[]; contracts: Contract[] }
-  type Invoice  = { id: string; invoice_number: string; status: string; items: { amount: number }[]; client_name: string; due_date: string | null; created_at: string }
+  type Invoice  = { id: string; invoice_number: string; client_name: string; status: string; items: { amount: number }[]; due_date: string | null; created_at: string; paid_at: string | null }
+  type Expense  = { date: string; amount: string }
 
   const allProjects = (projects ?? []) as Project[]
   const allInvoices = (invoices ?? []) as Invoice[]
+  const allExpenses = (expenses ?? []) as Expense[]
 
-  const activeProjects  = allProjects.filter(p => p.status === 'active')
-  const unpaidInvoices  = allInvoices.filter(i => i.status === 'sent')
-  const unpaidAmount    = unpaidInvoices.flatMap(i => i.items ?? []).reduce((s, i) => s + (i.amount ?? 0), 0)
-  const overdueCount    = unpaidInvoices.filter(i => i.due_date && new Date(i.due_date) < new Date()).length
+  const sumItems = (inv: { items: { amount: number }[] }[]) =>
+    inv.flatMap(i => i.items ?? []).reduce((s, item) => s + (item.amount ?? 0), 0)
 
-  const earningsThisMonth = allInvoices
-    .filter(i => i.status === 'paid' && i.created_at >= monthStart)
-    .flatMap(i => i.items ?? [])
-    .reduce((s, item) => s + (item.amount ?? 0), 0)
+  // ── Box 1 · You're owed ────────────────────────────────────────────────
+  const unpaidInvoices = allInvoices.filter(i => i.status === 'sent')
+  const owedAmount     = sumItems(unpaidInvoices)
+  const overdueCount   = unpaidInvoices.filter(i => i.due_date && new Date(i.due_date) < new Date()).length
 
-  const earningsLastMonth = (lastMonthInvoices ?? [])
-    .flatMap(i => i.items ?? [])
-    .reduce((s: number, item: { amount: number }) => s + (item.amount ?? 0), 0)
+  // Soonest-due (and overdue) unpaid invoices for the right-rail list. Undated
+  // invoices sort last so the ones with a real deadline surface first.
+  const upcomingInvoices = [...unpaidInvoices]
+    .sort((a, b) => (a.due_date ? new Date(a.due_date).getTime() : Infinity) - (b.due_date ? new Date(b.due_date).getTime() : Infinity))
+    .slice(0, 5)
 
-  const earningsDiff = earningsThisMonth - earningsLastMonth
+  // ── Box 2 · You made (net = earnings − expenses) ───────────────────────
+  const expenseInMonth = (start: string, end?: string) =>
+    allExpenses
+      .filter(e => e.date >= start && (!end || e.date < end))
+      .reduce((s, e) => s + (parseFloat(e.amount) || 0), 0)
 
+  const earningsThisMonth = sumItems(allInvoices.filter(i => i.status === 'paid' && i.created_at >= monthStart))
+  const earningsLastMonth = sumItems(lastMonthInvoices ?? [])
+  const netThisMonth = earningsThisMonth - expenseInMonth(monthStart)
+  const netLastMonth = earningsLastMonth - expenseInMonth(lastMonthStart, monthStart)
+  const netDiff = netThisMonth - netLastMonth
+
+  // ── Box 3 · You worked ─────────────────────────────────────────────────
   const hoursThisWeek = (timeEntries ?? []).reduce((s, e) => s + (e.hours ?? 0), 0)
   const hoursLastWeek = (lastWeekEntries ?? []).reduce((s, e) => s + (e.hours ?? 0), 0)
   const hoursDiff     = hoursThisWeek - hoursLastWeek
 
+  // ── Box 4 · Your projects ──────────────────────────────────────────────
+  const activeProjects = allProjects.filter(p => p.status === 'active')
+
+  // Brand-new account: no projects, no invoices, no expenses → show setup state.
+  const isNewUser = allProjects.length === 0 && allInvoices.length === 0 && allExpenses.length === 0
+
+  // ── Needs attention ────────────────────────────────────────────────────
   const overdueProjects = activeProjects.filter(p => {
-    const sentUpdates = p.updates.filter(u => u.sent_at)
-    if (!sentUpdates.length) return new Date(p.created_at) < new Date(cutoff7d)
-    const latest = [...sentUpdates].sort((a, b) => new Date(b.sent_at!).getTime() - new Date(a.sent_at!).getTime())[0]
+    const sent = p.updates.filter(u => u.sent_at)
+    if (!sent.length) return new Date(p.created_at) < new Date(cutoff7d)
+    const latest = [...sent].sort((a, b) => new Date(b.sent_at!).getTime() - new Date(a.sent_at!).getTime())[0]
     return new Date(latest.sent_at!) < new Date(cutoff7d)
   })
-
   const pendingApprovals = allProjects.flatMap(p =>
     p.approvals.filter(a => a.status === 'pending').map(a => ({ ...a, projectId: p.id, projectName: p.project_name }))
   )
@@ -135,342 +187,293 @@ export default async function DashboardPage() {
   )
   const attentionCount = overdueProjects.length + pendingApprovals.length + unsignedContracts.length
 
+  // ── Greeting ───────────────────────────────────────────────────────────
   const firstName = profile?.name ? profile.name.split(' ')[0] : ''
+  const displayName = firstName ? firstName.charAt(0).toUpperCase() + firstName.slice(1) : ''
+  const emailLocal = (user.email?.split('@')[0] ?? '').toLowerCase()
+  const looksAutoName = !!displayName && (/\d/.test(displayName) || displayName.toLowerCase() === emailLocal)
+  const greetName = looksAutoName ? '' : displayName
+
+  // ── Chart data ─────────────────────────────────────────────────────────
+  const paidPoints = allInvoices
+    .filter(i => i.status === 'paid')
+    .map(i => ({
+      date: (i.paid_at ? new Date(i.paid_at) : new Date(i.created_at)).toISOString().split('T')[0],
+      amount: sumItems([i]),
+    }))
+  const expensePoints = allExpenses.map(e => ({
+    date: new Date(e.date).toISOString().split('T')[0],
+    amount: parseFloat(e.amount) || 0,
+  }))
 
   return (
     <AppLayout user={profile ? { name: profile.name ?? null, plan: profile.plan as 'free' | 'pro' } : undefined}>
-      <div className="animate-fade-in space-y-6 pb-10">
-        <UpgradeToast />
+      <DarkShell>
+        <div className="relative z-10 space-y-8 pb-10">
+          <UpgradeToast />
 
-        {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">
-              {firstName ? `Welcome back, ${firstName}` : 'Dashboard'}
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">
-              {activeProjects.length} active project{activeProjects.length !== 1 ? 's' : ''}
-              {attentionCount > 0 && ` · ${attentionCount} item${attentionCount !== 1 ? 's' : ''} need attention`}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link href="/time">
-              <Button variant="secondary" size="sm">
-                <Timer className="w-4 h-4" />
-                Log time
-              </Button>
-            </Link>
-            <Link href="/project/new">
-              <Button size="sm">
-                <Plus className="w-4 h-4" />
-                New project
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-
-          {/* Outstanding */}
-          <div className={`rounded-xl border p-5 transition-colors ${
-            unpaidAmount > 0 ? 'bg-rose-50 border-rose-100' : 'bg-white border-slate-200'
-          }`}>
-            <div className="text-sm text-slate-500 mb-1">Outstanding</div>
-            <div className={`text-2xl font-bold ${unpaidAmount > 0 ? 'text-rose-600' : 'text-slate-900'}`}>
-              {fmt$(unpaidAmount)}
+          {/* ── Header ───────────────────────────────────────────────── */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">
+                <Greeting name={greetName} />
+              </h1>
+              <p className="text-slate-500 text-sm mt-2">
+                {activeProjects.length} active project{activeProjects.length !== 1 ? 's' : ''} · {attentionCount > 0 ? `${attentionCount} thing${attentionCount !== 1 ? 's' : ''} need your attention` : 'everything is on track'}
+              </p>
             </div>
-            <div className="text-xs mt-1">
-              {overdueCount > 0
-                ? <span className="text-rose-500">{overdueCount} invoice{overdueCount !== 1 ? 's' : ''} overdue</span>
-                : <span className="text-slate-400">{unpaidInvoices.length} awaiting payment</span>
+            <div className="flex items-center gap-2">
+              <Link href="/time">
+                <Button variant="secondary" size="sm">
+                  <Timer className="w-4 h-4" />
+                  Log time
+                </Button>
+              </Link>
+              <Link href="/project/new">
+                <Button size="sm">
+                  <Plus className="w-4 h-4" />
+                  New project
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          {isNewUser ? (
+            /* ── New-user setup state ─────────────────────────────────── */
+            <div className="rounded-2xl bg-white border border-slate-200 py-16 px-6 flex flex-col items-center text-center">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-indigo-500" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 mt-5">Let&apos;s set up your workspace</h2>
+              <p className="text-sm text-slate-500 mt-2 max-w-sm">
+                Create your first project to start tracking time, sending client updates, and getting paid — your dashboard fills in from there.
+              </p>
+              <Link href="/project/new" className="mt-6">
+                <Button>
+                  <Plus className="w-4 h-4" />
+                  Create your first project
+                </Button>
+              </Link>
+              <Link href="/clients" className="mt-3 text-xs font-medium text-slate-400 hover:text-slate-600 inline-flex items-center gap-1">
+                or add a client first <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+          ) : (
+            <>
+          {/* ── 4 number boxes ───────────────────────────────────────── */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatCard
+              label="You're owed"
+              value={fmt$(owedAmount)}
+              icon={DollarSign}
+              tone={overdueCount > 0 ? 'danger' : 'default'}
+              caption={
+                owedAmount > 0
+                  ? overdueCount > 0
+                    ? <span className="text-rose-600 font-semibold">{overdueCount} overdue</span>
+                    : <span>awaiting payment</span>
+                  : <span>all paid up</span>
               }
-            </div>
+            />
+            <StatCard
+              label="You made"
+              value={fmt$(netThisMonth)}
+              icon={Wallet}
+              trend={
+                netThisMonth !== 0 || netLastMonth !== 0
+                  ? { dir: netDiff > 0 ? 'up' : netDiff < 0 ? 'down' : 'flat', label: `${pctChange(netThisMonth, netLastMonth)}%`, goodWhen: 'up' }
+                  : undefined
+              }
+              caption="vs last month"
+            />
+            <StatCard
+              label="You worked"
+              value={fmtHours(hoursThisWeek)}
+              icon={Timer}
+              trend={
+                hoursThisWeek > 0 || hoursLastWeek > 0
+                  ? { dir: hoursDiff > 0 ? 'up' : hoursDiff < 0 ? 'down' : 'flat', label: `${pctChange(hoursThisWeek, hoursLastWeek)}%`, goodWhen: 'neutral' }
+                  : undefined
+              }
+              caption="vs last week"
+            />
+            <StatCard
+              label="Your projects"
+              value={activeProjects.length}
+              icon={FolderOpen}
+              caption={`of ${allProjects.length} total`}
+            />
           </div>
 
-          {/* This month */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="text-sm text-slate-500 mb-1">This month</div>
-            <div className="text-2xl font-bold text-slate-900">{fmt$(earningsThisMonth)}</div>
-            <div className="text-xs mt-1">
-              {earningsThisMonth === 0 && earningsLastMonth === 0 ? (
-                <span className="text-slate-400">no paid invoices yet</span>
-              ) : earningsDiff === 0 ? (
-                <span className="text-slate-400">same as last month</span>
-              ) : earningsDiff > 0 ? (
-                <span className="text-emerald-600">↑ {fmt$(earningsDiff)} more than last month</span>
-              ) : (
-                <span className="text-rose-500">↓ {fmt$(Math.abs(earningsDiff))} less than last month</span>
-              )}
-            </div>
-          </div>
+          {/* ── Two-column workspace ─────────────────────────────────── */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
-          {/* Active projects */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="text-sm text-slate-500 mb-1">Active projects</div>
-            <div className="text-2xl font-bold text-slate-900">{activeProjects.length}</div>
-            <div className="text-xs text-slate-400 mt-1">of {allProjects.length} total</div>
-          </div>
+          {/* Left column (wider): chart + needs attention */}
+          <div className="lg:col-span-2 space-y-6">
+          {/* ── Money in vs out chart ────────────────────────────────── */}
+          <RevenueChart paid={paidPoints} expenses={expensePoints} />
 
-          {/* Hours this week */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="text-sm text-slate-500 mb-1">Hours this week</div>
-            <div className="text-2xl font-bold text-slate-900">{fmtHours(hoursThisWeek)}</div>
-            <div className="text-xs mt-1">
-              {hoursThisWeek === 0 && hoursLastWeek === 0 ? (
-                <span className="text-slate-400">{activeTimer ? 'timer running now' : 'no time logged yet'}</span>
-              ) : hoursDiff === 0 ? (
-                <span className="text-slate-400">same as last week</span>
-              ) : hoursDiff > 0 ? (
-                <span className="text-emerald-600">↑ {fmtHours(hoursDiff)} more than last week</span>
-              ) : (
-                <span className="text-slate-400">↓ {fmtHours(Math.abs(hoursDiff))} less than last week</span>
-              )}
-            </div>
-          </div>
+          {/* ── Needs attention to-do list ───────────────────────────── */}
+          <section className="space-y-3">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Needs attention</h2>
 
-        </div>
-
-        {/* Needs attention */}
-        {attentionCount > 0 && (
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="flex items-center gap-2.5 px-5 py-4 border-b border-slate-100">
-              <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0" />
-              <span className="text-sm font-semibold text-slate-800">Needs attention</span>
-              <span className="ml-auto text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                {attentionCount}
-              </span>
-            </div>
-            <div className="divide-y divide-slate-100">
-              {overdueProjects.map(p => (
-                <div key={p.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-3.5">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-                    <div className="min-w-0">
-                      <span className="text-sm font-medium text-slate-800">{p.project_name}</span>
-                      <span className="text-xs text-slate-400 ml-2">{p.client_name}</span>
-                    </div>
-                    <span className="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100 flex-shrink-0">
-                      7+ days no update
+            {attentionCount === 0 ? (
+              <div className="rounded-2xl bg-white border border-slate-200 py-12 px-6 flex flex-col items-center text-center gap-2">
+                <div className="w-11 h-11 rounded-full bg-emerald-50 flex items-center justify-center">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                </div>
+                <p className="text-sm font-semibold text-slate-700">You're all caught up</p>
+                <p className="text-xs text-slate-400">No updates, approvals, or contracts waiting on you.</p>
+              </div>
+            ) : (
+              <div className="rounded-2xl bg-white border border-slate-200 divide-y divide-slate-100 overflow-hidden">
+                {overdueProjects.map(p => (
+                  <div key={`u-${p.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50/60 transition-colors">
+                    <span className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                      <Send className="w-4 h-4 text-amber-500" />
                     </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{p.project_name}</p>
+                      <p className="text-xs text-slate-400 truncate">No update sent in over a week · {p.client_name}</p>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <RemindSelfButton projectId={p.id} />
+                      <Link href={`/project/${p.id}/update`}>
+                        <Button size="sm" className="text-xs">Send update</Button>
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
-                    <RemindSelfButton projectId={p.id} />
-                    <Link href={`/project/${p.id}/update`}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 rounded-lg transition-colors">
-                      <Send className="w-3.5 h-3.5" />
-                      Send update
+                ))}
+
+                {pendingApprovals.map(a => (
+                  <div key={`a-${a.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50/60 transition-colors">
+                    <span className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle2 className="w-4 h-4 text-amber-500" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{a.title}</p>
+                      <p className="text-xs text-slate-400 truncate">Waiting on client approval · {a.projectName}</p>
+                    </div>
+                    <Link href={`/project/${a.projectId}`} className="flex-shrink-0">
+                      <Button size="sm" variant="secondary" className="text-xs">Follow up</Button>
                     </Link>
                   </div>
-                </div>
-              ))}
-              {pendingApprovals.map(a => (
-                <Link key={a.id} href={`/project/${a.projectId}`}
-                  className="flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-slate-50 transition-colors group">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <CheckCircle2 className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-sm font-medium text-slate-800 truncate">{a.title}</div>
-                      <div className="text-xs text-slate-400">{a.projectName}</div>
+                ))}
+
+                {unsignedContracts.map(c => (
+                  <div key={`c-${c.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50/60 transition-colors">
+                    <span className="w-9 h-9 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                      <FileSignature className="w-4 h-4 text-amber-500" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-slate-900 truncate">{c.title}</p>
+                      <p className="text-xs text-slate-400 truncate">Contract not signed yet · {c.projectName}</p>
                     </div>
+                    <Link href={`/project/${c.projectId}/contract`} className="flex-shrink-0">
+                      <Button size="sm" className="text-xs">Review &amp; sign</Button>
+                    </Link>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-xs text-amber-600">Awaiting approval</span>
-                    <ChevronRight className="w-4 h-4 text-slate-300" />
-                  </div>
-                </Link>
-              ))}
-              {unsignedContracts.map(c => (
-                <Link key={c.id} href={`/project/${c.projectId}/contract`}
-                  className="flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-slate-50 transition-colors group">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <FileSignature className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                    <div className="min-w-0">
-                      <div className="text-sm font-medium text-slate-800 truncate">{c.title}</div>
-                      <div className="text-xs text-slate-400">{c.projectName}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-xs text-amber-600">Not signed</span>
-                    <ChevronRight className="w-4 h-4 text-slate-300" />
-                  </div>
-                </Link>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+          </section>
           </div>
-        )}
 
-        {/* Main grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Right column: invoices due + active projects */}
+          <div className="space-y-6 lg:sticky lg:top-8">
 
-          {/* Projects — 2 cols */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-slate-700">Projects</h2>
-              <Link href="/project" className="text-xs text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-0.5">
+          {/* ── Upcoming & overdue invoices ──────────────────────────── */}
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Invoices due</h2>
+              <Link href="/invoices" className="text-xs font-medium text-indigo-600 hover:text-indigo-700 inline-flex items-center gap-0.5">
                 View all <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {!allProjects.length ? (
-              <div className="bg-white rounded-xl border border-dashed border-slate-200 p-12 text-center">
-                <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FolderOpen className="w-6 h-6 text-slate-400" />
+            {upcomingInvoices.length === 0 ? (
+              <div className="rounded-2xl bg-white border border-slate-200 py-10 px-6 flex flex-col items-center text-center gap-2">
+                <div className="w-11 h-11 rounded-full bg-emerald-50 flex items-center justify-center">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                 </div>
-                <h3 className="font-semibold text-slate-900 mb-1">No projects yet</h3>
-                <p className="text-slate-500 text-sm mb-5">Create your first client project to start tracking updates, invoices, and time.</p>
-                <Link href="/project/new">
-                  <Button size="sm"><Plus className="w-4 h-4" />Create project</Button>
-                </Link>
+                <p className="text-sm font-semibold text-slate-700">Nothing outstanding</p>
+                <p className="text-xs text-slate-400">No unpaid invoices right now.</p>
               </div>
             ) : (
-              <div className="space-y-2">
-                {allProjects.slice(0, 8).map(project => {
-                  const updates    = project.updates ?? []
-                  const sentCount  = updates.filter(u => u.sent_at).length
-                  const latestSent = [...updates]
-                    .filter(u => u.sent_at)
-                    .sort((a, b) => new Date(b.sent_at!).getTime() - new Date(a.sent_at!).getTime())[0]
-
+              <div className="rounded-2xl bg-white border border-slate-200 divide-y divide-slate-100 overflow-hidden">
+                {upcomingInvoices.map(inv => {
+                  const due = dueLabel(inv.due_date)
                   return (
-                    <Link key={project.id} href={`/project/${project.id}`}
-                      className="flex items-center gap-4 bg-white rounded-xl border border-slate-200 px-4 py-3.5 hover:border-slate-300 hover:shadow-sm transition-all group">
-                      <div className="w-1 h-8 rounded-full flex-shrink-0" style={{ backgroundColor: project.color }} />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-medium text-slate-900 truncate group-hover:text-indigo-600 transition-colors">
-                            {project.project_name}
-                          </span>
-                          <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                            project.status === 'active'  ? 'bg-emerald-50 text-emerald-700'
-                            : project.status === 'paused' ? 'bg-amber-50 text-amber-700'
-                            : 'bg-slate-100 text-slate-500'
-                          }`}>
-                            {project.status}
-                          </span>
-                        </div>
-                        <div className="text-xs text-slate-400 mt-0.5">{project.client_name}</div>
+                    <Link
+                      key={inv.id}
+                      href={`/invoices/${inv.id}`}
+                      className="flex items-center gap-3 p-4 hover:bg-slate-50/60 transition-colors group"
+                    >
+                      <span className={cn(
+                        'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
+                        due?.overdue ? 'bg-rose-50 text-rose-500' : 'bg-slate-100 text-slate-400',
+                      )}>
+                        <FileText className="w-4 h-4" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">{inv.client_name}</p>
+                        <p className={cn('text-xs truncate', due?.overdue ? 'text-rose-600 font-medium' : 'text-slate-400')}>
+                          {inv.invoice_number} · {due?.text}
+                        </p>
                       </div>
-                      <div className="text-right flex-shrink-0 hidden sm:block">
-                        <div className="text-xs text-slate-600">
-                          {latestSent ? formatDate(latestSent.sent_at!) : 'No updates sent'}
-                        </div>
-                        <div className="text-[10px] text-slate-400 mt-0.5">
-                          {sentCount} update{sentCount !== 1 ? 's' : ''} sent
-                        </div>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors flex-shrink-0" />
+                      <span className="text-sm font-semibold text-slate-900 tabular-nums flex-shrink-0">{fmt$(sumItems([inv]))}</span>
                     </Link>
                   )
                 })}
-                {allProjects.length > 8 && (
-                  <Link href="/project"
-                    className="block text-center text-xs text-slate-500 hover:text-slate-700 bg-white border border-slate-200 hover:border-slate-300 py-3 rounded-xl transition-colors">
-                    + {allProjects.length - 8} more project{allProjects.length - 8 !== 1 ? 's' : ''}
-                  </Link>
-                )}
               </div>
             )}
-          </div>
+          </section>
 
-          {/* Sidebar — 1 col */}
-          <div className="space-y-4">
+          {/* ── Active projects (home base) ──────────────────────────── */}
+          <section className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Active projects</h2>
+              <Link href="/project" className="text-xs font-medium text-indigo-600 hover:text-indigo-700 inline-flex items-center gap-0.5">
+                View all <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
 
-            {/* Active timer */}
-            {activeTimer && (
-              <div className="bg-white rounded-xl border border-slate-200 p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-medium text-slate-600">Timer running</span>
-                  </div>
-                  <Link href="/time" className="text-xs text-indigo-600 hover:text-indigo-700 font-medium">Open</Link>
+            {activeProjects.length === 0 ? (
+              <div className="rounded-2xl bg-white border border-slate-200 py-10 px-6 flex flex-col items-center text-center gap-2">
+                <div className="w-11 h-11 rounded-full bg-slate-100 flex items-center justify-center">
+                  <FolderOpen className="w-5 h-5 text-slate-400" />
                 </div>
-                <div className="text-sm font-medium text-slate-800 truncate">
-                  {activeTimer.description || 'Untitled session'}
-                </div>
-                {(() => {
-                  const proj = allProjects.find(p => p.id === activeTimer.project_id)
-                  return proj ? (
-                    <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-400">
-                      <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: proj.color }} />
-                      {proj.project_name}
+                <p className="text-sm font-semibold text-slate-700">No active projects</p>
+                <Link href="/project/new" className="text-xs font-medium text-indigo-600 hover:text-indigo-700 inline-flex items-center gap-1 mt-1">
+                  <Plus className="w-3.5 h-3.5" /> Start a project
+                </Link>
+              </div>
+            ) : (
+              <div className="rounded-2xl bg-white border border-slate-200 divide-y divide-slate-100 overflow-hidden">
+                {activeProjects.slice(0, 5).map(p => (
+                  <Link
+                    key={p.id}
+                    href={`/project/${p.id}`}
+                    className="flex items-center gap-3 p-4 hover:bg-slate-50/60 transition-colors group"
+                  >
+                    <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">{p.project_name}</p>
+                      <p className="text-xs text-slate-400 truncate">{p.client_name}</p>
                     </div>
-                  ) : null
-                })()}
+                    <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-400 flex-shrink-0" />
+                  </Link>
+                ))}
               </div>
             )}
-
-            {/* Unpaid invoices */}
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-              <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-slate-400" />
-                  <span className="text-sm font-semibold text-slate-800">Unpaid invoices</span>
-                </div>
-                <Link href="/invoices" className="text-xs text-indigo-600 hover:text-indigo-700 font-medium">View all</Link>
-              </div>
-              {!unpaidInvoices.length ? (
-                <div className="px-4 py-6 text-center">
-                  <p className="text-xs text-slate-400">No outstanding invoices.</p>
-                </div>
-              ) : (
-                <div className="divide-y divide-slate-100">
-                  {unpaidInvoices.slice(0, 5).map(inv => {
-                    const total    = (inv.items ?? []).reduce((s, i) => s + (i.amount ?? 0), 0)
-                    const isOverdue = inv.due_date && new Date(inv.due_date) < new Date()
-                    return (
-                      <Link key={inv.id} href={`/invoices/${inv.id}`}
-                        className="flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors group">
-                        <div className="min-w-0">
-                          <div className="text-xs font-medium text-slate-800 group-hover:text-indigo-600 transition-colors">
-                            {inv.invoice_number}
-                          </div>
-                          <div className="text-[10px] text-slate-400 mt-0.5 truncate max-w-[140px]">{inv.client_name}</div>
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          {isOverdue && (
-                            <span className="text-[10px] font-medium text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">Overdue</span>
-                          )}
-                          <span className="text-xs font-semibold text-slate-700">{fmt$(total)}</span>
-                        </div>
-                      </Link>
-                    )
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* New invoice shortcut */}
-            <Link href="/invoices/new"
-              className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-4 py-3.5 hover:border-slate-300 hover:shadow-sm transition-all group">
-              <div className="w-8 h-8 bg-slate-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-                <FileText className="w-4 h-4 text-slate-500 group-hover:text-indigo-600 transition-colors" />
-              </div>
-              <div>
-                <div className="text-sm font-medium text-slate-800">New invoice</div>
-                <div className="text-xs text-slate-400">Bill a client</div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-slate-300 ml-auto" />
-            </Link>
+          </section>
+          </div>
 
           </div>
+            </>
+          )}
         </div>
-
-        {/* Upgrade banner */}
-        {profile?.plan === 'free' && (
-          <div className="bg-indigo-600 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="text-sm font-semibold text-white">Go Pro — free during Beta</div>
-              <div className="text-xs text-indigo-200 mt-0.5">Unlimited projects, auto email delivery to clients, and white-label status pages.</div>
-            </div>
-            <Link href="/upgrade" className="flex-shrink-0">
-              <Button variant="secondary" size="sm" className="font-medium">Upgrade free</Button>
-            </Link>
-          </div>
-        )}
-
-      </div>
+      </DarkShell>
     </AppLayout>
   )
 }

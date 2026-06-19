@@ -76,7 +76,7 @@ export function FeaturesTabs() {
               <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded uppercase tracking-wider">Communication</span>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white leading-tight">No more manual status emails</h3>
               <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed font-medium">
-                Draft 3 accomplishments and any blockers. ClientPulse converts them into a beautiful, styled status portal and forwards it to your client's inbox immediately.
+                Draft 3 accomplishments and any blockers. Frevio converts them into a beautiful, styled status portal and forwards it to your client's inbox immediately.
               </p>
               <div className="space-y-2 pt-2 text-slate-600 dark:text-slate-400 text-xs font-semibold">
                 <div className="flex items-center gap-2">

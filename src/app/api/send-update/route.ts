@@ -80,7 +80,7 @@ export async function POST(request: Request) {
     </div>
   </div>
   <div class="footer">
-    Sent by ${esc(owner.name ?? 'your freelancer')} via ClientPulse
+    Sent by ${esc(owner.name ?? 'your freelancer')} via Frevio
   </div>
 </div>
 </body>
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
   const recipient = project.client_email ?? user.email!
 
   await resend.emails.send({
-    from: `${owner.name ?? 'ClientPulse'} <updates@clientpulse.app>`,
+    from: `${owner.name ?? 'Frevio'} <updates@frevio.cloud>`,
     to: [recipient],
     subject: `${project.project_name} — ${weekOf}`,
     html,

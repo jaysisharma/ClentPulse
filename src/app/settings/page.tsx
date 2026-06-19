@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
 import { Check, Upload } from 'lucide-react'
+import { PLAN_BLURB } from '@/lib/plans'
 
 const ACCENT_COLORS = [
   '#6366F1', '#8B5CF6', '#EC4899', '#EF4444',
@@ -20,6 +21,8 @@ export default function SettingsPage() {
   const [name, setName] = useState('')
   const [username, setUsername] = useState('')
   const [usernameError, setUsernameError] = useState('')
+  const [saveError, setSaveError] = useState('')
+  const [logoError, setLogoError] = useState('')
   const [accentColor, setAccentColor] = useState('#6366F1')
   const [plan, setPlan] = useState<'free' | 'pro'>('free')
   const [loading, setLoading] = useState(false)
@@ -31,18 +34,23 @@ export default function SettingsPage() {
   useEffect(() => () => { if (savedTimerRef.current) clearTimeout(savedTimerRef.current) }, [])
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [logoUploading, setLogoUploading] = useState(false)
-  const justUpgraded =
-    typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('upgraded') === '1'
+  // Resolved after mount, not during render — reading window.location during
+  // render makes the server (false) and client (true) disagree → hydration error.
+  const [justUpgraded, setJustUpgraded] = useState(false)
 
   useEffect(() => {
-    if (justUpgraded) window.history.replaceState({}, '', '/settings')
+    if (new URLSearchParams(window.location.search).get('upgraded') === '1') {
+      setJustUpgraded(true)
+      window.history.replaceState({}, '', '/settings')
+    }
 
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (!user) return
       setUserId(user.id)
       supabase.from('users').select('name, username, accent_color, plan, logo_url').eq('id', user.id).single()
-        .then(({ data }) => {
+        .then(({ data }: { data: any }) => {
           if (data) {
             setName(data.name ?? '')
             setUsername(data.username ?? '')
@@ -52,12 +60,13 @@ export default function SettingsPage() {
           }
         })
     })
-  }, [justUpgraded])
+  }, [])
 
   async function handleSave(e: { preventDefault(): void }) {
     e.preventDefault()
     setLoading(true)
     setUsernameError('')
+    setSaveError('')
     const slug = username.toLowerCase().replace(/[^a-z0-9_-]/g, '')
     if (username && slug !== username) {
       setUsernameError('Only lowercase letters, numbers, hyphens and underscores allowed.')
@@ -67,8 +76,10 @@ export default function SettingsPage() {
     const supabase = createClient()
     const { error } = await supabase.from('users').update({ name, accent_color: accentColor, username: slug || null }).eq('id', userId)
     setLoading(false)
-    if (error?.message?.includes('unique')) {
-      setUsernameError('That username is already taken.')
+    if (error) {
+      // Don't fake a "Saved" — only the unique-username case has a tailored hint.
+      if (error.message?.includes('unique')) setUsernameError('That username is already taken.')
+      else setSaveError('Could not save your changes. Please try again.')
       return
     }
     setSaved(true)
@@ -80,15 +91,16 @@ export default function SettingsPage() {
     const file = e.target.files?.[0]
     if (!file || !userId) return
     setLogoUploading(true)
+    setLogoError('')
     const supabase = createClient()
     const ext = file.name.split('.').pop()
     const path = `${userId}/logo.${ext}`
     const { error } = await supabase.storage.from('logos').upload(path, file, { upsert: true })
-    if (!error) {
-      const { data: { publicUrl } } = supabase.storage.from('logos').getPublicUrl(path)
-      await supabase.from('users').update({ logo_url: publicUrl }).eq('id', userId)
-      setLogoUrl(publicUrl)
-    }
+    if (error) { setLogoError('Could not upload your logo. Please try again.'); setLogoUploading(false); return }
+    const { data: { publicUrl } } = supabase.storage.from('logos').getPublicUrl(path)
+    const { error: updErr } = await supabase.from('users').update({ logo_url: publicUrl }).eq('id', userId)
+    if (updErr) { setLogoError('Logo uploaded but could not be saved. Please try again.'); setLogoUploading(false); return }
+    setLogoUrl(publicUrl)
     setLogoUploading(false)
   }
 
@@ -150,6 +162,7 @@ export default function SettingsPage() {
                   <p className="text-xs text-red-500 mt-1">{usernameError}</p>
                 )}
               </div>
+              {saveError && <p className="text-xs text-red-600">{saveError}</p>}
               <Button type="submit" loading={loading} size="sm">
                 {saved ? <><Check className="w-3.5 h-3.5" /> Saved</> : 'Save changes'}
               </Button>
@@ -202,6 +215,7 @@ export default function SettingsPage() {
                     disabled={logoUploading}
                   />
                 </label>
+                {logoError && <p className="text-xs text-red-600 mt-1.5">{logoError}</p>}
               </div>
               {plan === 'pro' && (
                 <Button size="sm" onClick={handleSave} loading={loading}>
@@ -225,9 +239,7 @@ export default function SettingsPage() {
                   <Badge variant={plan}>{plan === 'pro' ? 'Pro' : 'Free'}</Badge>
                 </div>
                 <p className="text-sm text-slate-500">
-                  {plan === 'pro'
-                    ? 'Unlimited projects, auto email sending, custom branding.'
-                    : 'Up to 3 projects, copy-paste email updates, public status page.'}
+                  {plan === 'pro' ? PLAN_BLURB.pro : PLAN_BLURB.free}
                 </p>
               </div>
               {plan === 'free' ? (

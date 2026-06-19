@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   CheckCircle2, Circle, Plus, Trash2, ClipboardList,
-  User, Users, ChevronDown, ChevronUp,
+  User, Users,
 } from 'lucide-react'
+import { CollapsibleCard } from './collapsible-card'
 
 interface ChecklistItem {
   id: string
@@ -34,7 +35,7 @@ const CLIENT_TEMPLATES = [
 export function KickoffChecklist({ projectId }: { projectId: string }) {
   const [items, setItems] = useState<ChecklistItem[]>([])
   const [userId, setUserId] = useState('')
-  const [open, setOpen] = useState(true)
+  const [loading, setLoading] = useState(true)
   const [addingFor, setAddingFor] = useState<'freelancer' | 'client' | null>(null)
   const [newTitle, setNewTitle] = useState('')
   const [saving, setSaving] = useState(false)
@@ -55,6 +56,7 @@ export function KickoffChecklist({ projectId }: { projectId: string }) {
         .order('created_at', { ascending: true })
       if (cancelled) return
       setItems((data as ChecklistItem[]) ?? [])
+      setLoading(false)
     }
 
     load()
@@ -101,94 +103,78 @@ export function KickoffChecklist({ projectId }: { projectId: string }) {
   const clientItems = items.filter(i => i.assigned_to === 'client')
   const totalDone   = items.filter(i => i.done).length
   const total       = items.length
+  const allCompleted = total > 0 && totalDone === total
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 mb-4 overflow-hidden">
-      {/* Header */}
-      <button
-        onClick={() => setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <ClipboardList className="w-4 h-4 text-indigo-500 flex-shrink-0" />
-          <span className="text-sm font-semibold text-slate-900">Kickoff Checklist</span>
-          {total > 0 && (
-            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-              totalDone === total
-                ? 'bg-emerald-50 text-emerald-700'
-                : 'bg-slate-100 text-slate-500'
-            }`}>
-              {totalDone}/{total}
-            </span>
-          )}
-        </div>
-        {open ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
-      </button>
-
-      {open && (
-        <div className="px-5 pb-5 border-t border-slate-100 pt-4 space-y-5">
-          {/* Progress bar */}
-          {total > 0 && (
-            <div className="space-y-1">
-              <div className="flex justify-between text-xs text-slate-400">
-                <span>{totalDone === total ? '🎉 All done — ready to start!' : `${total - totalDone} item${total - totalDone !== 1 ? 's' : ''} remaining`}</span>
-                <span>{Math.round((totalDone / total) * 100)}%</span>
-              </div>
-              <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                <div
-                  className="h-1.5 rounded-full transition-all duration-500 bg-indigo-500"
-                  style={{ width: `${Math.round((totalDone / total) * 100)}%` }}
-                />
-              </div>
+    <CollapsibleCard
+      key={loading ? 'loading' : 'loaded'}
+      icon={<ClipboardList className="w-4 h-4 text-slate-400 flex-shrink-0" />}
+      title="Kickoff Checklist"
+      meta={total > 0 ? `${totalDone}/${total} complete` : undefined}
+      defaultOpen={loading ? true : !allCompleted}
+    >
+      <div className="space-y-5">
+        {/* Progress bar */}
+        {total > 0 && (
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs text-slate-400">
+              <span>{totalDone === total ? '🎉 All done — ready to start!' : `${total - totalDone} item${total - totalDone !== 1 ? 's' : ''} remaining`}</span>
+              <span>{Math.round((totalDone / total) * 100)}%</span>
             </div>
-          )}
+            <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+              <div
+                className="h-1.5 rounded-full transition-all duration-500 bg-indigo-500"
+                style={{ width: `${Math.round((totalDone / total) * 100)}%` }}
+              />
+            </div>
+          </div>
+        )}
 
-          {/* Your tasks */}
-          <Section
-            label="Your tasks"
-            icon={<User className="w-3.5 h-3.5" />}
-            color="indigo"
-            items={myItems}
-            onToggle={toggle}
-            onRemove={remove}
-            onAdd={() => { setAddingFor('freelancer'); setShowTemplates(null) }}
-            onShowTemplates={() => setShowTemplates(showTemplates === 'freelancer' ? null : 'freelancer')}
-            showTemplates={showTemplates === 'freelancer'}
-            templates={FREELANCER_TEMPLATES}
-            onPickTemplate={t => addItem(t, 'freelancer')}
-            adding={addingFor === 'freelancer'}
-            newTitle={newTitle}
-            setNewTitle={setNewTitle}
-            onSubmit={() => addItem(newTitle, 'freelancer')}
-            onCancel={() => { setAddingFor(null); setNewTitle('') }}
-            saving={saving}
-            emptyText="Add things you need to do before starting work."
-          />
+        {/* Your tasks */}
+        <Section
+          label="Your tasks"
+          icon={<User className="w-3.5 h-3.5" />}
+          color="indigo"
+          items={myItems}
+          onToggle={toggle}
+          onRemove={remove}
+          onAdd={() => { setAddingFor('freelancer'); setShowTemplates(null) }}
+          onShowTemplates={() => setShowTemplates(showTemplates === 'freelancer' ? null : 'freelancer')}
+          showTemplates={showTemplates === 'freelancer'}
+          templates={FREELANCER_TEMPLATES}
+          onPickTemplate={t => addItem(t, 'freelancer')}
+          adding={addingFor === 'freelancer'}
+          newTitle={newTitle}
+          setNewTitle={setNewTitle}
+          onSubmit={() => addItem(newTitle, 'freelancer')}
+          onCancel={() => { setAddingFor(null); setNewTitle('') }}
+          saving={saving}
+          emptyText="Add things you need to do before starting work."
+        />
 
-          {/* Client tasks */}
-          <Section
-            label="Client tasks"
-            icon={<Users className="w-3.5 h-3.5" />}
-            color="violet"
-            items={clientItems}
-            onToggle={toggle}
-            onRemove={remove}
-            onAdd={() => { setAddingFor('client'); setShowTemplates(null) }}
-            onShowTemplates={() => setShowTemplates(showTemplates === 'client' ? null : 'client')}
-            showTemplates={showTemplates === 'client'}
-            templates={CLIENT_TEMPLATES}
-            onPickTemplate={t => addItem(t, 'client')}
-            adding={addingFor === 'client'}
-            newTitle={newTitle}
-            setNewTitle={setNewTitle}
-            onSubmit={() => addItem(newTitle, 'client')}
-            onCancel={() => { setAddingFor(null); setNewTitle('') }}
-            saving={saving}
-            emptyText="Add things the client needs to provide before you start."
-          />
-        </div>
-      )}
-    </div>
+        {/* Client tasks */}
+        <Section
+          label="Client tasks"
+          icon={<Users className="w-3.5 h-3.5" />}
+          color="violet"
+          items={clientItems}
+          onToggle={toggle}
+          onRemove={remove}
+          onAdd={() => { setAddingFor('client'); setShowTemplates(null) }}
+          onShowTemplates={() => setShowTemplates(showTemplates === 'client' ? null : 'client')}
+          showTemplates={showTemplates === 'client'}
+          templates={CLIENT_TEMPLATES}
+          onPickTemplate={t => addItem(t, 'client')}
+          adding={addingFor === 'client'}
+          newTitle={newTitle}
+          setNewTitle={setNewTitle}
+          onSubmit={() => addItem(newTitle, 'client')}
+          onCancel={() => { setAddingFor(null); setNewTitle('') }}
+          saving={saving}
+          emptyText="Add things the client needs to provide before you start."
+        />
+      </div>
+    </CollapsibleCard>
   )
 }
 

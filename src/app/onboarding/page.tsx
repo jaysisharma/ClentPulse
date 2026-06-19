@@ -9,14 +9,17 @@ import { useRouter } from 'next/navigation'
 import {
   User, FolderPlus, Link2, Check, ArrowRight,
   ArrowLeft, Clock, FileText, LayoutDashboard, Sparkles,
+  Palette, Wallet, Upload,
 } from 'lucide-react'
 
 const COLORS = ['#6366F1', '#8B5CF6', '#EC4899', '#22C55E', '#3B82F6', '#F97316']
 
 const STEPS = [
-  { icon: User,      label: 'Your name'     },
+  { icon: User,       label: 'Your name'     },
+  { icon: Palette,    label: 'Your brand'    },
   { icon: FolderPlus, label: 'First project' },
-  { icon: Link2,     label: 'You\'re in!'   },
+  { icon: Wallet,     label: 'Get paid'      },
+  { icon: Sparkles,   label: 'You\'re in!'   },
 ]
 
 // ── helpers ───────────────────────────────────────────────────────────────────
@@ -54,30 +57,53 @@ export default function OnboardingPage() {
     if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
   }, [])
 
-  // Step 1
+  // Step 1 — name
   const [name, setName] = useState('')
 
-  // Step 2
+  // Step 2 — brand
+  const [accentColor, setAccentColor] = useState(COLORS[0])
+  const [logoUrl, setLogoUrl]         = useState<string | null>(null)
+  const [logoUploading, setLogoUploading] = useState(false)
+  const [logoError, setLogoError]     = useState('')
+
+  // Step 3 — first project
   const [clientName, setClientName]   = useState('')
   const [clientEmail, setClientEmail] = useState('')
   const [projectName, setProjectName] = useState('')
   const [color, setColor]             = useState(COLORS[0])
 
-  // Step 3 (result)
+  // Step 4 — get paid
+  const [hourlyRate, setHourlyRate] = useState('')
+  const [budget, setBudget]         = useState('')
+
+  // Step 5 (result)
   const [projectSlug, setProjectSlug] = useState('')
   const [projectId, setProjectId]     = useState('')
   const [skipped, setSkipped]         = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    supabase.auth.getUser().then(({ data }: { data: any }) => {
+      const user = data?.user
       if (!user) { router.push('/auth/login'); return }
       setUserId(user.id)
-      supabase.from('users').select('name').eq('id', user.id).single().then(({ data }) => {
-        if (data?.name) setName(data.name)
-      })
+      supabase.from('users').select('name, accent_color, logo_url').eq('id', user.id).single()
+        .then(({ data }: { data: any }) => {
+          if (data?.name) setName(data.name)
+          if (data?.accent_color) setAccentColor(data.accent_color)
+          if (data?.logo_url) setLogoUrl(data.logo_url)
+        })
     })
   }, [router])
+
+  // Mark onboarding complete once the user reaches the final step — this covers
+  // both finishing the flow and skipping to the end. The auth redirect gate keys
+  // off this flag, so without it new users would be sent back here on next login.
+  useEffect(() => {
+    if (step !== 4 || !userId) return
+    const supabase = createClient()
+    supabase.from('users').update({ onboarded: true }).eq('id', userId).then(() => {})
+  }, [step, userId])
 
   // Animated step transition
   function goTo(target: number) {
@@ -96,6 +122,35 @@ export default function OnboardingPage() {
     await supabase.from('users').update({ name: name.trim() }).eq('id', userId)
     setLoading(false)
     goTo(1)
+  }
+
+  async function handleBrand(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    const supabase = createClient()
+    // Logo (if any) was already saved on upload; persist the accent choice here.
+    const { error: err } = await supabase.from('users').update({ accent_color: accentColor }).eq('id', userId)
+    setLoading(false)
+    if (err) { setError(err.message); return }
+    goTo(2)
+  }
+
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file || !userId) return
+    setLogoUploading(true)
+    setLogoError('')
+    const supabase = createClient()
+    const ext = file.name.split('.').pop()
+    const path = `${userId}/logo.${ext}`
+    const { error } = await supabase.storage.from('logos').upload(path, file, { upsert: true })
+    if (error) { setLogoError('Couldn’t upload your logo — you can add one later in Settings.'); setLogoUploading(false); return }
+    const { data: { publicUrl } } = supabase.storage.from('logos').getPublicUrl(path)
+    const { error: updErr } = await supabase.from('users').update({ logo_url: publicUrl }).eq('id', userId)
+    if (updErr) { setLogoError('Logo uploaded but not saved — try again or add it later in Settings.'); setLogoUploading(false); return }
+    setLogoUrl(publicUrl)
+    setLogoUploading(false)
   }
 
   async function handleStep2(e: React.FormEvent) {
@@ -123,12 +178,29 @@ export default function OnboardingPage() {
     setProjectId(data.id)
     setSkipped(false)
     setLoading(false)
-    goTo(2)
+    goTo(3)
   }
 
-  async function handleSkip() {
+  async function handleSkipProject() {
     setSkipped(true)
-    goTo(2)
+    goTo(4)
+  }
+
+  async function handleGetPaid(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    const supabase = createClient()
+    const { error: err } = await supabase
+      .from('projects')
+      .update({
+        hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
+        budget: budget ? parseFloat(budget) : null,
+      })
+      .eq('id', projectId)
+    setLoading(false)
+    if (err) { setError(err.message); return }
+    goTo(4)
   }
 
   const publicUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/p/${projectSlug}`
@@ -147,14 +219,14 @@ export default function OnboardingPage() {
 
       {/* Logo */}
       <div className="flex items-center gap-2 mb-10">
-        <img src="/logo.png" alt="ClientPulse Logo" className="w-9 h-9 rounded-xl object-cover" />
-        <span className="text-xl font-semibold text-slate-900">ClientPulse</span>
+        <img src="/logo.png" alt="Frevio Logo" className="w-9 h-9 rounded-xl object-cover" />
+        <span className="text-xl font-semibold text-slate-900">Frevio</span>
       </div>
 
       {/* Progress bar */}
-      <div className="flex items-center gap-3 mb-10">
+      <div className="flex items-center gap-2 sm:gap-3 mb-10">
         {STEPS.map((s, i) => (
-          <div key={i} className="flex items-center gap-3">
+          <div key={i} className="flex items-center gap-2 sm:gap-3">
             <div className={`flex items-center gap-2 text-sm font-medium transition-colors duration-200 ${
               i === step ? 'text-indigo-600' : i < step ? 'text-emerald-600' : 'text-slate-400'
             }`}>
@@ -165,10 +237,10 @@ export default function OnboardingPage() {
               }`}>
                 {i < step ? <Check className="w-3.5 h-3.5" /> : i + 1}
               </div>
-              <span className="hidden sm:block">{s.label}</span>
+              <span className="hidden md:block">{s.label}</span>
             </div>
             {i < STEPS.length - 1 && (
-              <div className={`w-8 h-px transition-colors duration-300 ${i < step ? 'bg-emerald-300' : 'bg-slate-200'}`} />
+              <div className={`w-5 sm:w-8 h-px transition-colors duration-300 ${i < step ? 'bg-emerald-300' : 'bg-slate-200'}`} />
             )}
           </div>
         ))}
@@ -206,11 +278,88 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* ── Step 2 — First project ─────────────────────────────────────── */}
+        {/* ── Step 2 — Brand ─────────────────────────────────────────────── */}
         {step === 1 && (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
             <button
               onClick={() => goTo(0)}
+              className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors mb-5"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Back
+            </button>
+
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: `${accentColor}1a` }}>
+              <Palette className="w-5 h-5" style={{ color: accentColor }} />
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 mb-1">Make it yours</h1>
+            <p className="text-slate-500 text-sm mb-6">
+              Pick an accent colour and add your logo — they brand your client status pages, invoices, and portal.
+            </p>
+
+            <form onSubmit={handleBrand} className="space-y-5">
+              {/* Accent color */}
+              <div>
+                <label className="text-sm font-medium text-slate-700 block mb-2">Accent colour</label>
+                <div className="flex gap-2.5 flex-wrap">
+                  {COLORS.map(c => (
+                    <button
+                      key={c} type="button" onClick={() => setAccentColor(c)}
+                      className="w-8 h-8 rounded-full transition-transform hover:scale-110 focus:outline-none"
+                      style={{ backgroundColor: c, outline: accentColor === c ? `3px solid ${c}` : 'none', outlineOffset: '2px' }}
+                      aria-label={`Accent ${c}`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Logo */}
+              <div>
+                <label className="text-sm font-medium text-slate-700 block mb-2">
+                  Logo <span className="text-slate-400 font-normal">(optional)</span>
+                </label>
+                <label className="flex items-center gap-3 border-2 border-dashed border-slate-200 rounded-xl p-4 text-sm text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors w-full cursor-pointer">
+                  {logoUrl ? (
+                    <img src={logoUrl} alt="Logo" className="h-8 w-auto object-contain rounded" />
+                  ) : (
+                    <Upload className="w-4 h-4 flex-shrink-0" />
+                  )}
+                  <span>{logoUploading ? 'Uploading…' : logoUrl ? 'Change logo' : 'Upload logo'}</span>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                    className="hidden"
+                    onChange={handleLogoUpload}
+                    disabled={logoUploading}
+                  />
+                </label>
+                {logoError && <p className="text-xs text-red-600 mt-1.5">{logoError}</p>}
+              </div>
+
+              {error && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>
+              )}
+
+              <Button type="submit" loading={loading} className="w-full justify-center">
+                Continue <ArrowRight className="w-4 h-4" />
+              </Button>
+            </form>
+
+            <div className="mt-4 text-center">
+              <button
+                onClick={() => goTo(2)}
+                className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                Skip — I&apos;ll set this up later
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Step 3 — First project ─────────────────────────────────────── */}
+        {step === 2 && (
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+            <button
+              onClick={() => goTo(1)}
               className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors mb-5"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back
@@ -267,24 +416,77 @@ export default function OnboardingPage() {
                 <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>
               )}
 
+              <div className="flex gap-3 pt-1">
+                <Button type="button" variant="secondary" onClick={handleSkipProject} className="justify-center">
+                  Skip for now
+                </Button>
+                <Button type="submit" loading={loading} className="flex-1 justify-center">
+                  Create project <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-slate-400 text-center">
+                No project yet? Skip and explore — you can add one anytime from the dashboard.
+              </p>
+            </form>
+          </div>
+        )}
+
+        {/* ── Step 4 — Get paid ──────────────────────────────────────────── */}
+        {step === 3 && (
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+            <button
+              onClick={() => goTo(2)}
+              className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors mb-5"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Back
+            </button>
+
+            <div className="w-11 h-11 bg-emerald-50 rounded-xl flex items-center justify-center mb-5">
+              <Wallet className="w-5 h-5 text-emerald-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-slate-900 mb-1">How do you bill this project?</h1>
+            <p className="text-slate-500 text-sm mb-6">
+              Set a rate or budget for <span className="font-medium text-slate-700">{projectName}</span> — it powers your earnings and billable-hours tracking. Both optional.
+            </p>
+
+            <form onSubmit={handleGetPaid} className="space-y-4">
+              <Input
+                label="Hourly rate (USD)"
+                type="number" min="0" step="0.01"
+                placeholder="150"
+                value={hourlyRate}
+                onChange={e => setHourlyRate(e.target.value)}
+              />
+              <Input
+                label="Project budget (USD)"
+                type="number" min="0" step="0.01"
+                placeholder="5000"
+                value={budget}
+                onChange={e => setBudget(e.target.value)}
+              />
+
+              {error && (
+                <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>
+              )}
+
               <Button type="submit" loading={loading} className="w-full justify-center">
-                Create project <ArrowRight className="w-4 h-4" />
+                Continue <ArrowRight className="w-4 h-4" />
               </Button>
             </form>
 
             <div className="mt-4 text-center">
               <button
-                onClick={handleSkip}
+                onClick={() => goTo(4)}
                 className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
               >
-                Skip for now — explore the dashboard first
+                Skip — set rates later
               </button>
             </div>
           </div>
         )}
 
-        {/* ── Step 3 — Done ──────────────────────────────────────────────── */}
-        {step === 2 && (
+        {/* ── Step 5 — Done ──────────────────────────────────────────────── */}
+        {step === 4 && (
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
 
             {/* Header */}
@@ -328,7 +530,7 @@ export default function OnboardingPage() {
                   <ActionCard
                     icon={<LayoutDashboard className="w-4 h-4 text-slate-500" />}
                     label="Explore the dashboard"
-                    sub="See everything ClientPulse can do"
+                    sub="See everything Frevio can do"
                     onClick={() => router.push('/dashboard')}
                   />
                   <ActionCard

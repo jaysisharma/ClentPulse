@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       if (invoiceId) {
         const { error } = await supabase
           .from('invoices')
-          .update({ status: 'paid' })
+          .update({ status: 'paid', paid_at: new Date().toISOString() })
           .eq('id', invoiceId)
         if (error) {
           console.error('Failed to update invoice status:', error)
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
       const name = esc(userData.name ?? 'there')
 
       const { error: emailError } = await resend.emails.send({
-        from: 'ClientPulse <billing@clientpulse.app>',
+        from: 'Frevio <billing@frevio.cloud>',
         to: [userData.email],
         subject: 'Action required: update your payment method',
         html: `
@@ -131,7 +131,7 @@ export async function POST(request: Request) {
 <div style="max-width:480px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:32px">
   <h1 style="color:#0f172a;font-size:20px;margin:0 0 8px">Payment failed</h1>
   <p style="color:#475569;font-size:15px">Hi ${name},</p>
-  <p style="color:#475569;font-size:15px">We weren't able to process your ClientPulse Pro subscription payment. Please update your payment method to keep your Pro access.</p>
+  <p style="color:#475569;font-size:15px">We weren't able to process your Frevio Pro subscription payment. Please update your payment method to keep your Pro access.</p>
   <div style="margin:28px 0;text-align:center">
     <a href="${portalUrl}" style="background:#6366F1;color:white;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:600;font-size:14px;display:inline-block">
       Update payment method →

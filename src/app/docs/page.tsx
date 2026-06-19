@@ -26,11 +26,13 @@ export default async function DocsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: docs } = await supabase
+  const { data: docs, error } = await supabase
     .from('documents')
     .select('*')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+
+  if (error) throw new Error(`Failed to load documents: ${error.message}`)
 
   const proposals     = (docs ?? []).filter(d => d.type === 'proposal')
   const agreements    = (docs ?? []).filter(d => d.type === 'agreement')

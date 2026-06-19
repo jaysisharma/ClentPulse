@@ -79,7 +79,7 @@ export function DashboardMockup() {
             <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
           </div>
           <div className="font-mono text-[9px] bg-slate-950 px-3 py-1 rounded text-slate-500 select-none">
-            clientpulse.com/dashboard
+            frevio.cloud/dashboard
           </div>
         </div>
         
@@ -91,7 +91,7 @@ export function DashboardMockup() {
             <div className="space-y-6">
               {/* Logo and Workspace */}
               <div className="flex items-center gap-2 px-2">
-                <img src="/logo.png" alt="ClientPulse" className="w-5 h-5 rounded object-cover" />
+                <img src="/logo.png" alt="Frevio" className="w-5 h-5 rounded object-cover" />
                 <span className="font-bold text-xs text-slate-200">Creative Studio</span>
               </div>
               
@@ -384,11 +384,11 @@ export function DashboardMockup() {
             {/* Upgrade banner */}
             <div className="bg-indigo-600 rounded-xl p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-shrink-0 mt-4">
               <div>
-                <div className="text-xs md:text-sm font-semibold text-white">Go Pro — free during Beta</div>
+                <div className="text-xs md:text-sm font-semibold text-white">Upgrade to Pro</div>
                 <div className="text-[10px] text-indigo-200 mt-0.5">Unlimited projects, auto email delivery to clients, and white-label status pages.</div>
               </div>
               <div className="inline-flex items-center bg-white hover:bg-slate-100 text-indigo-600 text-[10px] font-bold uppercase tracking-wider px-3.5 py-2 rounded-lg cursor-pointer transition-colors self-start sm:self-auto select-none">
-                Upgrade free
+                Upgrade
               </div>
             </div>
 

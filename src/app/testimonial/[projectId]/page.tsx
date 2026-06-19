@@ -9,20 +9,23 @@ export default function TestimonialPage({ params }: { params: Promise<{ projectI
   const { projectId } = use(params)
   const [project, setProject] = useState<{ project_name: string; client_name: string } | null>(null)
   const [owner, setOwner] = useState<{ name: string | null; accent_color: string | null } | null>(null)
+  const [ownerId, setOwnerId] = useState<string | null>(null)
   const [clientName, setClientName] = useState('')
   const [rating, setRating] = useState(0)
   const [hover, setHover] = useState(0)
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.from('projects').select('project_name,client_name,user_id').eq('id', projectId).single().then(async ({ data: p }) => {
+    supabase.from('projects').select('project_name,client_name,user_id').eq('id', projectId).single().then(async ({ data: p }: { data: any }) => {
       if (!p) return
       setProject(p)
       setClientName(p.client_name)
-      const { data: u } = await supabase.from('users').select('name,accent_color').eq('id', p.user_id).single()
+      setOwnerId(p.user_id)   // keep so submit() doesn't have to re-query
+      const { data: u }: { data: any } = await supabase.from('users').select('name,accent_color').eq('id', p.user_id).single()
       setOwner(u)
     })
   }, [projectId])
@@ -32,10 +35,18 @@ export default function TestimonialPage({ params }: { params: Promise<{ projectI
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!rating) return
+    if (!ownerId) { setError('We couldn’t load this project. Please refresh and try again.'); return }
     setLoading(true)
+    setError('')
     const supabase = createClient()
-    await supabase.from('testimonials').insert({ project_id: projectId, user_id: (await supabase.from('projects').select('user_id').eq('id', projectId).single()).data?.user_id, client_name: clientName, rating, content })
-    setLoading(false); setDone(true)
+    const { error: insErr } = await supabase
+      .from('testimonials')
+      .insert({ project_id: projectId, user_id: ownerId, client_name: clientName, rating, content })
+    setLoading(false)
+    // Only show the success screen if it actually saved — otherwise the client
+    // walks away thinking they left a review that never reached the freelancer.
+    if (insErr) { setError('Something went wrong submitting your feedback. Please try again.'); return }
+    setDone(true)
   }
 
   if (done) return (
@@ -99,6 +110,9 @@ export default function TestimonialPage({ params }: { params: Promise<{ projectI
               />
             </div>
 
+            {error && (
+              <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>
+            )}
             <Button type="submit" loading={loading} disabled={!rating} className="w-full justify-center">
               Submit testimonial
             </Button>

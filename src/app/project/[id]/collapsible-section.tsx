@@ -1,0 +1,45 @@
+'use client'
+
+import { useState } from 'react'
+import { ChevronDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+// A section with a clickable header that collapses its body. The title/count and
+// an optional right-aligned action (e.g. a "New" button) stay visible when
+// collapsed, so the page reads as a tidy list of headers you can open on demand.
+export function CollapsibleSection({
+  title,
+  count,
+  action,
+  defaultOpen = true,
+  children,
+}: {
+  title: string
+  count?: number
+  action?: React.ReactNode
+  defaultOpen?: boolean
+  children: React.ReactNode
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+
+  return (
+    <section>
+      <div className="flex items-center justify-between mb-4">
+        <button
+          type="button"
+          onClick={() => setOpen(o => !o)}
+          aria-expanded={open}
+          className="group inline-flex items-center gap-2 -ml-1.5 rounded-lg px-1.5 py-1 hover:bg-slate-100/70 transition-colors cursor-pointer"
+        >
+          <ChevronDown
+            className={cn('w-4 h-4 text-slate-400 transition-transform duration-200', open ? '' : '-rotate-90')}
+          />
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight">{title}</h2>
+          {count != null && <span className="text-sm font-medium text-slate-400">{count}</span>}
+        </button>
+        {action && <div className="flex-shrink-0">{action}</div>}
+      </div>
+      {open && <div className="animate-fade-in">{children}</div>}
+    </section>
+  )
+}

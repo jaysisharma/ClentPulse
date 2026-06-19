@@ -26,7 +26,7 @@ export default function ContractSignPage({ params }: { params: Promise<{ id: str
   useEffect(() => {
     const supabase = createClient()
     supabase.from('contracts').select('*, projects(project_name,client_name), users(name,accent_color)').eq('id', id).single()
-      .then(({ data }) => { setContract(data); setLoading(false) })
+      .then(({ data }: { data: any }) => { setContract(data); setLoading(false) })
   }, [id])
 
   if (loading) return <div className="min-h-screen bg-slate-50 flex items-center justify-center text-sm text-slate-400">Loading…</div>

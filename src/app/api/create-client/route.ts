@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   if (error) {
     if (error.message.toLowerCase().includes('already registered')) {
       return NextResponse.json({
-        error: 'This client already has a ClientPulse account. Share the login link with them instead.',
+        error: 'This client already has a Frevio account. Share the login link with them instead.',
         existed: true,
         loginUrl: `${process.env.NEXT_PUBLIC_APP_URL}/client/login`,
       }, { status: 409 })

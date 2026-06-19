@@ -1,4 +1,4 @@
-# ClientPulse — Feature Tracker
+# Frevio — Feature Tracker
 
 > Status: ✅ Done · 📋 Planned
 
@@ -138,7 +138,7 @@
 ### Batch 5 — Revenue & branding
 | # | Feature | Status | Notes |
 |---|---|---|---|
-| 9 | **White-label Pro** — hide "Powered by ClientPulse" footer on status pages | ✅ Done | Conditionally rendered based on `owner.plan` on status page |
+| 9 | **White-label Pro** — hide "Powered by Frevio" footer on status pages | ✅ Done | Conditionally rendered based on `owner.plan` on status page |
 | 10 | **Annual billing option** — Monthly $12 / Annual $99 toggle on upgrade page | ✅ Done | Toggle UI on upgrade page with savings callout |
 
 ### Batch 6 — Portfolio & docs
@@ -165,7 +165,7 @@
 - Custom domain for status pages (`status.yourdomain.com`)
 - Multi-client per project (CC multiple emails)
 - Slack / Discord notifications for new feedback
-- Referral / UTM tracking on "Powered by ClientPulse" footer
+- Referral / UTM tracking on "Powered by Frevio" footer
 
 ---
 
