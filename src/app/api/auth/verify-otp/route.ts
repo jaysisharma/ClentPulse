@@ -35,9 +35,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Verification code has expired. Please request a new one.' }, { status: 400 })
     }
 
-    // 3. Validate code match
+    // 3. Validate code match and rate-limit incorrect attempts
     if (record.code !== cleanCode) {
-      return NextResponse.json({ error: 'Invalid verification code.' }, { status: 400 })
+      const nextFailed = (record.failed_verifications || 0) + 1
+      
+      if (nextFailed >= 3) {
+        // Delete the code so it is completely invalidated
+        await supabaseAdmin.from('otp_codes').delete().eq('email', cleanEmail)
+        return NextResponse.json(
+          { error: 'Too many incorrect attempts. This code has been invalidated. Please request a new one.' },
+          { status: 400 }
+        )
+      }
+
+      // Update failed attempts count
+      await supabaseAdmin
+        .from('otp_codes')
+        .update({ failed_verifications: nextFailed })
+        .eq('email', cleanEmail)
+
+      const attemptsRemaining = 3 - nextFailed
+      return NextResponse.json(
+        { error: `Invalid verification code. You have ${attemptsRemaining} attempts remaining.` },
+        { status: 400 }
+      )
     }
 
     // 4. Invalidate / delete the verified OTP code
@@ -54,7 +75,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: linkError.message }, { status: 400 })
     }
 
-    const hashedToken = linkData.properties?.hashed_token || linkData.properties?.token_hash
+    const hashedToken = linkData.properties?.hashed_token
 
     if (!hashedToken) {
       console.error('[Verify OTP] Token hash missing from Supabase response', linkData)

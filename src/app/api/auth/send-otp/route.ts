@@ -14,15 +14,22 @@ export async function POST(request: Request) {
     const cleanEmail = email.trim().toLowerCase()
     const supabaseAdmin = createAdminClient()
 
-    // 1. Enforce manual rate limiting: check if a code was created in the last 60 seconds
+    const now = new Date()
+    const fiveMinutes = 5 * 60 * 1000
+
+    // 1. Enforce manual rate limiting
     const { data: existing } = await supabaseAdmin
       .from('otp_codes')
-      .select('created_at')
+      .select('created_at, window_start, attempts_count')
       .eq('email', cleanEmail)
       .maybeSingle()
 
+    let attemptsCount = 1
+    let windowStart = now.toISOString()
+
     if (existing) {
-      const timeSinceCreation = Date.now() - new Date(existing.created_at).getTime()
+      // 1a. Cooldown check: 60 seconds between requests
+      const timeSinceCreation = now.getTime() - new Date(existing.created_at).getTime()
       if (timeSinceCreation < 60000) {
         const waitTime = Math.ceil((60000 - timeSinceCreation) / 1000)
         return NextResponse.json(
@@ -30,20 +37,42 @@ export async function POST(request: Request) {
           { status: 429 }
         )
       }
+
+      // 1b. 5-minute window check: max 2 attempts
+      const timeSinceWindowStart = now.getTime() - new Date(existing.window_start).getTime()
+      if (timeSinceWindowStart < fiveMinutes) {
+        if (existing.attempts_count >= 2) {
+          const waitTimeSeconds = Math.ceil((fiveMinutes - timeSinceWindowStart) / 1000)
+          const waitTimeMinutes = Math.ceil(waitTimeSeconds / 60)
+          return NextResponse.json(
+            { error: `Too many login attempts. Please wait ${waitTimeMinutes} minutes before requesting another code.` },
+            { status: 429 }
+          )
+        }
+        attemptsCount = existing.attempts_count + 1
+        windowStart = existing.window_start
+      } else {
+        // Window expired, reset window and count
+        attemptsCount = 1
+        windowStart = now.toISOString()
+      }
     }
 
     // 2. Generate a 6-digit verification code
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString()
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000).toISOString() // 5 minutes validity
+    const expiresAt = new Date(now.getTime() + 5 * 60 * 1000).toISOString() // 5 minutes validity
 
-    // 3. Upsert the code in public.otp_codes
+    // 3. Upsert the code and rate limit state in public.otp_codes
     const { error: dbError } = await supabaseAdmin
       .from('otp_codes')
       .upsert({
         email: cleanEmail,
         code: otpCode,
-        created_at: new Date().toISOString(),
-        expires_at: expiresAt
+        created_at: now.toISOString(),
+        expires_at: expiresAt,
+        attempts_count: attemptsCount,
+        window_start: windowStart,
+        failed_verifications: 0
       }, { onConflict: 'email' })
 
     if (dbError) {
