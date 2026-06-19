@@ -288,7 +288,7 @@ export default function TimePage() {
     setStopping(true)
     setStopError('')
     const rawHours = hoursFromTimer(timer.started_at)
-    const hours = Math.max(0.01, Math.round(rawHours * 100) / 100)
+    const hours = Math.max(0.000278, rawHours)
     const supabase = createClient()
     // Persist the entry FIRST so a failure never loses tracked time — the timer
     // stays running and the user can retry. Only delete the timer once the

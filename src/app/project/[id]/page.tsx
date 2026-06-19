@@ -70,7 +70,13 @@ export default async function ProjectPage({
   const publicUrl   = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/p/${project.slug}`
   const invoiced    = (invoices ?? []).flatMap(i => i.items ?? []).reduce((s: number, x: { amount: number }) => s + (x.amount ?? 0), 0)
   const hours       = (timeEntries ?? []).reduce((s, e) => s + (e.hours ?? 0), 0)
-  const hoursLabel  = hours % 1 === 0 ? `${hours}h` : `${hours.toFixed(1)}h`
+  const hoursLabel = hours === 0
+    ? '0h'
+    : hours < 0.05
+    ? `${Math.round(hours * 3600)}s`
+    : hours % 1 === 0
+    ? `${hours}h`
+    : `${hours.toFixed(1)}h`
   const sentUpdates = (updates ?? []).filter(u => u.sent_at).length
 
   // ── Attention strip: surface here what the projects list flags ──────────

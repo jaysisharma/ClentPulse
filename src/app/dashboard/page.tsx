@@ -57,6 +57,9 @@ function fmtHours(h: number) {
   const parts: string[] = []
   if (hrs  > 0) parts.push(`${hrs}h`)
   if (mins > 0) parts.push(`${mins}m`)
+  if (parts.length === 0 && totalSecs > 0) {
+    return `${totalSecs}s`
+  }
   if (parts.length === 0) parts.push('0m')
   return parts.join(' ')
 }
