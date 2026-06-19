@@ -210,7 +210,7 @@ export default async function DashboardPage() {
   }))
 
   return (
-    <AppLayout user={profile ? { name: profile.name ?? null, plan: profile.plan as 'free' | 'pro' } : undefined}>
+    <AppLayout dark user={profile ? { name: profile.name ?? null, plan: profile.plan as 'free' | 'pro' } : undefined}>
       <DarkShell dark>
         <div className="relative z-10 space-y-8 pb-10">
           <UpgradeToast />

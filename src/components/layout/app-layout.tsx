@@ -10,9 +10,11 @@ import { ProjectMessages } from '@/components/project-messages'
 export function AppLayout({
   children,
   user,
+  dark = false,
 }: {
   children: React.ReactNode
   user?: { name: string | null; plan: 'free' | 'pro' }
+  dark?: boolean
 }) {
   const [open, setOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -120,7 +122,7 @@ export function AppLayout({
   const totalUnread = Object.values(unreadCounts).reduce((a, b) => a + b, 0)
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className={`flex min-h-screen ${dark ? 'bg-slate-950' : 'bg-slate-50'}`}>
 
       {/* Mobile overlay */}
       {open && (
@@ -136,21 +138,21 @@ export function AppLayout({
       </div>
 
       {/* Mobile top bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 z-20 print:hidden">
+      <div className={`lg:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-20 print:hidden border-b ${dark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
         <button
           onClick={() => setOpen(o => !o)}
-          className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+          className={`p-2 rounded-lg transition-colors ${dark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-100'}`}
           aria-label="Toggle menu"
         >
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
         <Link href="/dashboard" className="flex items-center gap-2">
           <img src="/logo.svg" alt="Frevio" className="w-7 h-7" />
-          <span className="font-semibold text-slate-900 text-sm">Frevio</span>
+          <span className={`font-semibold text-sm ${dark ? 'text-white' : 'text-slate-900'}`}>Frevio</span>
         </Link>
         <button
           onClick={() => setDrawerOpen(true)}
-          className="relative p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+          className={`relative p-2 rounded-lg transition-colors ${dark ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-100'}`}
           aria-label="Open messages"
         >
           <MessageSquare className="w-5 h-5" />
@@ -166,7 +168,7 @@ export function AppLayout({
       <div className="hidden lg:block fixed top-6 right-8 z-30">
         <button
           onClick={() => setDrawerOpen(true)}
-          className="relative p-2.5 rounded-xl bg-white border border-slate-200 shadow-sm text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-all hover:shadow-md flex items-center justify-center cursor-pointer"
+          className={`relative p-2.5 rounded-xl border shadow-sm transition-all hover:shadow-md flex items-center justify-center cursor-pointer ${dark ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300'}`}
           aria-label="Open messages"
         >
           <MessageSquare className="w-5 h-5" />
