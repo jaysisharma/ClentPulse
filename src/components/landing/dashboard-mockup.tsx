@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   Clock, Folder, FileText, Users, TrendingUp, Search, Bell,
   Plus, AlertCircle, Timer, CheckCircle2, Send,
@@ -8,68 +8,80 @@ import {
 } from 'lucide-react'
 
 export function DashboardMockup() {
-  const [scrollProgress, setScrollProgress] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const glowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return
-      const rect = containerRef.current.getBoundingClientRect()
-      const viewportHeight = window.innerHeight
+    let raf = 0
 
-      // Absolute top of the element relative to the document
-      const absoluteTop = rect.top + window.scrollY
-      const scrollTop = window.scrollY
-
-      // Animation starts when the top of the element enters the bottom 90% of the viewport,
-      // and completes when it reaches 45% of the viewport (near the center of the screen).
-      // This prevents issues where the page bottom halts scrolling before expansion finishes.
-      const startScroll = absoluteTop - viewportHeight
-      const endScroll = absoluteTop - (viewportHeight * 0.45)
-
-      const progress = Math.max(0, Math.min(1, (scrollTop - startScroll) / (endScroll - startScroll)))
-      setScrollProgress(progress)
+    // Write scroll-driven styles straight to the DOM (no React re-render per
+    // frame) and with NO CSS transition — the scroll position itself provides
+    // the continuity, so the mockup tracks the scroll 1:1 instead of lerping
+    // toward a moving target (the source of the lag).
+    const apply = (p: number) => {
+      const container = containerRef.current
+      if (!container) return
+      container.style.width = `${80 + p * 20}vw`        // 80vw → 100vw
+      container.style.height = `${65 + p * 35}vh`       // 65vh → 100vh
+      container.style.paddingTop = `${48 - p * 48}px`   // 48px → 0
+      container.style.transform = `translateX(-50%) scale(${0.95 + p * 0.05})`
+      container.style.opacity = `${0.85 + p * 0.15}`
+      if (cardRef.current) cardRef.current.style.borderRadius = `${24 - p * 24}px`
+      if (glowRef.current) glowRef.current.style.opacity = `${1 - p}`
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    handleScroll()
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const update = () => {
+      raf = 0
+      if (!containerRef.current) return
+      const rect = containerRef.current.getBoundingClientRect()
+      const vh = window.innerHeight
+      const absoluteTop = rect.top + window.scrollY
+      // Starts when the top enters the viewport bottom, completes near center.
+      const startScroll = absoluteTop - vh
+      const endScroll = absoluteTop - vh * 0.45
+      const p = Math.max(0, Math.min(1, (window.scrollY - startScroll) / (endScroll - startScroll)))
+      apply(p)
+    }
 
-  // Calculate dynamic properties based on scroll progress
-  const widthVal = 80 + scrollProgress * 20; // Goes from 80vw to 100vw
-  const heightVal = 65 + scrollProgress * 35; // Goes from 65vh to 100vh
-  const paddingTop = 48 - scrollProgress * 48; // Padding-top transitions from 48px to 0px
-  const borderRadius = 24 - scrollProgress * 24; // Goes from 24px to 0px
-  const scale = 0.95 + scrollProgress * 0.05; // Subtle scale from 0.95 to 1
-  const opacity = 0.85 + scrollProgress * 0.15; // Opacity from 0.85 to 1
+    // Coalesce scroll/resize bursts into one update per animation frame.
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    update()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [])
 
   return (
     <div
       ref={containerRef}
       className="relative origin-top z-30"
       style={{
-        width: `${widthVal}vw`,
-        height: `${heightVal}vh`,
-        paddingTop: `${paddingTop}px`,
+        width: '80vw',
+        height: '65vh',
+        paddingTop: '48px',
         left: '50%',
-        transform: `translateX(-50%) scale(${scale})`,
-        opacity: opacity,
-        transition: 'width 0.25s cubic-bezier(0.16, 1, 0.3, 1), height 0.25s cubic-bezier(0.16, 1, 0.3, 1), padding-top 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+        transform: 'translateX(-50%) scale(0.95)',
+        opacity: 0.85,
+        willChange: 'width, height, transform',
       }}
     >
       {/* Ambient Glow behind Mockup (fade out when full screen) */}
       <div
-        className="absolute inset-0 bg-indigo-500/5 dark:bg-indigo-500/10 blur-3xl -z-10 rounded-3xl transition-opacity duration-300 pointer-events-none"
-        style={{ opacity: 1 - scrollProgress }}
+        ref={glowRef}
+        className="absolute inset-0 bg-indigo-500/5 dark:bg-indigo-500/10 blur-3xl -z-10 rounded-3xl pointer-events-none"
+        style={{ opacity: 1 }}
       />
 
       <div
+        ref={cardRef}
         className="bg-slate-900 text-white overflow-hidden border border-slate-800 shadow-2xl p-1 bg-gradient-to-b from-slate-800 to-slate-950 flex flex-col h-full w-full"
-        style={{
-          borderRadius: `${borderRadius}px`,
-          transition: 'border-radius 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-        }}
+        style={{ borderRadius: '24px' }}
       >
         {/* Header bar */}
         <div className="bg-slate-800/80 px-4 py-2 flex items-center justify-between text-xs text-slate-400 border-b border-slate-900 flex-shrink-0">
