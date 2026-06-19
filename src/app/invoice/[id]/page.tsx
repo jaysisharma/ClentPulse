@@ -3,6 +3,43 @@ import { notFound } from 'next/navigation'
 import { InvoicePrint } from '@/app/invoices/[id]/invoice-print'
 import { PayNowButton } from './pay-button'
 import { CheckCircle2 } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data: invoice } = await supabase
+    .from('invoices')
+    .select('id, user_id')
+    .eq('id', id)
+    .single()
+
+  if (!invoice) {
+    return {
+      title: 'Invoice | Frevio',
+      robots: { index: false, follow: false }
+    }
+  }
+
+  const { data: owner } = await supabase
+    .from('users')
+    .select('name')
+    .eq('id', invoice.user_id)
+    .single()
+
+  return {
+    title: `Invoice from ${owner?.name ?? 'Freelancer'} | Frevio`,
+    description: `Pay invoice securely online via Stripe.`,
+    robots: {
+      index: false,
+      follow: false
+    }
+  }
+}
 
 export default async function PublicInvoicePage({
   params,

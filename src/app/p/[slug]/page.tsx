@@ -7,6 +7,35 @@ import { FeedbackWidget } from './feedback-widget'
 import { ApprovalCard } from './approval-actions'
 import { UpdateCommentForm } from './update-comment-form'
 import { ClientChecklist } from './client-checklist'
+import type { Metadata } from 'next'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}): Promise<Metadata> {
+  const { slug } = await params
+  const supabase = await createClient()
+  const { data: projectRows } = await supabase
+    .rpc('get_project_by_slug', { p_slug: slug })
+  const project = projectRows?.[0] ?? null
+
+  if (!project) {
+    return {
+      title: 'Project Status | Frevio',
+      robots: { index: false, follow: false }
+    }
+  }
+
+  return {
+    title: `${project.project_name} — Project Updates | Frevio`,
+    description: `Track milestones, updates, and deliverables for ${project.project_name} on Frevio.`,
+    robots: {
+      index: false,
+      follow: false
+    }
+  }
+}
 
 export default async function PublicProjectPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

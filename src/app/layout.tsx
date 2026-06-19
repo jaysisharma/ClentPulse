@@ -9,6 +9,39 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Frevio — Weekly Project Updates for Freelancers",
   description: "Send beautiful weekly project updates to clients with one click. Stop writing status emails manually.",
+  keywords: [
+    "freelancer client portal",
+    "project tracking for agencies",
+    "client collaboration dashboard",
+    "freelance invoicing software",
+    "freelance time tracking",
+    "shareable contracts and proposals",
+    "client feedback portal"
+  ],
+  authors: [{ name: "Frevio Team", url: "https://frevio.cloud" }],
+  metadataBase: new URL("https://frevio.cloud"),
+  openGraph: {
+    title: "Frevio — Weekly Project Updates for Freelancers",
+    description: "Send beautiful weekly project updates to clients with one click. Stop writing status emails manually.",
+    url: "https://frevio.cloud",
+    siteName: "Frevio",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/logo.svg",
+        width: 512,
+        height: 512,
+        alt: "Frevio Logo"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary",
+    title: "Frevio — Weekly Project Updates for Freelancers",
+    description: "Send beautiful weekly project updates to clients with one click. Stop writing status emails manually.",
+    images: ["/logo.svg"]
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

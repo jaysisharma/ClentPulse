@@ -1,6 +1,37 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { Star, Briefcase, Quote, Mail, Code2, Globe, Play, ExternalLink } from 'lucide-react'
+import type { Metadata } from 'next'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data: owner } = await supabase
+    .from('users')
+    .select('name, portfolio_bio')
+    .eq('id', id)
+    .single()
+
+  if (!owner?.name) {
+    return {
+      title: 'Portfolio | Frevio',
+    }
+  }
+
+  return {
+    title: `${owner.name} — Portfolio | Frevio`,
+    description: owner.portfolio_bio || `View work, completed projects, and client testimonials for ${owner.name} on Frevio.`,
+    openGraph: {
+      title: `${owner.name} — Portfolio | Frevio`,
+      description: owner.portfolio_bio || `View work, completed projects, and client testimonials for ${owner.name} on Frevio.`,
+      type: 'profile'
+    }
+  }
+}
 
 interface PortfolioItem {
   id: string; title: string; description: string | null
