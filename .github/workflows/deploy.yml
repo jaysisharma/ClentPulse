@@ -1,0 +1,25 @@
+name: Deploy
+
+# Deploys to the EC2 box via a self-hosted runner living on that box.
+# The runner pulls jobs over outbound HTTPS, so no inbound SSH/ports are opened.
+# Secrets stay in ~/frevio/.env on the server — never in this repo or GitHub.
+
+on:
+  push:
+    branches: [main] # change to your production branch if different
+  workflow_dispatch: {} # allows manual "Run workflow" from the Actions tab
+
+# Never run two deploys at once; cancel an in-progress one if a newer push lands.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Must match the labels you give the runner during ./config.sh
+    runs-on: [self-hosted, frevio]
+    steps:
+      - name: Pull, build, and reload
+        run: |
+          cd ~/frevio
+          bash deploy/deploy.sh

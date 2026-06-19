@@ -54,7 +54,12 @@
       "Bash(perl -i -pe 's/Deploying ClientPulse/Deploying Frevio/; s/ClientPulse <digest/Frevio <digest/; s{~/clientpulse}{~/frevio}g; s{/home/ubuntu/clientpulse}{/home/ubuntu/frevio}g; s/clientpulse # verify/frevio # verify/; s/pm2 \\(logs|reload|restart\\) clientpulse/pm2 $1 frevio/g; s{git clone <your-repo-url> ~/frevio}{git clone <your-repo-url> ~/frevio}' DEPLOY-EC2.md)",
       "Bash(perl -i -pe \"s/name: 'clientpulse'/name: 'frevio'/; s{/home/ubuntu/clientpulse}{/home/ubuntu/frevio}\" deploy/ecosystem.config.js)",
       "Bash(perl -i -pe 's/Redeploy ClientPulse/Redeploy Frevio/; s/pm2 reload clientpulse/pm2 reload frevio/' deploy/deploy.sh)",
-      "Bash(perl -i -pe 's/ClientPulse/Frevio/g' deploy/ecosystem.config.js deploy/Caddyfile FEATURES.md DESIGN.md)"
+      "Bash(perl -i -pe 's/ClientPulse/Frevio/g' deploy/ecosystem.config.js deploy/Caddyfile FEATURES.md DESIGN.md)",
+      "Bash(openssl rand *)",
+      "Bash(echo \"CRON_SECRET=$\\(openssl rand -hex 32\\)\")",
+      "Bash(git rev-list *)",
+      "Bash(git commit -q -m 'ci: add self-hosted GitHub Actions deploy workflow *)",
+      "Bash(git merge *)"
     ],
     "additionalDirectories": [
       "/tmp"
