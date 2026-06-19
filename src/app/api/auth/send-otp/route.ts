@@ -81,8 +81,8 @@ export async function POST(request: Request) {
     }
 
     // 4. Send the OTP email using Resend
-    // Use onboarding@resend.dev if a custom verified domain is not active in Resend dashboard
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Frevio <onboarding@resend.dev>'
+    // Use login@frevio.cloud as the verified domain is active in Resend dashboard
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Frevio <login@frevio.cloud>'
     
     const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 40px auto; padding: 32px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
