@@ -55,11 +55,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 try {
                   console.log('[Init Script] Starting...');
                   const theme = localStorage.getItem('theme');
-                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                   console.log('[Init Script] Stored theme:', theme);
-                  console.log('[Init Script] Prefers dark:', prefersDark);
 
-                  const isDark = theme === 'dark' || (!theme && prefersDark);
+                  const isDark = theme === 'dark';
                   console.log('[Init Script] Should be dark:', isDark);
 
                   if (isDark) {

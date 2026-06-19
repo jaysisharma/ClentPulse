@@ -21,10 +21,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     // Only accept 'light' or 'dark' as valid values
     const isValidTheme = stored === 'light' || stored === 'dark'
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
 
-    // Use system preference if no valid stored theme
-    const initial: Theme = isValidTheme ? (stored as Theme) : (prefersDark ? 'dark' : 'light')
+    // Default to 'light' if no valid stored theme
+    const initial: Theme = isValidTheme ? (stored as Theme) : 'light'
 
     setTheme(initial)
 
@@ -70,16 +69,11 @@ export function useTheme() {
     return {
       theme: 'light' as Theme,
       toggleTheme: () => {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-        const current = prefersDark ? 'dark' : 'light'
-        const newTheme = current === 'light' ? 'dark' : 'light'
+        const current = 'light'
+        const newTheme = 'dark'
 
         localStorage.setItem('theme', newTheme)
-        if (newTheme === 'dark') {
-          document.documentElement.classList.add('dark')
-        } else {
-          document.documentElement.classList.remove('dark')
-        }
+        document.documentElement.classList.add('dark')
       },
     }
   }
