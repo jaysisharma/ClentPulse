@@ -51,9 +51,10 @@ export async function POST(request: Request) {
       }
     } else {
       const customerId = session.customer as string
+      // Clearing promo_pro converts a free-launch "promo Pro" into real paid Pro.
       const { error } = await supabase
         .from('users')
-        .update({ plan: 'pro' })
+        .update({ plan: 'pro', promo_pro: false })
         .eq('stripe_customer_id', customerId)
       if (error) {
         console.error('Failed to update user plan on checkout:', error)
@@ -88,7 +89,7 @@ export async function POST(request: Request) {
 
     const { error } = await supabase
       .from('users')
-      .update({ plan })
+      .update({ plan, ...(plan === 'pro' ? { promo_pro: false } : {}) })
       .eq('stripe_customer_id', customerId)
     if (error) {
       console.error('Failed to update user plan on subscription update:', error)

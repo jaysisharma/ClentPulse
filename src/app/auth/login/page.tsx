@@ -11,6 +11,7 @@ import {
   EyeOff
 } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LaunchPromoBanner } from '@/components/launch-promo-banner'
 
 export default function LoginPage() {
   const [fullName, setFullName] = useState('')
@@ -362,10 +363,11 @@ export default function LoginPage() {
           ) : (
             /* ── MAIN INPUT FORM ──────────────────────────── */
             <div className="space-y-7">
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                   {title}
                 </h1>
+                {mode === 'signup' && <LaunchPromoBanner />}
                 <p className="text-slate-500 dark:text-slate-400">{subtitle}</p>
               </div>
 

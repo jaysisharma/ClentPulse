@@ -67,7 +67,8 @@
       "Bash(git commit -q -m 'chore: point Caddy at frevio.cloud apex + www redirect *)",
       "Bash(dig +short frevio.cloud)",
       "Bash(dig +short www.frevio.cloud)",
-      "Bash(git commit -q -m 'ci: make deploy resilient by hard-resetting to origin/main *)"
+      "Bash(git commit -q -m 'ci: make deploy resilient by hard-resetting to origin/main *)",
+      "Bash(git commit -q -m 'feat: first-50 Pro launch promo; remove AI drafting for now *)"
     ],
     "additionalDirectories": [
       "/tmp"

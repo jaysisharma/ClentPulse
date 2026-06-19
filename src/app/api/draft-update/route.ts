@@ -4,7 +4,18 @@ import Anthropic from '@anthropic-ai/sdk'
 
 // Drafts a weekly client update from the project's real activity:
 // logged time entries, milestones, and approval responses over the last 7 days.
+//
+// DISABLED: AI drafting is turned off for everyone for now. The endpoint
+// returns 404 so the feature is fully inert (no Anthropic calls, no surface).
+// To re-enable, remove the early return below and restore the UI in
+// src/app/project/[id]/update/page.tsx.
+const AI_DRAFTING_ENABLED: boolean = false
+
 export async function POST(request: Request) {
+  if (!AI_DRAFTING_ENABLED) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
   const { projectId } = await request.json()
   if (!projectId) return NextResponse.json({ error: 'Missing projectId' }, { status: 400 })
 
@@ -19,14 +30,20 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  // Pro-only feature: gate server-side so it can't be bypassed from the client.
+  // Paid-Pro-only feature: gate server-side so it can't be bypassed from the
+  // client. Promo Pro (free launch grant) intentionally does NOT include AI —
+  // it's excluded so we don't pay Anthropic for free users. `promo_pro` is
+  // cleared by the Stripe webhook once a promo user actually subscribes.
   const { data: owner } = await supabase
     .from('users')
-    .select('plan')
+    .select('plan, promo_pro')
     .eq('id', user.id)
     .single()
-  if (owner?.plan !== 'pro') {
-    return NextResponse.json({ error: 'AI drafting requires the Pro plan.' }, { status: 403 })
+  if (owner?.plan !== 'pro' || owner?.promo_pro) {
+    return NextResponse.json(
+      { error: 'AI drafting is available on a paid Pro plan.' },
+      { status: 403 },
+    )
   }
 
   // Verify ownership and load the project.

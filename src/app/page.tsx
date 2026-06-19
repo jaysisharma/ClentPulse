@@ -6,6 +6,7 @@ import { FAQAccordion } from '@/components/landing/faq-accordion'
 import { DashboardMockup } from '@/components/landing/dashboard-mockup'
 import { PricingSection } from '@/components/landing/pricing-section'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LaunchPromoBanner } from '@/components/launch-promo-banner'
 
 const steps = [
   {
@@ -92,6 +93,8 @@ export default async function LandingPage() {
           <p className="text-lg md:text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto font-medium">
             Send branded updates, invoices, and contracts — then let Frevio flag exactly what needs your attention. Stop juggling five tools and a dozen email threads.
           </p>
+
+          {!isLoggedIn && <LaunchPromoBanner />}
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link href={isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-indigo-600 text-white text-sm font-bold uppercase tracking-wider px-8 py-3.5 rounded-xl hover:bg-indigo-700 hover:shadow-md transition-all">

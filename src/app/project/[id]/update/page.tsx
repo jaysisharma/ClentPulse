@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Send, Copy, Check, Mail, Eye, Sparkles, Lock, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, Send, Copy, Check, Mail, Eye, Plus, Trash2 } from 'lucide-react'
 import { getWeekOf } from '@/lib/utils'
 
 export default function UpdatePage({ params }: { params: Promise<{ id: string }> }) {
@@ -22,10 +22,7 @@ export default function UpdatePage({ params }: { params: Promise<{ id: string }>
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
-  const [drafting, setDrafting] = useState(false)
-  const [draftError, setDraftError] = useState('')
   const [project, setProject] = useState<{ project_name: string; client_name: string; color: string; slug: string } | null>(null)
-  const [isPro, setIsPro] = useState(false)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => () => { if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current) }, [])
@@ -34,13 +31,6 @@ export default function UpdatePage({ params }: { params: Promise<{ id: string }>
     const supabase = createClient()
     supabase.from('projects').select('project_name,client_name,color,slug').eq('id', id).single()
       .then(({ data }: { data: any }) => setProject(data))
-
-    // AI drafting is a Pro feature — gate the control on the owner's plan.
-    supabase.auth.getUser().then(({ data: { user } }: { data: { user: any } }) => {
-      if (!user) return
-      supabase.from('users').select('plan').eq('id', user.id).single()
-        .then(({ data }: { data: any }) => setIsPro(data?.plan === 'pro'))
-    })
 
     if (editId) {
       supabase.from('updates').select('*').eq('id', editId).single().then(({ data }: { data: any }) => {
@@ -72,30 +62,6 @@ ${note ? `\nNote: ${note}` : ''}
 View full status page: ${typeof window !== 'undefined' ? window.location.origin : ''}/p/${project?.slug}
 
 Best,`
-  }
-
-  async function handleDraft() {
-    setDrafting(true)
-    setDraftError('')
-    try {
-      const res = await fetch('/api/draft-update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId: id }),
-      })
-      const data = await res.json()
-      if (!res.ok) { setDraftError(data.error ?? 'Could not generate a draft.'); return }
-      if (Array.isArray(data.bullets)) {
-        const next = ['', '', '']
-        data.bullets.slice(0, 3).forEach((b: string, i: number) => { next[i] = b })
-        setBullets(next)
-      }
-      if (typeof data.note === 'string') setNote(data.note)
-    } catch {
-      setDraftError('Could not generate a draft. Please try again.')
-    } finally {
-      setDrafting(false)
-    }
   }
 
   async function handleSubmit(send: boolean) {
@@ -193,34 +159,9 @@ Best,`
             <div className="space-y-4">
               <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                 <h3 className="text-sm font-semibold text-slate-700">Progress updates</h3>
-                {isPro ? (
-                  <button
-                    type="button"
-                    onClick={handleDraft}
-                    disabled={drafting}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    <Sparkles className={`w-3.5 h-3.5 ${drafting ? 'animate-pulse' : ''}`} />
-                    {drafting ? 'Drafting…' : 'Draft with AI'}
-                  </button>
-                ) : (
-                  <Link
-                    href="/upgrade"
-                    title="AI drafting is a Pro feature"
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-indigo-600 transition-colors"
-                  >
-                    <Lock className="w-3.5 h-3.5" />
-                    Draft with AI
-                    <span className="ml-0.5 rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-indigo-600">Pro</span>
-                  </Link>
-                )}
               </div>
 
-              {draftError && (
-                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">{draftError}</div>
-              )}
-
-              <p className="text-xs text-slate-400 -mt-1">Pulls your logged hours, milestones, and approvals from the last 7 days into a first draft.</p>
+              <p className="text-xs text-slate-400 -mt-1">Add the concrete wins from this week — these become the update your client sees.</p>
 
               <div className="space-y-3">
                 {bullets.map((bullet, i) => (

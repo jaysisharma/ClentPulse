@@ -20,6 +20,11 @@ export const PRICING = {
   annual: 120,
 } as const
 
+// Launch promo: the first N freelancer signups get Pro free (see promo_pro in
+// supabase-migration-promo.sql). The live count lives in the public.launch_promo
+// table; this is just the display cap.
+export const LAUNCH_PROMO_CAP = 50
+
 // Derived display values — keep these computed so a price change is one edit.
 export const ANNUAL_MONTHLY_EQUIV = Math.round((PRICING.annual / 12) * 100) / 100 // 8.25
 export const ANNUAL_DISCOUNT_PCT = Math.round((1 - PRICING.annual / (PRICING.monthly * 12)) * 100) // 31
@@ -38,10 +43,8 @@ export const FREE_FEATURES = [
 //   • Custom branding        → /p/[slug] + settings (plan check)
 //   • White-label status page → /p/[slug] (hides the Frevio badge for pro)
 //   • Duplicate projects     → /api/duplicate-project (plan check)
-//   • AI-drafted updates     → /api/draft-update (plan check)
 export const PRO_FEATURES = [
   'Unlimited projects',
-  'AI-drafted client updates',
   'Automated client emails',
   'Custom branding — logo & accent',
   'White-label status pages',
