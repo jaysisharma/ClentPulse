@@ -61,10 +61,25 @@ export async function POST(request: Request) {
       )
     }
 
-    // 4. Invalidate / delete the verified OTP code
+    // 4. If staging signup details are present, create the auth user
+    if (record.temp_password) {
+      const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+        email: cleanEmail,
+        password: record.temp_password,
+        user_metadata: { full_name: record.temp_name || '' },
+        email_confirm: true
+      })
+
+      if (createError) {
+        console.error('[Verify OTP] Supabase Admin Create User Error:', createError)
+        return NextResponse.json({ error: createError.message }, { status: 400 })
+      }
+    }
+
+    // 5. Invalidate / delete the verified OTP code
     await supabaseAdmin.from('otp_codes').delete().eq('email', cleanEmail)
 
-    // 5. Generate dynamic login link / token hash from Supabase Admin Auth
+    // 6. Generate dynamic login link / token hash from Supabase Admin Auth
     const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
       type: 'magiclink',
       email: cleanEmail,

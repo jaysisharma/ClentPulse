@@ -18,6 +18,7 @@ import { KickoffChecklist } from './kickoff-checklist'
 import { ProjectActionsMenu } from './project-actions-menu'
 import { CollapsibleSection } from './collapsible-section'
 import { CollapsibleCard } from './collapsible-card'
+import { UpdateCommentForm } from '@/app/p/[slug]/update-comment-form'
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -33,6 +34,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     { data: milestones },
     { data: approvals },
     { data: contracts },
+    { data: updateComments },
   ] = await Promise.all([
     supabase.from('projects').select('*').eq('id', id).eq('user_id', user.id).single(),
     supabase.from('updates').select('*').eq('project_id', id).order('created_at', { ascending: false }),
@@ -41,6 +43,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
     supabase.from('milestones').select('id, title, due_date, done').eq('project_id', id).order('due_date', { ascending: true, nullsFirst: false }),
     supabase.from('approvals').select('*').eq('project_id', id).order('created_at', { ascending: false }),
     supabase.from('contracts').select('id, signed_at').eq('project_id', id),
+    supabase.from('update_comments').select('*').eq('project_id', id).order('created_at', { ascending: true }),
   ])
 
   if (!project) notFound()
@@ -200,6 +203,13 @@ export default async function ProjectPage({ params }: { params: Promise<{ id: st
                       {update.note && (
                         <p className="text-sm text-slate-500 italic border-t border-slate-100 pt-3 mt-4">{update.note}</p>
                       )}
+                      <UpdateCommentForm
+                        updateId={update.id}
+                        projectId={id}
+                        accentColor={project.color}
+                        existingComments={(updateComments ?? []).filter((c: any) => c.update_id === update.id)}
+                        defaultAuthorName={ownerName}
+                      />
                     </div>
                   ))}
                 </div>

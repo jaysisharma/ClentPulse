@@ -6,13 +6,18 @@ import Link from 'next/link'
 import {
   ArrowLeft,
   RotateCw,
-  Loader2
+  Loader2,
+  Eye,
+  EyeOff
 } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
 
 export default function LoginPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [code, setCode] = useState('')
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [codeSent, setCodeSent] = useState(false)
@@ -55,20 +60,31 @@ export default function LoginPage() {
     setMode(next)
     setCodeSent(false)
     setCode('')
+    setPassword('')
+    setConfirmPassword('')
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
 
-    if (!codeSent) {
-      // ── STAGE 1: Send OTP Code ─────────────────────────────────────────────
+    if (mode === 'signup' && !codeSent) {
+      // ── STAGE 1: SIGN UP - Send Verification Code ────────────────────────
+      if (password !== confirmPassword) {
+        setError('Passwords do not match.')
+        return
+      }
+      if (password.length < 6) {
+        setError('Password must be at least 6 characters.')
+        return
+      }
+
       setLoading(true)
       try {
         const res = await fetch('/api/auth/send-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
+          body: JSON.stringify({ email, password, fullName: fullName.trim() })
         })
         const data = await res.json()
         if (!res.ok) {
@@ -76,7 +92,7 @@ export default function LoginPage() {
           setLoading(false)
           return
         }
-        setSent({ email, kind: mode })
+        setSent({ email, kind: 'signup' })
         setCodeSent(true)
         startCooldown(60) // Enforce local 60-second UI rate limiting
       } catch (err) {
@@ -84,15 +100,15 @@ export default function LoginPage() {
       } finally {
         setLoading(false)
       }
-    } else {
-      // ── STAGE 2: Verify OTP Code & Authenticate ────────────────────────────
+    } else if (mode === 'signup' && codeSent) {
+      // ── STAGE 2: SIGN UP - Verify Verification Code & Create Account ─────
       if (code.trim().length !== 6) {
         setError('Verification code must be 6 digits.')
         return
       }
       setLoading(true)
       try {
-        // 1. Call server API to check code and generate Supabase token hash
+        // 1. Call server API to register user and generate token hash
         const res = await fetch('/api/auth/verify-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -119,35 +135,63 @@ export default function LoginPage() {
           return
         }
 
-        // 3. Set metadata if signing up
-        if (mode === 'signup' && fullName.trim()) {
-          await supabase.auth.updateUser({
-            data: { full_name: fullName.trim() }
-          })
-        }
-
-        // 4. Redirect based on role and profile status
-        const { data: { user } } = await supabase.auth.getUser()
-        if (user) {
-          const role = user.user_metadata?.role as string | undefined
-          if (role === 'client') {
-            window.location.href = '/client/dashboard'
-            return
-          }
-          const { data: profile } = await supabase
-            .from('users')
-            .select('id, onboarded')
-            .eq('id', user.id)
-            .maybeSingle()
-
-          if (!profile) {
-            window.location.href = '/onboarding'
-          } else {
-            window.location.href = profile.onboarded ? '/dashboard' : '/onboarding'
-          }
-        }
+        // 3. Redirect to onboarding
+        window.location.href = '/onboarding'
       } catch (err) {
         setError('Failed to authenticate. Please try again.')
+      } finally {
+        setLoading(false)
+      }
+    } else {
+      // ── STAGE 3: SIGN IN - Password-based direct login with rate limit ─────
+      setLoading(true)
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          setError(data.error || 'Invalid credentials.')
+          setLoading(false)
+          return
+        }
+
+        const { session } = data
+
+        // 1. Set session client-side
+        const { error: sessionError } = await supabase.auth.setSession({
+          access_token: session.access_token,
+          refresh_token: session.refresh_token
+        })
+
+        if (sessionError) {
+          setError(sessionError.message)
+          setLoading(false)
+          return
+        }
+
+        // 2. Redirect based on role and profile status
+        const role = session.user?.user_metadata?.role as string | undefined
+        if (role === 'client') {
+          window.location.href = '/client/dashboard'
+          return
+        }
+
+        const { data: profile } = await supabase
+          .from('users')
+          .select('id, onboarded')
+          .eq('id', session.user.id)
+          .maybeSingle()
+
+        if (!profile) {
+          window.location.href = '/onboarding'
+        } else {
+          window.location.href = profile.onboarded ? '/dashboard' : '/onboarding'
+        }
+      } catch (err) {
+        setError('Failed to sign in. Please check your credentials.')
       } finally {
         setLoading(false)
       }
@@ -162,7 +206,7 @@ export default function LoginPage() {
       const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: sent.email })
+        body: JSON.stringify({ email: sent.email, password, fullName })
       })
       const data = await res.json()
       if (!res.ok) {
@@ -190,8 +234,8 @@ export default function LoginPage() {
   const title = mode === 'login' ? 'Sign in to Frevio' : 'Create your account'
   const subtitle =
     mode === 'login'
-      ? 'Enter your email to request a secure 6-digit login code.'
-      : 'Enter your name and work email to get started.'
+      ? 'Enter your email and password to log in.'
+      : 'Enter your name, email, and password to request a verification code.'
 
   const inputClass =
     'block w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 dark:text-white focus:border-accent focus:bg-white focus:outline-none focus:ring-2 focus:ring-accent/20 ' +
@@ -284,7 +328,7 @@ export default function LoginPage() {
                   className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-accent py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent/25 transition-all duration-200 hover:bg-accent-hover hover:shadow-accent/30 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                  Verify & Sign In
+                  Verify & Create Account
                 </button>
               </form>
 
@@ -316,7 +360,7 @@ export default function LoginPage() {
               </div>
             </div>
           ) : (
-            /* ── REQUEST CODE SCREEN ──────────────────────────── */
+            /* ── MAIN INPUT FORM ──────────────────────────── */
             <div className="space-y-7">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -360,6 +404,49 @@ export default function LoginPage() {
                   />
                 </div>
 
+                <div className="space-y-1.5">
+                  <label htmlFor="password" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={e => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                      className={`${inputClass} pr-10`}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-450 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {mode === 'signup' && (
+                  <div className="space-y-1.5">
+                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                      Confirm password
+                    </label>
+                    <input
+                      id="confirmPassword"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={e => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete="new-password"
+                      className={inputClass}
+                      required
+                    />
+                  </div>
+                )}
+
                 {error && (
                   <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-600 dark:text-rose-400">
                     {error}
@@ -372,7 +459,7 @@ export default function LoginPage() {
                   className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-accent py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent/25 transition-all duration-200 hover:bg-accent-hover hover:shadow-accent/30 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 dark:focus:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                  {mode === 'login' ? 'Send login code' : 'Send verification code'}
+                  {mode === 'login' ? 'Sign In' : 'Send verification code'}
                 </button>
               </form>
 

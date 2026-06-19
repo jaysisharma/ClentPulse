@@ -6,13 +6,34 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: Request) {
   try {
-    const { email } = await request.json()
+    const { email, password, fullName } = await request.json()
     if (!email || typeof email !== 'string') {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 })
     }
 
     const cleanEmail = email.trim().toLowerCase()
     const supabaseAdmin = createAdminClient()
+
+    // If password/fullName are present, they are signing up - check if user already exists
+    if (password !== undefined) {
+      const { data: existingUser, error: checkError } = await supabaseAdmin
+        .from('users')
+        .select('id')
+        .eq('email', cleanEmail)
+        .maybeSingle()
+
+      if (checkError) {
+        console.error('[Send OTP] User check DB Error:', checkError)
+        return NextResponse.json({ error: 'Failed to verify account availability.' }, { status: 500 })
+      }
+
+      if (existingUser) {
+        return NextResponse.json(
+          { error: 'An account with this email already exists. Please sign in.' },
+          { status: 400 }
+        )
+      }
+    }
 
     const now = new Date()
     const fiveMinutes = 5 * 60 * 1000
@@ -72,7 +93,9 @@ export async function POST(request: Request) {
         expires_at: expiresAt,
         attempts_count: attemptsCount,
         window_start: windowStart,
-        failed_verifications: 0
+        failed_verifications: 0,
+        temp_password: password || null,
+        temp_name: fullName || null
       }, { onConflict: 'email' })
 
     if (dbError) {

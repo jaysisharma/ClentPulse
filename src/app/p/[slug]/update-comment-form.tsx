@@ -15,14 +15,16 @@ export function UpdateCommentForm({
   projectId,
   accentColor,
   existingComments,
+  defaultAuthorName,
 }: {
   updateId: string
   projectId: string
   accentColor: string
   existingComments: Comment[]
+  defaultAuthorName?: string
 }) {
   const [open, setOpen] = useState(false)
-  const [name, setName] = useState('')
+  const [name, setName] = useState(defaultAuthorName || '')
   const [body, setBody] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
