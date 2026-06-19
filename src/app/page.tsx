@@ -45,7 +45,7 @@ export default async function LandingPage() {
       <div className="sticky top-4 z-50 px-4 max-w-6xl mx-auto w-full select-none">
         <nav className="rounded-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white/75 dark:bg-slate-900/75 backdrop-blur-md shadow-sm px-6 h-16 flex items-center justify-between transition-all">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Frevio Logo" className="w-8 h-8 rounded-lg object-cover" />
+            <img src="/logo.svg" alt="Frevio Logo" className="w-8 h-8" />
             <span className="font-bold text-slate-900 dark:text-white text-lg tracking-tight">Frevio</span>
           </div>
 
@@ -274,7 +274,7 @@ export default async function LandingPage() {
       <footer className="border-t border-slate-100 py-12 px-6 bg-slate-950 text-slate-400">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Frevio Logo" className="w-6 h-6 rounded object-cover" />
+            <img src="/logo.svg" alt="Frevio Logo" className="w-6 h-6" />
             <span className="font-bold text-slate-200 text-sm tracking-tight">Frevio</span>
           </div>
           <div className="flex items-center gap-8 text-xs font-semibold uppercase tracking-wider">

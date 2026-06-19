@@ -174,7 +174,7 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12 xl:p-16 bg-slate-950 text-white">
         {/* logo */}
         <Link href="/" className="inline-flex items-center gap-3 w-fit">
-          <img src="/logo.png" alt="Frevio Logo" className="w-10 h-10 rounded-xl object-cover" />
+          <img src="/logo.svg" alt="Frevio Logo" className="w-10 h-10" />
           <span className="text-2xl font-bold tracking-tight">Frevio</span>
         </Link>
 
@@ -204,7 +204,7 @@ export default function LoginPage() {
         {/* mobile logo */}
         <div className="mb-8 lg:hidden">
           <Link href="/" className="inline-flex items-center gap-2.5">
-            <img src="/logo.png" alt="Frevio Logo" className="w-9 h-9 rounded-xl object-cover" />
+            <img src="/logo.svg" alt="Frevio Logo" className="w-9 h-9" />
             <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Frevio</span>
           </Link>
         </div>

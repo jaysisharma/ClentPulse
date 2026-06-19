@@ -59,7 +59,11 @@
       "Bash(echo \"CRON_SECRET=$\\(openssl rand -hex 32\\)\")",
       "Bash(git rev-list *)",
       "Bash(git commit -q -m 'ci: add self-hosted GitHub Actions deploy workflow *)",
-      "Bash(git merge *)"
+      "Bash(git merge *)",
+      "Bash(md5 -q public/logo.png)",
+      "Bash(md5 -q)",
+      "Bash(command -v gh)",
+      "Bash(gh run *)"
     ],
     "additionalDirectories": [
       "/tmp"

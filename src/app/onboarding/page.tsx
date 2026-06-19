@@ -219,7 +219,7 @@ export default function OnboardingPage() {
 
       {/* Logo */}
       <div className="flex items-center gap-2 mb-10">
-        <img src="/logo.png" alt="Frevio Logo" className="w-9 h-9 rounded-xl object-cover" />
+        <img src="/logo.svg" alt="Frevio Logo" className="w-9 h-9" />
         <span className="text-xl font-semibold text-slate-900">Frevio</span>
       </div>
 

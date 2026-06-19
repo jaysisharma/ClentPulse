@@ -101,7 +101,7 @@ export function Sidebar({
       {/* Logo */}
       <div className="px-5 h-16 flex items-center flex-shrink-0">
         <Link href="/dashboard" className="flex items-center gap-2.5" onClick={onNavigate}>
-          <img src="/logo.png" alt="Frevio" className="w-7 h-7 rounded-lg object-cover" />
+          <img src="/logo.svg" alt="Frevio" className="w-7 h-7" />
           <span className="text-white font-bold text-[15px] tracking-tight">Frevio</span>
         </Link>
       </div>
