@@ -194,6 +194,7 @@ export function DashboardMockup() {
             </div>
 
 
+
             {/* Needs attention */}
             <div className="bg-slate-900 rounded-xl border border-slate-800/60 overflow-hidden flex-shrink-0">
               <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-850/60">
