@@ -64,10 +64,6 @@ function fmtHours(h: number) {
   return parts.join(' ')
 }
 
-function pctChange(now: number, prev: number) {
-  return Math.round((Math.abs(now - prev) / Math.max(Math.abs(prev), 1)) * 100)
-}
-
 // Human "when is this due" label relative to today, e.g. "Due in 3 days",
 // "Due today", "5 days overdue". Returns null when the invoice has no due date.
 function dueLabel(due: string | null): { text: string; overdue: boolean } | null {
@@ -266,42 +262,42 @@ export default async function DashboardPage() {
           {/* ── 4 number boxes ───────────────────────────────────────── */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard variant="dark"
-              label="You're owed"
+              label="Outstanding"
               value={fmt$(owedAmount)}
               icon={DollarSign}
               tone={overdueCount > 0 ? 'danger' : 'default'}
               caption={
                 owedAmount > 0
                   ? overdueCount > 0
-                    ? <span className="text-rose-600 font-semibold">{overdueCount} overdue</span>
+                    ? <span className="text-rose-500 font-semibold">{overdueCount} invoice{overdueCount !== 1 ? 's' : ''} overdue</span>
                     : <span>awaiting payment</span>
                   : <span>all paid up</span>
               }
             />
             <StatCard variant="dark"
-              label="You made"
+              label="This month"
               value={fmt$(netThisMonth)}
               icon={Wallet}
               trend={
                 netThisMonth !== 0 || netLastMonth !== 0
-                  ? { dir: netDiff > 0 ? 'up' : netDiff < 0 ? 'down' : 'flat', label: `${pctChange(netThisMonth, netLastMonth)}%`, goodWhen: 'up' }
+                  ? { dir: netDiff > 0 ? 'up' : netDiff < 0 ? 'down' : 'flat', label: fmt$(Math.abs(netDiff)) }
                   : undefined
               }
-              caption="vs last month"
+              caption={netDiff > 0 ? 'more than last month' : netDiff < 0 ? 'less than last month' : 'vs last month'}
             />
             <StatCard variant="dark"
-              label="You worked"
+              label="Hours this week"
               value={fmtHours(hoursThisWeek)}
               icon={Timer}
               trend={
                 hoursThisWeek > 0 || hoursLastWeek > 0
-                  ? { dir: hoursDiff > 0 ? 'up' : hoursDiff < 0 ? 'down' : 'flat', label: `${pctChange(hoursThisWeek, hoursLastWeek)}%`, goodWhen: 'neutral' }
+                  ? { dir: hoursDiff > 0 ? 'up' : hoursDiff < 0 ? 'down' : 'flat', label: fmtHours(Math.abs(hoursDiff)) }
                   : undefined
               }
-              caption="vs last week"
+              caption={hoursDiff > 0 ? 'more than last week' : hoursDiff < 0 ? 'less than last week' : 'vs last week'}
             />
             <StatCard variant="dark"
-              label="Your projects"
+              label="Active projects"
               value={activeProjects.length}
               icon={FolderOpen}
               caption={`of ${allProjects.length} total`}
