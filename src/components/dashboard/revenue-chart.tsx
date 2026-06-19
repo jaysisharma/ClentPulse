@@ -80,7 +80,7 @@ function areaPath(values: number[], max: number) {
   return `${top} L ${xPct(n - 1, n).toFixed(2)} 100 L ${xPct(0, n).toFixed(2)} 100 Z`
 }
 
-export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Point[] }) {
+export function RevenueChart({ paid, expenses, dark = false }: { paid: Point[]; expenses: Point[]; dark?: boolean }) {
   const [rangeKey, setRangeKey] = useState('30')
   const [hover, setHover] = useState<number | null>(null)
   const cfg = RANGES.find(r => r.key === rangeKey)!
@@ -95,21 +95,21 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
   const empty = totalRev === 0 && totalExp === 0
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 p-6 sm:p-7">
+    <div className={`rounded-2xl border p-6 sm:p-7 ${dark ? 'bg-slate-900 border-slate-800/60' : 'bg-white border-slate-200'}`}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-7">
         <div>
           <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Money in vs out</h2>
           <div className="flex items-baseline gap-2 mt-1.5">
-            <span className={`text-3xl font-bold tabular-nums ${net >= 0 ? 'text-slate-900' : 'text-rose-600'}`}>{fmt$(net)}</span>
+            <span className={`text-3xl font-bold tabular-nums ${net >= 0 ? (dark ? 'text-white' : 'text-slate-900') : 'text-rose-500'}`}>{fmt$(net)}</span>
             <span className="text-sm font-medium text-slate-400">net</span>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-3">
-            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <span className={`flex items-center gap-1.5 text-xs font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: REV_COLOR }} />
               {fmt$(totalRev)} <span className="text-slate-400">in</span>
             </span>
-            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+            <span className={`flex items-center gap-1.5 text-xs font-medium ${dark ? 'text-slate-400' : 'text-slate-500'}`}>
               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: EXP_COLOR }} />
               {fmt$(totalExp)} <span className="text-slate-400">out</span>
             </span>
@@ -117,13 +117,15 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
         </div>
 
         {/* Range tabs */}
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg self-start">
+        <div className={`flex items-center gap-1 p-1 rounded-lg self-start ${dark ? 'bg-slate-800' : 'bg-slate-100'}`}>
           {RANGES.map(r => (
             <button
               key={r.key}
               onClick={() => setRangeKey(r.key)}
               className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
-                rangeKey === r.key ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                rangeKey === r.key
+                  ? dark ? 'bg-slate-950 text-indigo-400 shadow-sm' : 'bg-white text-indigo-600 shadow-sm'
+                  : dark ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-900'
               }`}
             >
               {r.label}
@@ -140,8 +142,8 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
           <div className="relative h-56 w-full" onMouseLeave={() => setHover(null)}>
             {/* gridlines */}
             <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-              {[0, 1, 2, 3].map(i => <div key={i} className="border-t border-dashed border-slate-100" />)}
-              <div className="border-t border-slate-200" />
+              {[0, 1, 2, 3].map(i => <div key={i} className={`border-t border-dashed ${dark ? 'border-slate-800' : 'border-slate-100'}`} />)}
+              <div className={`border-t ${dark ? 'border-slate-700' : 'border-slate-200'}`} />
             </div>
 
             <svg className="absolute inset-0 w-full h-full overflow-visible" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -171,7 +173,7 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
                 >
                   {hover === i && (
                     <>
-                      <div className="absolute top-0 bottom-0 w-px bg-slate-200" style={{ left: `${xPct(i, n)}%` }} />
+                      <div className={`absolute top-0 bottom-0 w-px ${dark ? 'bg-slate-700' : 'bg-slate-200'}`} style={{ left: `${xPct(i, n)}%` }} />
                       {(['rev', 'exp'] as const).map(k => (
                         <div
                           key={k}
