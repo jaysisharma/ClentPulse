@@ -10,10 +10,14 @@ import Link from 'next/link'
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
 
 interface LineItem { description: string; quantity: number; rate: number; amount: number }
-interface Project { id: string; project_name: string; client_name: string; client_email: string | null }
+interface Project { id: string; project_name: string; client_name: string; client_email: string | null; budget: string | null }
 
 function emptyItem(): LineItem {
   return { description: '', quantity: 1, rate: 0, amount: 0 }
+}
+
+function fmt$(n: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
 }
 
 export default function NewInvoicePage() {
@@ -28,13 +32,16 @@ export default function NewInvoicePage() {
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  // Budget context for the linked project (null = no budget set, so no cap).
+  const [budget, setBudget] = useState<number | null>(null)
+  const [invoicedSoFar, setInvoicedSoFar] = useState(0)
 
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }: { data: any }) => {
       const user = data?.user
       if (!user) return
-      supabase.from('projects').select('id,project_name,client_name,client_email').eq('user_id', user.id).eq('status', 'active')
+      supabase.from('projects').select('id,project_name,client_name,client_email,budget').eq('user_id', user.id).eq('status', 'active')
         .then(({ data }: { data: any }) => setProjects(data ?? []))
       const year = new Date().getFullYear()
       const rand = Math.random().toString(36).slice(2, 5).toUpperCase()
@@ -42,10 +49,27 @@ export default function NewInvoicePage() {
     })
   }, [])
 
-  function handleProjectChange(id: string) {
+  async function handleProjectChange(id: string) {
     setProjectId(id)
     const p = projects.find(p => p.id === id)
-    if (p) { setClientName(p.client_name); setClientEmail(p.client_email ?? '') }
+    if (!p) { setBudget(null); setInvoicedSoFar(0); return }
+    setClientName(p.client_name)
+    setClientEmail(p.client_email ?? '')
+
+    const b = p.budget ? parseFloat(p.budget) : 0
+    setBudget(b > 0 ? b : null)
+
+    // Sum what's already been invoiced against this project so we can cap.
+    const supabase = createClient()
+    const { data: existing } = await supabase
+      .from('invoices')
+      .select('items, status')
+      .eq('project_id', id)
+    const already = (existing ?? [])
+      .filter((inv: any) => inv.status !== 'canceled')
+      .flatMap((inv: any) => inv.items ?? [])
+      .reduce((s: number, it: any) => s + (it.amount ?? 0), 0)
+    setInvoicedSoFar(already)
   }
 
   function updateItem(i: number, field: keyof LineItem, value: string | number) {
@@ -58,8 +82,14 @@ export default function NewInvoicePage() {
   }
 
   const total = items.reduce((s, i) => s + (i.amount || 0), 0)
+  const remaining = budget != null ? budget - invoicedSoFar : null
+  const overBudget = remaining != null && total > remaining
 
   async function handleSubmit(status: 'draft' | 'sent') {
+    if (overBudget) {
+      setError(`This invoice exceeds the project budget. Only ${fmt$(Math.max(remaining!, 0))} of the ${fmt$(budget!)} budget remains. Raise the project budget or lower the invoice amount.`)
+      return
+    }
     setLoading(true)
     setError('')
     const supabase = createClient()
@@ -82,7 +112,7 @@ export default function NewInvoicePage() {
     router.push(`/invoices/${data.id}`)
   }
 
-  const valid = clientName.trim() && invoiceNumber.trim() && items.some(i => i.description.trim())
+  const valid = clientName.trim() && invoiceNumber.trim() && items.some(i => i.description.trim()) && !overBudget
 
   return (
     <AppLayout>
@@ -180,9 +210,31 @@ export default function NewInvoicePage() {
             <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
               <div className="text-right">
                 <div className="text-sm text-slate-500 dark:text-slate-400">Total</div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white">${total.toFixed(2)}</div>
+                <div className={`text-2xl font-bold ${overBudget ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>${total.toFixed(2)}</div>
               </div>
             </div>
+
+            {/* Budget context for the linked project */}
+            {budget != null && (
+              <div className={`mt-4 rounded-lg border px-3.5 py-2.5 text-xs ${overBudget
+                ? 'border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300'
+                : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300'}`}>
+                <div className="flex items-center justify-between">
+                  <span>Project budget</span><span className="font-semibold tabular-nums">{fmt$(budget)}</span>
+                </div>
+                <div className="flex items-center justify-between mt-1">
+                  <span>Already invoiced</span><span className="font-semibold tabular-nums">{fmt$(invoicedSoFar)}</span>
+                </div>
+                <div className="flex items-center justify-between mt-1">
+                  <span>Remaining</span><span className="font-semibold tabular-nums">{fmt$(Math.max(remaining ?? 0, 0))}</span>
+                </div>
+                {overBudget && (
+                  <div className="mt-2 font-semibold">
+                    This invoice is {fmt$(total - (remaining ?? 0))} over budget. Lower the amount or raise the project budget in its settings.
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Notes */}
