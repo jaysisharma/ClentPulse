@@ -40,10 +40,10 @@ type Health =
   | { tone: 'idle'; label: string }
 
 const HEALTH_STYLE: Record<Health['tone'], string> = {
-  danger: 'bg-rose-50 text-rose-700 border-rose-100',
-  warn: 'bg-amber-50 text-amber-700 border-amber-100',
-  ok: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  idle: 'bg-slate-50 text-slate-500 border-slate-200/70',
+  danger: 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-900/40',
+  warn: 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/40',
+  ok: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/40',
+  idle: 'bg-slate-50 text-slate-500 border-slate-200/70 dark:bg-slate-800/40 dark:text-slate-400 dark:border-slate-700/60',
 }
 
 const STATUSES = ['all', 'active', 'paused', 'completed'] as const
@@ -106,17 +106,17 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
               placeholder="Search projects or clients…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-transparent transition-all"
+              className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-transparent transition-all"
             />
           </div>
         )}
-        <div className="flex items-center gap-1 bg-slate-100 border border-slate-200/60 p-1 rounded-lg w-fit">
+        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 p-1 rounded-lg w-fit">
           {STATUSES.map(s => (
             <button
               key={s}
               onClick={() => setStatus(s)}
               className={`px-3 py-1.5 rounded-md text-xs font-semibold capitalize transition-colors cursor-pointer ${
-                status === s ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' : 'text-slate-500 hover:text-slate-950'
+                status === s ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700/50' : 'text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
               }`}
             >
               {s}
@@ -130,13 +130,13 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
 
       {/* Table */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl bg-white border border-slate-200/80 p-12 text-center shadow-sm">
-          <p className="text-sm text-slate-500 font-medium">No projects match your filters.</p>
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/60 p-12 text-center shadow-sm">
+          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">No projects match your filters.</p>
         </div>
       ) : (
-        <div className="rounded-2xl bg-white border border-slate-200/80 shadow-sm overflow-hidden">
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/60 shadow-sm overflow-hidden">
           {/* Column headers (desktop only) */}
-          <div className="hidden md:grid grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="hidden md:grid grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-400">
             <span>Project</span>
             <span>Health</span>
             <span>Budget</span>
@@ -144,17 +144,17 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
             <span className="text-right">Action</span>
           </div>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
             {filtered.map(p => (
               <div
                 key={p.id}
-                className="md:grid md:grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] md:items-center gap-4 px-5 py-4 hover:bg-slate-50/60 transition-colors flex flex-col"
+                className="md:grid md:grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] md:items-center gap-4 px-5 py-4 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors flex flex-col"
               >
                 {/* Project */}
                 <Link href={`/project/${p.id}`} className="flex items-center gap-3 min-w-0 group">
                   <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
                   <div className="min-w-0">
-                    <p className="text-sm font-bold text-slate-900 truncate group-hover:text-indigo-600 transition-colors">{p.project_name}</p>
+                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{p.project_name}</p>
                     <p className="text-xs text-slate-400 truncate">{p.client_name}</p>
                   </div>
                 </Link>
@@ -171,21 +171,21 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
                 <div className="mt-3 md:mt-0">
                   {p.budgetVal > 0 ? (
                     <div className="max-w-[200px]">
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 mb-1 font-medium">
-                        <span className="font-bold text-slate-700 tabular-nums">{fmt$(p.invoiced)}</span>
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1 font-medium">
+                        <span className="font-bold text-slate-700 dark:text-slate-200 tabular-nums">{fmt$(p.invoiced)}</span>
                         <span className="text-slate-400 tabular-nums">/ {fmt$(p.budgetVal)}</span>
                       </div>
-                      <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                      <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                         <div className="h-1.5 rounded-full transition-all duration-500" style={{ width: `${Math.round(p.pct)}%`, backgroundColor: p.color }} />
                       </div>
                     </div>
                   ) : (
-                    <span className="text-xs text-slate-300">No budget</span>
+                    <span className="text-xs text-slate-300 dark:text-slate-600">No budget</span>
                   )}
                 </div>
 
                 {/* Last activity */}
-                <div className="mt-2 md:mt-0 text-xs text-slate-500 font-medium">
+                <div className="mt-2 md:mt-0 text-xs text-slate-500 dark:text-slate-400 font-medium">
                   {p.latest ? `Updated ${formatDate(p.latest.sent_at!)}` : 'No updates yet'}
                 </div>
 
@@ -193,11 +193,11 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
                 <div className="mt-3 md:mt-0 flex items-center gap-2 md:justify-end">
                   <Link
                     href={`/project/${p.id}/update`}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
                   >
                     <Send className="w-3.5 h-3.5" /> Send update
                   </Link>
-                  <Link href={`/project/${p.id}`} className="text-slate-300 hover:text-slate-500 transition-colors hidden md:block">
+                  <Link href={`/project/${p.id}`} className="text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 transition-colors hidden md:block">
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>

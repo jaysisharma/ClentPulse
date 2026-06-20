@@ -31,8 +31,8 @@ export default async function ProjectsPage() {
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Projects</h1>
-              <p className="text-slate-500 text-sm mt-1.5 font-medium">
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Projects</h1>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5 font-medium">
                 {allProjects.length === 0
                   ? 'Create your first project to get started.'
                   : `${activeCount} active · ${allProjects.length} total`}
@@ -51,12 +51,12 @@ export default async function ProjectsPage() {
 
           {allProjects.length === 0 ? (
             /* New-user setup state */
-            <div className="rounded-3xl bg-white border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_12px_32px_-12px_rgba(79,70,229,0.12)] py-16 px-6 flex flex-col items-center text-center">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center">
+            <div className="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/60 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06),0_12px_32px_-12px_rgba(79,70,229,0.12)] py-16 px-6 flex flex-col items-center text-center">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-indigo-500" />
               </div>
-              <h2 className="text-xl font-bold text-slate-900 mt-5">No projects yet</h2>
-              <p className="text-sm text-slate-500 mt-2 max-w-sm">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-5">No projects yet</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm">
                 Create your first client project to start tracking updates, time, and invoices.
               </p>
               <Link href="/project/new" className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold px-4 py-2.5 hover:bg-indigo-700 hover:shadow-md transition-all">
