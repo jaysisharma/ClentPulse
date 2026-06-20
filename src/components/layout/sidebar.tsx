@@ -6,11 +6,12 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, FolderOpen, Settings, LogOut,
   Archive, FileText, Clock, TrendingUp, Star,
-  Globe, ScrollText, Users, Wallet,
+  Globe, ScrollText, Users, Wallet, Moon, Sun,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useTheme } from '@/components/theme-provider'
 
 const primaryNav = [
   { href: '/dashboard',    label: 'Dashboard', icon: LayoutDashboard },
@@ -69,8 +70,12 @@ export function Sidebar({
 }) {
   const pathname = usePathname()
   const router = useRouter()
+  const { theme, toggleTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
   const [userName, setUserName] = useState<string | null>(userProp?.name ?? null)
   const [userPlan, setUserPlan] = useState<'free' | 'pro'>(userProp?.plan ?? 'free')
+
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     if (userProp) return
@@ -145,6 +150,15 @@ export function Sidebar({
           </div>
         )}
         <NavLink href="/settings" label="Settings" icon={Settings} pathname={pathname} onNavigate={onNavigate} />
+        <button
+          onClick={toggleTheme}
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left"
+        >
+          {mounted && theme === 'dark'
+            ? <Sun className="w-4 h-4 text-slate-500" />
+            : <Moon className="w-4 h-4 text-slate-500" />}
+          {mounted && theme === 'dark' ? 'Light mode' : 'Dark mode'}
+        </button>
         <button
           onClick={handleSignOut}
           className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left"

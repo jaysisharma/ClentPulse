@@ -12,18 +12,14 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light')
+  const [theme, setTheme] = useState<Theme>('dark')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Clear any corrupted localStorage values
     const stored = localStorage.getItem('theme')
 
-    // Only accept 'light' or 'dark' as valid values
-    const isValidTheme = stored === 'light' || stored === 'dark'
-
-    // Default to 'light' if no valid stored theme
-    const initial: Theme = isValidTheme ? (stored as Theme) : 'light'
+    // Only accept 'light' or 'dark'; default to 'dark' when unset.
+    const initial: Theme = stored === 'light' ? 'light' : 'dark'
 
     setTheme(initial)
 

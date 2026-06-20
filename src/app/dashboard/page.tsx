@@ -213,8 +213,8 @@ export default async function DashboardPage() {
   }))
 
   return (
-    <AppLayout dark user={profile ? { name: profile.name ?? null, plan: profile.plan as 'free' | 'pro' } : undefined}>
-      <DarkShell dark>
+    <AppLayout user={profile ? { name: profile.name ?? null, plan: profile.plan as 'free' | 'pro' } : undefined}>
+      <DarkShell>
         <div className="relative z-10 space-y-8 pb-10">
           <UpgradeToast />
 
@@ -268,7 +268,7 @@ export default async function DashboardPage() {
             <>
           {/* ── 4 number boxes ───────────────────────────────────────── */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatCard variant="dark"
+            <StatCard
               label="Outstanding"
               value={fmt$(owedAmount)}
               icon={DollarSign}
@@ -281,7 +281,7 @@ export default async function DashboardPage() {
                   : <span>all paid up</span>
               }
             />
-            <StatCard variant="dark"
+            <StatCard
               label="This month"
               value={fmt$(netThisMonth)}
               icon={Wallet}
@@ -292,7 +292,7 @@ export default async function DashboardPage() {
               }
               caption={netDiff > 0 ? 'more than last month' : netDiff < 0 ? 'less than last month' : 'vs last month'}
             />
-            <StatCard variant="dark"
+            <StatCard
               label="Hours this week"
               value={fmtHours(hoursThisWeek)}
               icon={Timer}
@@ -303,7 +303,7 @@ export default async function DashboardPage() {
               }
               caption={hoursDiff > 0 ? 'more than last week' : hoursDiff < 0 ? 'less than last week' : 'vs last week'}
             />
-            <StatCard variant="dark"
+            <StatCard
               label="Active projects"
               value={activeProjects.length}
               icon={FolderOpen}
@@ -317,7 +317,7 @@ export default async function DashboardPage() {
           {/* Left column (wider): chart + needs attention */}
           <div className="lg:col-span-2 space-y-6">
           {/* ── Money in vs out chart ────────────────────────────────── */}
-          <RevenueChart paid={paidPoints} expenses={expensePoints} dark />
+          <RevenueChart paid={paidPoints} expenses={expensePoints} />
 
           {/* ── Needs attention to-do list (hidden when nothing's pending) ── */}
           {attentionCount > 0 && (

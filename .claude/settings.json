@@ -68,7 +68,14 @@
       "Bash(dig +short frevio.cloud)",
       "Bash(dig +short www.frevio.cloud)",
       "Bash(git commit -q -m 'ci: make deploy resilient by hard-resetting to origin/main *)",
-      "Bash(git commit -q -m 'feat: first-50 Pro launch promo; remove AI drafting for now *)"
+      "Bash(git commit -q -m 'feat: first-50 Pro launch promo; remove AI drafting for now *)",
+      "Bash(git commit -q -m 'feat: add Terms of Service and Privacy Policy pages *)",
+      "Bash(git commit -q -m 'perf: make landing dashboard scroll animation smooth *)",
+      "Bash(git commit -q -m 'feat: dark theme for the dashboard to match the landing mockup *)",
+      "Bash(git commit -q -m 'feat: dark full-layout shell for dashboard \\(AppLayout, loading, error\\) *)",
+      "Bash(git commit -q -m 'feat: match dashboard metric labels to the mockup wording *)",
+      "Bash(git commit -q -m 'feat: dashboard matches mockup — active timer, new invoice, upgrade banner *)",
+      "Bash(git commit -q -m 'feat: hide Needs attention and Unpaid invoices sections when empty *)"
     ],
     "additionalDirectories": [
       "/tmp"

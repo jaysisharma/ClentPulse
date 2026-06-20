@@ -19,8 +19,8 @@ export default function DashboardError({
   }, [error])
 
   return (
-    <AppLayout dark>
-      <DarkShell dark>
+    <AppLayout>
+      <DarkShell>
         <div className="relative z-10 flex items-center justify-center min-h-[60vh]">
           <div className="rounded-3xl bg-slate-900 border border-slate-800/60 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.4),0_12px_32px_-12px_rgba(225,29,72,0.2)] py-16 px-6 flex flex-col items-center text-center max-w-md">
             <div className="w-14 h-14 rounded-2xl bg-rose-950/40 flex items-center justify-center">

@@ -53,24 +53,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
               (function() {
                 try {
-                  console.log('[Init Script] Starting...');
-                  const theme = localStorage.getItem('theme');
-                  console.log('[Init Script] Stored theme:', theme);
-
-                  const isDark = theme === 'dark';
-                  console.log('[Init Script] Should be dark:', isDark);
-
-                  if (isDark) {
-                    console.log('[Init Script] Adding dark class');
+                  // Default to dark unless the user explicitly chose light.
+                  var theme = localStorage.getItem('theme');
+                  if (theme !== 'light') {
                     document.documentElement.classList.add('dark');
                   } else {
-                    console.log('[Init Script] Removing dark class');
                     document.documentElement.classList.remove('dark');
                   }
-                  console.log('[Init Script] Final classes:', document.documentElement.className);
-                } catch (e) {
-                  console.error('[Init Script] Error:', e);
-                }
+                } catch (e) {}
               })();
             `,
           }}

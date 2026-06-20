@@ -7,8 +7,8 @@ function Skeleton({ className }: { className: string }) {
 
 export default function Loading() {
   return (
-    <AppLayout dark>
-      <DarkShell dark>
+    <AppLayout>
+      <DarkShell>
         <div className="animate-pulse space-y-8 pb-10">
           {/* Header */}
           <div className="flex items-center justify-between gap-4">
