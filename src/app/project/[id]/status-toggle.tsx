@@ -10,7 +10,7 @@ type Status = typeof OPTIONS[number]
 const STYLES: Record<Status, string> = {
   active: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
   paused: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
-  completed: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-200',
+  completed: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:bg-slate-200 dark:bg-slate-800',
 }
 
 export function StatusToggle({ projectId, current }: { projectId: string; current: Status }) {

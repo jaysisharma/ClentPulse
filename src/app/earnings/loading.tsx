@@ -1,7 +1,7 @@
 import { AppLayout } from '@/components/layout/app-layout'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200 rounded-lg ${className}`} />
+  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-lg ${className}`} />
 }
 
 export default function Loading() {
@@ -34,7 +34,7 @@ export default function Loading() {
               const heights = [20, 35, 15, 55, 40, 70, 45, 80, 60, 90, 55, 75]
               return (
                 <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full bg-slate-200 rounded-t-md" style={{ height: `${heights[i]}%` }} />
+                  <div className="w-full bg-slate-200 dark:bg-slate-800 rounded-t-md" style={{ height: `${heights[i]}%` }} />
                   <Sk className="h-3 w-6" />
                 </div>
               )

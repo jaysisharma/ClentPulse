@@ -110,8 +110,8 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
                     f === 'overdue' ? 'bg-red-100 text-red-700' :
                     f === 'paid'   ? 'bg-emerald-100 text-emerald-700' :
                     f === 'sent'   ? 'bg-blue-100 text-blue-700' :
-                    'bg-slate-200 text-slate-600 dark:text-slate-300'
-                  ) : 'bg-slate-200 text-slate-500 dark:text-slate-400'
+                    'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                  ) : 'bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400'
                 }`}>
                   {counts[f]}
                 </span>

@@ -287,7 +287,7 @@ function Section({
           <div className="flex gap-2 mt-2">
             <input
               autoFocus
-              className={`flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 ${ring} focus:bg-white dark:bg-slate-900 transition-colors`}
+              className={`flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 ${ring} focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors`}
               placeholder="Task description…"
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}

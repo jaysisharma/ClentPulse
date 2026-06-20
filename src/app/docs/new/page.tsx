@@ -405,7 +405,7 @@ export default function NewDocPage() {
                   <span className="text-xs text-slate-400">Edit the template to match your project</span>
                 </div>
                 <textarea
-                  className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors resize-none"
+                  className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors resize-none"
                   rows={28}
                   value={content}
                   onChange={e => setContent(e.target.value)}

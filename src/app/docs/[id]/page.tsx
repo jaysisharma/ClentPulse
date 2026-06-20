@@ -206,7 +206,7 @@ export default function DocDetailPage() {
             {editing ? (
               <>
                 <textarea
-                  className="w-full text-sm font-mono leading-relaxed border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors resize-none"
+                  className="w-full text-sm font-mono leading-relaxed border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors resize-none"
                   rows={32}
                   value={content}
                   onChange={e => setContent(e.target.value)}

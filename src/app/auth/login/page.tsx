@@ -239,7 +239,7 @@ export default function LoginPage() {
       : 'Enter your name, email, and password to request a verification code.'
 
   const inputClass =
-    'block w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 dark:text-white focus:border-accent focus:bg-white focus:outline-none focus:ring-2 focus:ring-accent/20 ' +
+    'block w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 dark:text-white focus:border-accent focus:bg-white dark:focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-accent/20 ' +
     'transition-all duration-200'
 
   return (
@@ -311,7 +311,7 @@ export default function LoginPage() {
                     value={code}
                     onChange={e => setCode(e.target.value.replace(/\D/g, ''))}
                     placeholder="000000"
-                    className="w-full tracking-[8px] text-center text-2xl font-bold py-3 px-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-accent focus:bg-white text-slate-900 dark:text-white"
+                    className="w-full tracking-[8px] text-center text-2xl font-bold py-3 px-3 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-accent focus:bg-white dark:focus:bg-slate-800 text-slate-900 dark:text-white"
                     required
                     autoFocus
                   />

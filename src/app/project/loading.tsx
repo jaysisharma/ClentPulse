@@ -2,7 +2,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { DarkShell } from '@/components/layout/dark-shell'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-250 bg-slate-200 rounded-lg ${className}`} />
+  return <div className={`bg-slate-250 bg-slate-200 dark:bg-slate-800 rounded-lg ${className}`} />
 }
 
 export default function Loading() {
@@ -30,7 +30,7 @@ export default function Loading() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-                <div className="h-[3px] bg-slate-200 w-full" />
+                <div className="h-[3px] bg-slate-200 dark:bg-slate-800 w-full" />
                 <div className="p-5 space-y-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-2 flex-1">

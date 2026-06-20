@@ -165,7 +165,7 @@ Best,`
 
               <div className="space-y-3">
                 {bullets.map((bullet, i) => (
-                  <div key={i} className="flex gap-3 items-center bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 p-3 rounded-xl focus-within:bg-white dark:bg-slate-900 focus-within:border-indigo-200 transition-all">
+                  <div key={i} className="flex gap-3 items-center bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 p-3 rounded-xl focus-within:bg-white dark:focus-within:bg-slate-800 dark:bg-slate-900 focus-within:border-indigo-200 transition-all">
                     <span 
                       className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                       style={{ backgroundColor: `${project?.color ?? '#6366F1'}15`, color: project?.color ?? '#6366F1' }}

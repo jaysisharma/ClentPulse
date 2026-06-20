@@ -66,7 +66,7 @@ export default function UpgradePage() {
           </span>
           <button
             onClick={() => setBilling(b => b === 'monthly' ? 'annual' : 'monthly')}
-            className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${billing === 'annual' ? 'bg-indigo-600' : 'bg-slate-200'}`}
+            className={`relative w-12 h-6 rounded-full transition-colors duration-200 focus:outline-none ${billing === 'annual' ? 'bg-indigo-600' : 'bg-slate-200 dark:bg-slate-800'}`}
           >
             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white dark:bg-slate-900 rounded-full shadow transition-transform duration-200 ${billing === 'annual' ? 'translate-x-6' : 'translate-x-0'}`} />
           </button>

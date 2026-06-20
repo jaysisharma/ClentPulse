@@ -472,7 +472,7 @@ export default function TimePage() {
                   <div className="space-y-2">
                     <div className="flex gap-3">
                       <input
-                        className="flex-1 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors"
+                        className="flex-1 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors"
                         placeholder="What are you working on?"
                         value={timerDesc}
                         onChange={e => setTimerDesc(e.target.value)}
@@ -481,7 +481,7 @@ export default function TimePage() {
                       <select
                         value={timerProject}
                         onChange={e => setTimerProject(e.target.value)}
-                        className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors"
+                        className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors"
                       >
                         <option value="">No project</option>
                         {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
@@ -498,7 +498,7 @@ export default function TimePage() {
                   <form onSubmit={addManual} className="space-y-3">
                     <div className="flex gap-3">
                       <input
-                        className="flex-1 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors"
+                        className="flex-1 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors"
                         placeholder="What did you work on?"
                         value={manDesc}
                         onChange={e => setManDesc(e.target.value)}
@@ -506,7 +506,7 @@ export default function TimePage() {
                       />
                       <input
                         type="number" step="0.25" min="0.25"
-                        className="w-28 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors text-right"
+                        className="w-28 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors text-right"
                         placeholder="Hours"
                         value={manHours}
                         onChange={e => setManHours(e.target.value)}
@@ -517,14 +517,14 @@ export default function TimePage() {
                       <select
                         value={manProject}
                         onChange={e => setManProject(e.target.value)}
-                        className="flex-1 px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors"
+                        className="flex-1 px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors"
                       >
                         <option value="">No project</option>
                         {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
                       </select>
                       <input
                         type="date"
-                        className="w-40 px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors"
+                        className="w-40 px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors"
                         value={manDate}
                         onChange={e => setManDate(e.target.value)}
                       />

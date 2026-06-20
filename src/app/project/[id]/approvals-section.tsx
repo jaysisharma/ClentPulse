@@ -64,8 +64,8 @@ export function ApprovalsSection({
     >
       {showForm && (
         <form onSubmit={create} className="bg-white dark:bg-slate-900 rounded-2xl border border-indigo-100 bg-indigo-50/20 p-5 mb-4 space-y-4 shadow-sm">
-          <input className="w-full px-3.5 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 dark:bg-slate-800/40 focus:bg-white dark:bg-slate-900 transition-colors" placeholder="Title (e.g. Homepage mockup v2)" value={title} onChange={e => setTitle(e.target.value)} required />
-          <input className="w-full px-3.5 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 dark:bg-slate-800/40 focus:bg-white dark:bg-slate-900 transition-colors" placeholder="Deliverable URL (optional)" value={url} onChange={e => setUrl(e.target.value)} />
+          <input className="w-full px-3.5 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 dark:bg-slate-800/40 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors" placeholder="Title (e.g. Homepage mockup v2)" value={title} onChange={e => setTitle(e.target.value)} required />
+          <input className="w-full px-3.5 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 dark:bg-slate-800/40 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors" placeholder="Deliverable URL (optional)" value={url} onChange={e => setUrl(e.target.value)} />
           <div className="flex gap-2 pt-1">
             <Button type="submit" size="sm" loading={saving}>Create request</Button>
             <Button type="button" variant="ghost" size="sm" onClick={() => setShowForm(false)}>Cancel</Button>

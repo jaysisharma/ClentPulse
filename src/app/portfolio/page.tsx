@@ -148,7 +148,7 @@ export default function PortfolioPage() {
           <h2 className="font-semibold text-slate-900 dark:text-white text-sm mb-1">Bio / tagline</h2>
           <p className="text-xs text-slate-400 mb-4">Shown under your name on the public page. Keep it to 1–2 sentences.</p>
           <textarea
-            className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors resize-none"
+            className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors resize-none"
             rows={3}
             placeholder={`I'm a freelance designer helping startups ship beautiful products. ${name ? `— ${name.split(' ')[0]}` : ''}`}
             value={bio}
@@ -279,7 +279,7 @@ export default function PortfolioPage() {
               {items.map(item => (
                 <div key={item.id} className="flex items-start gap-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-4">
                   {/* Thumbnail */}
-                  <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-200 flex-shrink-0">
+                  <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-200 dark:bg-slate-800 flex-shrink-0">
                     {item.screenshots?.[0]
                       ? <img src={item.screenshots[0]} alt="" className="w-full h-full object-cover" />
                       : <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-5 h-5 text-slate-400" /></div>
