@@ -221,16 +221,16 @@ export default async function DashboardPage() {
           {/* ── Header ───────────────────────────────────────────────── */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-slate-100 tracking-tight">
+              <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
                 <Greeting name={greetName} />
               </h1>
-              <p className="text-slate-400 text-sm mt-2">
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
                 {activeProjects.length} active project{activeProjects.length !== 1 ? 's' : ''} · {attentionCount > 0 ? `${attentionCount} thing${attentionCount !== 1 ? 's' : ''} need your attention` : 'everything is on track'}
               </p>
             </div>
             <div className="flex items-center gap-2">
               <Link href="/time">
-                <Button variant="secondary" size="sm" className="bg-slate-900 border-slate-800 text-slate-200 hover:bg-slate-800 hover:text-white">
+                <Button variant="secondary" size="sm" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white">
                   <Timer className="w-4 h-4" />
                   Log time
                 </Button>
@@ -246,12 +246,12 @@ export default async function DashboardPage() {
 
           {isNewUser ? (
             /* ── New-user setup state ─────────────────────────────────── */
-            <div className="rounded-2xl bg-slate-900 border border-slate-800/60 py-16 px-6 flex flex-col items-center text-center">
+            <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 py-16 px-6 flex flex-col items-center text-center">
               <div className="w-14 h-14 rounded-2xl bg-indigo-950/40 flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-indigo-500" />
               </div>
-              <h2 className="text-xl font-bold text-slate-100 mt-5">Let&apos;s set up your workspace</h2>
-              <p className="text-sm text-slate-400 mt-2 max-w-sm">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mt-5">Let&apos;s set up your workspace</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm">
                 Create your first project to start tracking time, sending client updates, and getting paid — your dashboard fills in from there.
               </p>
               <Link href="/project/new" className="mt-6">
@@ -260,7 +260,7 @@ export default async function DashboardPage() {
                   Create your first project
                 </Button>
               </Link>
-              <Link href="/clients" className="mt-3 text-xs font-medium text-slate-400 hover:text-slate-300 inline-flex items-center gap-1">
+              <Link href="/clients" className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-300 inline-flex items-center gap-1">
                 or add a client first <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
@@ -322,17 +322,17 @@ export default async function DashboardPage() {
           {/* ── Needs attention to-do list (hidden when nothing's pending) ── */}
           {attentionCount > 0 && (
           <section className="space-y-3">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Needs attention</h2>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Needs attention</h2>
 
-              <div className="rounded-2xl bg-slate-900 border border-slate-800/60 divide-y divide-slate-800/60 overflow-hidden">
+              <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 divide-y divide-slate-100 dark:divide-slate-800/60 overflow-hidden">
                 {overdueProjects.map(p => (
-                  <div key={`u-${p.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-800/40 transition-colors">
-                    <span className="w-9 h-9 rounded-lg bg-amber-950/40 flex items-center justify-center flex-shrink-0">
+                  <div key={`u-${p.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    <span className="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center flex-shrink-0">
                       <Send className="w-4 h-4 text-amber-500" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-slate-100 truncate">{p.project_name}</p>
-                      <p className="text-xs text-slate-400 truncate">No update sent in over a week · {p.client_name}</p>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{p.project_name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">No update sent in over a week · {p.client_name}</p>
                     </div>
                     <div className="flex items-center gap-2 flex-shrink-0">
                       <RemindSelfButton projectId={p.id} />
@@ -344,13 +344,13 @@ export default async function DashboardPage() {
                 ))}
 
                 {pendingApprovals.map(a => (
-                  <div key={`a-${a.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-800/40 transition-colors">
-                    <span className="w-9 h-9 rounded-lg bg-amber-950/40 flex items-center justify-center flex-shrink-0">
+                  <div key={`a-${a.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    <span className="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center flex-shrink-0">
                       <CheckCircle2 className="w-4 h-4 text-amber-500" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-slate-100 truncate">{a.title}</p>
-                      <p className="text-xs text-slate-400 truncate">Waiting on client approval · {a.projectName}</p>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{a.title}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Waiting on client approval · {a.projectName}</p>
                     </div>
                     <Link href={`/project/${a.projectId}`} className="flex-shrink-0">
                       <Button size="sm" variant="secondary" className="text-xs">Follow up</Button>
@@ -359,13 +359,13 @@ export default async function DashboardPage() {
                 ))}
 
                 {unsignedContracts.map(c => (
-                  <div key={`c-${c.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-800/40 transition-colors">
-                    <span className="w-9 h-9 rounded-lg bg-amber-950/40 flex items-center justify-center flex-shrink-0">
+                  <div key={`c-${c.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    <span className="w-9 h-9 rounded-lg bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center flex-shrink-0">
                       <FileSignature className="w-4 h-4 text-amber-500" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-slate-100 truncate">{c.title}</p>
-                      <p className="text-xs text-slate-400 truncate">Contract not signed yet · {c.projectName}</p>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">{c.title}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Contract not signed yet · {c.projectName}</p>
                     </div>
                     <Link href={`/project/${c.projectId}/contract`} className="flex-shrink-0">
                       <Button size="sm" className="text-xs">Review &amp; sign</Button>
@@ -382,30 +382,30 @@ export default async function DashboardPage() {
 
           {/* ── Active timer ─────────────────────────────────────────── */}
           {runningTimer ? (
-            <Link href="/time" className="block rounded-2xl bg-slate-900 border border-slate-800/60 p-4 space-y-3 hover:border-slate-700 transition-colors">
+            <Link href="/time" className="block rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 p-4 space-y-3 hover:border-slate-700 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Timer running</span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Timer running</span>
                 </div>
-                <span className="text-[11px] font-bold text-indigo-400">Open</span>
+                <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400">Open</span>
               </div>
-              <div className="text-sm font-bold text-slate-100 truncate">{runningTimer.description || 'Untitled task'}</div>
+              <div className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{runningTimer.description || 'Untitled task'}</div>
               {timerProject && (
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                   <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: timerProject.color }} />
                   <span className="truncate">{timerProject.project_name}</span>
                 </div>
               )}
             </Link>
           ) : (
-            <Link href="/time" className="flex items-center gap-3 rounded-2xl bg-slate-900 border border-slate-800/60 px-4 py-3.5 hover:border-slate-700 transition-colors group">
-              <span className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0">
-                <Timer className="w-4 h-4 text-slate-400" />
+            <Link href="/time" className="flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 px-4 py-3.5 hover:border-slate-700 transition-colors group">
+              <span className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
+                <Timer className="w-4 h-4 text-slate-500 dark:text-slate-400" />
               </span>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold text-slate-200">Start a timer</p>
-                <p className="text-xs text-slate-400">Track billable hours</p>
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Start a timer</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Track billable hours</p>
               </div>
               <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 flex-shrink-0" />
             </Link>
@@ -415,34 +415,34 @@ export default async function DashboardPage() {
           {upcomingInvoices.length > 0 && (
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Unpaid invoices</h2>
-              <Link href="/invoices" className="text-xs font-medium text-indigo-400 hover:text-indigo-300 inline-flex items-center gap-0.5">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Unpaid invoices</h2>
+              <Link href="/invoices" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 inline-flex items-center gap-0.5">
                 View all <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-              <div className="rounded-2xl bg-slate-900 border border-slate-800/60 divide-y divide-slate-800/60 overflow-hidden">
+              <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 divide-y divide-slate-100 dark:divide-slate-800/60 overflow-hidden">
                 {upcomingInvoices.map(inv => {
                   const due = dueLabel(inv.due_date)
                   return (
                     <Link
                       key={inv.id}
                       href={`/invoices/${inv.id}`}
-                      className="flex items-center gap-3 p-4 hover:bg-slate-800/40 transition-colors group"
+                      className="flex items-center gap-3 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group"
                     >
                       <span className={cn(
                         'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
-                        due?.overdue ? 'bg-rose-950/40 text-rose-500' : 'bg-slate-800 text-slate-400',
+                        due?.overdue ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-500' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400',
                       )}>
                         <FileText className="w-4 h-4" />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-slate-100 truncate group-hover:text-indigo-400 transition-colors">{inv.client_name}</p>
-                        <p className={cn('text-xs truncate', due?.overdue ? 'text-rose-600 font-medium' : 'text-slate-400')}>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{inv.client_name}</p>
+                        <p className={cn('text-xs truncate', due?.overdue ? 'text-rose-600 dark:text-rose-400 font-medium' : 'text-slate-500 dark:text-slate-400')}>
                           {inv.invoice_number} · {due?.text}
                         </p>
                       </div>
-                      <span className="text-sm font-semibold text-slate-100 tabular-nums flex-shrink-0">{fmt$(sumItems([inv]))}</span>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 tabular-nums flex-shrink-0">{fmt$(sumItems([inv]))}</span>
                     </Link>
                   )
                 })}
@@ -451,13 +451,13 @@ export default async function DashboardPage() {
           )}
 
           {/* ── New invoice shortcut ─────────────────────────────────── */}
-          <Link href="/invoices/new" className="flex items-center gap-3 rounded-2xl bg-slate-900 border border-slate-800/60 px-4 py-3.5 hover:border-slate-700 transition-colors group">
-            <span className="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-950/40 transition-colors">
-              <FileText className="w-4 h-4 text-slate-400 group-hover:text-indigo-400 transition-colors" />
+          <Link href="/invoices/new" className="flex items-center gap-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 px-4 py-3.5 hover:border-slate-700 transition-colors group">
+            <span className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-950/40 transition-colors">
+              <FileText className="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-slate-200">New invoice</p>
-              <p className="text-xs text-slate-400">Bill a client</p>
+              <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">New invoice</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Bill a client</p>
             </div>
             <ChevronRight className="w-4 h-4 text-slate-600 ml-auto flex-shrink-0" />
           </Link>
@@ -465,34 +465,34 @@ export default async function DashboardPage() {
           {/* ── Projects (home base) ─────────────────────────────────── */}
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Projects</h2>
-              <Link href="/project" className="text-xs font-medium text-indigo-400 hover:text-indigo-300 inline-flex items-center gap-0.5">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Projects</h2>
+              <Link href="/project" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 inline-flex items-center gap-0.5">
                 View all <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
             {activeProjects.length === 0 ? (
-              <div className="rounded-2xl bg-slate-900 border border-slate-800/60 py-10 px-6 flex flex-col items-center text-center gap-2">
-                <div className="w-11 h-11 rounded-full bg-slate-800 flex items-center justify-center">
-                  <FolderOpen className="w-5 h-5 text-slate-400" />
+              <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 py-10 px-6 flex flex-col items-center text-center gap-2">
+                <div className="w-11 h-11 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                  <FolderOpen className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                 </div>
-                <p className="text-sm font-semibold text-slate-200">No active projects</p>
-                <Link href="/project/new" className="text-xs font-medium text-indigo-400 hover:text-indigo-300 inline-flex items-center gap-1 mt-1">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">No active projects</p>
+                <Link href="/project/new" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 inline-flex items-center gap-1 mt-1">
                   <Plus className="w-3.5 h-3.5" /> Start a project
                 </Link>
               </div>
             ) : (
-              <div className="rounded-2xl bg-slate-900 border border-slate-800/60 divide-y divide-slate-800/60 overflow-hidden">
+              <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 divide-y divide-slate-100 dark:divide-slate-800/60 overflow-hidden">
                 {activeProjects.slice(0, 5).map(p => (
                   <Link
                     key={p.id}
                     href={`/project/${p.id}`}
-                    className="flex items-center gap-3 p-4 hover:bg-slate-800/40 transition-colors group"
+                    className="flex items-center gap-3 p-4 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors group"
                   >
                     <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-slate-100 truncate group-hover:text-indigo-400 transition-colors">{p.project_name}</p>
-                      <p className="text-xs text-slate-400 truncate">{p.client_name}</p>
+                      <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{p.project_name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{p.client_name}</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-slate-400 flex-shrink-0" />
                   </Link>
