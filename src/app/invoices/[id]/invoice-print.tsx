@@ -14,9 +14,15 @@ interface Invoice {
 interface Owner { name: string | null; logo_url: string | null; accent_color: string | null }
 
 const STATUS_STYLES: Record<string, string> = {
-  draft: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300',
-  sent:  'bg-blue-50 text-blue-700',
-  paid:  'bg-emerald-50 text-emerald-700',
+  draft:   'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300',
+  sent:    'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400',
+  paid:    'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400',
+  overdue: 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400',
+}
+
+function isOverdue(inv: { status: string; due_date: string | null }) {
+  if (inv.status === 'paid' || !inv.due_date) return false
+  return new Date(inv.due_date) < new Date(new Date().toDateString())
 }
 
 function fmt(n: number) {
@@ -26,6 +32,8 @@ function fmt(n: number) {
 export function InvoicePrint({ invoice, owner }: { invoice: Invoice; owner: Owner | null }) {
   const total = (invoice.items ?? []).reduce((s, i) => s + (i.amount ?? 0), 0)
   const accent = owner?.accent_color ?? '#6366F1'
+  const overdue = isOverdue(invoice)
+  const statusKey = overdue ? 'overdue' : invoice.status
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden print:border-0 print:rounded-none print:shadow-none">
@@ -45,8 +53,8 @@ export function InvoicePrint({ invoice, owner }: { invoice: Invoice; owner: Owne
           <div className="text-right">
             <div className="text-3xl font-bold text-slate-900 dark:text-white mb-1">INVOICE</div>
             <div className="text-slate-500 dark:text-slate-400 text-sm">{invoice.invoice_number}</div>
-            <span className={`inline-block mt-2 text-xs font-medium px-2.5 py-1 rounded-full ${STATUS_STYLES[invoice.status]}`}>
-              {invoice.status.toUpperCase()}
+            <span className={`inline-block mt-2 text-xs font-medium px-2.5 py-1 rounded-full ${STATUS_STYLES[statusKey]}`}>
+              {statusKey.toUpperCase()}
             </span>
           </div>
         </div>
@@ -82,7 +90,7 @@ export function InvoicePrint({ invoice, owner }: { invoice: Invoice; owner: Owne
           </thead>
           <tbody>
             {(invoice.items ?? []).map((item, i) => (
-              <tr key={i} className="border-b border-slate-50">
+              <tr key={i} className="border-b border-slate-50 dark:border-slate-800/40">
                 <td className="py-3 text-sm text-slate-700 dark:text-slate-200">{item.description}</td>
                 <td className="py-3 text-sm text-slate-600 dark:text-slate-300 text-right">{item.quantity}</td>
                 <td className="py-3 text-sm text-slate-600 dark:text-slate-300 text-right">{fmt(item.rate)}</td>

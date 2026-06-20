@@ -29,7 +29,10 @@ function buildBuckets(paid: Point[], expenses: Point[], cfg: (typeof RANGES)[num
       const d = new Date(today.getFullYear(), today.getMonth() - (11 - i), 1)
       return { key: `${d.getFullYear()}-${d.getMonth()}`, label: d.toLocaleDateString('en-US', { month: 'short' }), rev: 0, exp: 0 }
     })
-    const idx = (s: string) => { const d = new Date(s); return `${d.getFullYear()}-${d.getMonth()}` }
+    const idx = (s: string) => {
+      const [year, month] = s.split('-').map(Number)
+      return `${year}-${month - 1}`
+    }
     paid.forEach(p => { const b = buckets.find(b => b.key === idx(p.date)); if (b) b.rev += p.amount })
     expenses.forEach(p => { const b = buckets.find(b => b.key === idx(p.date)); if (b) b.exp += p.amount })
     return buckets
@@ -52,9 +55,9 @@ function buildBuckets(paid: Point[], expenses: Point[], cfg: (typeof RANGES)[num
 
   const place = (pts: Point[], field: 'rev' | 'exp') => {
     pts.forEach(p => {
-      const d = new Date(p.date)
-      const day = new Date(d.getFullYear(), d.getMonth(), d.getDate())
-      const di = Math.floor((day.getTime() - start.getTime()) / 86_400_000)
+      const [year, month, dayNum] = p.date.split('-').map(Number)
+      const day = new Date(year, month - 1, dayNum)
+      const di = Math.round((day.getTime() - start.getTime()) / 86_400_000)
       if (di < 0) return
       const bi = Math.floor(di / bucketDays)
       if (bi >= 0 && bi < buckets.length) buckets[bi][field] += p.amount

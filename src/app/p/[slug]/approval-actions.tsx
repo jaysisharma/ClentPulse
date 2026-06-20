@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { CheckCircle2, XCircle, Clock, ExternalLink } from 'lucide-react'
+import { ensureExternalProtocol } from '@/lib/utils'
 
 interface Approval { id: string; title: string; url: string | null; status: string; feedback: string | null }
 
@@ -29,7 +30,7 @@ export function ApprovalCard({ approval, accentColor }: { approval: Approval; ac
         <div>
           <div className="font-semibold text-slate-900">{approval.title}</div>
           {approval.url && (
-            <a href={approval.url} target="_blank" rel="noopener noreferrer"
+            <a href={ensureExternalProtocol(approval.url)} target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-xs mt-1 hover:underline"
               style={{ color: accentColor }}>
               <ExternalLink className="w-3 h-3" />View deliverable

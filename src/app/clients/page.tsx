@@ -15,7 +15,7 @@ export default async function ClientsPage() {
 
   const { data: projects, error } = await supabase
     .from('projects')
-    .select('id, project_name, client_name, client_email, color, status, updates(id, sent_at)')
+    .select('id, project_name, client_name, client_email, client_user_id, color, status, updates(id, sent_at)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -26,14 +26,18 @@ export default async function ClientsPage() {
   // Group projects by client — keyed by email if set, otherwise by name.
   type Project = {
     id: string; project_name: string; client_name: string
-    client_email: string | null; color: string; status: string
+    client_email: string | null; client_user_id: string | null; color: string; status: string
     updates: { id: string; sent_at: string | null }[]
   }
 
-  const clientMap = new Map<string, { name: string; email: string | null; projects: Project[] }>()
+  const clientMap = new Map<string, { name: string; email: string | null; hasPortal: boolean; projects: Project[] }>()
   for (const p of (projects ?? []) as Project[]) {
     const key = p.client_email ?? `__name__${p.client_name}`
-    if (!clientMap.has(key)) clientMap.set(key, { name: p.client_name, email: p.client_email, projects: [] })
+    if (!clientMap.has(key)) {
+      clientMap.set(key, { name: p.client_name, email: p.client_email, hasPortal: !!p.client_user_id, projects: [] })
+    } else if (p.client_user_id) {
+      clientMap.get(key)!.hasPortal = true
+    }
     clientMap.get(key)!.projects.push(p)
   }
 
@@ -41,7 +45,8 @@ export default async function ClientsPage() {
     key,
     name: c.name,
     email: c.email,
-    initials: c.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase(),
+    hasPortal: c.hasPortal,
+    initials: c.name.split(' ').filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase(),
     avatarColor: c.projects[0]?.color ?? '#6366F1',
     projectCount: c.projects.length,
     sentUpdates: c.projects.flatMap(p => p.updates).filter(u => u.sent_at).length,
@@ -51,7 +56,7 @@ export default async function ClientsPage() {
 
   const totalClients  = clients.length
   const activeClients = clients.filter(c => c.activeProjects > 0).length
-  const withPortal    = clients.filter(c => c.email).length
+  const withPortal    = clients.filter(c => c.hasPortal).length
 
   return (
     <AppLayout>

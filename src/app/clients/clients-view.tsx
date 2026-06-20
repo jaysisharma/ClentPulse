@@ -11,6 +11,7 @@ export type ClientCard = {
   key: string
   name: string
   email: string | null
+  hasPortal: boolean
   initials: string
   avatarColor: string
   projectCount: number
@@ -35,7 +36,7 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
     const q = query.trim().toLowerCase()
     return clients.filter(c => {
       if (filter === 'active' && c.activeProjects === 0) return false
-      if (filter === 'portal' && !c.email) return false
+      if (filter === 'portal' && !c.hasPortal) return false
       if (!q) return true
       return (
         c.name.toLowerCase().includes(q) ||
@@ -120,7 +121,7 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
                   )}
                 </div>
                 {/* Portal status */}
-                {client.email ? (
+                {client.hasPortal ? (
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full flex-shrink-0">
                     <ShieldCheck className="w-3 h-3" />Portal
                   </span>

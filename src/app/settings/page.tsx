@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardContent } from '@/components/ui/card'
-import { Check, Upload } from 'lucide-react'
+import { Check, Upload, Sun, Moon } from 'lucide-react'
 import { PLAN_BLURB } from '@/lib/plans'
+import { useTheme } from '@/components/theme-provider'
 
 const ACCENT_COLORS = [
   '#6366F1', '#8B5CF6', '#EC4899', '#EF4444',
@@ -18,6 +19,7 @@ const ACCENT_COLORS = [
 
 export default function SettingsPage() {
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
   const [name, setName] = useState('')
   const [username, setUsername] = useState('')
   const [usernameError, setUsernameError] = useState('')
@@ -92,6 +94,11 @@ export default function SettingsPage() {
     if (!file || !userId) return
     setLogoUploading(true)
     setLogoError('')
+    if (file.size > 2 * 1024 * 1024) {
+      setLogoError('Logo must be less than 2MB.')
+      setLogoUploading(false)
+      return
+    }
     const supabase = createClient()
     const ext = file.name.split('.').pop()
     const path = `${userId}/logo.${ext}`
@@ -118,17 +125,17 @@ export default function SettingsPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-xl animate-fade-in">
+      <div className="max-w-xl animate-fade-in pb-12">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Settings</h1>
         <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Manage your profile and billing.</p>
 
         {/* Upgrade success */}
         {justUpgraded && (
-          <div className="mb-6 bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-4 flex items-center gap-3">
-            <Check className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+          <div className="mb-6 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 rounded-xl px-5 py-4 flex items-center gap-3">
+            <Check className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
             <div>
-              <div className="font-semibold text-emerald-900 text-sm">You&apos;re now on Pro!</div>
-              <div className="text-emerald-700 text-xs mt-0.5">All Pro features are unlocked. Billing will be set up when payment processing launches.</div>
+              <div className="font-semibold text-emerald-900 dark:text-emerald-200 text-sm">You&apos;re now on Pro!</div>
+              <div className="text-emerald-700 dark:text-emerald-400 text-xs mt-0.5">All Pro features are unlocked. Billing will be set up when payment processing launches.</div>
             </div>
           </div>
         )}
@@ -141,6 +148,7 @@ export default function SettingsPage() {
           <CardContent>
             <form onSubmit={handleSave} className="space-y-4">
               <Input
+                id="display-name"
                 label="Display name"
                 value={name}
                 onChange={e => setName(e.target.value)}
@@ -148,6 +156,7 @@ export default function SettingsPage() {
               />
               <div>
                 <Input
+                  id="portfolio-username"
                   label="Portfolio username"
                   value={username}
                   onChange={e => setUsername(e.target.value.toLowerCase())}
@@ -159,14 +168,49 @@ export default function SettingsPage() {
                   </p>
                 )}
                 {usernameError && (
-                  <p className="text-xs text-red-500 mt-1">{usernameError}</p>
+                  <p className="text-xs text-red-500 dark:text-red-400 mt-1">{usernameError}</p>
                 )}
               </div>
-              {saveError && <p className="text-xs text-red-600">{saveError}</p>}
+              {saveError && <p className="text-xs text-red-500 dark:text-red-400">{saveError}</p>}
               <Button type="submit" loading={loading} size="sm">
                 {saved ? <><Check className="w-3.5 h-3.5" /> Saved</> : 'Save changes'}
               </Button>
             </form>
+          </CardContent>
+        </Card>
+
+        {/* Theme */}
+        <Card className="mb-6">
+          <CardHeader>
+            <h2 className="font-semibold text-slate-900 dark:text-white">Theme</h2>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                type="button"
+                onClick={() => setTheme('light')}
+                className={`flex flex-col items-center gap-2 p-4 border rounded-xl transition-all cursor-pointer ${
+                  theme === 'light'
+                    ? 'border-indigo-500 bg-indigo-50/30 dark:bg-indigo-950/10 ring-1 ring-indigo-500'
+                    : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                }`}
+              >
+                <Sun className={`w-5 h-5 ${theme === 'light' ? 'text-indigo-500' : 'text-slate-500 dark:text-slate-400'}`} />
+                <span className={`text-sm font-medium ${theme === 'light' ? 'text-indigo-900 dark:text-indigo-100' : 'text-slate-700 dark:text-slate-300'}`}>Light Mode</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setTheme('dark')}
+                className={`flex flex-col items-center gap-2 p-4 border rounded-xl transition-all cursor-pointer ${
+                  theme === 'dark'
+                    ? 'border-indigo-500 bg-indigo-50/30 dark:bg-indigo-950/10 ring-1 ring-indigo-500'
+                    : 'border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                }`}
+              >
+                <Moon className={`w-5 h-5 ${theme === 'dark' ? 'text-indigo-500' : 'text-slate-500 dark:text-slate-400'}`} />
+                <span className={`text-sm font-medium ${theme === 'dark' ? 'text-indigo-900 dark:text-indigo-100' : 'text-slate-700 dark:text-slate-300'}`}>Dark Mode</span>
+              </button>
+            </div>
           </CardContent>
         </Card>
 
@@ -188,13 +232,15 @@ export default function SettingsPage() {
                       key={c}
                       type="button"
                       onClick={() => setAccentColor(c)}
-                      className="w-8 h-8 rounded-full transition-transform hover:scale-110"
+                      className="w-8 h-8 rounded-full transition-transform hover:scale-110 flex items-center justify-center cursor-pointer"
                       style={{
                         backgroundColor: c,
                         outline: accentColor === c ? `3px solid ${c}` : 'none',
                         outlineOffset: '2px',
                       }}
-                    />
+                    >
+                      {accentColor === c && <Check className="w-4 h-4 text-white" />}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -215,7 +261,7 @@ export default function SettingsPage() {
                     disabled={logoUploading}
                   />
                 </label>
-                {logoError && <p className="text-xs text-red-600 mt-1.5">{logoError}</p>}
+                {logoError && <p className="text-xs text-red-500 dark:text-red-400 mt-1.5">{logoError}</p>}
               </div>
               {plan === 'pro' && (
                 <Button size="sm" onClick={handleSave} loading={loading}>
@@ -249,7 +295,7 @@ export default function SettingsPage() {
               )}
             </div>
             {billingError && (
-              <p className="text-xs text-red-600 mt-3">{billingError}</p>
+              <p className="text-xs text-red-500 dark:text-red-400 mt-3">{billingError}</p>
             )}
           </CardContent>
         </Card>
@@ -257,3 +303,4 @@ export default function SettingsPage() {
     </AppLayout>
   )
 }
+

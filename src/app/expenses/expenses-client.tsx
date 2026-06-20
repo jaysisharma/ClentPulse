@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -8,6 +8,14 @@ import { Input } from '@/components/ui/input'
 import { Plus, Trash2 } from 'lucide-react'
 
 type Project = { id: string; project_name: string }
+
+function localTodayStr() {
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
 type Expense = {
   id: string
   description: string
@@ -32,7 +40,11 @@ export function ExpensesClient({ expenses, projects }: { expenses: Expense[]; pr
   const [amount, setAmount] = useState('')
   const [category, setCategory] = useState('')
   const [projectId, setProjectId] = useState('')
-  const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+  const [date, setDate] = useState('')
+
+  useEffect(() => {
+    setDate(localTodayStr())
+  }, [])
 
   async function addExpense(e: React.FormEvent) {
     e.preventDefault()
@@ -58,7 +70,7 @@ export function ExpensesClient({ expenses, projects }: { expenses: Expense[]; pr
     setSaving(false)
     if (err) { setError(err.message); return }
     setDescription(''); setAmount(''); setCategory(''); setProjectId('')
-    setDate(new Date().toISOString().slice(0, 10))
+    setDate(localTodayStr())
     setOpen(false)
     router.refresh()
   }
@@ -97,7 +109,7 @@ export function ExpensesClient({ expenses, projects }: { expenses: Expense[]; pr
               </select>
             </div>
           </div>
-          {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>}
+          {error && <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/40 rounded-lg px-3 py-2">{error}</div>}
           <div className="flex gap-2">
             <Button type="submit" loading={saving} size="sm">Save expense</Button>
             <Button type="button" variant="secondary" size="sm" onClick={() => { setOpen(false); setError('') }}>Cancel</Button>
@@ -116,7 +128,7 @@ export function ExpensesClient({ expenses, projects }: { expenses: Expense[]; pr
               <div className="min-w-0">
                 <div className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{ex.description}</div>
                 <div className="text-xs text-slate-400 mt-0.5">
-                  {new Date(ex.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  {new Date(ex.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   {ex.category ? ` · ${ex.category}` : ''}
                   {ex.projectName ? ` · ${ex.projectName}` : ''}
                 </div>
@@ -125,7 +137,7 @@ export function ExpensesClient({ expenses, projects }: { expenses: Expense[]; pr
                 <span className="text-sm font-semibold text-rose-600">−{fmt(ex.amount)}</span>
                 <button
                   onClick={() => remove(ex.id)}
-                  className="text-slate-300 hover:text-rose-600 transition-colors opacity-0 group-hover:opacity-100"
+                  className="text-slate-300 hover:text-rose-600 transition-colors opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                   aria-label="Delete expense"
                 >
                   <Trash2 className="w-4 h-4" />

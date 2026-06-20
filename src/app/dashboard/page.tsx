@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Button } from '@/components/ui/button'
+import { ProductTour, TourTrigger } from '@/components/layout/product-tour'
 import Link from 'next/link'
 import {
   Plus, Timer, FolderOpen, DollarSign, Wallet,
@@ -92,7 +93,6 @@ export default async function DashboardPage() {
     projectsRes,
     profileRes,
     invoicesRes,
-    lastMonthRes,
     timeRes,
     lastWeekRes,
     expensesRes,
@@ -105,7 +105,6 @@ export default async function DashboardPage() {
       .order('created_at', { ascending: false }),
     supabase.from('users').select('name, plan').eq('id', user.id).single(),
     supabase.from('invoices').select('id, invoice_number, client_name, status, items, due_date, created_at, paid_at').eq('user_id', user.id).order('created_at', { ascending: false }),
-    supabase.from('invoices').select('items').eq('user_id', user.id).eq('status', 'paid').gte('created_at', lastMonthStart).lt('created_at', monthStart),
     supabase.from('time_entries').select('hours').eq('user_id', user.id).gte('date', weekStart),
     supabase.from('time_entries').select('hours').eq('user_id', user.id).gte('date', lastWeekStart).lt('date', weekStart),
     supabase.from('expenses').select('date, amount').eq('user_id', user.id),
@@ -120,7 +119,6 @@ export default async function DashboardPage() {
   const projects          = projectsRes.data
   const profile           = profileRes.data
   const invoices          = invoicesRes.data
-  const lastMonthInvoices = lastMonthRes.data
   const timeEntries       = timeRes.data
   const lastWeekEntries   = lastWeekRes.data
   const expenses          = expensesRes.data
@@ -161,8 +159,21 @@ export default async function DashboardPage() {
       .filter(e => e.date >= start && (!end || e.date < end))
       .reduce((s, e) => s + (parseFloat(e.amount) || 0), 0)
 
-  const earningsThisMonth = sumItems(allInvoices.filter(i => i.status === 'paid' && i.created_at >= monthStart))
-  const earningsLastMonth = sumItems(lastMonthInvoices ?? [])
+  const getPaidDate = (i: Invoice) => {
+    const d = new Date(i.paid_at || i.created_at)
+    return d.toISOString().split('T')[0]
+  }
+
+  const earningsThisMonth = sumItems(
+    allInvoices.filter(i => i.status === 'paid' && getPaidDate(i) >= monthStart)
+  )
+  const earningsLastMonth = sumItems(
+    allInvoices.filter(i => {
+      if (i.status !== 'paid') return false
+      const paidDate = getPaidDate(i)
+      return paidDate >= lastMonthStart && paidDate < monthStart
+    })
+  )
   const netThisMonth = earningsThisMonth - expenseInMonth(monthStart)
   const netLastMonth = earningsLastMonth - expenseInMonth(lastMonthStart, monthStart)
   const netDiff = netThisMonth - netLastMonth
@@ -227,15 +238,16 @@ export default async function DashboardPage() {
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
                 {activeProjects.length} active project{activeProjects.length !== 1 ? 's' : ''} · {attentionCount > 0 ? `${attentionCount} thing${attentionCount !== 1 ? 's' : ''} need your attention` : 'everything is on track'}
               </p>
+              <TourTrigger />
             </div>
             <div className="flex items-center gap-2">
-              <Link href="/time">
+              <Link href="/time" data-tour-time-btn="">
                 <Button variant="secondary" size="sm" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white">
                   <Timer className="w-4 h-4" />
                   Log time
                 </Button>
               </Link>
-              <Link href="/project/new">
+              <Link href="/project/new" data-tour-project-btn="">
                 <Button size="sm">
                   <Plus className="w-4 h-4" />
                   New project
@@ -523,6 +535,7 @@ export default async function DashboardPage() {
           )}
         </div>
       </DarkShell>
+      <ProductTour />
     </AppLayout>
   )
 }

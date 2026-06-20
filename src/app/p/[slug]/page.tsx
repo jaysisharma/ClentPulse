@@ -151,15 +151,15 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      {/* Kickoff checklist — shown when items exist */}
-      {checklistItems && checklistItems.length > 0 && (
+      {/* Kickoff checklist — shown when items exist and not hidden */}
+      {!project.hide_kickoff && checklistItems && checklistItems.length > 0 && (
         <div className="max-w-2xl mx-auto px-6 pb-6">
           <ClientChecklist items={checklistItems as Parameters<typeof ClientChecklist>[0]['items']} accentColor={accentColor} />
         </div>
       )}
 
-      {/* Milestones — only shown when there are any */}
-      {milestones && milestones.length > 0 && (
+      {/* Milestones — only shown when there are any and not hidden */}
+      {!project.hide_milestones && milestones && milestones.length > 0 && (
         <div className="max-w-2xl mx-auto px-6 pb-8">
           <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Milestones</h2>
           <div className="bg-white rounded-2xl border border-slate-200 p-5 space-y-2">
@@ -180,7 +180,7 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
               ) : null
             })()}
             {milestones.map(m => {
-              const overdue = !m.done && m.due_date && new Date(m.due_date) < new Date(new Date().toDateString())
+              const overdue = !m.done && m.due_date && new Date(m.due_date + 'T12:00:00') < new Date(new Date().toDateString())
               return (
                 <div key={m.id} className="flex items-center gap-3">
                   <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${m.done ? 'border-transparent' : overdue ? 'border-red-400' : 'border-slate-300'}`}
@@ -254,8 +254,8 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
         )}
       </div>
 
-      {/* Approvals — only show pending ones to the client */}
-      {approvals && approvals.filter(a => a.status === 'pending').length > 0 && (
+      {/* Approvals — only show pending ones to the client when not hidden */}
+      {!project.hide_approvals && approvals && approvals.filter(a => a.status === 'pending').length > 0 && (
         <div className="max-w-2xl mx-auto px-6 pb-8">
           <h2 className="text-lg font-semibold text-slate-900 mb-4">Awaiting your review</h2>
           <div className="space-y-4">

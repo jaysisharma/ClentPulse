@@ -48,6 +48,7 @@ function NavLink({
     <Link
       href={href}
       onClick={onNavigate}
+      data-tour={label.toLowerCase()}
       className={cn(
         'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
         active

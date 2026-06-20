@@ -62,8 +62,8 @@ export default async function ExpensesPage() {
             <div className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">This month</div>
             <div className="text-xs text-slate-400 mt-1">expenses logged</div>
           </div>
-          <div className={`rounded-xl border p-5 ${netProfit >= 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
-            <div className={`text-2xl font-bold ${netProfit >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>{fmt(netProfit)}</div>
+          <div className={`rounded-xl border p-5 ${netProfit >= 0 ? 'bg-emerald-50 border-emerald-100 dark:bg-emerald-950/20 dark:border-emerald-900/40' : 'bg-rose-50 border-rose-100 dark:bg-rose-950/20 dark:border-rose-900/40'}`}>
+            <div className={`text-2xl font-bold ${netProfit >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>{fmt(netProfit)}</div>
             <div className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Net profit</div>
             <div className="text-xs text-slate-400 mt-1">paid revenue − expenses</div>
           </div>

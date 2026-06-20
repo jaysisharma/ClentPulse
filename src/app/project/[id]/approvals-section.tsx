@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Plus, CheckCircle2, XCircle, Clock, ExternalLink, Trash2 } from 'lucide-react'
 import { CollapsibleSection } from './collapsible-section'
+import { ensureExternalProtocol } from '@/lib/utils'
 
 interface Approval { id: string; title: string; url: string | null; status: string; feedback: string | null; created_at: string }
 
@@ -92,7 +93,7 @@ export function ApprovalsSection({
                   <div className="flex items-center gap-2.5 mt-1">
                     <span className={`text-xs font-semibold ${ui.color}`}>{ui.label}</span>
                     {a.url && (
-                      <a href={a.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 hover:underline">
+                      <a href={ensureExternalProtocol(a.url)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 hover:underline">
                         <ExternalLink className="w-3 h-3" />View deliverable
                       </a>
                     )}

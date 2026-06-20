@@ -85,7 +85,9 @@ export function CompletedProjectPopup({
         {/* Rating Preview indicator just to grab attention */}
         <div className="flex justify-center gap-1 mb-6">
           {[1, 2, 3, 4, 5].map((star) => (
-            <Star key={star} className="w-6 h-6 text-amber-400 fill-amber-400/10 hover:fill-amber-400 transition-colors cursor-pointer" />
+            <Link key={star} href={`/testimonial/${projectId}?rating=${star}`} onClick={handleDismiss}>
+              <Star className="w-6 h-6 text-amber-400 fill-amber-400/10 hover:fill-amber-400 transition-colors cursor-pointer" />
+            </Link>
           ))}
         </div>
 

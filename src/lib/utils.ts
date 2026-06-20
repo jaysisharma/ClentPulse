@@ -24,3 +24,10 @@ export function generateSlug(name: string) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '') + '-' + Math.random().toString(36).slice(2, 7)
 }
+
+export function ensureExternalProtocol(url: string | null | undefined): string {
+  if (!url) return ''
+  const trimmed = url.trim()
+  if (/^https?:\/\//i.test(trimmed)) return trimmed
+  return `https://${trimmed}`
+}

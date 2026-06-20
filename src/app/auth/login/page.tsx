@@ -127,7 +127,7 @@ export default function LoginPage() {
         // 2. Log user in client-side using Supabase verifyOtp
         const { error: authError } = await supabase.auth.verifyOtp({
           token_hash,
-          type: 'email'
+          type: 'magiclink'
         })
 
         if (authError) {

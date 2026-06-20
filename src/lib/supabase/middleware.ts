@@ -31,30 +31,57 @@ export async function updateSession(request: NextRequest) {
 
   const onFreelancerRoute = FREELANCER_PATHS.some(p => pathname.startsWith(p))
   const onClientRoute     = pathname.startsWith('/client/dashboard')
+  const onOnboardingRoute = pathname === '/onboarding'
 
   // Not authenticated — send everyone to the single login page
   if (!user) {
-    if (onFreelancerRoute || onClientRoute) return redirect(request, '/auth/login')
+    if (onFreelancerRoute || onClientRoute || onOnboardingRoute) {
+      return redirect(request, '/auth/login')
+    }
     return supabaseResponse
   }
 
-  // Determine role: metadata first, then fall back to users table presence
+  // Determine role and onboarding status
   let role = user.user_metadata?.role as string | undefined
+  let onboarded = false
+
+  const { data: dbUser } = await supabase
+    .from('users')
+    .select('id, onboarded')
+    .eq('id', user.id)
+    .maybeSingle()
 
   if (!role) {
-    const { data } = await supabase.from('users').select('id').eq('id', user.id).maybeSingle()
-    role = data ? 'freelancer' : 'client'
+    role = dbUser ? 'freelancer' : 'client'
   }
+  onboarded = dbUser?.onboarded ?? false
 
   const isClient     = role === 'client'
   const isFreelancer = !isClient
 
-  // Cross-portal access: redirect to the correct portal
-  if (isClient     && onFreelancerRoute) return redirect(request, '/client/dashboard')
-  if (isFreelancer && onClientRoute)     return redirect(request, '/dashboard')
+  // Client routing rules
+  if (isClient) {
+    if (onFreelancerRoute || onOnboardingRoute || pathname === '/auth/login') {
+      return redirect(request, '/client/dashboard')
+    }
+    return supabaseResponse
+  }
 
-  // Already logged in, hitting the login page
-  if (pathname === '/auth/login') return redirect(request, isClient ? '/client/dashboard' : '/dashboard')
+  // Freelancer routing rules
+  if (isFreelancer) {
+    if (!onboarded) {
+      // Freelancer not onboarded: must go to /onboarding
+      if (onFreelancerRoute || pathname === '/auth/login') {
+        return redirect(request, '/onboarding')
+      }
+    } else {
+      // Freelancer onboarded: cannot go to /onboarding, /client/dashboard, or /auth/login
+      if (onOnboardingRoute || onClientRoute || pathname === '/auth/login') {
+        return redirect(request, '/dashboard')
+      }
+    }
+    return supabaseResponse
+  }
 
   return supabaseResponse
 }

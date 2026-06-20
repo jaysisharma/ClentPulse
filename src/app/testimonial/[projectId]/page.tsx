@@ -5,8 +5,15 @@ import { createClient } from '@/lib/supabase/client'
 import { Zap, Star, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export default function TestimonialPage({ params }: { params: Promise<{ projectId: string }> }) {
+export default function TestimonialPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ projectId: string }>
+  searchParams: Promise<{ rating?: string }>
+}) {
   const { projectId } = use(params)
+  const { rating: queryRating } = use(searchParams)
   const [project, setProject] = useState<{ project_name: string; client_name: string } | null>(null)
   const [owner, setOwner] = useState<{ name: string | null; accent_color: string | null } | null>(null)
   const [ownerId, setOwnerId] = useState<string | null>(null)
@@ -29,6 +36,13 @@ export default function TestimonialPage({ params }: { params: Promise<{ projectI
       setOwner(u)
     })
   }, [projectId])
+
+  useEffect(() => {
+    if (queryRating) {
+      const r = parseInt(queryRating)
+      if (r >= 1 && r <= 5) setRating(r)
+    }
+  }, [queryRating])
 
   const accent = owner?.accent_color ?? '#6366F1'
 

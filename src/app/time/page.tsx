@@ -183,11 +183,16 @@ function EntryRow({
 // ── main page ─────────────────────────────────────────────────────────────────
 
 export default function TimePage() {
+  const [mounted, setMounted] = useState(false)
   const [userId, setUserId]     = useState('')
   const [projects, setProjects] = useState<Project[]>([])
   const [entries, setEntries]   = useState<Entry[]>([])
   const [timer, setTimer]       = useState<ActiveTimer | null>(null)
   const [, forceRender]         = useState(0)   // clock tick
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // timer form
   const [timerDesc, setTimerDesc]       = useState('')
@@ -392,9 +397,9 @@ export default function TimePage() {
 
         {/* Stats strip */}
         <div className={`grid gap-4 mb-6 ${hasBillable ? 'grid-cols-5' : 'grid-cols-4'}`}>
-          <StatCard label="Today"      value={fmtHours(statsToday)}  sub={new Date().toLocaleDateString('en-US', { weekday: 'long' })} />
+          <StatCard label="Today"      value={fmtHours(statsToday)}  sub={mounted ? new Date().toLocaleDateString('en-US', { weekday: 'long' }) : ''} />
           <StatCard label="This week"  value={fmtHours(statsWeek)}   sub="Mon → today" />
-          <StatCard label="This month" value={fmtHours(statsMonth)}  sub={new Date().toLocaleDateString('en-US', { month: 'long' })} />
+          <StatCard label="This month" value={fmtHours(statsMonth)}  sub={mounted ? new Date().toLocaleDateString('en-US', { month: 'long' }) : ''} />
           <StatCard label="All time"   value={fmtHours(statsAll)}    sub={`${entries.length} entries`} />
           {hasBillable && (
             <StatCard
@@ -562,14 +567,14 @@ export default function TimePage() {
                   placeholder="Search entries…"
                   value={search}
                   onChange={e => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-slate-200 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800/60 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
               <div className="relative">
                 <select
                   value={filterProject}
                   onChange={e => setFilterProject(e.target.value)}
-                  className="appearance-none pl-3 pr-8 py-2.5 text-sm border border-slate-200 rounded-xl bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                  className="appearance-none pl-3 pr-8 py-2.5 text-sm border border-slate-200 dark:border-slate-800/60 rounded-xl bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                 >
                   <option value="">All projects</option>
                   {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}

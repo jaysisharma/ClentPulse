@@ -18,6 +18,12 @@ export async function POST(request: Request) {
   if (!invoice) return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
   if (invoice.status === 'paid') return NextResponse.json({ error: 'Already paid' }, { status: 400 })
 
+  const { data: owner } = await supabase
+    .from('users')
+    .select('name')
+    .eq('id', invoice.user_id)
+    .single()
+
   const totalCents = Math.round(
     (invoice.items ?? []).reduce((s: number, i: { amount: number }) => s + (i.amount ?? 0), 0) * 100
   )
@@ -34,7 +40,7 @@ export async function POST(request: Request) {
         unit_amount: totalCents,
         product_data: {
           name: `Invoice ${invoice.invoice_number}`,
-          description: `Payment to ${invoice.client_name}`,
+          description: `Payment to ${owner?.name ?? 'Freelancer'}`,
         },
       },
       quantity: 1,

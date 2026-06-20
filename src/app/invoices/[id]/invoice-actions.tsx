@@ -148,7 +148,7 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
 
       <button
         onClick={handleDelete}
-        className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+        className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
       >
         <Trash2 className="w-4 h-4" />
       </button>

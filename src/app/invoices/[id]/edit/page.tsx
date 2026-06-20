@@ -59,7 +59,7 @@ export default function EditInvoicePage() {
       const user = data?.user
       if (!user) return
       Promise.all([
-        supabase.from('projects').select('id,project_name,client_name,client_email').eq('user_id', user.id).eq('status', 'active'),
+        supabase.from('projects').select('id,project_name,client_name,client_email').eq('user_id', user.id),
         supabase.from('invoices').select('*').eq('id', id).eq('user_id', user.id).single(),
       ]).then(([{ data: projs }, { data: inv }]: any[]) => {
         setProjects(projs ?? [])

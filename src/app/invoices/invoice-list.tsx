@@ -16,9 +16,9 @@ interface Invoice {
 
 const STATUS_STYLES: Record<string, string> = {
   draft:   'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300',
-  sent:    'bg-blue-50 text-blue-700',
-  paid:    'bg-emerald-50 text-emerald-700',
-  overdue: 'bg-red-50 text-red-700',
+  sent:    'bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400',
+  paid:    'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400',
+  overdue: 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-400',
 }
 
 const FILTERS = ['all', 'draft', 'sent', 'overdue', 'paid'] as const

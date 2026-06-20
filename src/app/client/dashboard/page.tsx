@@ -30,7 +30,7 @@ export default async function ClientDashboardPage() {
   const [{ data: projects }, { data: invoices }] = await Promise.all([
     supabase
       .from('projects')
-      .select('id,project_name,client_name,slug,color,status,updates(id,bullets,sent_at,created_at),approvals(id,title,url,status,feedback),contracts(id,title,signed_at)')
+      .select('id,project_name,client_name,slug,color,status,hide_approvals,updates(id,bullets,sent_at,created_at),approvals(id,title,url,status,feedback),contracts(id,title,signed_at)')
       .eq('client_email', user.email)
       .order('created_at', { ascending: false }),
     supabase
@@ -43,7 +43,7 @@ export default async function ClientDashboardPage() {
   type Update = { id: string; bullets: string[]; sent_at: string | null; created_at: string }
   type Approval = { id: string; title: string; url: string | null; status: string; feedback: string | null }
   type Contract = { id: string; title: string; signed_at: string | null }
-  type Project = { id: string; project_name: string; client_name: string; slug: string; color: string; status: string; updates: Update[]; approvals: Approval[]; contracts: Contract[] }
+  type Project = { id: string; project_name: string; client_name: string; slug: string; color: string; status: string; hide_approvals: boolean; updates: Update[]; approvals: Approval[]; contracts: Contract[] }
   type Invoice = { id: string; invoice_number: string; status: string; items: { amount: number }[]; due_date: string | null }
 
   const allProjects = (projects ?? []) as Project[]
@@ -66,9 +66,11 @@ export default async function ClientDashboardPage() {
 
   const popupProject = completedProjects.find(p => !testimonialProjectIds.has(p.id))
 
-  const pendingApprovals = allProjects.flatMap(p =>
-    p.approvals.filter(a => a.status === 'pending').map(a => ({ ...a, projectName: p.project_name, slug: p.slug }))
-  )
+  const pendingApprovals = allProjects
+    .filter(p => !p.hide_approvals)
+    .flatMap(p =>
+      p.approvals.filter(a => a.status === 'pending').map(a => ({ ...a, projectName: p.project_name, slug: p.slug }))
+    )
   const unsignedContracts = allProjects.flatMap(p =>
     p.contracts.filter(c => !c.signed_at).map(c => ({ ...c, projectName: p.project_name }))
   )
@@ -201,7 +203,7 @@ export default async function ClientDashboardPage() {
                           <div className="font-semibold text-slate-900 truncate">{inv.invoice_number}</div>
                           <div className="text-sm text-slate-400">
                             {fmtMoney(total)} due
-                            {inv.due_date ? ` · ${new Date(inv.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
+                            {inv.due_date ? ` · ${new Date(inv.due_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
                           </div>
                         </div>
                         <span className="text-xs font-semibold text-amber-700 bg-amber-100/70 px-3 py-1.5 rounded-lg flex-shrink-0 group-hover:bg-amber-100 transition-colors">Pay now</span>
@@ -349,7 +351,7 @@ export default async function ClientDashboardPage() {
                           <div className="font-medium text-slate-900">{inv.invoice_number}</div>
                           {inv.due_date && (
                             <div className="text-xs text-slate-400 mt-0.5">
-                              Due {new Date(inv.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                              Due {new Date(inv.due_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                             </div>
                           )}
                         </div>
