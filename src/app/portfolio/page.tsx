@@ -148,7 +148,7 @@ export default function PortfolioPage() {
           <h2 className="font-semibold text-slate-900 dark:text-white text-sm mb-1">Bio / tagline</h2>
           <p className="text-xs text-slate-400 mb-4">Shown under your name on the public page. Keep it to 1–2 sentences.</p>
           <textarea
-            className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors resize-none"
+            className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors resize-none"
             rows={3}
             placeholder={`I'm a freelance designer helping startups ship beautiful products. ${name ? `— ${name.split(' ')[0]}` : ''}`}
             value={bio}

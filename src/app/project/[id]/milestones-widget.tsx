@@ -110,7 +110,7 @@ export function MilestonesWidget({
       {adding && (
         <div className="flex gap-2 mb-3">
           <input
-            className="flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors"
+            className="flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
             placeholder="Milestone title"
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
@@ -119,7 +119,7 @@ export function MilestonesWidget({
           />
           <input
             type="date"
-            className="w-36 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800 dark:bg-slate-900 transition-colors"
+            className="w-36 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
             value={newDate}
             onChange={e => setNewDate(e.target.value)}
           />

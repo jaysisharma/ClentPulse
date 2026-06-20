@@ -55,7 +55,7 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search clients, emails, or projects…"
-            className="w-full h-11 pl-10 pr-4 rounded-xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-colors"
+            className="w-full h-11 pl-10 pr-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-colors"
           />
         </div>
         <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
@@ -76,7 +76,7 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
 
       {/* Results */}
       {filtered.length === 0 ? (
-        <div className="rounded-2xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 py-14 px-6 text-center">
+        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 py-14 px-6 text-center">
           <div className="w-11 h-11 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-3">
             <Users className="w-5 h-5 text-slate-400" />
           </div>
@@ -88,7 +88,7 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
           {filtered.map(client => (
             <div
               key={client.key}
-              className="rounded-2xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 p-5 hover:border-slate-300 transition-colors flex flex-col"
+              className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 p-5 hover:border-slate-300 dark:hover:border-slate-700 transition-colors flex flex-col"
             >
               {/* Identity */}
               <div className="flex items-start gap-3.5">

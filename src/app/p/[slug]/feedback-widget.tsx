@@ -36,19 +36,19 @@ export function FeedbackWidget({ projectId, accentColor }: { projectId: string; 
       <div className="flex items-center justify-center gap-3">
         <button
           onClick={() => { setReaction('thumbs_up'); submit('thumbs_up') }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${reaction === 'thumbs_up' ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${reaction === 'thumbs_up' ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-slate-200 text-slate-600 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50'}`}
         >
           <ThumbsUp className="w-4 h-4" /> Looking good
         </button>
         <button
           onClick={() => { setReaction('thumbs_down'); submit('thumbs_down') }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${reaction === 'thumbs_down' ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${reaction === 'thumbs_down' ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-slate-200 text-slate-600 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50'}`}
         >
           <ThumbsDown className="w-4 h-4" /> Have concerns
         </button>
         <button
           onClick={() => setShowMessage(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:border-slate-300 hover:bg-slate-50 transition-all"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 transition-all"
         >
           <MessageSquare className="w-4 h-4" /> Leave a message
         </button>

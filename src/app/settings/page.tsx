@@ -200,7 +200,7 @@ export default function SettingsPage() {
               </div>
               <div>
                 <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-2">Logo</label>
-                <label className="flex items-center gap-3 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors w-full cursor-pointer">
+                <label className="flex items-center gap-3 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-500 transition-colors w-full cursor-pointer">
                   {logoUrl ? (
                     <img src={logoUrl} alt="Logo" className="h-8 w-auto object-contain rounded" />
                   ) : (

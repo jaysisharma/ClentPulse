@@ -37,7 +37,7 @@ export function ProjectActionsMenu({ projectId }: { projectId: string }) {
         aria-haspopup="menu"
         aria-expanded={open}
         className={`p-2 rounded-lg border transition-colors cursor-pointer ${
-          open ? 'bg-slate-100 dark:bg-slate-800 border-slate-300 text-slate-700 dark:text-slate-200' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 hover:border-slate-300'
+          open ? 'bg-slate-100 dark:bg-slate-800 border-slate-300 text-slate-700 dark:text-slate-200' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 hover:border-slate-300 dark:hover:border-slate-700'
         }`}
         title="More actions"
       >
@@ -47,7 +47,7 @@ export function ProjectActionsMenu({ projectId }: { projectId: string }) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-1.5 w-44 rounded-xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 shadow-lg py-1 z-20 animate-fade-in"
+          className="absolute right-0 mt-1.5 w-44 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 shadow-lg py-1 z-20 animate-fade-in"
         >
           {items.map(({ href, label, icon: Icon }) => (
             <Link

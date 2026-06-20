@@ -45,7 +45,7 @@ export default async function NewProjectPage() {
         )}
 
         {atLimit ? (
-          <div className="rounded-2xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/60 shadow-sm py-14 px-6 flex flex-col items-center text-center">
+          <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/60 shadow-sm py-14 px-6 flex flex-col items-center text-center">
             <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
               <Lock className="w-5 h-5 text-amber-500" />
             </div>

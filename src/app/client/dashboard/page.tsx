@@ -7,6 +7,7 @@ import {
 import { SignOutButton } from '@/components/ui/sign-out-button'
 import { ApprovalCard } from '@/app/p/[slug]/approval-actions'
 import { ClientMessagesPanel } from './client-messages-panel'
+import { CompletedProjectPopup } from '@/components/project/completed-project-popup'
 import Link from 'next/link'
 
 const INVOICE_STATUS_BADGE: Record<string, string> = {
@@ -47,6 +48,23 @@ export default async function ClientDashboardPage() {
 
   const allProjects = (projects ?? []) as Project[]
   const allInvoices = ((invoices ?? []) as Invoice[]).sort((a, b) => (INVOICE_SORT[a.status] ?? 9) - (INVOICE_SORT[b.status] ?? 9))
+
+  const completedProjects = allProjects.filter(p => p.status === 'completed')
+  let testimonialProjectIds = new Set<string>()
+
+  if (completedProjects.length > 0) {
+    const { data: testimonialsData } = await supabase
+      .from('testimonials')
+      .select('project_id')
+      .in('project_id', completedProjects.map(p => p.id))
+    if (testimonialsData) {
+      testimonialsData.forEach(t => {
+        if (t.project_id) testimonialProjectIds.add(t.project_id)
+      })
+    }
+  }
+
+  const popupProject = completedProjects.find(p => !testimonialProjectIds.has(p.id))
 
   const pendingApprovals = allProjects.flatMap(p =>
     p.approvals.filter(a => a.status === 'pending').map(a => ({ ...a, projectName: p.project_name, slug: p.slug }))
@@ -203,58 +221,113 @@ export default async function ClientDashboardPage() {
                   No projects here yet. Your freelancer will share a status link as soon as your project is set up — you can always view it without signing in.
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {allProjects.map(p => {
-                    const latestUpdate = [...p.updates]
-                      .filter(u => u.sent_at)
-                      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+                <div className="space-y-6">
+                  {/* Active / Paused Projects */}
+                  {allProjects.filter(p => p.status !== 'completed').length > 0 && (
+                    <div className="space-y-4">
+                      {allProjects.filter(p => p.status !== 'completed').map(p => {
+                        const latestUpdate = [...p.updates]
+                          .filter(u => u.sent_at)
+                          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
 
-                    return (
-                      <div key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                        {/* Project header */}
-                        <Link
-                          href={`/p/${p.slug}`}
-                          className="flex items-center gap-4 p-5 hover:bg-slate-50 transition-colors group"
-                        >
-                          <div className="w-3 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-slate-900 truncate">{p.project_name}</div>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: p.status === 'active' ? '#22c55e' : '#94a3b8' }} />
-                              <span className="text-sm text-slate-400 capitalize">{p.status}</span>
-                              <span className="text-slate-300">·</span>
-                              <span className="text-sm text-slate-400">{p.updates.filter(u => u.sent_at).length} updates</span>
-                            </div>
-                          </div>
-                          <span className="text-xs text-indigo-600 font-medium group-hover:underline flex items-center gap-1 flex-shrink-0">
-                            View all <ArrowRight className="w-3 h-3" />
-                          </span>
-                        </Link>
+                        return (
+                          <div key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                            {/* Project header */}
+                            <Link
+                              href={`/p/${p.slug}`}
+                              className="flex items-center gap-4 p-5 hover:bg-slate-50 transition-colors group"
+                            >
+                              <div className="w-3 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+                              <div className="flex-1 min-w-0">
+                                <div className="font-semibold text-slate-900 truncate">{p.project_name}</div>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                  <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: p.status === 'active' ? '#22c55e' : '#94a3b8' }} />
+                                  <span className="text-sm text-slate-400 capitalize">{p.status}</span>
+                                  <span className="text-slate-300">·</span>
+                                  <span className="text-sm text-slate-400">{p.updates.filter(u => u.sent_at).length} updates</span>
+                                </div>
+                              </div>
+                              <span className="text-xs text-indigo-600 font-medium group-hover:underline flex items-center gap-1 flex-shrink-0">
+                                View all <ArrowRight className="w-3 h-3" />
+                              </span>
+                            </Link>
 
-                        {/* Latest update inline */}
-                        {latestUpdate ? (
-                          <div className="px-5 pb-5 border-t border-slate-100">
-                            <div className="flex items-center gap-2 py-3">
-                              <Clock className="w-3.5 h-3.5 text-slate-400" />
-                              <span className="text-xs text-slate-400 font-medium">Latest update · {new Date(latestUpdate.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                            {/* Latest update inline */}
+                            {latestUpdate ? (
+                              <div className="px-5 pb-5 border-t border-slate-100">
+                                <div className="flex items-center gap-2 py-3">
+                                  <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                  <span className="text-xs text-slate-400 font-medium">Latest update · {new Date(latestUpdate.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                                </div>
+                                <ul className="space-y-2">
+                                  {(latestUpdate.bullets ?? []).filter(Boolean).map((b, i) => (
+                                    <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
+                                      <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: p.color }} />
+                                      {b}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : (
+                              <div className="px-5 pb-4 border-t border-slate-100 pt-3">
+                                <p className="text-sm text-slate-400">No updates sent yet.</p>
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+
+                  {/* Completed Projects Section */}
+                  {completedProjects.length > 0 && (
+                    <div className="pt-2">
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 ml-1">Completed Projects</h3>
+                      <div className="space-y-4">
+                        {completedProjects.map(p => {
+                          const hasTestimonial = testimonialProjectIds.has(p.id)
+
+                          return (
+                            <div key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                              <div className="flex items-center justify-between p-5 hover:bg-slate-50 transition-colors group">
+                                <div className="flex items-center gap-4 flex-1 min-w-0">
+                                  <div className="w-3 h-10 rounded-full flex-shrink-0 bg-slate-300" />
+                                  <div className="flex-1 min-w-0">
+                                    <Link href={`/p/${p.slug}`} className="font-semibold text-slate-800 hover:text-indigo-600 transition-colors truncate block">
+                                      {p.project_name}
+                                    </Link>
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                      <span className="text-xs text-slate-400 capitalize bg-slate-100 px-2 py-0.5 rounded-full font-medium">Completed</span>
+                                      {hasTestimonial ? (
+                                        <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">Testimonial submitted</span>
+                                      ) : (
+                                        <span className="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">Testimonial pending</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  {!hasTestimonial && (
+                                    <Link href={`/testimonial/${p.id}`}>
+                                      <button className="text-xs font-semibold px-3 py-1.5 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-sm">
+                                        Leave testimonial
+                                      </button>
+                                    </Link>
+                                  )}
+                                  <Link
+                                    href={`/p/${p.slug}`}
+                                    className="text-xs text-indigo-600 font-medium hover:underline flex items-center gap-1 flex-shrink-0"
+                                  >
+                                    View updates <ArrowRight className="w-3 h-3" />
+                                  </Link>
+                                </div>
+                              </div>
                             </div>
-                            <ul className="space-y-2">
-                              {(latestUpdate.bullets ?? []).filter(Boolean).map((b, i) => (
-                                <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
-                                  <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: p.color }} />
-                                  {b}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ) : (
-                          <div className="px-5 pb-4 border-t border-slate-100 pt-3">
-                            <p className="text-sm text-slate-400">No updates sent yet.</p>
-                          </div>
-                        )}
+                          )
+                        })}
                       </div>
-                    )
-                  })}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -296,6 +369,12 @@ export default async function ClientDashboardPage() {
 
       </div>
 
+      {popupProject && (
+        <CompletedProjectPopup
+          projectId={popupProject.id}
+          projectName={popupProject.project_name}
+        />
+      )}
     </div>
   )
 }

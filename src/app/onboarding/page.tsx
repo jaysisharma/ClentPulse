@@ -317,7 +317,7 @@ export default function OnboardingPage() {
                 <label className="text-sm font-medium text-slate-700 block mb-2">
                   Logo <span className="text-slate-400 font-normal">(optional)</span>
                 </label>
-                <label className="flex items-center gap-3 border-2 border-dashed border-slate-200 rounded-xl p-4 text-sm text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors w-full cursor-pointer">
+                <label className="flex items-center gap-3 border-2 border-dashed border-slate-200 rounded-xl p-4 text-sm text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-500 transition-colors w-full cursor-pointer">
                   {logoUrl ? (
                     <img src={logoUrl} alt="Logo" className="h-8 w-auto object-contain rounded" />
                   ) : (
@@ -595,7 +595,7 @@ function ActionCard({
       className={`w-full flex items-center gap-4 rounded-xl border px-4 py-3.5 text-left transition-all hover:shadow-sm group ${
         primary
           ? 'border-indigo-200 bg-indigo-50 hover:border-indigo-300'
-          : 'border-slate-200 bg-white hover:border-slate-300'
+          : 'border-slate-200 bg-white hover:border-slate-300 dark:hover:border-slate-700'
       }`}
     >
       <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${primary ? 'bg-indigo-100' : 'bg-slate-100'}`}>

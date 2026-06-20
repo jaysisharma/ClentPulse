@@ -127,12 +127,12 @@ export default async function EarningsPage() {
           <section className="space-y-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Recent payments</h2>
             {recentPayments.length === 0 ? (
-              <div className="rounded-2xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 py-10 px-6 text-center">
+              <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 py-10 px-6 text-center">
                 <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">No paid invoices yet.</p>
                 <p className="text-xs text-slate-400 mt-1">Mark invoices as paid to see your earnings here.</p>
               </div>
             ) : (
-              <div className="rounded-2xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 divide-y divide-slate-100 dark:divide-slate-800/60 overflow-hidden">
+              <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 divide-y divide-slate-100 dark:divide-slate-800/60 overflow-hidden">
                 {recentPayments.map(inv => (
                   <div key={inv.id} className="flex items-center gap-3 px-5 py-3.5">
                     <div className="min-w-0 flex-1">

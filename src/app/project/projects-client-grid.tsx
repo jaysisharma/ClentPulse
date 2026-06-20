@@ -139,7 +139,7 @@ export function ProjectsClientGrid({ projects }: { projects: Project[] }) {
           return (
             <div
               key={project.id}
-              className={`bg-white rounded-2xl border flex flex-col overflow-hidden transition-all hover:shadow-md hover:border-slate-300 hover:-translate-y-0.5 ${
+              className={`bg-white rounded-2xl border flex flex-col overflow-hidden transition-all hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-0.5 ${
                 isActive    ? 'border-slate-200/80 shadow-sm'
                 : isCompleted ? 'border-slate-200/80 shadow-sm opacity-75 hover:opacity-100'
                 : 'border-slate-200/80 shadow-sm opacity-85 hover:opacity-100'

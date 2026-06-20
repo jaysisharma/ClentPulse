@@ -73,7 +73,7 @@ export default async function ClientsPage() {
 
         {clients.length === 0 ? (
           /* Empty state */
-          <div className="rounded-2xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 p-14 text-center">
+          <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 p-14 text-center">
             <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Users className="w-6 h-6 text-slate-400" />
             </div>

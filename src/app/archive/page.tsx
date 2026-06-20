@@ -52,7 +52,7 @@ export default async function ArchivePage() {
                 <Link
                   key={project.id}
                   href={`/project/${project.id}`}
-                  className="flex items-center gap-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:border-slate-300 hover:shadow-sm transition-all group opacity-80 hover:opacity-100"
+                  className="flex items-center gap-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-sm transition-all group opacity-80 hover:opacity-100"
                 >
                   <div className="w-3 h-10 rounded-full flex-shrink-0 opacity-50" style={{ backgroundColor: project.color }} />
                   <div className="flex-1 min-w-0">

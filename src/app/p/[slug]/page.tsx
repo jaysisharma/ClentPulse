@@ -7,6 +7,7 @@ import { FeedbackWidget } from './feedback-widget'
 import { ApprovalCard } from './approval-actions'
 import { UpdateCommentForm } from './update-comment-form'
 import { ClientChecklist } from './client-checklist'
+import { CompletedProjectPopup } from '@/components/project/completed-project-popup'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({
@@ -85,6 +86,16 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
     .select('id, title, assigned_to, done, done_at')
     .eq('project_id', project.id)
     .order('created_at', { ascending: true })
+
+  let hasTestimonial = false
+  if (project.status === 'completed') {
+    const { data: testimonialsData } = await supabase
+      .from('testimonials')
+      .select('id')
+      .eq('project_id', project.id)
+      .limit(1)
+    hasTestimonial = (testimonialsData ?? []).length > 0
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -270,6 +281,14 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
             Powered by Frevio
           </Link>
         </div>
+      )}
+
+      {project.status === 'completed' && !hasTestimonial && (
+        <CompletedProjectPopup
+          projectId={project.id}
+          projectName={project.project_name}
+          accentColor={accentColor}
+        />
       )}
     </div>
   )

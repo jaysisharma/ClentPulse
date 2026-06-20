@@ -122,7 +122,7 @@ export default async function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {steps.map((s, i) => (
-              <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:-translate-y-1.5 hover:shadow-lg hover:border-slate-300/85 transition-all duration-300 ease-out flex flex-col justify-between group cursor-default">
+              <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm hover:-translate-y-1.5 hover:shadow-lg hover:border-slate-300 dark:hover:border-slate-700/85 transition-all duration-300 ease-out flex flex-col justify-between group cursor-default">
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <span className="text-4xl font-black text-indigo-50/80 dark:text-slate-850 group-hover:text-indigo-200/60 dark:group-hover:text-indigo-850/80 group-hover:scale-110 transform origin-left transition-all duration-300 select-none font-mono">{s.number}</span>
