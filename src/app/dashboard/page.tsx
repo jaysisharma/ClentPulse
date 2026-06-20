@@ -319,19 +319,11 @@ export default async function DashboardPage() {
           {/* ── Money in vs out chart ────────────────────────────────── */}
           <RevenueChart paid={paidPoints} expenses={expensePoints} dark />
 
-          {/* ── Needs attention to-do list ───────────────────────────── */}
+          {/* ── Needs attention to-do list (hidden when nothing's pending) ── */}
+          {attentionCount > 0 && (
           <section className="space-y-3">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Needs attention</h2>
 
-            {attentionCount === 0 ? (
-              <div className="rounded-2xl bg-slate-900 border border-slate-800/60 py-12 px-6 flex flex-col items-center text-center gap-2">
-                <div className="w-11 h-11 rounded-full bg-emerald-950/40 flex items-center justify-center">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                </div>
-                <p className="text-sm font-semibold text-slate-200">You're all caught up</p>
-                <p className="text-xs text-slate-400">No updates, approvals, or contracts waiting on you.</p>
-              </div>
-            ) : (
               <div className="rounded-2xl bg-slate-900 border border-slate-800/60 divide-y divide-slate-800/60 overflow-hidden">
                 {overdueProjects.map(p => (
                   <div key={`u-${p.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-800/40 transition-colors">
@@ -381,8 +373,8 @@ export default async function DashboardPage() {
                   </div>
                 ))}
               </div>
-            )}
           </section>
+          )}
           </div>
 
           {/* Right column: timer + invoices + new invoice + projects */}
@@ -419,7 +411,8 @@ export default async function DashboardPage() {
             </Link>
           )}
 
-          {/* ── Upcoming & overdue invoices ──────────────────────────── */}
+          {/* ── Unpaid invoices (hidden when none outstanding) ───────── */}
+          {upcomingInvoices.length > 0 && (
           <section className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400">Unpaid invoices</h2>
@@ -428,15 +421,6 @@ export default async function DashboardPage() {
               </Link>
             </div>
 
-            {upcomingInvoices.length === 0 ? (
-              <div className="rounded-2xl bg-slate-900 border border-slate-800/60 py-10 px-6 flex flex-col items-center text-center gap-2">
-                <div className="w-11 h-11 rounded-full bg-emerald-950/40 flex items-center justify-center">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
-                </div>
-                <p className="text-sm font-semibold text-slate-200">Nothing outstanding</p>
-                <p className="text-xs text-slate-400">No unpaid invoices right now.</p>
-              </div>
-            ) : (
               <div className="rounded-2xl bg-slate-900 border border-slate-800/60 divide-y divide-slate-800/60 overflow-hidden">
                 {upcomingInvoices.map(inv => {
                   const due = dueLabel(inv.due_date)
@@ -463,8 +447,8 @@ export default async function DashboardPage() {
                   )
                 })}
               </div>
-            )}
           </section>
+          )}
 
           {/* ── New invoice shortcut ─────────────────────────────────── */}
           <Link href="/invoices/new" className="flex items-center gap-3 rounded-2xl bg-slate-900 border border-slate-800/60 px-4 py-3.5 hover:border-slate-700 transition-colors group">
