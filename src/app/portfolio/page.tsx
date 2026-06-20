@@ -113,8 +113,8 @@ export default function PortfolioPage() {
         {/* Header */}
         <div className="flex items-start justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Portfolio</h1>
-            <p className="text-slate-500 text-sm mt-1">Your public profile — share it with potential clients.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Portfolio</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Your public profile — share it with potential clients.</p>
           </div>
           <a href={`/portfolio/${userId}`} target="_blank" rel="noopener noreferrer">
             <Button variant="secondary" size="sm">
@@ -125,13 +125,13 @@ export default function PortfolioPage() {
         </div>
 
         {/* Public URL card */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Globe className="w-4 h-4 text-slate-400" />
-            <h2 className="font-semibold text-slate-900 text-sm">Public link</h2>
+            <h2 className="font-semibold text-slate-900 dark:text-white text-sm">Public link</h2>
           </div>
           <div className="flex gap-2">
-            <div className="flex-1 bg-slate-50 rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-600 font-mono truncate">
+            <div className="flex-1 bg-slate-50 dark:bg-slate-800/40 rounded-xl border border-slate-200 dark:border-slate-800 px-4 py-2.5 text-sm text-slate-600 dark:text-slate-300 font-mono truncate">
               {publicUrl}
             </div>
             <Button variant="secondary" onClick={copyLink} className="flex-shrink-0">
@@ -144,11 +144,11 @@ export default function PortfolioPage() {
         </div>
 
         {/* Bio editor */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
-          <h2 className="font-semibold text-slate-900 text-sm mb-1">Bio / tagline</h2>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
+          <h2 className="font-semibold text-slate-900 dark:text-white text-sm mb-1">Bio / tagline</h2>
           <p className="text-xs text-slate-400 mb-4">Shown under your name on the public page. Keep it to 1–2 sentences.</p>
           <textarea
-            className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors resize-none"
+            className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors resize-none"
             rows={3}
             placeholder={`I'm a freelance designer helping startups ship beautiful products. ${name ? `— ${name.split(' ')[0]}` : ''}`}
             value={bio}
@@ -170,10 +170,10 @@ export default function PortfolioPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
 
           {/* Testimonials */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
             <div className="flex items-center gap-2 mb-4">
               <Star className="w-4 h-4 text-amber-400" />
-              <h2 className="font-semibold text-slate-900 text-sm">Testimonials</h2>
+              <h2 className="font-semibold text-slate-900 dark:text-white text-sm">Testimonials</h2>
               {testimonials.length > 0 && (
                 <span className="ml-auto text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
                   <Eye className="w-3 h-3" />{testimonials.length} visible
@@ -193,20 +193,20 @@ export default function PortfolioPage() {
                     {[1,2,3,4,5].map(i => (
                       <Star key={i} className={`w-3.5 h-3.5 ${i <= Math.round(Number(avgRating)) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
                     ))}
-                    <span className="text-sm font-semibold text-slate-700 ml-1">{avgRating} avg</span>
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200 ml-1">{avgRating} avg</span>
                   </div>
                 )}
                 {testimonials.slice(0, 3).map(t => (
-                  <div key={t.id} className="rounded-xl bg-slate-50 px-3 py-2.5">
+                  <div key={t.id} className="rounded-xl bg-slate-50 dark:bg-slate-800/40 px-3 py-2.5">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-semibold text-slate-700">{t.client_name}</span>
+                      <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{t.client_name}</span>
                       <div className="flex gap-0.5">
                         {[1,2,3,4,5].map(i => (
                           <Star key={i} className={`w-2.5 h-2.5 ${i <= t.rating ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
                         ))}
                       </div>
                     </div>
-                    <p className="text-xs text-slate-500 line-clamp-2">&quot;{t.content}&quot;</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">&quot;{t.content}&quot;</p>
                   </div>
                 ))}
                 {testimonials.length > 3 && (
@@ -217,10 +217,10 @@ export default function PortfolioPage() {
           </div>
 
           {/* Projects */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Briefcase className="w-4 h-4 text-slate-500" />
-              <h2 className="font-semibold text-slate-900 text-sm">Completed projects</h2>
+              <Briefcase className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+              <h2 className="font-semibold text-slate-900 dark:text-white text-sm">Completed projects</h2>
               {projects.length > 0 && (
                 <span className="ml-auto text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
                   <Eye className="w-3 h-3" />{projects.length} visible
@@ -236,9 +236,9 @@ export default function PortfolioPage() {
             ) : (
               <div className="space-y-2">
                 {projects.slice(0, 6).map(p => (
-                  <div key={p.id} className="flex items-center gap-2.5 rounded-xl bg-slate-50 px-3 py-2">
+                  <div key={p.id} className="flex items-center gap-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 px-3 py-2">
                     <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color ?? accent }} />
-                    <span className="text-xs font-medium text-slate-700 truncate">{p.project_name}</span>
+                    <span className="text-xs font-medium text-slate-700 dark:text-slate-200 truncate">{p.project_name}</span>
                   </div>
                 ))}
                 {projects.length > 6 && (
@@ -250,11 +250,11 @@ export default function PortfolioPage() {
         </div>
 
         {/* Work showcase */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <ImageIcon className="w-4 h-4 text-slate-400" />
-              <h2 className="font-semibold text-slate-900 text-sm">Work showcase</h2>
+              <h2 className="font-semibold text-slate-900 dark:text-white text-sm">Work showcase</h2>
               {items.length > 0 && (
                 <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
                   <Eye className="w-3 h-3" />{items.length} visible
@@ -267,7 +267,7 @@ export default function PortfolioPage() {
           </div>
 
           {items.length === 0 ? (
-            <div className="border-2 border-dashed border-slate-200 rounded-xl py-10 text-center">
+            <div className="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl py-10 text-center">
               <ImageIcon className="w-8 h-8 text-slate-300 mx-auto mb-2" />
               <p className="text-sm text-slate-400 mb-3">No work items yet.</p>
               <Link href="/portfolio/item/new">
@@ -277,7 +277,7 @@ export default function PortfolioPage() {
           ) : (
             <div className="space-y-3">
               {items.map(item => (
-                <div key={item.id} className="flex items-start gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
+                <div key={item.id} className="flex items-start gap-4 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-4">
                   {/* Thumbnail */}
                   <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-200 flex-shrink-0">
                     {item.screenshots?.[0]
@@ -287,9 +287,9 @@ export default function PortfolioPage() {
                   </div>
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-slate-900 text-sm truncate">{item.title}</div>
+                    <div className="font-semibold text-slate-900 dark:text-white text-sm truncate">{item.title}</div>
                     {item.description && (
-                      <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{item.description}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">{item.description}</p>
                     )}
                     <div className="flex items-center gap-2 mt-2">
                       {item.screenshots?.length > 0 && (
@@ -323,8 +323,8 @@ export default function PortfolioPage() {
         </div>
 
         {/* Profile card — what the visitor sees */}
-        <div className="rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="px-5 py-3 border-b border-slate-100 flex items-center gap-2 bg-slate-50">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+          <div className="px-5 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2 bg-slate-50 dark:bg-slate-800/40">
             <div className="flex gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
               <div className="w-2.5 h-2.5 rounded-full bg-slate-300" />
@@ -337,7 +337,7 @@ export default function PortfolioPage() {
             {logoUrl ? (
               <img src={logoUrl} alt={name} className="w-16 h-16 rounded-xl object-contain bg-white/10 p-1.5 mx-auto mb-4" />
             ) : (
-              <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
+              <div className="w-16 h-16 rounded-xl bg-white dark:bg-slate-900/20 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
                 {(name || 'F').split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
               </div>
             )}

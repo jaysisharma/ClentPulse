@@ -52,7 +52,7 @@ export function CollapsibleSection({
           <ChevronDown
             className={cn('w-4 h-4 text-slate-400 transition-transform duration-200', open ? '' : '-rotate-90')}
           />
-          <h2 className="text-lg font-bold text-slate-900 tracking-tight">{title}</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">{title}</h2>
           {count != null && <span className="text-sm font-medium text-slate-400">{count}</span>}
         </button>
         <div className="flex items-center gap-2">
@@ -61,7 +61,7 @@ export function CollapsibleSection({
             <button
               onClick={handleHide}
               disabled={hiding}
-              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 border border-slate-200/80 px-2 py-0.5 rounded-md hover:bg-slate-100 disabled:opacity-50 cursor-pointer flex-shrink-0"
+              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 px-2 py-0.5 rounded-md hover:bg-slate-100 dark:bg-slate-800 disabled:opacity-50 cursor-pointer flex-shrink-0"
             >
               {hiding ? 'Hiding…' : 'Hide'}
             </button>

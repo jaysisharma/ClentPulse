@@ -152,7 +152,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
 
   if (notFound) return (
     <AppLayout>
-      <div className="text-slate-500 text-sm">Project not found.</div>
+      <div className="text-slate-500 dark:text-slate-400 text-sm">Project not found.</div>
     </AppLayout>
   )
 
@@ -163,23 +163,23 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       <div className="max-w-2xl mx-auto animate-fade-in space-y-6 py-6">
 
         {/* Back Link */}
-        <Link href={`/project/${id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+        <Link href={`/project/${id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to project details
         </Link>
 
         {/* Title */}
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Project Settings</h1>
-          <p className="text-slate-500 text-sm mt-1">Configure client details, budgets, accent colors, or delete the project.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Project Settings</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Configure client details, budgets, accent colors, or delete the project.</p>
         </div>
 
         {/* Edit form */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
           <form onSubmit={handleSave} className="space-y-6">
             
             {/* General Project Settings */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold text-slate-700 pb-2 border-b border-slate-100">Project</h3>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 pb-2 border-b border-slate-100 dark:border-slate-800">Project</h3>
               
               <Input
                 label="Project Title"
@@ -209,7 +209,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
               </div>
 
               <div>
-                <label className="text-sm font-medium text-slate-700 block mb-2">Accent color</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-2">Accent color</label>
                 <div className="flex gap-2.5 flex-wrap">
                   {COLORS.map(c => (
                     <button
@@ -229,8 +229,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
             </div>
 
             {/* Client Access Settings */}
-            <div className="space-y-4 pt-4 border-t border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-700 pb-2 border-b border-slate-100">Client access</h3>
+            <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 pb-2 border-b border-slate-100 dark:border-slate-800">Client access</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
@@ -249,12 +249,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
               </div>
             </div>
             {/* Visibility Settings */}
-            <div className="space-y-4 pt-4 border-t border-slate-100">
-              <h3 className="text-sm font-semibold text-slate-700 pb-2 border-b border-slate-100 font-sans">Dashboard Layout Visibility</h3>
-              <p className="text-xs text-slate-500 font-sans">Configure which widgets and sections are visible on your project dashboard.</p>
+            <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 pb-2 border-b border-slate-100 dark:border-slate-800 font-sans">Dashboard Layout Visibility</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-sans">Configure which widgets and sections are visible on your project dashboard.</p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
+                <label className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
                   <input
                     type="checkbox"
                     checked={!hideMilestones}
@@ -262,12 +262,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
                   />
                   <div>
-                    <span className="text-sm font-semibold text-slate-900 block leading-tight">Milestones Widget</span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white block leading-tight">Milestones Widget</span>
                     <span className="text-[11px] text-slate-400">Show milestones list and progress.</span>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
+                <label className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
                   <input
                     type="checkbox"
                     checked={!hideClientAccess}
@@ -275,12 +275,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
                   />
                   <div>
-                    <span className="text-sm font-semibold text-slate-900 block leading-tight">Client Access Card</span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white block leading-tight">Client Access Card</span>
                     <span className="text-[11px] text-slate-400">Show status page URL and contract links.</span>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
+                <label className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
                   <input
                     type="checkbox"
                     checked={!hideKickoff}
@@ -288,12 +288,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
                   />
                   <div>
-                    <span className="text-sm font-semibold text-slate-900 block leading-tight">Kickoff Checklist</span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white block leading-tight">Kickoff Checklist</span>
                     <span className="text-[11px] text-slate-400">Show freelancer and client setup checklists.</span>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
+                <label className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 rounded-xl cursor-pointer hover:bg-slate-100/50 transition-colors font-sans">
                   <input
                     type="checkbox"
                     checked={!hideApprovals}
@@ -301,7 +301,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     className="w-4 h-4 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500 cursor-pointer"
                   />
                   <div>
-                    <span className="text-sm font-semibold text-slate-900 block leading-tight">Approval Requests</span>
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white block leading-tight">Approval Requests</span>
                     <span className="text-[11px] text-slate-400">Show client deliverables and sign-offs.</span>
                   </div>
                 </label>
@@ -319,12 +319,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
         </div>
 
         {/* Portal access */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
           <div className="flex items-start gap-3">
             <ShieldCheck className="w-5 h-5 text-indigo-500 mt-0.5 flex-shrink-0" />
             <div>
-              <h3 className="font-semibold text-slate-900 text-sm">Portal access</h3>
-              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+              <h3 className="font-semibold text-slate-900 dark:text-white text-sm">Portal access</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
                 Give {clientName || 'your client'} a login to view updates, sign documents, pay invoices, and message you.
                 Setting a password again updates their existing login.
               </p>
@@ -337,8 +337,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
             </p>
           ) : (
             <form onSubmit={handleSetPortalPassword} className="space-y-3">
-              <div className="text-xs text-slate-500">
-                Login email: <span className="font-medium text-slate-700">{clientEmail}</span>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                Login email: <span className="font-medium text-slate-700 dark:text-slate-200">{clientEmail}</span>
               </div>
               <div className="relative max-w-sm">
                 <Input
@@ -367,13 +367,13 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
           )}
 
           {portalShare && (
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
-              <p className="text-sm font-medium text-slate-800">
+            <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-100">
                 {portalShare.updated ? 'Password updated.' : 'Portal access created.'} Share these with {clientName || 'your client'}:
               </p>
               <div>
-                <div className="text-xs text-slate-500 mb-1">Login URL</div>
-                <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Login URL</div>
+                <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200">
                   <span className="font-mono text-xs truncate">{origin}/auth/login</span>
                   <button type="button" onClick={() => copyPortal(`${origin}/auth/login`, 'url')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
                     {copied === 'url' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -382,8 +382,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <div className="text-xs text-slate-500 mb-1">Email</div>
-                  <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Email</div>
+                  <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200">
                     <span className="truncate text-xs">{portalShare.email}</span>
                     <button type="button" onClick={() => copyPortal(portalShare.email, 'email')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
                       {copied === 'email' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -391,8 +391,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-slate-500 mb-1">Password</div>
-                  <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Password</div>
+                  <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200">
                     <span className="truncate font-mono text-xs">{portalShare.password}</span>
                     <button type="button" onClick={() => copyPortal(portalShare.password, 'password')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
                       {copied === 'password' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -405,10 +405,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
         </div>
 
         {/* Duplicate project */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-between">
           <div>
-            <div className="font-semibold text-slate-900 text-sm">Duplicate project</div>
-            <p className="text-xs text-slate-500 mt-0.5">Creates a copy with the same client, color, budget, and hourly rate.</p>
+            <div className="font-semibold text-slate-900 dark:text-white text-sm">Duplicate project</div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Creates a copy with the same client, color, budget, and hourly rate.</p>
           </div>
           <Button variant="secondary" size="sm" onClick={handleDuplicate} loading={duplicating}>
             {duplicating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Copy className="w-3.5 h-3.5" />}
@@ -421,8 +421,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
           <div className="flex items-start gap-3">
             <ShieldAlert className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">Danger Zone</h3>
-              <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm">Danger Zone</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-0.5">
                 Permanently deleting this project deletes all associated updates, milestones, approval logs, and logged hours. This action is absolute and cannot be undone.
               </p>
             </div>

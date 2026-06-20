@@ -14,7 +14,7 @@ export default function Loading() {
         </div>
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 flex items-center gap-4">
+            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 flex items-center gap-4">
               <Sk className="w-3 h-10 rounded-full" />
               <div className="flex-1 space-y-1.5">
                 <Sk className="h-4 w-44" />

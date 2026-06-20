@@ -13,7 +13,7 @@ export default function Loading() {
           <Sk className="h-7 w-36" />
           <Sk className="h-4 w-72" />
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-6">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 space-y-6">
           <div className="space-y-4">
             <Sk className="h-4 w-16 mb-2" />
             <Sk className="h-9 w-full rounded-lg" />
@@ -22,7 +22,7 @@ export default function Loading() {
               <Sk className="h-9 rounded-lg" />
             </div>
           </div>
-          <div className="space-y-4 pt-4 border-t border-slate-100">
+          <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800">
             <Sk className="h-4 w-20 mb-2" />
             <Sk className="h-9 w-full rounded-lg" />
             <div className="grid grid-cols-2 gap-4">

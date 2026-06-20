@@ -13,8 +13,8 @@ export default function Loading() {
           <Sk className="h-4 w-48" />
         </div>
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="px-6 py-5 border-b border-slate-100">
+          <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800">
               <Sk className="h-5 w-24" />
             </div>
             <div className="px-6 py-5 space-y-4">

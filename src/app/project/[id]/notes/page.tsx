@@ -76,30 +76,30 @@ export default function MeetingNotesPage({ params }: { params: Promise<{ id: str
   return (
     <AppLayout>
       <div className="max-w-2xl animate-fade-in">
-        <Link href={`/project/${id}`} className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6 transition-colors">
+        <Link href={`/project/${id}`} className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />Back to project
         </Link>
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Meeting notes</h1>
-            <p className="text-slate-500 text-sm mt-1">Decisions and action items from client calls.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Meeting notes</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Decisions and action items from client calls.</p>
           </div>
           <Button onClick={() => setShowForm(s => !s)}><Plus className="w-4 h-4" />New note</Button>
         </div>
 
         {showForm && (
-          <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-6">
             <form onSubmit={handleSave} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <input className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Meeting title (optional)" value={title} onChange={e => setTitle(e.target.value)} />
-                <input type="date" className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" value={date} onChange={e => setDate(e.target.value)} />
+                <input className="px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Meeting title (optional)" value={title} onChange={e => setTitle(e.target.value)} />
+                <input type="date" className="px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" value={date} onChange={e => setDate(e.target.value)} />
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-2">Decisions made</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200 block mb-2">Decisions made</label>
                 {decisions.map((d, i) => (
                   <div key={i} className="flex gap-2 mb-2">
-                    <input className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Decision…" value={d} onChange={e => updateList(decisions, setDecisions, i, e.target.value)} />
+                    <input className="flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Decision…" value={d} onChange={e => updateList(decisions, setDecisions, i, e.target.value)} />
                     {decisions.length > 1 && <button type="button" onClick={() => removeItem(decisions, setDecisions, i)} className="text-slate-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>}
                   </div>
                 ))}
@@ -107,10 +107,10 @@ export default function MeetingNotesPage({ params }: { params: Promise<{ id: str
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-2">Action items</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200 block mb-2">Action items</label>
                 {actionItems.map((a, i) => (
                   <div key={i} className="flex gap-2 mb-2">
-                    <input className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Action item…" value={a} onChange={e => updateList(actionItems, setActionItems, i, e.target.value)} />
+                    <input className="flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Action item…" value={a} onChange={e => updateList(actionItems, setActionItems, i, e.target.value)} />
                     {actionItems.length > 1 && <button type="button" onClick={() => removeItem(actionItems, setActionItems, i)} className="text-slate-300 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>}
                   </div>
                 ))}
@@ -126,16 +126,16 @@ export default function MeetingNotesPage({ params }: { params: Promise<{ id: str
         )}
 
         {!notes.length ? (
-          <div className="bg-white rounded-xl border border-dashed border-slate-200 p-12 text-center text-sm text-slate-400">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-12 text-center text-sm text-slate-400">
             No meeting notes yet. Log decisions and action items from client calls.
           </div>
         ) : (
           <div className="space-y-3">
             {notes.map(note => (
-              <div key={note.id} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-                <button className="w-full flex items-center justify-between p-5 hover:bg-slate-50 transition-colors" onClick={() => setExpanded(e => e === note.id ? null : note.id)}>
+              <div key={note.id} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+                <button className="w-full flex items-center justify-between p-5 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors" onClick={() => setExpanded(e => e === note.id ? null : note.id)}>
                   <div className="text-left">
-                    <div className="font-semibold text-slate-900 text-sm">{note.title || 'Meeting note'}</div>
+                    <div className="font-semibold text-slate-900 dark:text-white text-sm">{note.title || 'Meeting note'}</div>
                     <div className="text-xs text-slate-400 mt-0.5">{new Date(note.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' })}</div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -145,13 +145,13 @@ export default function MeetingNotesPage({ params }: { params: Promise<{ id: str
                 </button>
 
                 {expanded === note.id && (
-                  <div className="px-5 pb-5 pt-0 border-t border-slate-100 space-y-4">
+                  <div className="px-5 pb-5 pt-0 border-t border-slate-100 dark:border-slate-800 space-y-4">
                     {note.decisions.length > 0 && (
                       <div>
-                        <div className="text-xs font-semibold text-slate-600 mb-2">Decisions</div>
+                        <div className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Decisions</div>
                         <ul className="space-y-1.5">
                           {note.decisions.map((d, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                            <li key={i} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200">
                               <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
                               {d}
                             </li>
@@ -161,10 +161,10 @@ export default function MeetingNotesPage({ params }: { params: Promise<{ id: str
                     )}
                     {note.action_items.length > 0 && (
                       <div>
-                        <div className="text-xs font-semibold text-slate-600 mb-2">Action items</div>
+                        <div className="text-xs font-semibold text-slate-600 dark:text-slate-300 mb-2">Action items</div>
                         <ul className="space-y-1.5">
                           {note.action_items.map((a, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                            <li key={i} className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-200">
                               <span className="w-3.5 h-3.5 rounded border border-slate-300 flex-shrink-0 mt-0.5" />
                               {a}
                             </li>

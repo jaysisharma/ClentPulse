@@ -87,27 +87,27 @@ export default function NewInvoicePage() {
   return (
     <AppLayout>
       <div className="max-w-2xl animate-fade-in">
-        <Link href="/invoices" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6 transition-colors">
+        <Link href="/invoices" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />Back to invoices
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">New invoice</h1>
-        <p className="text-slate-500 text-sm mb-8">Fill in the details below. You can save as draft or send immediately.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">New invoice</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Fill in the details below. You can save as draft or send immediately.</p>
 
         <div className="space-y-5">
           {/* Header info */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
-            <h2 className="font-semibold text-slate-900 text-sm">Invoice details</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+            <h2 className="font-semibold text-slate-900 dark:text-white text-sm">Invoice details</h2>
             <div className="grid grid-cols-2 gap-4">
               <Input label="Invoice number" value={invoiceNumber} onChange={e => setInvoiceNumber(e.target.value)} required />
               <Input label="Due date" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
             </div>
 
             <div>
-              <label className="text-sm font-medium text-slate-700 block mb-1.5">Link to project (optional)</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Link to project (optional)</label>
               <select
                 value={projectId}
                 onChange={e => handleProjectChange(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="">— No project —</option>
                 {projects.map(p => <option key={p.id} value={p.id}>{p.project_name} ({p.client_name})</option>)}
@@ -121,8 +121,8 @@ export default function NewInvoicePage() {
           </div>
 
           {/* Line items */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <h2 className="font-semibold text-slate-900 text-sm mb-4">Line items</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <h2 className="font-semibold text-slate-900 dark:text-white text-sm mb-4">Line items</h2>
 
             <div className="space-y-3">
               {/* Header row */}
@@ -136,24 +136,24 @@ export default function NewInvoicePage() {
               {items.map((item, i) => (
                 <div key={i} className="grid grid-cols-12 gap-2 items-center">
                   <input
-                    className="col-span-6 px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="col-span-6 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Description"
                     value={item.description}
                     onChange={e => updateItem(i, 'description', e.target.value)}
                   />
                   <input
-                    className="col-span-2 px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 text-right focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="col-span-2 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-right focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     type="number" min="0" step="0.5"
                     value={item.quantity}
                     onChange={e => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)}
                   />
                   <input
-                    className="col-span-2 px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 text-right focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="col-span-2 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-right focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     type="number" min="0" step="0.01"
                     value={item.rate}
                     onChange={e => updateItem(i, 'rate', parseFloat(e.target.value) || 0)}
                   />
-                  <div className="col-span-1 text-sm text-slate-700 text-right font-medium">
+                  <div className="col-span-1 text-sm text-slate-700 dark:text-slate-200 text-right font-medium">
                     ${item.amount.toFixed(2)}
                   </div>
                   <button
@@ -177,19 +177,19 @@ export default function NewInvoicePage() {
             </button>
 
             {/* Total */}
-            <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
               <div className="text-right">
-                <div className="text-sm text-slate-500">Total</div>
-                <div className="text-2xl font-bold text-slate-900">${total.toFixed(2)}</div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">Total</div>
+                <div className="text-2xl font-bold text-slate-900 dark:text-white">${total.toFixed(2)}</div>
               </div>
             </div>
           </div>
 
           {/* Notes */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
-            <label className="text-sm font-medium text-slate-700 block mb-2">Notes (optional)</label>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-2">Notes (optional)</label>
             <textarea
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+              className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
               rows={3}
               placeholder="Payment terms, bank details, thank-you note…"
               value={notes}

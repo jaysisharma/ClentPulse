@@ -32,7 +32,7 @@ export function BudgetWidget({
         </Link>
       }
     >
-      <div className="w-full bg-slate-100 rounded-full h-1.5">
+      <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5">
         <div
           className="h-1.5 rounded-full transition-all"
           style={{ width: `${pct}%`, backgroundColor: over ? '#ef4444' : color }}

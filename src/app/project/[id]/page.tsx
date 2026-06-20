@@ -132,31 +132,31 @@ export default async function ProjectPage({
             <div className="w-1 h-12 rounded-full flex-shrink-0" style={{ backgroundColor: project.color }} />
             <div className="min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-3xl font-bold text-slate-900 tracking-tight truncate">{project.project_name}</h1>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight truncate">{project.project_name}</h1>
                 <StatusToggle projectId={project.id} current={project.status as 'active' | 'paused' | 'completed'} />
               </div>
-              <p className="text-slate-500 font-medium mt-1">{project.client_name}</p>
+              <p className="text-slate-500 dark:text-slate-400 font-medium mt-1">{project.client_name}</p>
 
               {/* Compact Inline Metrics */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3 text-sm text-slate-500">
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3 text-sm text-slate-500 dark:text-slate-400">
                 {project.budget && (
                   <Link
                     href={`/project/${id}/settings`}
                     className="flex items-center gap-1.5 hover:text-indigo-600 transition-colors group"
                   >
-                    <span className="font-semibold text-slate-700 group-hover:text-indigo-600 transition-colors">Budget:</span>
-                    <span className={invoiced > project.budget ? 'text-rose-600 font-semibold' : 'text-slate-900 font-medium'}>
+                    <span className="font-semibold text-slate-700 dark:text-slate-200 group-hover:text-indigo-600 transition-colors">Budget:</span>
+                    <span className={invoiced > project.budget ? 'text-rose-600 font-semibold' : 'text-slate-900 dark:text-white font-medium'}>
                       ${invoiced.toLocaleString()} / ${project.budget.toLocaleString()}
                     </span>
                     <span className="text-xs text-slate-400">({Math.round((invoiced / project.budget) * 100)}%)</span>
                   </Link>
                 )}
                 <div className="flex items-center gap-1.5">
-                  <span className="font-semibold text-slate-700 flex items-center gap-1">
+                  <span className="font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-slate-400" />
                     Time Logged:
                   </span>
-                  <span className="text-slate-900 font-medium">{hoursLabel}</span>
+                  <span className="text-slate-900 dark:text-white font-medium">{hoursLabel}</span>
                   <Link href="/time" className="text-xs text-indigo-600 hover:text-indigo-700 font-medium underline ml-1">
                     Log time
                   </Link>
@@ -181,7 +181,7 @@ export default async function ProjectPage({
                 <a.icon className="w-4 h-4 text-amber-600 flex-shrink-0" />
                 <span className="text-sm font-semibold text-amber-950 flex-1 min-w-0">{a.label}</span>
                 <Link href={a.href} className="flex-shrink-0">
-                  <Button size="sm" variant="secondary" className="text-xs bg-white border border-amber-200 text-amber-900 hover:bg-amber-50">{a.cta}</Button>
+                  <Button size="sm" variant="secondary" className="text-xs bg-white dark:bg-slate-900 border border-amber-200 text-amber-900 hover:bg-amber-50">{a.cta}</Button>
                 </Link>
               </div>
             ))}
@@ -200,7 +200,7 @@ export default async function ProjectPage({
               count={updates?.length ?? 0}
             >
               {!updates?.length ? (
-                <div className="bg-white border border-dashed border-slate-200/80 rounded-2xl p-12 text-center shadow-xs">
+                <div className="bg-white dark:bg-slate-900 border border-dashed border-slate-200/80 rounded-2xl p-12 text-center shadow-xs">
                   <p className="text-sm text-slate-400 mb-4">No updates sent to {project.client_name} yet.</p>
                   <Link href={`/project/${id}/update`}>
                     <Button size="sm"><Plus className="w-4 h-4" />Send first update</Button>
@@ -235,9 +235,9 @@ export default async function ProjectPage({
 
             {/* Testimonial — completed only */}
             {project.status === 'completed' && (
-              <div className="bg-white border border-slate-200/60 shadow-sm rounded-2xl p-6 flex items-center justify-between">
+              <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm rounded-2xl p-6 flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900">Request a testimonial</h3>
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Request a testimonial</h3>
                   <p className="text-xs text-slate-400 mt-1">Collect a review from {project.client_name}.</p>
                 </div>
                 <Link href={`/testimonial/${project.id}`} target="_blank" rel="noopener noreferrer">
@@ -274,7 +274,7 @@ export default async function ProjectPage({
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-slate-700">Status page</span>
+                      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">Status page</span>
                       <div className="flex items-center gap-1.5">
                         <CopyLinkButton url={publicUrl} />
                         <a href={publicUrl} target="_blank" rel="noopener noreferrer">
@@ -282,13 +282,13 @@ export default async function ProjectPage({
                         </a>
                       </div>
                     </div>
-                    <p className="text-xs text-slate-400 truncate bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100">{publicUrl}</p>
+                    <p className="text-xs text-slate-400 truncate bg-slate-50 dark:bg-slate-800/40 px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-slate-800">{publicUrl}</p>
                   </div>
 
-                  <Link href={`/project/${id}/contract`} className="border-t border-slate-100 pt-4 flex items-center justify-between group">
+                  <Link href={`/project/${id}/contract`} className="border-t border-slate-100 dark:border-slate-800 pt-4 flex items-center justify-between group">
                     <div className="flex items-center gap-2">
                       <FileSignature className="w-4 h-4 text-slate-400" />
-                      <span className="text-sm font-semibold text-slate-700">Contract</span>
+                      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">Contract</span>
                     </div>
                     {unsignedContracts > 0 ? (
                       <span className="text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full">Unsigned</span>

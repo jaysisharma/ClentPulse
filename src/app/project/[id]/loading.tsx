@@ -35,7 +35,7 @@ export default function Loading() {
         {/* Stats strip */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 px-4 py-3 flex items-center gap-3">
+            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3">
               <Sk className="w-4 h-4 rounded" />
               <div className="space-y-1.5">
                 <Sk className="h-5 w-16" />
@@ -56,7 +56,7 @@ export default function Loading() {
                 <Sk className="h-8 w-20 rounded-lg" />
               </div>
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+                <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
                   <div className="flex items-center justify-between">
                     <Sk className="h-4 w-36" />
                     <Sk className="h-6 w-28 rounded-full" />
@@ -73,7 +73,7 @@ export default function Loading() {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <Sk className="h-4 w-20" />
                 <Sk className="h-4 w-24" />
@@ -84,7 +84,7 @@ export default function Loading() {
                 <Sk className="h-3 w-20" />
               </div>
             </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <Sk className="h-4 w-24" />
                 <Sk className="h-4 w-10" />
@@ -98,7 +98,7 @@ export default function Loading() {
                 </div>
               ))}
             </div>
-            <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-2">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <Sk className="h-4 w-24" />
                 <div className="flex gap-2">

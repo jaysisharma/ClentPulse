@@ -21,7 +21,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
     <AppLayout>
       <div className="max-w-2xl animate-fade-in">
         <div className="flex items-center justify-between mb-6">
-          <Link href="/invoices" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+          <Link href="/invoices" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 transition-colors">
             <ArrowLeft className="w-4 h-4" />Back to invoices
           </Link>
           <InvoiceActions invoice={{ id: invoice.id, status: invoice.status, client_email: invoice.client_email }} />

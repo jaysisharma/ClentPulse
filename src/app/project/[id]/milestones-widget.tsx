@@ -98,7 +98,7 @@ export function MilestonesWidget({
 
       {/* Progress bar */}
       {total > 0 && (
-        <div className="w-full bg-slate-100 rounded-full h-1.5 mb-4 overflow-hidden">
+        <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mb-4 overflow-hidden">
           <div
             className="h-1.5 rounded-full transition-all duration-500"
             style={{ width: `${Math.round((done / total) * 100)}%`, backgroundColor: color }}
@@ -110,7 +110,7 @@ export function MilestonesWidget({
       {adding && (
         <div className="flex gap-2 mb-3">
           <input
-            className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors"
+            className="flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors"
             placeholder="Milestone title"
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
@@ -119,7 +119,7 @@ export function MilestonesWidget({
           />
           <input
             type="date"
-            className="w-36 px-3 py-2 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors"
+            className="w-36 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors"
             value={newDate}
             onChange={e => setNewDate(e.target.value)}
           />
@@ -149,7 +149,7 @@ export function MilestonesWidget({
                     : <Circle className={`w-4 h-4 ${overdue ? 'text-red-400' : 'text-slate-300'} hover:text-slate-400 transition-colors`} />
                   }
                 </button>
-                <span className={`flex-1 text-sm min-w-0 truncate ${m.done ? 'line-through text-slate-400' : 'text-slate-700'}`}>
+                <span className={`flex-1 text-sm min-w-0 truncate ${m.done ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
                   {m.title}
                 </span>
                 {m.due_date && (

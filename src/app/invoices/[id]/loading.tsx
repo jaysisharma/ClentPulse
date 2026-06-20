@@ -15,7 +15,7 @@ export default function Loading() {
             <Sk className="h-8 w-20 rounded-lg" />
           </div>
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-8 space-y-8">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-8 space-y-8">
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <Sk className="h-8 w-16" />
@@ -35,7 +35,7 @@ export default function Loading() {
               <Sk className="h-4 w-40" />
             </div>
           </div>
-          <div className="space-y-3 pt-4 border-t border-slate-100">
+          <div className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex items-center gap-4">
                 <Sk className="flex-1 h-4" />
@@ -45,7 +45,7 @@ export default function Loading() {
               </div>
             ))}
           </div>
-          <div className="flex justify-end pt-4 border-t border-slate-100">
+          <div className="flex justify-end pt-4 border-t border-slate-100 dark:border-slate-800">
             <div className="space-y-2 text-right">
               <Sk className="h-4 w-32 ml-auto" />
               <Sk className="h-6 w-24 ml-auto" />

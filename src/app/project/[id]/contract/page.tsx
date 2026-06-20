@@ -77,32 +77,32 @@ export default function ContractPage({ params }: { params: Promise<{ id: string 
   return (
     <AppLayout>
       <div className="max-w-2xl animate-fade-in">
-        <Link href={`/project/${id}`} className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6 transition-colors">
+        <Link href={`/project/${id}`} className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />Back to project
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">Contract</h1>
-        <p className="text-slate-500 text-sm mb-8">Create a contract and send the signing link to your client.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Contract</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Create a contract and send the signing link to your client.</p>
 
         {!contract && !showForm && (
-          <div className="bg-white rounded-xl border border-dashed border-slate-200 p-12 text-center">
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-12 text-center">
+            <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-4">
               <FileSignature className="w-6 h-6 text-slate-400" />
             </div>
-            <h3 className="font-semibold text-slate-900 mb-2">No contract yet</h3>
-            <p className="text-slate-500 text-sm mb-5">Create a contract and share the signing link with your client.</p>
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">No contract yet</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">Create a contract and share the signing link with your client.</p>
             <Button onClick={() => setShowForm(true)}>Create contract</Button>
           </div>
         )}
 
         {showForm && (
-          <div className="bg-white rounded-xl border border-slate-200 p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
             <form onSubmit={handleCreate} className="space-y-4">
               <Input label="Contract title" placeholder="e.g. Website Redesign Agreement" value={title} onChange={e => setTitle(e.target.value)} required />
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-slate-700 block mb-1.5">Contract type</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Contract type</label>
                   <select value={type} onChange={e => setType(e.target.value as 'fixed' | 'retainer')}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     <option value="fixed">Fixed price</option>
                     <option value="retainer">Retainer</option>
                   </select>
@@ -110,9 +110,9 @@ export default function ContractPage({ params }: { params: Promise<{ id: string 
                 <Input label="Amount ($)" type="number" min="0" step="0.01" placeholder="5000" value={amount} onChange={e => setAmount(e.target.value)} />
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 block mb-1.5">Terms & scope</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Terms & scope</label>
                 <textarea
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                  className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                   rows={8}
                   placeholder="Describe the scope of work, deliverables, payment terms, revision policy…"
                   value={terms}
@@ -155,17 +155,17 @@ export default function ContractPage({ params }: { params: Promise<{ id: string 
             </div>
 
             {/* Contract preview */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h2 className="text-lg font-bold text-slate-900">{contract.title}</h2>
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">{contract.title}</h2>
                   <div className="flex items-center gap-3 mt-1">
-                    <span className="text-xs font-medium bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full capitalize">{contract.type}</span>
-                    {contract.amount && <span className="text-sm font-semibold text-slate-700">${contract.amount.toLocaleString()}</span>}
+                    <span className="text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full capitalize">{contract.type}</span>
+                    {contract.amount && <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">${contract.amount.toLocaleString()}</span>}
                   </div>
                 </div>
               </div>
-              <p className="text-sm text-slate-600 whitespace-pre-wrap leading-relaxed">{contract.terms}</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">{contract.terms}</p>
             </div>
           </div>
         )}

@@ -14,7 +14,7 @@ const TYPE_META: Record<DocType, { label: string; icon: React.ElementType; color
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  draft:    'bg-slate-100 text-slate-600',
+  draft:    'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300',
   sent:     'bg-blue-50 text-blue-700',
   accepted: 'bg-emerald-50 text-emerald-700',
   signed:   'bg-emerald-50 text-emerald-700',
@@ -44,8 +44,8 @@ export default async function DocsPage() {
 
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Documents</h1>
-            <p className="text-slate-500 text-sm mt-1">Proposals, agreements, and requirement docs for your clients.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Documents</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Proposals, agreements, and requirement docs for your clients.</p>
           </div>
           <Link href="/docs/new">
             <Button><Plus className="w-4 h-4" />New document</Button>
@@ -53,12 +53,12 @@ export default async function DocsPage() {
         </div>
 
         {!docs?.length ? (
-          <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-16 text-center">
-            <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 p-16 text-center">
+            <div className="w-14 h-14 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <FileText className="w-7 h-7 text-slate-400" />
             </div>
-            <h3 className="font-semibold text-slate-900 mb-2">No documents yet</h3>
-            <p className="text-slate-500 text-sm mb-6 max-w-sm mx-auto">
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">No documents yet</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 max-w-sm mx-auto">
               Create proposals, service agreements, and requirement docs — all with professional templates.
             </p>
             <Link href="/docs/new"><Button><Plus className="w-4 h-4" />Create your first document</Button></Link>
@@ -79,7 +79,7 @@ export default async function DocsPage() {
                     <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${meta.color}`}>
                       <Icon className="w-3.5 h-3.5" />
                     </div>
-                    <h2 className="text-sm font-semibold text-slate-700">{meta.label}s</h2>
+                    <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">{meta.label}s</h2>
                     <span className="text-xs text-slate-400">({items.length})</span>
                   </div>
                   <div className="space-y-2">
@@ -87,20 +87,20 @@ export default async function DocsPage() {
                       <Link
                         key={doc.id}
                         href={`/docs/${doc.id}`}
-                        className="flex items-center gap-4 bg-white rounded-xl border border-slate-200 p-4 hover:border-indigo-300 hover:shadow-sm transition-all group"
+                        className="flex items-center gap-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 hover:border-indigo-300 hover:shadow-sm transition-all group"
                       >
                         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${meta.color}`}>
                           <Icon className="w-4 h-4" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-0.5">
-                            <span className="font-semibold text-slate-900 truncate">{doc.title}</span>
+                            <span className="font-semibold text-slate-900 dark:text-white truncate">{doc.title}</span>
                             <span className={`text-xs font-medium px-2 py-0.5 rounded-full flex-shrink-0 ${STATUS_STYLES[doc.status] ?? STATUS_STYLES.draft}`}>
                               {doc.status}
                             </span>
                           </div>
                           {doc.client_name && (
-                            <span className="text-sm text-slate-500">{doc.client_name}</span>
+                            <span className="text-sm text-slate-500 dark:text-slate-400">{doc.client_name}</span>
                           )}
                         </div>
                         <div className="text-xs text-slate-400 flex-shrink-0">

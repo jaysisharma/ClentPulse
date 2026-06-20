@@ -123,7 +123,7 @@ export function KickoffChecklist({ projectId }: { projectId: string }) {
               <span>{totalDone === total ? '🎉 All done — ready to start!' : `${total - totalDone} item${total - totalDone !== 1 ? 's' : ''} remaining`}</span>
               <span>{Math.round((totalDone / total) * 100)}%</span>
             </div>
-            <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
               <div
                 className="h-1.5 rounded-full transition-all duration-500 bg-indigo-500"
                 style={{ width: `${Math.round((totalDone / total) * 100)}%` }}
@@ -238,12 +238,12 @@ function Section({
 
       {/* Template pills */}
       {showTemplates && (
-        <div className="flex flex-wrap gap-1.5 mb-3 p-3 bg-slate-50 rounded-lg border border-slate-100">
+        <div className="flex flex-wrap gap-1.5 mb-3 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-lg border border-slate-100 dark:border-slate-800">
           {templates.map(t => (
             <button
               key={t}
               onClick={() => onPickTemplate(t)}
-              className="text-xs text-slate-600 bg-white border border-slate-200 rounded-full px-2.5 py-1 hover:border-indigo-300 hover:text-indigo-700 transition-colors text-left"
+              className="text-xs text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 rounded-full px-2.5 py-1 hover:border-indigo-300 hover:text-indigo-700 transition-colors text-left"
             >
               {t}
             </button>
@@ -264,7 +264,7 @@ function Section({
                   : <Circle className="w-4 h-4 text-slate-300 hover:text-slate-400 transition-colors" />
                 }
               </button>
-              <span className={`flex-1 text-sm min-w-0 ${item.done ? 'line-through text-slate-400' : 'text-slate-700'}`}>
+              <span className={`flex-1 text-sm min-w-0 ${item.done ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
                 {item.title}
               </span>
               {item.done_at && (
@@ -287,7 +287,7 @@ function Section({
           <div className="flex gap-2 mt-2">
             <input
               autoFocus
-              className={`flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 ${ring} focus:bg-white transition-colors`}
+              className={`flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 ${ring} focus:bg-white dark:bg-slate-900 transition-colors`}
               placeholder="Task description…"
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}

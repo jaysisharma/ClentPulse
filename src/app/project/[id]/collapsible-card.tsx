@@ -45,7 +45,7 @@ export function CollapsibleCard({
   }
 
   return (
-    <div className="bg-white border border-slate-200/60 shadow-sm rounded-2xl overflow-hidden">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 gap-2">
         <button
           type="button"
@@ -57,7 +57,7 @@ export function CollapsibleCard({
             className={cn('w-3.5 h-3.5 text-slate-400 transition-transform duration-200 flex-shrink-0', open ? '' : '-rotate-90')}
           />
           {icon}
-          <span className="text-sm font-semibold text-slate-900 truncate">{title}</span>
+          <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">{title}</span>
           {meta != null && <span className="text-xs text-slate-400 flex-shrink-0">{meta}</span>}
         </button>
         <div className="flex items-center gap-2">
@@ -66,14 +66,14 @@ export function CollapsibleCard({
             <button
               onClick={handleHide}
               disabled={hiding}
-              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 border border-slate-200/80 px-2 py-0.5 rounded-md hover:bg-slate-100 disabled:opacity-50 cursor-pointer flex-shrink-0"
+              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 px-2 py-0.5 rounded-md hover:bg-slate-100 dark:bg-slate-800 disabled:opacity-50 cursor-pointer flex-shrink-0"
             >
               {hiding ? 'Hiding…' : 'Hide'}
             </button>
           )}
         </div>
       </div>
-      {open && <div className="px-5 pb-5 border-t border-slate-100 pt-4">{children}</div>}
+      {open && <div className="px-5 pb-5 border-t border-slate-100 dark:border-slate-800 pt-4">{children}</div>}
     </div>
   )
 }

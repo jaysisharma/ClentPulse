@@ -176,22 +176,22 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
   return (
     <AppLayout>
       <div className="max-w-2xl animate-fade-in">
-        <Link href="/portfolio" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6 transition-colors">
+        <Link href="/portfolio" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />Back to portfolio
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">{editId ? 'Edit work item' : 'Add work item'}</h1>
-        <p className="text-slate-500 text-sm mb-8">Showcase a project with screenshots, a demo, links, and a case study.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{editId ? 'Edit work item' : 'Add work item'}</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Showcase a project with screenshots, a demo, links, and a case study.</p>
 
         <div className="space-y-5">
 
           {/* Basic info */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-slate-900">Project info</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Project info</h2>
             <Input label="Title" placeholder="Supabase backend for Acme Corp" value={title} onChange={e => setTitle(e.target.value)} required autoFocus />
             <div>
-              <label className="text-sm font-medium text-slate-700 block mb-1.5">Case study / description</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Case study / description</label>
               <textarea
-                className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors resize-none"
+                className="w-full px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors resize-none"
                 rows={5}
                 placeholder="Describe what you built, the challenge you solved, the tech stack, and the outcome. This is your case study."
                 value={description}
@@ -201,8 +201,8 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
 
             {/* Tags */}
             <div>
-              <label className="text-sm font-medium text-slate-700 block mb-1.5">Tags <span className="text-slate-400 font-normal">(press Enter to add)</span></label>
-              <div className="flex flex-wrap gap-2 p-2.5 border border-slate-200 rounded-xl bg-slate-50 min-h-[44px] focus-within:ring-2 focus-within:ring-indigo-500 focus-within:bg-white transition-colors">
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Tags <span className="text-slate-400 font-normal">(press Enter to add)</span></label>
+              <div className="flex flex-wrap gap-2 p-2.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 min-h-[44px] focus-within:ring-2 focus-within:ring-indigo-500 focus-within:bg-white dark:bg-slate-900 transition-colors">
                 {tags.map(t => (
                   <span key={t} className="inline-flex items-center gap-1 bg-indigo-100 text-indigo-700 text-xs font-medium px-2.5 py-1 rounded-full">
                     {t}
@@ -223,8 +223,8 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
           </div>
 
           {/* Links */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-slate-900">Links</h2>
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Links</h2>
             <div className="relative">
               <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none mt-3.5" />
               <Input label="Live URL" type="url" placeholder="https://yourproject.com" value={liveUrl} onChange={e => setLiveUrl(e.target.value)} className="pl-9" />
@@ -239,7 +239,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                 <p className="text-xs text-amber-600 mt-1.5">Paste a YouTube or Loom URL to embed the video.</p>
               )}
               {videoEmbed && (
-                <div className="mt-3 rounded-xl overflow-hidden border border-slate-200 aspect-video">
+                <div className="mt-3 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 aspect-video">
                   <iframe src={videoEmbed} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                 </div>
               )}
@@ -247,10 +247,10 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
           </div>
 
           {/* Screenshots */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-6">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-sm font-semibold text-slate-900">Screenshots</h2>
+                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Screenshots</h2>
                 <p className="text-xs text-slate-400 mt-0.5">PNG, JPG, WebP — max 5 MB each</p>
               </div>
               <Button variant="secondary" size="sm" onClick={() => fileRef.current?.click()}>
@@ -266,7 +266,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="w-full border-2 border-dashed border-slate-200 rounded-xl py-10 flex flex-col items-center gap-2 text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors"
+                className="w-full border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl py-10 flex flex-col items-center gap-2 text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors"
               >
                 <ImageIcon className="w-8 h-8" />
                 <span className="text-sm">Click to upload screenshots</span>
@@ -275,7 +275,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {existingShots.map(url => (
-                  <div key={url} className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100">
+                  <div key={url} className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
                     <img src={url} alt="" className="w-full h-full object-cover" />
                     <button
                       type="button"
@@ -287,7 +287,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                   </div>
                 ))}
                 {pendingPreviews.map((src, i) => (
-                  <div key={i} className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100">
+                  <div key={i} className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
                     <img src={src} alt="" className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-indigo-600/10 flex items-center justify-center">
                       <span className="text-xs font-medium text-indigo-700 bg-white/90 px-2 py-0.5 rounded-full">New</span>
@@ -304,7 +304,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="aspect-video rounded-xl border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors"
+                  className="aspect-video rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors"
                 >
                   <Upload className="w-5 h-5" />
                 </button>

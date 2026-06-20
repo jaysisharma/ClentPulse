@@ -12,13 +12,13 @@ export default function Loading() {
           <Sk className="h-7 w-32" />
           <Sk className="h-4 w-56" />
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <Sk className="h-9 rounded-lg" />
             <Sk className="h-9 rounded-lg" />
           </div>
           <Sk className="h-9 w-full rounded-lg" />
-          <div className="space-y-2 pt-4 border-t border-slate-100">
+          <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex gap-3">
                 <Sk className="flex-1 h-9 rounded-lg" />

@@ -25,18 +25,18 @@ export default async function ArchivePage() {
       <div className="animate-fade-in">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Archive</h1>
-            <p className="text-slate-500 text-sm mt-1">Completed projects.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Archive</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Completed projects.</p>
           </div>
         </div>
 
         {!projects?.length ? (
-          <div className="bg-white rounded-xl border border-dashed border-slate-200 p-16 text-center">
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-16 text-center">
+            <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Archive className="w-6 h-6 text-slate-400" />
             </div>
-            <h3 className="font-semibold text-slate-900 mb-2">No archived projects</h3>
-            <p className="text-slate-500 text-sm mb-5">
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">No archived projects</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">
               Projects marked as <span className="font-medium">completed</span> will appear here.
             </p>
             <Link href="/project">
@@ -52,11 +52,11 @@ export default async function ArchivePage() {
                 <Link
                   key={project.id}
                   href={`/project/${project.id}`}
-                  className="flex items-center gap-4 bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-sm transition-all group opacity-80 hover:opacity-100"
+                  className="flex items-center gap-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 hover:border-slate-300 hover:shadow-sm transition-all group opacity-80 hover:opacity-100"
                 >
                   <div className="w-3 h-10 rounded-full flex-shrink-0 opacity-50" style={{ backgroundColor: project.color }} />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-slate-700">{project.project_name}</div>
+                    <div className="font-semibold text-slate-700 dark:text-slate-200">{project.project_name}</div>
                     <div className="text-sm text-slate-400">{project.client_name}</div>
                   </div>
                   <div className="text-right flex-shrink-0 text-xs text-slate-400">

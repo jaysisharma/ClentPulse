@@ -14,17 +14,17 @@ export default function Loading() {
           <Sk className="h-4 w-40" />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200 p-6 space-y-6">
+          <div className="lg:col-span-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 space-y-6">
             <div className="space-y-3">
               <Sk className="h-4 w-36 mb-2" />
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3 rounded-xl">
+                <div key={i} className="flex gap-3 items-center bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 p-3 rounded-xl">
                   <Sk className="w-6 h-6 rounded-full" />
                   <Sk className="h-4 flex-1" />
                 </div>
               ))}
             </div>
-            <div className="pt-4 border-t border-slate-100 space-y-2">
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
               <Sk className="h-4 w-40" />
               <Sk className="h-24 w-full rounded-xl" />
             </div>
@@ -35,8 +35,8 @@ export default function Loading() {
           </div>
           <div className="lg:col-span-2 space-y-3">
             <Sk className="h-4 w-28" />
-            <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-              <div className="bg-slate-50 border-b border-slate-200 px-4 py-3 space-y-1">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div className="bg-slate-50 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800 px-4 py-3 space-y-1">
                 <Sk className="h-3 w-32" />
                 <Sk className="h-3 w-48" />
               </div>

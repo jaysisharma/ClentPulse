@@ -46,25 +46,25 @@ export default async function ExpensesPage() {
     <AppLayout>
       <div className="animate-fade-in pb-10">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-slate-900">Expenses</h1>
-          <p className="text-slate-500 text-sm mt-1">Track costs to see your real take-home, not just revenue.</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Expenses</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Track costs to see your real take-home, not just revenue.</p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="text-2xl font-bold text-slate-900">{fmt(totalSpent)}</div>
-            <div className="text-sm text-slate-500 mt-0.5">Total spent</div>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">{fmt(totalSpent)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Total spent</div>
             <div className="text-xs text-slate-400 mt-1">all time</div>
           </div>
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="text-2xl font-bold text-slate-900">{fmt(spentThisMonth)}</div>
-            <div className="text-sm text-slate-500 mt-0.5">This month</div>
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+            <div className="text-2xl font-bold text-slate-900 dark:text-white">{fmt(spentThisMonth)}</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">This month</div>
             <div className="text-xs text-slate-400 mt-1">expenses logged</div>
           </div>
           <div className={`rounded-xl border p-5 ${netProfit >= 0 ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'}`}>
             <div className={`text-2xl font-bold ${netProfit >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>{fmt(netProfit)}</div>
-            <div className="text-sm text-slate-500 mt-0.5">Net profit</div>
+            <div className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Net profit</div>
             <div className="text-xs text-slate-400 mt-1">paid revenue − expenses</div>
           </div>
         </div>

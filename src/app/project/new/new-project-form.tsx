@@ -117,12 +117,12 @@ export function NewProjectForm() {
   // Success state
   if (createdProjectId) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-8 animate-fade-in">
+      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-8 animate-fade-in">
         <div className="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center mb-5">
           <Check className="w-5 h-5 text-emerald-600" />
         </div>
-        <h2 className="text-lg font-bold text-slate-900 mb-1">Project created</h2>
-        <p className="text-slate-500 text-sm mb-6">
+        <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Project created</h2>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">
           {clientExisted
             ? 'This client already has a Frevio account. They can sign in with their existing password — no new credentials were created.'
             : clientEmail && clientPassword
@@ -138,10 +138,10 @@ export function NewProjectForm() {
         )}
 
         {!clientExisted && clientEmail && clientPassword && (
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6 space-y-3">
+          <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl p-5 mb-6 space-y-3">
             <div>
-              <div className="text-xs text-slate-500 mb-1.5">Login URL</div>
-              <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+              <div className="text-xs text-slate-500 dark:text-slate-400 mb-1.5">Login URL</div>
+              <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200">
                 <span className="font-mono text-xs truncate">{window.location.origin}/auth/login</span>
                 <button onClick={() => copyToClipboard(`${window.location.origin}/auth/login`, 'url')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
                   {copied === 'url' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -150,8 +150,8 @@ export function NewProjectForm() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <div className="text-xs text-slate-500 mb-1.5">Email</div>
-                <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                <div className="text-xs text-slate-500 dark:text-slate-400 mb-1.5">Email</div>
+                <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200">
                   <span className="truncate text-xs">{clientEmail}</span>
                   <button onClick={() => copyToClipboard(clientEmail, 'email')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
                     {copied === 'email' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -159,8 +159,8 @@ export function NewProjectForm() {
                 </div>
               </div>
               <div>
-                <div className="text-xs text-slate-500 mb-1.5">Password</div>
-                <div className="flex items-center justify-between bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700">
+                <div className="text-xs text-slate-500 dark:text-slate-400 mb-1.5">Password</div>
+                <div className="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200">
                   <span className="truncate font-mono text-xs">{clientPassword}</span>
                   <button onClick={() => copyToClipboard(clientPassword, 'password')} className="text-slate-400 hover:text-indigo-600 transition-colors pl-2 cursor-pointer flex-shrink-0">
                     {copied === 'password' ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -179,11 +179,11 @@ export function NewProjectForm() {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
+    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Project — the only required part */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-100 pb-2">Project</h3>
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">Project</h3>
           <Input
             label="Project name"
             placeholder="Website Redesign"
@@ -197,7 +197,7 @@ export function NewProjectForm() {
           </div>
 
           <div>
-            <label className="text-sm font-medium text-slate-700 block mb-2">Accent color</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-2">Accent color</label>
             <div className="flex gap-2 flex-wrap">
               {COLORS.map(c => (
                 <button
@@ -214,7 +214,7 @@ export function NewProjectForm() {
 
         {/* Client — all optional, can be added later */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-slate-700 border-b border-slate-100 pb-2">Client</h3>
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 border-b border-slate-100 dark:border-slate-800 pb-2">Client</h3>
           <Input
             label="Client name"
             placeholder="Acme Corporation"

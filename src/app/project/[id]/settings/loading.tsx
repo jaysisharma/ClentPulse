@@ -14,7 +14,7 @@ export default function Loading() {
           <Sk className="h-4 w-72" />
         </div>
         {[...Array(2)].map((_, i) => (
-          <div key={i} className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
+          <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
             <Sk className="h-4 w-24 mb-2" />
             <Sk className="h-9 w-full rounded-lg" />
             <div className="grid grid-cols-2 gap-4">
@@ -28,7 +28,7 @@ export default function Loading() {
             </div>
           </div>
         ))}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-between">
           <div className="space-y-1.5">
             <Sk className="h-4 w-36" />
             <Sk className="h-3 w-64" />

@@ -72,25 +72,25 @@ export function ExpensesClient({ expenses, projects }: { expenses: Expense[]; pr
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-semibold text-slate-700">All expenses</h2>
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">All expenses</h2>
         <Button size="sm" onClick={() => setOpen(o => !o)}>
           <Plus className="w-4 h-4" />Add expense
         </Button>
       </div>
 
       {open && (
-        <form onSubmit={addExpense} className="bg-white rounded-xl border border-slate-200 p-5 mb-4 space-y-4">
+        <form onSubmit={addExpense} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 mb-4 space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input label="Description" placeholder="Figma subscription" value={description} onChange={e => setDescription(e.target.value)} autoFocus />
             <Input label="Amount (USD)" type="number" step="0.01" min="0" placeholder="15.00" value={amount} onChange={e => setAmount(e.target.value)} />
             <Input label="Category (optional)" placeholder="Software" value={category} onChange={e => setCategory(e.target.value)} />
             <Input label="Date" type="date" value={date} onChange={e => setDate(e.target.value)} />
             <div className="flex flex-col gap-1.5 sm:col-span-2">
-              <label className="text-sm font-medium text-slate-700">Project (optional)</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-200">Project (optional)</label>
               <select
                 value={projectId}
                 onChange={e => setProjectId(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="">No project</option>
                 {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
@@ -106,15 +106,15 @@ export function ExpensesClient({ expenses, projects }: { expenses: Expense[]; pr
       )}
 
       {!expenses.length ? (
-        <div className="bg-white rounded-xl border border-dashed border-slate-200 p-10 text-center text-sm text-slate-400">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-10 text-center text-sm text-slate-400">
           No expenses logged yet. Track software, contractors, and other costs to see your real take-home.
         </div>
       ) : (
         <div className="space-y-2">
           {expenses.map(ex => (
-            <div key={ex.id} className="flex items-center justify-between bg-white rounded-xl border border-slate-200 px-5 py-3.5 group">
+            <div key={ex.id} className="flex items-center justify-between bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-5 py-3.5 group">
               <div className="min-w-0">
-                <div className="text-sm font-medium text-slate-800 truncate">{ex.description}</div>
+                <div className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate">{ex.description}</div>
                 <div className="text-xs text-slate-400 mt-0.5">
                   {new Date(ex.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   {ex.category ? ` · ${ex.category}` : ''}

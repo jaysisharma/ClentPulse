@@ -9,11 +9,11 @@ import { AppLayout } from '@/components/layout/app-layout'
 function renderInline(text: string): string {
   return text
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`(.+?)`/g, '<code class="bg-slate-100 text-indigo-700 px-1 py-0.5 rounded text-[0.85em] font-mono">$1</code>')
+    .replace(/`(.+?)`/g, '<code class="bg-slate-100 dark:bg-slate-800 text-indigo-700 px-1 py-0.5 rounded text-[0.85em] font-mono">$1</code>')
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-indigo-600 hover:underline">$1</a>')
     .replace(/✅/g, '<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">✅ Done</span>')
     .replace(/🔄/g, '<span class="inline-flex items-center gap-1 text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">🔄 In progress</span>')
-    .replace(/⬜/g, '<span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">⬜ Pending</span>')
+    .replace(/⬜/g, '<span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">⬜ Pending</span>')
     .replace(/📋/g, '📋')
 }
 
@@ -48,32 +48,32 @@ function renderMarkdown(md: string): string {
 
     // HR
     if (/^---+$/.test(trimmed)) {
-      out.push('<hr class="border-slate-200 my-6" />')
+      out.push('<hr class="border-slate-200 dark:border-slate-800 my-6" />')
       continue
     }
 
     // Blockquote
     if (trimmed.startsWith('>')) {
       const content = renderInline(trimmed.slice(1).trim())
-      out.push(`<blockquote class="border-l-4 border-indigo-300 pl-4 text-slate-500 text-sm italic my-3">${content}</blockquote>`)
+      out.push(`<blockquote class="border-l-4 border-indigo-300 pl-4 text-slate-500 dark:text-slate-400 text-sm italic my-3">${content}</blockquote>`)
       continue
     }
 
     // Headings
     if (trimmed.startsWith('#### ')) {
-      out.push(`<h4 class="text-sm font-semibold text-slate-700 mt-4 mb-1">${renderInline(trimmed.slice(5))}</h4>`)
+      out.push(`<h4 class="text-sm font-semibold text-slate-700 dark:text-slate-200 mt-4 mb-1">${renderInline(trimmed.slice(5))}</h4>`)
       continue
     }
     if (trimmed.startsWith('### ')) {
-      out.push(`<h3 class="text-base font-bold text-slate-800 mt-6 mb-2 flex items-center gap-2">${renderInline(trimmed.slice(4))}</h3>`)
+      out.push(`<h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-6 mb-2 flex items-center gap-2">${renderInline(trimmed.slice(4))}</h3>`)
       continue
     }
     if (trimmed.startsWith('## ')) {
-      out.push(`<h2 class="text-xl font-bold text-slate-900 mt-8 mb-3 pb-2 border-b border-slate-200">${renderInline(trimmed.slice(3))}</h2>`)
+      out.push(`<h2 class="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-3 pb-2 border-b border-slate-200 dark:border-slate-800">${renderInline(trimmed.slice(3))}</h2>`)
       continue
     }
     if (trimmed.startsWith('# ')) {
-      out.push(`<h1 class="text-2xl font-bold text-slate-900 mb-1">${renderInline(trimmed.slice(2))}</h1>`)
+      out.push(`<h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">${renderInline(trimmed.slice(2))}</h1>`)
       continue
     }
 
@@ -94,10 +94,10 @@ function renderMarkdown(md: string): string {
 
       const tag = !tableHeader ? 'th' : 'td'
       const rowClass = !tableHeader
-        ? 'bg-slate-50'
-        : 'border-t border-slate-100 hover:bg-slate-50/60'
+        ? 'bg-slate-50 dark:bg-slate-800/40'
+        : 'border-t border-slate-100 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
       const cellClass = !tableHeader
-        ? 'px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider'
+        ? 'px-4 py-2.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider'
         : 'px-4 py-2.5 align-top'
 
       if (!tableHeader) {
@@ -120,12 +120,12 @@ function renderMarkdown(md: string): string {
         inList = true
       }
       const content = renderInline(trimmed.slice(2))
-      out.push(`<li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-slate-300 mt-0.5 flex-shrink-0">–</span><span>${content}</span></li>`)
+      out.push(`<li class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300"><span class="text-slate-300 mt-0.5 flex-shrink-0">–</span><span>${content}</span></li>`)
       continue
     }
 
     // Paragraph
-    out.push(`<p class="text-sm text-slate-600 leading-relaxed">${renderInline(trimmed)}</p>`)
+    out.push(`<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${renderInline(trimmed)}</p>`)
   }
 
   if (inList)  out.push('</ul>')

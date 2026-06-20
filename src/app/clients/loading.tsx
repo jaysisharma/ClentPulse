@@ -22,7 +22,7 @@ export default function Loading() {
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 space-y-2">
+              <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-2">
                 <Sk className="h-8 w-12" />
                 <Sk className="h-4 w-28" />
               </div>
@@ -38,7 +38,7 @@ export default function Loading() {
           {/* Client cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-slate-200 p-5">
+              <div key={i} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5">
                 <div className="flex items-start gap-3.5">
                   <Sk className="w-11 h-11 rounded-xl" />
                   <div className="flex-1 space-y-1.5">
@@ -51,7 +51,7 @@ export default function Loading() {
                   <Sk className="h-3 w-20" />
                   <Sk className="h-3 w-24" />
                 </div>
-                <div className="mt-4 pt-4 border-t border-slate-100 flex gap-2">
+                <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex gap-2">
                   <Sk className="h-7 w-32 rounded-lg" />
                   <Sk className="h-7 w-28 rounded-lg" />
                 </div>

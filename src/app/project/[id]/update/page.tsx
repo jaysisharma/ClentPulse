@@ -136,16 +136,16 @@ Best,`
       <div className="animate-fade-in space-y-6 max-w-6xl">
         
         {/* Back Link */}
-        <Link href={`/project/${id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+        <Link href={`/project/${id}`} className="inline-flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to project details
         </Link>
 
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             {isEditing ? 'Edit status update' : 'Publish status update'}
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             {project ? `${project.project_name} · ` : ''}{currentWeek}
           </p>
         </div>
@@ -154,18 +154,18 @@ Best,`
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
           
           {/* Left Form Column */}
-          <div className="lg:col-span-3 bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
+          <div className="lg:col-span-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm space-y-6">
             
             <div className="space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                <h3 className="text-sm font-semibold text-slate-700">Progress updates</h3>
+              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Progress updates</h3>
               </div>
 
               <p className="text-xs text-slate-400 -mt-1">Add the concrete wins from this week — these become the update your client sees.</p>
 
               <div className="space-y-3">
                 {bullets.map((bullet, i) => (
-                  <div key={i} className="flex gap-3 items-center bg-slate-50 border border-slate-100 p-3 rounded-xl focus-within:bg-white focus-within:border-indigo-200 transition-all">
+                  <div key={i} className="flex gap-3 items-center bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 p-3 rounded-xl focus-within:bg-white dark:bg-slate-900 focus-within:border-indigo-200 transition-all">
                     <span 
                       className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                       style={{ backgroundColor: `${project?.color ?? '#6366F1'}15`, color: project?.color ?? '#6366F1' }}
@@ -173,7 +173,7 @@ Best,`
                       {i + 1}
                     </span>
                     <input
-                      className="flex-grow bg-transparent text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                      className="flex-grow bg-transparent text-sm text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none"
                       placeholder={`State a concrete weekly accomplishment #${i + 1}`}
                       value={bullet}
                       onChange={e => {
@@ -211,7 +211,7 @@ Best,`
               </div>
             </div>
 
-            <div className="space-y-2 pt-4 border-t border-slate-100">
+            <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-slate-800">
               <Textarea
                 label="Client Context Note (Optional)"
                 placeholder="Share any blockers, general context, next steps, or warm messages for the client..."
@@ -251,28 +251,28 @@ Best,`
           <div className="lg:col-span-2 sticky top-8 space-y-4">
             
             <div className="flex items-center justify-between px-1">
-              <span className="text-xs font-semibold text-slate-500">Email preview</span>
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Email preview</span>
               <span className="text-[11px] text-indigo-600 font-medium bg-indigo-50 px-2 py-0.5 rounded flex items-center gap-1">
                 <Eye className="w-3 h-3" /> Live
               </span>
             </div>
 
             {/* Email Card Preview Mockup */}
-            <div className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
               
               {/* Fake Email Meta Info Bar */}
-              <div className="bg-white border-b border-slate-200 px-4 py-3 text-xs text-slate-500 space-y-1">
+              <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 text-xs text-slate-500 dark:text-slate-400 space-y-1">
                 <div><span className="font-semibold text-slate-400">To:</span> {project?.client_name || 'Client'}</div>
                 <div>
                   <span className="font-semibold text-slate-400">Subject:</span>{' '}
-                  <span className="font-medium text-slate-800">
+                  <span className="font-medium text-slate-800 dark:text-slate-100">
                     {project?.project_name || 'Project'} Update — {currentWeek}
                   </span>
                 </div>
               </div>
 
               {/* Email Content Frame */}
-              <div className="p-6 bg-white space-y-5">
+              <div className="p-6 bg-white dark:bg-slate-900 space-y-5">
                 {/* Header Banner */}
                 <div 
                   className="rounded-xl px-5 py-4 text-white space-y-1 shadow-sm"
@@ -283,7 +283,7 @@ Best,`
                 </div>
 
                 {/* Email Body */}
-                <div className="text-sm text-slate-600 space-y-4 leading-relaxed">
+                <div className="text-sm text-slate-600 dark:text-slate-300 space-y-4 leading-relaxed">
                   <p className="font-medium">Hi {project?.client_name || 'Client Name'},</p>
                   <p>Here&apos;s a breakdown of the achievements we shipped on **{project?.project_name || 'your project'}** this week:</p>
                   
@@ -297,7 +297,7 @@ Best,`
                         >
                           ✓
                         </span>
-                        <span className={`text-xs ${bullet.trim() ? 'text-slate-700 font-medium' : 'text-slate-300 italic'}`}>
+                        <span className={`text-xs ${bullet.trim() ? 'text-slate-700 dark:text-slate-200 font-medium' : 'text-slate-300 italic'}`}>
                           {bullet.trim() || `Milestone accomplishment #${i + 1}`}
                         </span>
                       </div>
@@ -306,7 +306,7 @@ Best,`
 
                   {/* Context Note */}
                   {note.trim() && (
-                    <div className="border-l-4 border-slate-200 bg-slate-50 rounded-r-xl px-4 py-3 text-xs italic text-slate-500 mt-4 leading-relaxed">
+                    <div className="border-l-4 border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 rounded-r-xl px-4 py-3 text-xs italic text-slate-500 dark:text-slate-400 mt-4 leading-relaxed">
                       {note}
                     </div>
                   )}
@@ -326,9 +326,9 @@ Best,`
 
             {/* Raw Plain-Text Box (Toggle/Accordian styling) */}
             {hasContent && (
-              <div className="bg-white rounded-xl border border-slate-200 p-4 space-y-3 shadow-sm">
+              <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-3 shadow-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 flex items-center gap-1.5">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <Mail className="w-3.5 h-3.5" /> Plain text
                   </span>
                   <button
@@ -344,7 +344,7 @@ Best,`
                     {copied ? 'Copied' : 'Copy Text'}
                   </button>
                 </div>
-                <pre className="text-[10px] text-slate-500 bg-slate-50 border border-slate-100 rounded-xl p-3.5 whitespace-pre-wrap font-mono leading-relaxed max-h-48 overflow-y-auto">
+                <pre className="text-[10px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 rounded-xl p-3.5 whitespace-pre-wrap font-mono leading-relaxed max-h-48 overflow-y-auto">
                   {generateEmailText()}
                 </pre>
               </div>

@@ -334,14 +334,14 @@ export default function NewDocPage() {
   return (
     <AppLayout>
       <div className="max-w-2xl animate-fade-in">
-        <Link href="/docs" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6 transition-colors">
+        <Link href="/docs" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" />Back to documents
         </Link>
 
         {step === 'type' ? (
           <>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">New document</h1>
-            <p className="text-slate-500 text-sm mb-8">Choose a template to get started — all pre-filled with professional copy.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">New document</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Choose a template to get started — all pre-filled with professional copy.</p>
             <div className="space-y-3">
               {DOC_TYPES.map(({ type, label, desc, icon: Icon, color, border }) => (
                 <button
@@ -349,12 +349,12 @@ export default function NewDocPage() {
                   onClick={() => selectType(type)}
                   className={`w-full flex items-center gap-5 rounded-2xl border ${border} ${color} p-5 text-left hover:shadow-md transition-all group`}
                 >
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <Icon className="w-5 h-5 text-slate-600" />
+                  <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <Icon className="w-5 h-5 text-slate-600 dark:text-slate-300" />
                   </div>
                   <div className="flex-1">
-                    <div className="font-semibold text-slate-900 mb-0.5">{label}</div>
-                    <div className="text-sm text-slate-500">{desc}</div>
+                    <div className="font-semibold text-slate-900 dark:text-white mb-0.5">{label}</div>
+                    <div className="text-sm text-slate-500 dark:text-slate-400">{desc}</div>
                   </div>
                   <ArrowLeft className="w-4 h-4 text-slate-300 rotate-180 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -363,7 +363,7 @@ export default function NewDocPage() {
           </>
         ) : (
           <>
-            <button onClick={() => setStep('type')} className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 mb-6 transition-colors">
+            <button onClick={() => setStep('type')} className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" />Change type
             </button>
             <div className="flex items-center gap-2 mb-1">
@@ -371,19 +371,19 @@ export default function NewDocPage() {
                 {DOC_TYPES.find(d => d.type === docType)?.label}
               </span>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-8">Document details</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">Document details</h1>
 
             <div className="space-y-5">
               {/* Meta */}
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-4">
-                <h2 className="text-sm font-semibold text-slate-900">Details</h2>
+              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
+                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Details</h2>
                 <Input label="Document title" placeholder={`e.g. Supabase Integration Proposal — Acme Corp`} value={title} onChange={e => setTitle(e.target.value)} required />
                 <div>
-                  <label className="text-sm font-medium text-slate-700 block mb-1.5">Link to project (optional)</label>
+                  <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Link to project (optional)</label>
                   <select
                     value={projectId}
                     onChange={e => handleProjectChange(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >
                     <option value="">— No project —</option>
                     {projects.map(p => <option key={p.id} value={p.id}>{p.project_name} ({p.client_name})</option>)}
@@ -399,13 +399,13 @@ export default function NewDocPage() {
               </div>
 
               {/* Content editor */}
-              <div className="bg-white rounded-2xl border border-slate-200 p-6">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-sm font-semibold text-slate-900">Content</h2>
+                  <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Content</h2>
                   <span className="text-xs text-slate-400">Edit the template to match your project</span>
                 </div>
                 <textarea
-                  className="w-full px-4 py-3 text-sm border border-slate-200 rounded-xl bg-slate-50 text-slate-800 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors resize-none"
+                  className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors resize-none"
                   rows={28}
                   value={content}
                   onChange={e => setContent(e.target.value)}

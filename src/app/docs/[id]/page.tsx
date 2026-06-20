@@ -21,7 +21,7 @@ interface Doc {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  draft:    'bg-slate-100 text-slate-600',
+  draft:    'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300',
   sent:     'bg-blue-50 text-blue-700',
   accepted: 'bg-emerald-50 text-emerald-700',
   signed:   'bg-emerald-50 text-emerald-700',
@@ -110,7 +110,7 @@ export default function DocDetailPage() {
 
         {/* Back + actions */}
         <div className="flex items-center justify-between mb-6 print:hidden">
-          <Link href="/docs" className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+          <Link href="/docs" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 transition-colors">
             <ArrowLeft className="w-4 h-4" />Documents
           </Link>
           <div className="flex items-center gap-2">
@@ -164,24 +164,24 @@ export default function DocDetailPage() {
               )}
             </div>
             {doc.response_note && (
-              <p className="text-sm text-slate-600 mt-2 ml-6">&quot;{doc.response_note}&quot;</p>
+              <p className="text-sm text-slate-600 dark:text-slate-300 mt-2 ml-6">&quot;{doc.response_note}&quot;</p>
             )}
           </div>
         )}
 
         {/* Document card */}
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
           {/* Doc header */}
-          <div className="px-8 py-7 border-b border-slate-100">
+          <div className="px-8 py-7 border-b border-slate-100 dark:border-slate-800">
             {editing ? (
               <input
-                className="w-full text-2xl font-bold text-slate-900 bg-transparent border-b-2 border-indigo-400 focus:outline-none pb-1 mb-3"
+                className="w-full text-2xl font-bold text-slate-900 dark:text-white bg-transparent border-b-2 border-indigo-400 focus:outline-none pb-1 mb-3"
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 autoFocus
               />
             ) : (
-              <h1 className="text-2xl font-bold text-slate-900 mb-3">{doc.title}</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">{doc.title}</h1>
             )}
             <div className="flex flex-wrap items-center gap-3">
               <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
@@ -191,12 +191,12 @@ export default function DocDetailPage() {
                 {doc.status}
               </span>
               {doc.amount && (
-                <span className="text-sm font-semibold text-slate-700">
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                   ${doc.amount.toLocaleString()}
                 </span>
               )}
               {doc.client_name && (
-                <span className="text-sm text-slate-500">· {doc.client_name}</span>
+                <span className="text-sm text-slate-500 dark:text-slate-400">· {doc.client_name}</span>
               )}
             </div>
           </div>
@@ -206,7 +206,7 @@ export default function DocDetailPage() {
             {editing ? (
               <>
                 <textarea
-                  className="w-full text-sm font-mono leading-relaxed border border-slate-200 rounded-xl bg-slate-50 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors resize-none"
+                  className="w-full text-sm font-mono leading-relaxed border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:bg-slate-900 transition-colors resize-none"
                   rows={32}
                   value={content}
                   onChange={e => setContent(e.target.value)}
@@ -222,7 +222,7 @@ export default function DocDetailPage() {
                 </div>
               </>
             ) : (
-              <pre className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed font-sans">
+              <pre className="text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap leading-relaxed font-sans">
                 {doc.content}
               </pre>
             )}

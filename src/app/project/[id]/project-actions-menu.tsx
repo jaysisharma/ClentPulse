@@ -37,7 +37,7 @@ export function ProjectActionsMenu({ projectId }: { projectId: string }) {
         aria-haspopup="menu"
         aria-expanded={open}
         className={`p-2 rounded-lg border transition-colors cursor-pointer ${
-          open ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-white border-slate-200 text-slate-500 hover:text-slate-800 hover:border-slate-300'
+          open ? 'bg-slate-100 dark:bg-slate-800 border-slate-300 text-slate-700 dark:text-slate-200' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 hover:border-slate-300'
         }`}
         title="More actions"
       >
@@ -47,7 +47,7 @@ export function ProjectActionsMenu({ projectId }: { projectId: string }) {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-1.5 w-44 rounded-xl bg-white border border-slate-200 shadow-lg py-1 z-20 animate-fade-in"
+          className="absolute right-0 mt-1.5 w-44 rounded-xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 shadow-lg py-1 z-20 animate-fade-in"
         >
           {items.map(({ href, label, icon: Icon }) => (
             <Link
@@ -55,7 +55,7 @@ export function ProjectActionsMenu({ projectId }: { projectId: string }) {
               href={href}
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-2.5 px-3.5 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
             >
               <Icon className="w-4 h-4 text-slate-400" />
               {label}

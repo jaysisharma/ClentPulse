@@ -59,8 +59,8 @@ export default async function ClientsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Clients</h1>
-            <p className="text-slate-500 text-sm mt-1.5">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Clients</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5">
               {totalClients > 0
                 ? `${totalClients} client${totalClients !== 1 ? 's' : ''} across your projects.`
                 : 'All clients across your projects.'}
@@ -73,12 +73,12 @@ export default async function ClientsPage() {
 
         {clients.length === 0 ? (
           /* Empty state */
-          <div className="rounded-2xl bg-white border border-slate-200 p-14 text-center">
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="rounded-2xl bg-white dark:bg-slate-900 dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 p-14 text-center">
+            <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-4">
               <Users className="w-6 h-6 text-slate-400" />
             </div>
-            <h3 className="font-semibold text-slate-900 mb-2">No clients yet</h3>
-            <p className="text-slate-500 text-sm mb-5">Create a project and add a client to get started.</p>
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">No clients yet</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">Create a project and add a client to get started.</p>
             <Link href="/project/new" className="inline-block">
               <Button><Plus className="w-4 h-4" />New project</Button>
             </Link>

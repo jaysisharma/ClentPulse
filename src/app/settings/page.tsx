@@ -119,8 +119,8 @@ export default function SettingsPage() {
   return (
     <AppLayout>
       <div className="max-w-xl animate-fade-in">
-        <h1 className="text-2xl font-bold text-slate-900 mb-1">Settings</h1>
-        <p className="text-slate-500 text-sm mb-8">Manage your profile and billing.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Settings</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Manage your profile and billing.</p>
 
         {/* Upgrade success */}
         {justUpgraded && (
@@ -136,7 +136,7 @@ export default function SettingsPage() {
         {/* Profile */}
         <Card className="mb-6">
           <CardHeader>
-            <h2 className="font-semibold text-slate-900">Profile</h2>
+            <h2 className="font-semibold text-slate-900 dark:text-white">Profile</h2>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSave} className="space-y-4">
@@ -174,14 +174,14 @@ export default function SettingsPage() {
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-slate-900">Branding</h2>
+              <h2 className="font-semibold text-slate-900 dark:text-white">Branding</h2>
               {plan !== 'pro' && <Badge variant="free">Pro feature</Badge>}
             </div>
           </CardHeader>
           <CardContent className={plan !== 'pro' ? 'opacity-50 pointer-events-none' : ''}>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium text-slate-700 block mb-2">Accent color</label>
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-2">Accent color</label>
                 <div className="flex gap-2 flex-wrap">
                   {ACCENT_COLORS.map(c => (
                     <button
@@ -199,8 +199,8 @@ export default function SettingsPage() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium text-slate-700 block mb-2">Logo</label>
-                <label className="flex items-center gap-3 border-2 border-dashed border-slate-200 rounded-xl p-4 text-sm text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors w-full cursor-pointer">
+                <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-2">Logo</label>
+                <label className="flex items-center gap-3 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-4 text-sm text-slate-400 hover:border-slate-300 hover:text-slate-500 transition-colors w-full cursor-pointer">
                   {logoUrl ? (
                     <img src={logoUrl} alt="Logo" className="h-8 w-auto object-contain rounded" />
                   ) : (
@@ -229,16 +229,16 @@ export default function SettingsPage() {
         {/* Billing */}
         <Card id="billing">
           <CardHeader>
-            <h2 className="font-semibold text-slate-900">Billing</h2>
+            <h2 className="font-semibold text-slate-900 dark:text-white">Billing</h2>
           </CardHeader>
           <CardContent>
             <div className="flex items-center justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium text-slate-900">Current plan</span>
+                  <span className="font-medium text-slate-900 dark:text-white">Current plan</span>
                   <Badge variant={plan}>{plan === 'pro' ? 'Pro' : 'Free'}</Badge>
                 </div>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-500 dark:text-slate-400">
                   {plan === 'pro' ? PLAN_BLURB.pro : PLAN_BLURB.free}
                 </p>
               </div>

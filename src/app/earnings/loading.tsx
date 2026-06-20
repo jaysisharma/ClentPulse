@@ -17,14 +17,14 @@ export default function Loading() {
         </div>
         <div className="grid grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 space-y-2">
+            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-2">
               <Sk className="h-7 w-28" />
               <Sk className="h-4 w-24" />
               <Sk className="h-3 w-20" />
             </div>
           ))}
         </div>
-        <div className="bg-white rounded-xl border border-slate-200 p-6">
+        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">
           <div className="flex items-center gap-2 mb-6">
             <Sk className="h-4 w-4 rounded" />
             <Sk className="h-4 w-56" />

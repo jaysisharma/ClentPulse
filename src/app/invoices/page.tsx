@@ -31,8 +31,8 @@ export default async function InvoicesPage() {
       <div className="animate-fade-in">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Invoices</h1>
-            <p className="text-slate-500 text-sm mt-1">Create and track client invoices.</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Invoices</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Create and track client invoices.</p>
           </div>
           <Link href="/invoices/new">
             <Button><Plus className="w-4 h-4" />New invoice</Button>
@@ -40,12 +40,12 @@ export default async function InvoicesPage() {
         </div>
 
         {!invoices?.length ? (
-          <div className="bg-white rounded-xl border border-dashed border-slate-200 p-16 text-center">
-            <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-16 text-center">
+            <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-4">
               <FileText className="w-6 h-6 text-slate-400" />
             </div>
-            <h3 className="font-semibold text-slate-900 mb-2">No invoices yet</h3>
-            <p className="text-slate-500 text-sm mb-5">Create your first invoice to start billing clients.</p>
+            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">No invoices yet</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">Create your first invoice to start billing clients.</p>
             <Link href="/invoices/new"><Button><Plus className="w-4 h-4" />Create invoice</Button></Link>
           </div>
         ) : (
@@ -57,9 +57,9 @@ export default async function InvoicesPage() {
                 { label: 'Paid',           value: formatCurrency((invoices ?? []).filter(i => i.status === 'paid').flatMap(i => i.items ?? [])) },
                 { label: 'Unpaid',         value: formatCurrency((invoices ?? []).filter(i => i.status === 'sent').flatMap(i => i.items ?? [])) },
               ].map(({ label, value }) => (
-                <div key={label} className="bg-white rounded-xl border border-slate-200 p-5">
-                  <div className="text-2xl font-bold text-slate-900">{value}</div>
-                  <div className="text-sm text-slate-500 mt-1">{label}</div>
+                <div key={label} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white">{value}</div>
+                  <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">{label}</div>
                 </div>
               ))}
             </div>
