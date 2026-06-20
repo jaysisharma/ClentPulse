@@ -16,6 +16,10 @@ function emptyItem(): LineItem {
   return { description: '', quantity: 1, rate: 0, amount: 0 }
 }
 
+function fmt$(n: number) {
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
+}
+
 export default function EditInvoicePage() {
   const router = useRouter()
   const { id } = useParams<{ id: string }>()
@@ -30,6 +34,24 @@ export default function EditInvoicePage() {
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
   const [error, setError] = useState('')
+  const [budget, setBudget] = useState<number | null>(null)
+  const [invoicedSoFar, setInvoicedSoFar] = useState(0)
+
+  // Load the project's budget and what's already invoiced against it,
+  // EXCLUDING this invoice (we're editing it, so it shouldn't count twice).
+  async function loadBudget(pid: string) {
+    if (!pid) { setBudget(null); setInvoicedSoFar(0); return }
+    const supabase = createClient()
+    const { data: proj } = await supabase.from('projects').select('budget').eq('id', pid).single()
+    const b = proj?.budget ? parseFloat(proj.budget) : 0
+    setBudget(b > 0 ? b : null)
+    const { data: existing } = await supabase.from('invoices').select('items, status').eq('project_id', pid).neq('id', id)
+    const already = (existing ?? [])
+      .filter((inv: any) => inv.status !== 'canceled')
+      .flatMap((inv: any) => inv.items ?? [])
+      .reduce((s: number, it: any) => s + (it.amount ?? 0), 0)
+    setInvoicedSoFar(already)
+  }
 
   useEffect(() => {
     const supabase = createClient()
@@ -49,6 +71,7 @@ export default function EditInvoicePage() {
           setDueDate(inv.due_date ? inv.due_date.slice(0, 10) : '')
           setItems(inv.items?.length ? inv.items : [emptyItem()])
           setNotes(inv.notes ?? '')
+          loadBudget(inv.project_id ?? '')
         }
         setFetching(false)
       })
@@ -59,6 +82,7 @@ export default function EditInvoicePage() {
     setProjectId(pid)
     const p = projects.find(p => p.id === pid)
     if (p) { setClientName(p.client_name); setClientEmail(p.client_email ?? '') }
+    loadBudget(pid)
   }
 
   function updateItem(i: number, field: keyof LineItem, value: string | number) {
@@ -71,8 +95,14 @@ export default function EditInvoicePage() {
   }
 
   const total = items.reduce((s, i) => s + (i.amount || 0), 0)
+  const remaining = budget != null ? budget - invoicedSoFar : null
+  const overBudget = remaining != null && total > remaining
 
   async function handleSave() {
+    if (overBudget) {
+      setError(`This invoice exceeds the project budget. Only ${fmt$(Math.max(remaining!, 0))} of the ${fmt$(budget!)} budget remains. Raise the project budget or lower the invoice amount.`)
+      return
+    }
     setLoading(true)
     setError('')
     const supabase = createClient()
@@ -90,7 +120,7 @@ export default function EditInvoicePage() {
     router.push(`/invoices/${id}`)
   }
 
-  const valid = clientName.trim() && invoiceNumber.trim() && items.some(i => i.description.trim())
+  const valid = clientName.trim() && invoiceNumber.trim() && items.some(i => i.description.trim()) && !overBudget
 
   if (fetching) return <AppLayout><div className="text-slate-400 text-sm">Loading…</div></AppLayout>
 
@@ -184,9 +214,22 @@ export default function EditInvoicePage() {
             <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end">
               <div className="text-right">
                 <div className="text-sm text-slate-500 dark:text-slate-400">Total</div>
-                <div className="text-2xl font-bold text-slate-900 dark:text-white">${total.toFixed(2)}</div>
+                <div className={`text-2xl font-bold ${overBudget ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>${total.toFixed(2)}</div>
               </div>
             </div>
+
+            {budget != null && (
+              <div className={`mt-4 rounded-lg border px-3.5 py-2.5 text-xs ${overBudget
+                ? 'border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300'
+                : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300'}`}>
+                <div className="flex items-center justify-between"><span>Project budget</span><span className="font-semibold tabular-nums">{fmt$(budget)}</span></div>
+                <div className="flex items-center justify-between mt-1"><span>Already invoiced (excl. this)</span><span className="font-semibold tabular-nums">{fmt$(invoicedSoFar)}</span></div>
+                <div className="flex items-center justify-between mt-1"><span>Remaining</span><span className="font-semibold tabular-nums">{fmt$(Math.max(remaining ?? 0, 0))}</span></div>
+                {overBudget && (
+                  <div className="mt-2 font-semibold">This invoice is {fmt$(total - (remaining ?? 0))} over budget. Lower the amount or raise the project budget.</div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6">

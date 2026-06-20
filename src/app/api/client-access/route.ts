@@ -43,6 +43,19 @@ export async function POST(request: Request) {
     .maybeSingle()
 
   if (existing) {
+    // Guard against account takeover: only (re)set a portal password for an
+    // account that is ALREADY a client. If this email belongs to a freelancer
+    // (or any non-client account), refuse — otherwise we'd overwrite their
+    // password and demote them to a client, locking them out of their own work.
+    const { data: existingAuth } = await admin.auth.admin.getUserById(existing.id)
+    const role = existingAuth?.user?.user_metadata?.role as string | undefined
+    if (role !== 'client') {
+      return NextResponse.json(
+        { error: 'That email already belongs to a Frevio account. Use a different email for this client.' },
+        { status: 409 },
+      )
+    }
+
     const { error } = await admin.auth.admin.updateUserById(existing.id, {
       password,
       user_metadata: { role: 'client' },
