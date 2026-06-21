@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { checkAndSyncPromoPlan } from '@/lib/plans'
 import { NextResponse } from 'next/server'
 
 function generateSlug(name: string): string {
@@ -24,8 +25,9 @@ export async function POST(request: Request) {
   if (!source) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
   // Free plan check
-  const { data: profile } = await supabase.from('users').select('plan').eq('id', user.id).single()
-  if (profile?.plan !== 'pro') {
+  const { data: profile } = await supabase.from('users').select('id, plan, promo_pro, created_at').eq('id', user.id).single()
+  const syncedPlan = await checkAndSyncPromoPlan(profile, supabase)
+  if (syncedPlan !== 'pro') {
     const { count } = await supabase
       .from('projects')
       .select('id', { count: 'exact', head: true })

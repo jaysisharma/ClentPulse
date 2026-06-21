@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { checkAndSyncPromoPlan } from '@/lib/plans'
 import { redirect } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
 import { Button } from '@/components/ui/button'
@@ -103,7 +104,7 @@ export default async function DashboardPage() {
       .select('id, project_name, client_name, color, status, created_at, updates(id, sent_at), approvals(id, title, status), contracts(id, title, signed_at)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false }),
-    supabase.from('users').select('name, plan').eq('id', user.id).single(),
+    supabase.from('users').select('id, name, plan, promo_pro, created_at').eq('id', user.id).single(),
     supabase.from('invoices').select('id, invoice_number, client_name, status, items, due_date, created_at, paid_at').eq('user_id', user.id).order('created_at', { ascending: false }),
     supabase.from('time_entries').select('hours').eq('user_id', user.id).gte('date', weekStart),
     supabase.from('time_entries').select('hours').eq('user_id', user.id).gte('date', lastWeekStart).lt('date', weekStart),
@@ -118,6 +119,7 @@ export default async function DashboardPage() {
 
   const projects          = projectsRes.data
   const profile           = profileRes.data
+  const plan              = await checkAndSyncPromoPlan(profile, supabase)
   const invoices          = invoicesRes.data
   const timeEntries       = timeRes.data
   const lastWeekEntries   = lastWeekRes.data
@@ -137,7 +139,7 @@ export default async function DashboardPage() {
   // Currently-running timer (if any) for the right-rail "Active timer" card.
   const runningTimer = timerRes.data as { description: string | null; project_id: string | null; started_at: string } | null
   const timerProject = runningTimer?.project_id ? allProjects.find(p => p.id === runningTimer.project_id) : null
-  const isFree = profile?.plan !== 'pro'
+  const isFree = plan !== 'pro'
 
   const sumItems = (inv: { items: { amount: number }[] }[]) =>
     inv.flatMap(i => i.items ?? []).reduce((s, item) => s + (item.amount ?? 0), 0)
@@ -224,7 +226,7 @@ export default async function DashboardPage() {
   }))
 
   return (
-    <AppLayout user={profile ? { name: profile.name ?? null, plan: profile.plan as 'free' | 'pro' } : undefined}>
+    <AppLayout user={profile ? { name: profile.name ?? null, plan: plan as 'free' | 'pro' } : undefined}>
       <DarkShell>
         <div className="relative z-10 space-y-8 pb-10">
           <UpgradeToast />

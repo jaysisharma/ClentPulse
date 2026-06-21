@@ -7,10 +7,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, Clock } from 'lucide-react'
 
 interface LineItem { description: string; quantity: number; rate: number; amount: number }
-interface Project { id: string; project_name: string; client_name: string; client_email: string | null; budget: string | null }
+interface Project { id: string; project_name: string; client_name: string; client_email: string | null; budget: string | null; hourly_rate: number | null }
 
 function emptyItem(): LineItem {
   return { description: '', quantity: 1, rate: 0, amount: 0 }
@@ -35,13 +35,15 @@ export default function NewInvoicePage() {
   // Budget context for the linked project (null = no budget set, so no cap).
   const [budget, setBudget] = useState<number | null>(null)
   const [invoicedSoFar, setInvoicedSoFar] = useState(0)
+  const [unbilledEntries, setUnbilledEntries] = useState<any[]>([])
+  const [importedEntryIds, setImportedEntryIds] = useState<string[]>([])
 
   useEffect(() => {
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }: { data: any }) => {
       const user = data?.user
       if (!user) return
-      supabase.from('projects').select('id,project_name,client_name,client_email,budget').eq('user_id', user.id).eq('status', 'active')
+      supabase.from('projects').select('id,project_name,client_name,client_email,budget,hourly_rate').eq('user_id', user.id).eq('status', 'active')
         .then(({ data }: { data: any }) => setProjects(data ?? []))
       const year = new Date().getFullYear()
       const rand = Math.random().toString(36).slice(2, 5).toUpperCase()
@@ -52,7 +54,7 @@ export default function NewInvoicePage() {
   async function handleProjectChange(id: string) {
     setProjectId(id)
     const p = projects.find(p => p.id === id)
-    if (!p) { setBudget(null); setInvoicedSoFar(0); return }
+    if (!p) { setBudget(null); setInvoicedSoFar(0); setUnbilledEntries([]); setImportedEntryIds([]); return }
     setClientName(p.client_name)
     setClientEmail(p.client_email ?? '')
 
@@ -70,6 +72,34 @@ export default function NewInvoicePage() {
       .flatMap((inv: any) => inv.items ?? [])
       .reduce((s: number, it: any) => s + (it.amount ?? 0), 0)
     setInvoicedSoFar(already)
+
+    // Fetch unbilled time entries
+    const { data: unbilled } = await supabase
+      .from('time_entries')
+      .select('id, description, hours, date')
+      .eq('project_id', id)
+      .eq('invoiced', false)
+    setUnbilledEntries(unbilled ?? [])
+  }
+
+  function importTimeEntries() {
+    const p = projects.find(p => p.id === projectId)
+    if (!p) return
+    const rate = p.hourly_rate ? Number(p.hourly_rate) : 0
+    const newItems = unbilledEntries.map(e => ({
+      description: `${e.date}: ${e.description}`,
+      quantity: e.hours,
+      rate,
+      amount: e.hours * rate
+    }))
+
+    if (items.length === 1 && !items[0].description.trim() && items[0].rate === 0) {
+      setItems(newItems)
+    } else {
+      setItems([...items, ...newItems])
+    }
+    setImportedEntryIds(unbilledEntries.map(e => e.id))
+    setUnbilledEntries([])
   }
 
   function updateItem(i: number, field: keyof LineItem, value: string | number) {
@@ -109,6 +139,18 @@ export default function NewInvoicePage() {
     }).select().single()
 
     if (err) { setError(err.message); setLoading(false); return }
+
+    // If we imported time entries, mark them as invoiced in the DB
+    if (importedEntryIds.length > 0) {
+      const { error: timeUpdateErr } = await supabase
+        .from('time_entries')
+        .update({ invoiced: true, invoice_id: data.id })
+        .in('id', importedEntryIds)
+      if (timeUpdateErr) {
+        console.error('Failed to mark time entries as invoiced:', timeUpdateErr)
+      }
+    }
+
     router.push(`/invoices/${data.id}`)
   }
 
@@ -143,6 +185,24 @@ export default function NewInvoicePage() {
                 {projects.map(p => <option key={p.id} value={p.id}>{p.project_name} ({p.client_name})</option>)}
               </select>
             </div>
+
+            {unbilledEntries.length > 0 && (
+              <div className="flex items-center justify-between p-3.5 bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 rounded-xl text-xs text-indigo-700 dark:text-indigo-300 font-sans mt-2 animate-fade-in">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-indigo-500" />
+                  <span>
+                    Found <strong>{unbilledEntries.length}</strong> unbilled time logs ({unbilledEntries.reduce((s, e) => s + e.hours, 0).toFixed(2)} hours).
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={importTimeEntries}
+                  className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold transition-colors cursor-pointer"
+                >
+                  Import logs
+                </button>
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <Input label="Client name" value={clientName} onChange={e => setClientName(e.target.value)} required />

@@ -1,8 +1,10 @@
 import fs from 'fs'
 import path from 'path'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
+import { RoadmapClient } from './roadmap-client'
 
 // ── Tiny markdown renderer (handles only what FEATURES.md uses) ───────────────
 
@@ -141,17 +143,37 @@ export default async function RoadmapPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
+  const adminClient = createAdminClient()
+
+  // 1. Fetch live feature requests from freelancer_feedback
+  const { data: feedbackData, error: feedbackError } = await adminClient
+    .from('freelancer_feedback')
+    .select('id, subject, comment, rating, votes, status, created_at')
+    .eq('category', 'feature_request')
+    .order('votes', { ascending: false })
+
+  if (feedbackError) {
+    console.error('[Roadmap Page] Fetch Feedback error:', feedbackError)
+  }
+
+  const suggestions = (feedbackData || []).map(item => ({
+    id: item.id,
+    subject: item.subject || 'Feature Suggestion',
+    comment: item.comment,
+    rating: item.rating,
+    votes: item.votes || 1,
+    status: item.status as any,
+    created_at: item.created_at,
+  }))
+
   const filePath = path.join(process.cwd(), 'FEATURES.md')
   const raw = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf-8') : '# FEATURES.md not found'
   const html = renderMarkdown(raw)
 
   return (
     <AppLayout>
-      <div className="max-w-4xl animate-fade-in">
-        <div
-          className="prose-like"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+      <div className="animate-fade-in">
+        <RoadmapClient htmlSpecs={html} initialSuggestions={suggestions} />
       </div>
     </AppLayout>
   )

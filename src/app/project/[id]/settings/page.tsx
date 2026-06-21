@@ -23,6 +23,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [clientEmail, setClientEmail] = useState('')
   const [budget, setBudget] = useState('')
   const [hourlyRate, setHourlyRate] = useState('')
+  const [passcode, setPasscode] = useState('')
   const [hideMilestones, setHideMilestones] = useState(false)
   const [hideClientAccess, setHideClientAccess] = useState(false)
   const [hideKickoff, setHideKickoff] = useState(false)
@@ -63,6 +64,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       setHideClientAccess(data.hide_client_access ?? false)
       setHideKickoff(data.hide_kickoff ?? false)
       setHideApprovals(data.hide_approvals ?? false)
+      setPasscode(data.passcode ?? '')
     })
   }, [id])
 
@@ -84,6 +86,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
         hide_client_access: hideClientAccess,
         hide_kickoff: hideKickoff,
         hide_approvals: hideApprovals,
+        passcode: passcode || null,
       })
       .eq('id', id)
     if (err) { setError(err.message); setLoading(false); return }
@@ -246,6 +249,18 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                   onChange={e => setClientEmail(e.target.value)}
                   placeholder="client@example.com"
                 />
+              </div>
+              <div>
+                <Input
+                  label="Status Page Passcode (optional)"
+                  type="text"
+                  value={passcode}
+                  onChange={e => setPasscode(e.target.value)}
+                  placeholder="e.g. secret-access-code"
+                />
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-normal">
+                  If set, anyone visiting the public status page must enter this passcode before they can view project details.
+                </p>
               </div>
             </div>
             {/* Visibility Settings */}

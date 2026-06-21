@@ -4,7 +4,7 @@ import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 function esc(str: string | null | undefined): string {
@@ -34,6 +34,21 @@ export async function POST(request: Request) {
   // matches 0 rows here (RLS requires auth.uid() = id, which is null for webhooks).
   const supabase = createAdminClient()
 
+  // Webhook event idempotency guard
+  const { error: idempotencyError } = await supabase
+    .from('processed_stripe_events')
+    .insert({ event_id: event.id })
+
+  if (idempotencyError) {
+    // Unique violation error code (23505) in postgres/postgrest means this event was already processed
+    if (idempotencyError.code === '23505') {
+      console.log(`Stripe Webhook event already processed: ${event.id}`)
+      return NextResponse.json({ received: true, duplicate: true })
+    }
+    console.error('Failed to register webhook event idempotency:', idempotencyError)
+    return NextResponse.json({ error: 'Failed to verify event idempotency' }, { status: 500 })
+  }
+
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
 
@@ -51,14 +66,31 @@ export async function POST(request: Request) {
       }
     } else {
       const customerId = session.customer as string
-      // Clearing promo_pro converts a free-launch "promo Pro" into real paid Pro.
-      const { error } = await supabase
-        .from('users')
-        .update({ plan: 'pro', promo_pro: false })
-        .eq('stripe_customer_id', customerId)
-      if (error) {
-        console.error('Failed to update user plan on checkout:', error)
-        return NextResponse.json({ error: error.message }, { status: 500 })
+      const userId = session.client_reference_id || session.metadata?.supabase_user_id
+
+      let userUpdated = false
+      if (userId) {
+        // If we have user ID, update their plan, clear promo_pro, and backfill customer ID
+        const { data, error } = await supabase
+          .from('users')
+          .update({ plan: 'pro', promo_pro: false, stripe_customer_id: customerId })
+          .eq('id', userId)
+          .select()
+        if (!error && (data ?? []).length > 0) {
+          userUpdated = true
+        }
+      }
+
+      if (!userUpdated) {
+        // Fallback: match by stripe_customer_id
+        const { error } = await supabase
+          .from('users')
+          .update({ plan: 'pro', promo_pro: false })
+          .eq('stripe_customer_id', customerId)
+        if (error) {
+          console.error('Failed to update user plan on checkout:', error)
+          return NextResponse.json({ error: error.message }, { status: 500 })
+        }
       }
     }
   }

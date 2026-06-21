@@ -13,6 +13,8 @@
 // Features NOT listed under Pro are available on Free. Don't market a feature as
 // Pro unless it is actually gated in code (see the enforcement points below).
 
+import { SupabaseClient } from '@supabase/supabase-js'
+
 export const FREE_PROJECT_LIMIT = 3
 
 export const PRICING = {
@@ -57,3 +59,19 @@ export const PLAN_BLURB = {
   free: 'Up to 3 projects, invoicing, and a public client status page.',
   pro: 'Unlimited projects, automated emails, and custom branding.',
 } as const
+
+export async function checkAndSyncPromoPlan(
+  user: { plan: string; promo_pro?: boolean; created_at?: string; id: string } | null,
+  supabase: SupabaseClient
+): Promise<string> {
+  if (!user) return 'free'
+  if (user.plan === 'pro' && user.promo_pro && user.created_at) {
+    const isExpired = new Date(user.created_at).getTime() < Date.now() - 30 * 24 * 60 * 60 * 1000
+    if (isExpired) {
+      await supabase.from('users').update({ plan: 'free', promo_pro: false }).eq('id', user.id)
+      return 'free'
+    }
+  }
+  return user.plan
+}
+

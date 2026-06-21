@@ -6,9 +6,11 @@ import { cn } from '@/lib/utils'
 import {
   LayoutDashboard, FolderOpen, Settings, LogOut,
   Archive, FileText, Clock, TrendingUp, Star,
-  Globe, ScrollText, Users, Wallet, Moon, Sun,
+  Globe, ScrollText, Users, Wallet, Moon, Sun, Shield, MessageSquare,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { checkAndSyncPromoPlan } from '@/lib/plans'
+import { Logo } from '@/components/ui/logo'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useTheme } from '@/components/theme-provider'
@@ -65,9 +67,11 @@ function NavLink({
 export function Sidebar({
   onNavigate,
   user: userProp,
+  onFeedbackOpen,
 }: {
   onNavigate?: () => void
   user?: { name: string | null; plan: 'free' | 'pro' }
+  onFeedbackOpen?: () => void
 }) {
   const pathname = usePathname()
   const router = useRouter()
@@ -75,24 +79,31 @@ export function Sidebar({
   const [mounted, setMounted] = useState(false)
   const [userName, setUserName] = useState<string | null>(userProp?.name ?? null)
   const [userPlan, setUserPlan] = useState<'free' | 'pro'>(userProp?.plan ?? 'free')
+  const [isAdmin, setIsAdmin] = useState(false)
 
   useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
-    if (userProp) return
     const supabase = createClient()
+    
+    // We fetch user and profile regardless of userProp to determine admin status
     supabase.auth.getUser().then(({ data }: { data: any }) => {
       const user = data?.user
       if (!user) return
-      supabase.from('users').select('name, plan').eq('id', user.id).single()
-        .then(({ data }: { data: any }) => {
+      
+      supabase.from('users').select('id, name, plan, is_admin, promo_pro, created_at').eq('id', user.id).maybeSingle()
+        .then(async ({ data }: { data: any }) => {
           if (data) {
-            setUserName(data.name ?? null)
-            setUserPlan(data.plan ?? 'free')
+            const syncedPlan = await checkAndSyncPromoPlan(data, supabase)
+            if (!userProp) {
+              setUserName(data.name ?? null)
+              setUserPlan(syncedPlan as 'free' | 'pro')
+            }
+            setIsAdmin(!!data.is_admin)
           }
         })
     })
-  }, [])
+  }, [userProp])
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -105,10 +116,13 @@ export function Sidebar({
     <aside className="w-60 min-h-screen bg-slate-900 border-r border-white/10 flex flex-col fixed left-0 top-0 bottom-0 z-40">
 
       {/* Logo */}
-      <div className="px-5 h-16 flex items-center flex-shrink-0">
-        <Link href="/dashboard" className="flex items-center gap-2.5" onClick={onNavigate}>
-          <img src="/logo.svg" alt="Frevio" className="w-7 h-7" />
-          <span className="text-white font-bold text-[15px] tracking-tight">Frevio</span>
+      <div className="px-5 h-16 flex items-center flex-shrink-0 border-b border-white/10">
+        <Link href="/dashboard" className="flex items-center gap-2.5">
+          <Logo className="w-7 h-7" />
+          <div>
+            <span className="text-white font-bold text-sm tracking-tight block">Frevio</span>
+            <span className="text-[10px] text-slate-400 font-medium">Freelancer Hub</span>
+          </div>
         </Link>
       </div>
 
@@ -128,7 +142,24 @@ export function Sidebar({
           {secondaryNav.map(item => (
             <NavLink key={item.href} {...item} pathname={pathname} onNavigate={onNavigate} />
           ))}
+          <button
+            onClick={onFeedbackOpen}
+            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left cursor-pointer"
+          >
+            <MessageSquare className="w-4 h-4 text-slate-500" />
+            Feedback
+          </button>
         </div>
+
+        {/* Admin Section */}
+        {isAdmin && (
+          <div className="pt-5 pb-1">
+            <div className="px-3 mb-1.5">
+              <span className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">Administration</span>
+            </div>
+            <NavLink href="/admin" label="Admin Panel" icon={Shield} pathname={pathname} onNavigate={onNavigate} />
+          </div>
+        )}
 
       </nav>
 
@@ -153,7 +184,7 @@ export function Sidebar({
         <NavLink href="/settings" label="Settings" icon={Settings} pathname={pathname} onNavigate={onNavigate} />
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left cursor-pointer"
         >
           {mounted && theme === 'dark'
             ? <Sun className="w-4 h-4 text-slate-500" />
@@ -162,7 +193,7 @@ export function Sidebar({
         </button>
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left"
+          className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left cursor-pointer"
         >
           <LogOut className="w-4 h-4 text-slate-500" />
           Sign out

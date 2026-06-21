@@ -19,8 +19,10 @@ export default function UpgradePage() {
     supabase.auth.getUser().then(({ data }: { data: any }) => {
       const user = data?.user
       if (!user) { router.push('/auth/login'); return }
-      supabase.from('users').select('plan').eq('id', user.id).single().then(({ data }: { data: any }) => {
-        if (data?.plan === 'pro') router.push('/settings')
+      supabase.from('users').select('id, plan, promo_pro, created_at').eq('id', user.id).single().then(async ({ data }: { data: any }) => {
+        const { checkAndSyncPromoPlan } = await import('@/lib/plans')
+        const syncedPlan = await checkAndSyncPromoPlan(data, supabase)
+        if (syncedPlan === 'pro') router.push('/settings')
       })
     })
   }, [router])

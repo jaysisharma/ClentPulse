@@ -34,23 +34,23 @@ export function LandingFaq() {
   const [open, setOpen] = useState<number | null>(0)
 
   return (
-    <div className="mx-auto max-w-3xl divide-y divide-slate-200">
+    <div className="mx-auto max-w-3xl divide-y divide-slate-200 dark:divide-white/5">
       {FAQS.map((f, i) => {
         const isOpen = open === i
         return (
           <div key={f.q} className="py-6">
             <button
               onClick={() => setOpen(isOpen ? null : i)}
-              className="flex w-full items-center justify-between gap-6 text-left"
+              className="flex w-full items-center justify-between gap-6 text-left cursor-pointer"
             >
-              <span className="text-lg font-semibold text-slate-900">{f.q}</span>
-              <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+              <span className="text-lg font-semibold text-slate-800 dark:text-slate-200 transition-colors hover:text-slate-900 dark:hover:text-white">{f.q}</span>
+              <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
                 {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
               </span>
             </button>
             <div className={`grid transition-all duration-300 ease-out ${isOpen ? 'mt-4 grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
               <div className="overflow-hidden">
-                <p className="max-w-2xl text-[15px] leading-relaxed text-slate-500">{f.a}</p>
+                <p className="max-w-2xl text-[15px] leading-relaxed text-slate-600 dark:text-slate-400">{f.a}</p>
               </div>
             </div>
           </div>

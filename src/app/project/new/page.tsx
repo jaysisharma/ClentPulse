@@ -4,7 +4,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Lock } from 'lucide-react'
 import { NewProjectForm } from './new-project-form'
-import { FREE_PROJECT_LIMIT as FREE_LIMIT } from '@/lib/plans'
+import { FREE_PROJECT_LIMIT as FREE_LIMIT, checkAndSyncPromoPlan } from '@/lib/plans'
 
 export default async function NewProjectPage() {
   const supabase = await createClient()
@@ -12,11 +12,12 @@ export default async function NewProjectPage() {
   if (!user) redirect('/auth/login')
 
   const [{ data: profile }, { count }] = await Promise.all([
-    supabase.from('users').select('plan').eq('id', user.id).single(),
+    supabase.from('users').select('id, plan, promo_pro, created_at').eq('id', user.id).single(),
     supabase.from('projects').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
   ])
 
-  const isPro = profile?.plan === 'pro'
+  const syncedPlan = await checkAndSyncPromoPlan(profile, supabase)
+  const isPro = syncedPlan === 'pro'
   const used = count ?? 0
   const atLimit = !isPro && used >= FREE_LIMIT
 

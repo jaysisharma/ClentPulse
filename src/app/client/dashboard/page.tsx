@@ -50,7 +50,7 @@ export default async function ClientDashboardPage() {
   const allInvoices = ((invoices ?? []) as Invoice[]).sort((a, b) => (INVOICE_SORT[a.status] ?? 9) - (INVOICE_SORT[b.status] ?? 9))
 
   const completedProjects = allProjects.filter(p => p.status === 'completed')
-  let testimonialProjectIds = new Set<string>()
+  const testimonialProjectIds = new Set<string>()
 
   if (completedProjects.length > 0) {
     const { data: testimonialsData } = await supabase

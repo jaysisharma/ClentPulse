@@ -36,7 +36,7 @@ export function LaunchPromoBanner({ className = '' }: { className?: string }) {
     >
       <Sparkles className="h-4 w-4 flex-shrink-0" />
       <span>
-        <span className="font-bold">First 50 free:</span> get Pro free — only{' '}
+        <span className="font-bold">First 50:</span> get Pro free for 1 month — only{' '}
         <span className="font-bold">{remaining}</span> spot{remaining === 1 ? '' : 's'} left
       </span>
     </div>

@@ -6,6 +6,7 @@ import { Menu, X, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { ProjectMessages } from '@/components/project-messages'
+import { FeedbackModal } from './feedback-modal'
 
 export function AppLayout({
   children,
@@ -21,6 +22,7 @@ export function AppLayout({
   const [selectedProjectId, setSelectedProjectId] = useState<string>('')
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({})
   const [userProfile, setUserProfile] = useState<{ name: string | null } | null>(null)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   // Fetch user profile name, active projects and count of unread client comments
   useEffect(() => {
@@ -132,7 +134,7 @@ export function AppLayout({
 
       {/* Sidebar wrapper — off-screen on mobile, always visible on lg+ */}
       <div className={`fixed inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out lg:translate-x-0 print:hidden ${open ? 'translate-x-0' : '-translate-x-full'}`}>
-        <Sidebar onNavigate={() => setOpen(false)} user={user} />
+        <Sidebar onNavigate={() => setOpen(false)} user={user} onFeedbackOpen={() => setFeedbackOpen(true)} />
       </div>
 
       {/* Mobile top bar */}
@@ -254,6 +256,8 @@ export function AppLayout({
       <main className="flex-1 lg:ml-60 p-6 lg:p-8 pt-20 lg:pt-8 print:ml-0 print:p-0">
         {children}
       </main>
+
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </div>
   )
 }

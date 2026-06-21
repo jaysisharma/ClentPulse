@@ -9,6 +9,8 @@ import { UpdateCommentForm } from './update-comment-form'
 import { ClientChecklist } from './client-checklist'
 import { CompletedProjectPopup } from '@/components/project/completed-project-popup'
 import type { Metadata } from 'next'
+import { cookies } from 'next/headers'
+import { PasscodeGate } from './passcode-gate'
 
 export async function generateMetadata({
   params,
@@ -47,6 +49,14 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
 
   const project = projectRows?.[0] ?? null
   if (!project) notFound()
+
+  if (project.passcode) {
+    const cookieStore = await cookies()
+    const enteredPasscode = cookieStore.get(`client_project_passcode_${slug}`)?.value
+    if (enteredPasscode !== project.passcode) {
+      return <PasscodeGate slug={slug} projectColor={project.color} />
+    }
+  }
 
   const { data: updates } = await supabase
     .from('updates')

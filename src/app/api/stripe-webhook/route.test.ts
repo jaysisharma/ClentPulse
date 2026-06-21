@@ -28,18 +28,23 @@ vi.mock('next/headers', () => ({
   headers: vi.fn().mockResolvedValue({ get: () => 'test-signature' }),
 }))
 
-const mockSupabaseUpdateEq = vi.fn().mockResolvedValue({ error: null })
+const mockSupabaseSelect = vi.fn().mockReturnThis()
+const mockSupabaseInsert = vi.fn().mockResolvedValue({ error: null })
+const mockSupabaseUpdateEq = vi.fn(() => ({
+  then(resolve: any) { resolve({ error: null }) },
+  select: vi.fn().mockResolvedValue({ data: [{ id: 'user_123' }], error: null }),
+}))
 const mockSupabaseUpdate = vi.fn(() => ({ eq: mockSupabaseUpdateEq }))
 const mockSupabaseMaybeSingle = vi.fn().mockResolvedValue({
   data: { email: 'test@example.com', name: 'Test User' },
 })
 const mockSupabaseEq = vi.fn().mockReturnThis()
-const mockSupabaseSelect = vi.fn().mockReturnThis()
 const mockSupabaseFrom = vi.fn(() => ({
   select: mockSupabaseSelect,
   eq: mockSupabaseEq,
   maybeSingle: mockSupabaseMaybeSingle,
   update: mockSupabaseUpdate,
+  insert: mockSupabaseInsert,
 }))
 const mockSupabase = { from: mockSupabaseFrom }
 
@@ -69,12 +74,17 @@ describe('POST /api/stripe-webhook', () => {
     mockResendSend.mockResolvedValue({ error: null })
     mockPortalCreate.mockResolvedValue({ url: 'https://billing.stripe.com/portal/test' })
     mockSupabaseMaybeSingle.mockResolvedValue({ data: { email: 'test@example.com', name: 'Test User' } })
-    mockSupabaseUpdateEq.mockResolvedValue({ error: null })
+    mockSupabaseUpdateEq.mockImplementation(() => ({
+      then(resolve: any) { resolve({ error: null }) },
+      select: vi.fn().mockResolvedValue({ data: [{ id: 'user_123' }], error: null }),
+    }))
+    mockSupabaseInsert.mockResolvedValue({ error: null })
     mockSupabaseFrom.mockReturnValue({
       select: mockSupabaseSelect,
       eq: mockSupabaseEq,
       maybeSingle: mockSupabaseMaybeSingle,
       update: mockSupabaseUpdate,
+      insert: mockSupabaseInsert,
     })
     mockSupabaseUpdate.mockReturnValue({ eq: mockSupabaseUpdateEq })
   })
@@ -86,13 +96,26 @@ describe('POST /api/stripe-webhook', () => {
     expect(res.status).toBe(400)
   })
 
+  it('returns 200 and ignores duplicate webhook events', async () => {
+    mockConstructEvent.mockReturnValue(
+      makeEvent('checkout.session.completed', { customer: 'cus_123', metadata: {} })
+    )
+    mockSupabaseInsert.mockResolvedValueOnce({ error: { code: '23505', message: 'duplicate' } })
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json).toEqual({ received: true, duplicate: true })
+    expect(mockSupabaseUpdate).not.toHaveBeenCalled()
+  })
+
   it('grants Pro on checkout.session.completed for subscription', async () => {
     mockConstructEvent.mockReturnValue(
       makeEvent('checkout.session.completed', { customer: 'cus_123', metadata: {} })
     )
     const { POST } = await import('./route')
     await POST(makeRequest())
-    expect(mockSupabaseUpdate).toHaveBeenCalledWith({ plan: 'pro' })
+    expect(mockSupabaseUpdate).toHaveBeenCalledWith(expect.objectContaining({ plan: 'pro' }))
   })
 
   it('marks invoice paid on checkout.session.completed for invoice_payment', async () => {
@@ -124,7 +147,7 @@ describe('POST /api/stripe-webhook', () => {
     )
     const { POST } = await import('./route')
     await POST(makeRequest())
-    expect(mockSupabaseUpdate).toHaveBeenCalledWith({ plan: 'pro' })
+    expect(mockSupabaseUpdate).toHaveBeenCalledWith(expect.objectContaining({ plan: 'pro' }))
   })
 
   it('keeps Pro on subscription.updated with trialing status', async () => {
@@ -133,7 +156,7 @@ describe('POST /api/stripe-webhook', () => {
     )
     const { POST } = await import('./route')
     await POST(makeRequest())
-    expect(mockSupabaseUpdate).toHaveBeenCalledWith({ plan: 'pro' })
+    expect(mockSupabaseUpdate).toHaveBeenCalledWith(expect.objectContaining({ plan: 'pro' }))
   })
 
   it('keeps Pro during past_due grace window (does not strip access mid-retry)', async () => {
@@ -142,7 +165,7 @@ describe('POST /api/stripe-webhook', () => {
     )
     const { POST } = await import('./route')
     await POST(makeRequest())
-    expect(mockSupabaseUpdate).toHaveBeenCalledWith({ plan: 'pro' })
+    expect(mockSupabaseUpdate).toHaveBeenCalledWith(expect.objectContaining({ plan: 'pro' }))
   })
 
   it('revokes Pro on subscription.updated with a terminal status (canceled)', async () => {

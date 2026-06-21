@@ -23,6 +23,12 @@ import { ClientFeedbackList } from './client-feedback-list'
 import { UpdatesList } from './updates-list'
 import { NotificationToast } from './notification-toast'
 
+function checkFeedbackRecency(feedbackList: any[]) {
+  const limit = 24 * 60 * 60 * 1000
+  const now = Date.now()
+  return feedbackList.some(fb => (now - new Date(fb.created_at).getTime()) < limit)
+}
+
 export default async function ProjectPage({
   params,
   searchParams,
@@ -60,9 +66,7 @@ export default async function ProjectPage({
 
   if (!project) notFound()
 
-  const hasNewFeedback = (clientFeedback ?? []).some(
-    fb => (Date.now() - new Date(fb.created_at).getTime()) < 24 * 60 * 60 * 1000
-  )
+  const hasNewFeedback = checkFeedbackRecency(clientFeedback ?? [])
 
   const { data: owner } = await supabase.from('users').select('name').eq('id', user.id).single()
   const ownerName = owner?.name || (user.email?.split('@')[0] ?? 'You')

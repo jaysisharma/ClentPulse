@@ -139,7 +139,7 @@ export function ProductTour() {
   const activeStep = TOUR_STEPS[step]
 
   // Calculate coordinates for dynamic tooltips
-  let tooltipStyle: React.CSSProperties = {
+  const tooltipStyle: React.CSSProperties = {
     position: 'fixed',
     zIndex: 9999,
     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'

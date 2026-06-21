@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { checkAndSyncPromoPlan } from '@/lib/plans'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { getWeekOf } from '@/lib/utils'
@@ -34,11 +35,16 @@ export async function POST(request: Request) {
 
   const { data: owner } = await supabase
     .from('users')
-    .select('name, email, accent_color, logo_url, plan')
+    .select('id, name, email, accent_color, logo_url, plan, promo_pro, created_at')
     .eq('id', user.id)
     .single()
 
-  if (!owner?.plan || owner.plan !== 'pro') {
+  if (!owner) {
+    return NextResponse.json({ error: 'Owner profile not found' }, { status: 404 })
+  }
+
+  const syncedPlan = await checkAndSyncPromoPlan(owner, supabase)
+  if (!syncedPlan || syncedPlan !== 'pro') {
     return NextResponse.json({ error: 'Auto email requires Pro plan' }, { status: 403 })
   }
 
