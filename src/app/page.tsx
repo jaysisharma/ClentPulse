@@ -459,6 +459,8 @@ export default async function LandingPage() {
         </div>
       </section>
 
+
+
       {/* ─────────────── FINAL CTA (Midnight Glow) ─────────────── */}
       <section className="bg-slate-50 dark:bg-[#030303] px-6 py-24 transition-colors">
         <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-slate-100/50 dark:bg-[#09090E] px-8 py-24 text-center border border-slate-200 dark:border-white/5">
