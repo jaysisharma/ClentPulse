@@ -1,7 +1,14 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 
-const SYSTEM_HOSTS = new Set(['localhost', '127.0.0.1', 'frevio.app', 'www.frevio.app'])
+const SYSTEM_HOSTS = new Set([
+  'localhost',
+  '127.0.0.1',
+  'frevio.app',
+  'www.frevio.app',
+  'frevio.cloud',
+  'www.frevio.cloud',
+])
 
 export async function proxy(request: NextRequest) {
   const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || ''
@@ -10,6 +17,8 @@ export async function proxy(request: NextRequest) {
   const isCustomDomain =
     cleanHost.length > 0 &&
     !SYSTEM_HOSTS.has(cleanHost) &&
+    !cleanHost.endsWith('.frevio.cloud') &&
+    !cleanHost.endsWith('.frevio.app') &&
     !cleanHost.endsWith('.vercel.app') &&
     !cleanHost.endsWith('.railway.app')
 

@@ -93,7 +93,7 @@ export async function PATCH(
       let domain = body.custom_domain.trim().toLowerCase()
       domain = domain.replace(/^https?:\/\//i, '').replace(/\/.*$/, '')
 
-      const reservedHosts = ['frevio.app', 'localhost', '127.0.0.1', 'vercel.app']
+      const reservedHosts = ['frevio.app', 'frevio.cloud', 'localhost', '127.0.0.1', 'vercel.app']
       if (reservedHosts.some(h => domain === h || domain.endsWith(`.${h}`))) {
         return NextResponse.json({ error: 'Cannot use reserved system domain' }, { status: 400 })
       }
