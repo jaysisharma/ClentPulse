@@ -337,11 +337,29 @@ export default function OnboardingPage() {
     setLoading(false)
   }
 
+  // ── Skip project creation ──────────────────────────────────────────────────
+  async function handleSkipProject(skipToDashboard = false) {
+    setLoading(true)
+    setError('')
+    if (persona === 'agency' && !skipToDashboard) {
+      await persistStep('team')
+      setLoading(false)
+    } else {
+      await persistStep('complete', { onboarded: true })
+      router.push('/dashboard')
+    }
+  }
+
   // ── Step 3b: Agency Team Invites ──────────────────────────────────────────
   async function handleSendTeamInvites(e: React.FormEvent) {
     e.preventDefault()
     if (!orgId || inviteEmails.length === 0) {
-      await persistStep('update')
+      if (!projectId) {
+        await persistStep('complete', { onboarded: true })
+        router.push('/dashboard')
+      } else {
+        await persistStep('update')
+      }
       return
     }
 
@@ -360,7 +378,12 @@ export default function OnboardingPage() {
       console.warn('Team invites sent with partial warnings')
     } finally {
       setInvitingTeam(false)
-      await persistStep('update')
+      if (!projectId) {
+        await persistStep('complete', { onboarded: true })
+        router.push('/dashboard')
+      } else {
+        await persistStep('update')
+      }
     }
   }
 
@@ -764,15 +787,36 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={loading || !projectName.trim() || !clientName.trim()}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer disabled:opacity-50 mt-2"
-              >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                <span>Continue</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleSkipProject(false)}
+                  className="rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white py-3 px-5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  Skip for now
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading || !projectName.trim() || !clientName.trim()}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  <span>Continue</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              <div className="text-center pt-1">
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => handleSkipProject(true)}
+                  className="text-[11px] text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                >
+                  Skip setup &amp; go directly to dashboard &rarr;
+                </button>
+              </div>
             </form>
           </div>
         )}
@@ -859,7 +903,14 @@ export default function OnboardingPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => persistStep('update')}
+                  onClick={async () => {
+                    if (!projectId) {
+                      await persistStep('complete', { onboarded: true })
+                      router.push('/dashboard')
+                    } else {
+                      await persistStep('update')
+                    }
+                  }}
                   className="rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white py-3 px-5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
                 >
                   I&apos;ll do this later
