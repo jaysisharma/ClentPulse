@@ -307,10 +307,10 @@ export function OveradsHero({ signupHref }: HeroProps) {
         {/* Hero Title */}
         <h1
           ref={titleRef}
-          className="text-4xl sm:text-6xl md:text-7xl font-light tracking-[-0.025em] leading-[1.12] max-w-4xl text-balance text-slate-950"
+          className="text-4xl sm:text-6xl md:text-7xl font-light tracking-[-0.025em] leading-[1.15] max-w-4xl text-balance text-slate-950"
         >
           Stop answering{' '}
-          <span className="inline-block px-2.5 sm:px-3.5 py-0.5 rounded-2xl bg-indigo-50 border border-indigo-200/80 text-indigo-600 font-normal shadow-2xs">
+          <span className="inline-block rounded-full bg-indigo-600 text-white px-3.5 sm:px-5 py-0.5 sm:py-1 font-normal shadow-sm">
             &ldquo;Any updates?&rdquo;
           </span>{' '}
           texts at 11 PM.
