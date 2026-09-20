@@ -9,40 +9,53 @@ import { AuthHashHandler } from "@/components/auth-hash-handler";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Frevio — Weekly Project Updates for Freelancers",
-  description: "Send beautiful weekly project updates to clients with one click. Stop writing status emails manually.",
+  title: {
+    default: "Frevio — Client Portal & Operating System for Freelancers & Studios",
+    template: "%s | Frevio",
+  },
+  description: "The modern client operating system. Automate weekly status updates, streamline milestone approvals, and settle invoices with zero fees via Stripe.",
   keywords: [
     "freelancer client portal",
-    "project tracking for agencies",
-    "client collaboration dashboard",
+    "client operating system",
+    "agency dashboard",
+    "client collaboration portal",
+    "weekly project updates",
+    "freelance milestone approvals",
     "freelance invoicing software",
     "freelance time tracking",
     "shareable contracts and proposals",
-    "client feedback portal"
+    "client feedback portal",
+    "Frevio"
   ],
   authors: [{ name: "Frevio Team", url: "https://frevio.cloud" }],
+  creator: "Frevio",
+  publisher: "Frevio",
   metadataBase: new URL("https://frevio.cloud"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Frevio — Weekly Project Updates for Freelancers",
-    description: "Send beautiful weekly project updates to clients with one click. Stop writing status emails manually.",
+    title: "Frevio — Client Portal & Operating System for Freelancers & Studios",
+    description: "One unified link for weekly updates, milestone approvals, contracts, and zero-fee Stripe settlements.",
     url: "https://frevio.cloud",
     siteName: "Frevio",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "/logo.svg",
-        width: 512,
-        height: 512,
-        alt: "Frevio Logo"
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Frevio — Client Portal and Operating System",
       }
     ]
   },
   twitter: {
-    card: "summary",
-    title: "Frevio — Weekly Project Updates for Freelancers",
-    description: "Send beautiful weekly project updates to clients with one click. Stop writing status emails manually.",
-    images: ["/logo.svg"]
+    card: "summary_large_image",
+    title: "Frevio — Client Portal & Operating System for Freelancers & Studios",
+    description: "One unified link for weekly updates, milestone approvals, contracts, and zero-fee Stripe settlements.",
+    images: ["/og-image.png"],
+    creator: "@frevioapp",
   },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -51,15 +64,72 @@ export const metadata: Metadata = {
     title: "Frevio",
   },
   icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://frevio.cloud/#organization",
+      "name": "Frevio",
+      "url": "https://frevio.cloud",
+      "logo": "https://frevio.cloud/logo.png"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://frevio.cloud/#website",
+      "url": "https://frevio.cloud",
+      "name": "Frevio",
+      "publisher": { "@id": "https://frevio.cloud/#organization" }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://frevio.cloud/#software",
+      "name": "Frevio",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "url": "https://frevio.cloud",
+      "description": "Client operating system and portal for modern freelancers and boutique agencies. Milestone approvals, client dashboards, and zero-fee Stripe invoice settlements.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full" suppressHydrationWarning>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `

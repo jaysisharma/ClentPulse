@@ -873,7 +873,7 @@ export default async function DashboardPage({
           )}
         </div>
       </DarkShell>
-      <ProductTour />
+      <ProductTour userId={user.id} isAgency={activeWorkspaceId !== 'personal'} />
     </AppLayout>
   )
 }

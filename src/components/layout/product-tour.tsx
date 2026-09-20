@@ -3,7 +3,14 @@
 import { useState, useEffect } from 'react'
 import { X, ChevronRight, ChevronLeft, Sparkles, HelpCircle } from 'lucide-react'
 
-const TOUR_STEPS = [
+interface TourStep {
+  title: string
+  content: string
+  target: string
+  placement: 'center' | 'bottom' | 'right' | 'top'
+}
+
+const FREELANCER_STEPS: TourStep[] = [
   {
     title: "Welcome to Frevio! 🚀",
     content: "Let's take a quick 1-minute tour of your new workspace to show you where everything is.",
@@ -48,7 +55,52 @@ const TOUR_STEPS = [
   }
 ]
 
-export function ProductTour() {
+const AGENCY_STEPS: TourStep[] = [
+  {
+    title: "Welcome to Frevio Agency OS! 🚀",
+    content: "Let's take a quick 1-minute tour of your agency workspace to show you where everything is.",
+    target: "body",
+    placement: "center"
+  },
+  {
+    title: "Log Working Hours ⏱️",
+    content: "Track billable time manually or launch an active timer to log progress against client projects.",
+    target: '[data-tour-time-btn]',
+    placement: "bottom"
+  },
+  {
+    title: "Create an Agency Project 📁",
+    content: "Start a new agency project to manage deliverables, checklists, and client milestones.",
+    target: '[data-tour-project-btn]',
+    placement: "bottom"
+  },
+  {
+    title: "Agency Operations 🧭",
+    content: "Quickly access your active projects, client accounts, invoices, and team time log from the sidebar.",
+    target: '[data-tour="dashboard"]',
+    placement: "right"
+  },
+  {
+    title: "Team & Capacity 👥",
+    content: "Manage team seats, assign specialists to project pods, and monitor focus areas in real-time.",
+    target: '[data-tour="team"]',
+    placement: "right"
+  },
+  {
+    title: "You're All Set! 🎉",
+    content: "You're ready to scale your agency operations on Frevio. Start by creating your first project or inviting your team!",
+    target: "body",
+    placement: "center"
+  }
+]
+
+export function ProductTour({
+  userId,
+  isAgency = false,
+}: {
+  userId?: string
+  isAgency?: boolean
+}) {
   const [isOpen, setIsOpen] = useState(false)
   const [step, setStep] = useState(0)
   const [highlightRect, setHighlightRect] = useState<{
@@ -57,6 +109,32 @@ export function ProductTour() {
     width: number
     height: number
   } | null>(null)
+
+  const steps = isAgency ? AGENCY_STEPS : FREELANCER_STEPS
+
+  // Automatically trigger the tour for any new user who hasn't completed or dismissed it yet
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const urlParams = new URLSearchParams(window.location.search)
+    const forceTour = urlParams.get('tour') === 'true' || urlParams.get('tour') === '1'
+
+    const key = userId ? `frevio-tour-completed:${userId}` : 'frevio-tour-completed'
+    let completed = false
+    try {
+      completed =
+        localStorage.getItem(key) === 'true' ||
+        localStorage.getItem('frevio-tour-completed') === 'true'
+    } catch {}
+
+    if (forceTour || !completed) {
+      const timer = setTimeout(() => {
+        setStep(0)
+        setIsOpen(true)
+      }, 700)
+      return () => clearTimeout(timer)
+    }
+  }, [userId])
 
   // Listen to the custom tour event (triggered on demand via TourTrigger)
   useEffect(() => {
@@ -70,9 +148,9 @@ export function ProductTour() {
 
   // Find target element coordinates on step change
   useEffect(() => {
-    if (!isOpen || step < 0 || step >= TOUR_STEPS.length) return
+    if (!isOpen || step < 0 || step >= steps.length) return
 
-    const activeStep = TOUR_STEPS[step]
+    const activeStep = steps[step]
     if (activeStep.target === 'body') {
       setHighlightRect(null)
       return
@@ -80,6 +158,10 @@ export function ProductTour() {
 
     const el = document.querySelector(activeStep.target)
     if (el) {
+      try {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
+      } catch {}
+
       const updateRect = () => {
         const r = el.getBoundingClientRect()
         if (r.width === 0 && r.height === 0) {
@@ -103,10 +185,10 @@ export function ProductTour() {
     } else {
       setHighlightRect(null)
     }
-  }, [step, isOpen])
+  }, [step, isOpen, steps])
 
   function handleNext() {
-    if (step < TOUR_STEPS.length - 1) {
+    if (step < steps.length - 1) {
       setStep(step + 1)
     } else {
       handleComplete()
@@ -120,13 +202,18 @@ export function ProductTour() {
   }
 
   function handleComplete() {
-    localStorage.setItem('frevio-tour-completed', 'true')
+    try {
+      if (userId) {
+        localStorage.setItem(`frevio-tour-completed:${userId}`, 'true')
+      }
+      localStorage.setItem('frevio-tour-completed', 'true')
+    } catch {}
     setIsOpen(false)
   }
 
   if (!isOpen) return null
 
-  const activeStep = TOUR_STEPS[step]
+  const activeStep = steps[step]
 
   // Calculate coordinates for dynamic tooltips
   const tooltipStyle: React.CSSProperties = {
@@ -151,8 +238,8 @@ export function ProductTour() {
     // Boundary protection for tooltips
     if (typeof window !== 'undefined') {
       if (Number(tooltipStyle.top) < 16) tooltipStyle.top = 16
-      if (Number(tooltipStyle.top) + 220 > window.innerHeight) {
-        tooltipStyle.top = window.innerHeight - 236
+      if (Number(tooltipStyle.top) + 240 > window.innerHeight) {
+        tooltipStyle.top = window.innerHeight - 256
       }
       if (Number(tooltipStyle.left) < 16) tooltipStyle.left = 16
       if (Number(tooltipStyle.left) + 330 > window.innerWidth) {
@@ -203,11 +290,13 @@ export function ProductTour() {
       {/* Interactive Tooltip Card */}
       <div 
         style={tooltipStyle}
-        className="w-[320px] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-2xl pointer-events-auto select-none"
+        className="w-[320px] max-w-[calc(100vw-32px)] bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 shadow-2xl pointer-events-auto select-none"
       >
         <button
           onClick={handleComplete}
-          className="absolute top-3 right-3 p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
+          title="Close tour"
+          aria-label="Close tour"
+          className="absolute top-3 right-3 p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
         >
           <X className="w-4 h-4" />
         </button>
@@ -226,14 +315,22 @@ export function ProductTour() {
         </p>
 
         <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-4">
-          <span className="text-[11px] font-medium text-slate-400">
-            Step {step + 1} of {TOUR_STEPS.length}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] font-medium text-slate-400">
+              Step {step + 1} of {steps.length}
+            </span>
+            <button
+              onClick={handleComplete}
+              className="text-[11px] font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer underline-offset-2 hover:underline"
+            >
+              Skip
+            </button>
+          </div>
           <div className="flex gap-1.5">
             {step > 0 && (
               <button
                 onClick={handleBack}
-                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
+                className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
                 aria-label="Previous step"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -241,10 +338,10 @@ export function ProductTour() {
             )}
             <button
               onClick={handleNext}
-              className="flex items-center gap-1 py-1.5 px-3 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
+              className="flex items-center gap-1 py-1.5 px-3 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm cursor-pointer"
             >
-              {step === TOUR_STEPS.length - 1 ? 'Finish' : 'Next'}
-              {step < TOUR_STEPS.length - 1 && <ChevronRight className="w-3.5 h-3.5" />}
+              {step === steps.length - 1 ? 'Finish' : 'Next'}
+              {step < steps.length - 1 && <ChevronRight className="w-3.5 h-3.5" />}
             </button>
           </div>
         </div>
@@ -261,7 +358,7 @@ export function TourTrigger() {
   return (
     <button
       onClick={startTour}
-      className="inline-flex items-center gap-1.5 text-xs text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold transition-colors focus:outline-none hover:underline mt-1"
+      className="inline-flex items-center gap-1.5 text-xs text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold transition-colors focus:outline-none hover:underline mt-1 cursor-pointer"
     >
       <HelpCircle className="w-3.5 h-3.5" />
       Take a quick tour

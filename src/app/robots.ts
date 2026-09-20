@@ -7,7 +7,11 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: [
         '/',
+        '/roadmap',
+        '/terms',
+        '/privacy',
         '/portfolio/',
+        '/u/',
       ],
       disallow: [
         '/auth/',
