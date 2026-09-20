@@ -24,6 +24,15 @@ export async function proxy(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  // If an OAuth authorization code or error landed on the root or another page, redirect to the callback handler
+  const code = request.nextUrl.searchParams.get('code')
+  const authError = request.nextUrl.searchParams.get('error')
+  if ((code || authError) && pathname !== '/auth/callback') {
+    const callbackUrl = request.nextUrl.clone()
+    callbackUrl.pathname = '/auth/callback'
+    return NextResponse.redirect(callbackUrl)
+  }
+
   // Handle custom domain CNAME routing for agency client portals
   if (isCustomDomain) {
     // If request is on a custom domain, rewrite root or bare slug to /p/[slug]

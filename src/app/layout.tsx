@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PageLoading } from "@/components/page-loading";
 import { AnalyticsTracker } from "@/components/analytics-tracker";
+import { AuthHashHandler } from "@/components/auth-hash-handler";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -81,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PageLoading />
         <ThemeProvider>
           <AnalyticsTracker />
+          <AuthHashHandler />
           {children}
         </ThemeProvider>
       </body>

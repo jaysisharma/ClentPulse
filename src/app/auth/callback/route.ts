@@ -1,19 +1,39 @@
 import { createClient } from '@/lib/supabase/server'
-import { NextResponse } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 
-export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
+export async function GET(request: NextRequest) {
+  const requestUrl = new URL(request.url)
+  const code = requestUrl.searchParams.get('code')
+  const oauthError = requestUrl.searchParams.get('error')
+  const errorDescription = requestUrl.searchParams.get('error_description')
+
+  // Derive origin respecting reverse proxies (Vercel, Railway, Nginx)
+  const forwardedHost = request.headers.get('x-forwarded-host')
+  const forwardedProto = request.headers.get('x-forwarded-proto') || 'https'
+  const isLocal = process.env.NODE_ENV === 'development'
+  const origin = (!isLocal && forwardedHost)
+    ? `${forwardedProto}://${forwardedHost}`
+    : requestUrl.origin
+
+  if (oauthError) {
+    console.error('[Auth Callback] OAuth error from provider:', oauthError, errorDescription)
+    return NextResponse.redirect(`${origin}/auth/login?error=${encodeURIComponent(errorDescription || oauthError)}`)
+  }
 
   // Only allow same-origin relative paths to avoid open-redirects
-  const nextParam = searchParams.get('next')
+  const nextParam = requestUrl.searchParams.get('next')
   const next = nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//')
     ? nextParam
     : null
 
   if (code) {
     const supabase = await createClient()
-    await supabase.auth.exchangeCodeForSession(code)
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (exchangeError) {
+      console.error('[Auth Callback] exchangeCodeForSession failed:', exchangeError.message)
+      return NextResponse.redirect(`${origin}/auth/login?error=${encodeURIComponent(exchangeError.message)}`)
+    }
 
     // An explicit, validated next (e.g. password reset → /settings) wins
     if (next) {
@@ -26,7 +46,8 @@ export async function GET(request: Request) {
         .from('users')
         .select('onboarded')
         .eq('id', user.id)
-        .single()
+        .maybeSingle()
+
       if (!profile?.onboarded) {
         // Send Welcome email and track signup asynchronously
         const { sendWelcomeEmail } = await import('@/lib/emails/onboarding')
