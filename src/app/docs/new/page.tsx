@@ -3,11 +3,10 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { AppLayout } from '@/components/layout/app-layout'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { DarkShell } from '@/components/layout/dark-shell'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, FileText, FileSignature, ClipboardList, Check } from 'lucide-react'
+import { ArrowLeft, FileText, FileSignature, ClipboardList, Check, ChevronRight, Loader2 } from 'lucide-react'
 
 type DocType = 'proposal' | 'agreement' | 'requirements'
 interface Project { id: string; project_name: string; client_name: string; client_email: string | null }
@@ -32,11 +31,11 @@ SCOPE OF WORK
 
 The following will be delivered as part of this engagement:
 
-• [Deliverable 1 — e.g., Supabase database schema design and setup]
-• [Deliverable 2 — e.g., Auth integration with Google OAuth and email/password]
-• [Deliverable 3 — e.g., Row-level security policies for all tables]
-• [Deliverable 4 — e.g., Storage bucket configuration and upload flow]
-• [Deliverable 5 — e.g., Documentation and handoff call]
+• [Deliverable 1 — e.g., Architecture design and technical roadmap]
+• [Deliverable 2 — e.g., Core application features and client portal]
+• [Deliverable 3 — e.g., Database migrations and API integration]
+• [Deliverable 4 — e.g., End-to-end testing and performance audits]
+• [Deliverable 5 — e.g., Production deployment and handoff call]
 
 ─────────────────────────────────────────
 
@@ -44,9 +43,9 @@ TIMELINE
 
 Estimated duration: [X weeks]
 
-Phase 1 — Discovery & Planning     [X days]
-Phase 2 — Development              [X days]
-Phase 3 — Testing & Handoff        [X days]
+Phase 1 — Discovery & Strategy        [X days]
+Phase 2 — Core Execution & Build      [X days]
+Phase 3 — Review, QA & Delivery       [X days]
 
 Timeline begins upon receipt of the deposit and project assets.
 
@@ -60,23 +59,21 @@ Payment schedule:
   • 50% deposit — due before work begins
   • 50% final payment — due upon project completion
 
-Payments accepted via bank transfer, PayPal, or Stripe.
+Payments accepted via bank transfer, credit card, or Stripe.
 
 ─────────────────────────────────────────
 
 NOT INCLUDED IN THIS PROPOSAL
 
-• Ongoing maintenance beyond the handoff period
-• Third-party service costs (hosting, subscriptions, etc.)
-• [Any other exclusions]
+• Ongoing maintenance beyond the 30-day warranty period
+• Third-party hosting, infrastructure, or domain fees
+• [Any other specific exclusions]
 
 ─────────────────────────────────────────
 
 NEXT STEPS
 
-If you'd like to proceed, please accept this proposal. I'll send over a service agreement and invoice for the deposit so we can get started.
-
-Questions? Reply to this email or reach out directly.
+To accept this proposal, please sign and return the approval. I will deliver the formal service agreement and kickoff schedule promptly.
 
 ${freelancer || '[Your Name]'}`,
 
@@ -84,178 +81,159 @@ ${freelancer || '[Your Name]'}`,
 
 This Service Agreement ("Agreement") is entered into as of ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} between:
 
-  Service Provider: ${freelancer || '[Your Name]'} ("Freelancer")
+  Service Provider: ${freelancer || '[Your Name]'} ("Specialist")
   Client:           ${client || '[Client Name]'} ("Client")
 
 ─────────────────────────────────────────
 
 1. SERVICES
 
-Freelancer agrees to provide the following services:
+Specialist agrees to provide the following deliverables:
 
-[Describe the services in detail — e.g., Supabase backend integration including auth, database design, RLS policies, and storage configuration for the Client's web application.]
+[Describe the services in detail — e.g., Web application development, brand strategy, design systems, and integrations for Client's digital platforms.]
 
 ─────────────────────────────────────────
 
-2. PAYMENT
+2. COMPENSATION & TERMS
 
-2.1  Total fee: $[Amount]
-2.2  Payment schedule:
-       • $[X] deposit due before work begins
-       • $[X] final payment due upon project delivery
+2.1  Total investment: $[Amount]
+2.2  Payment terms:
+       • $[X] initial deposit prior to work commencement
+       • $[X] final settlement due upon final handover
 
-2.3  Invoices are due within 14 days of receipt.
-2.4  Late payments accrue interest at 1.5% per month after the due date.
+2.3  Invoices are payable within 14 calendar days of issuance.
+2.4  Unsettled balances past 30 days may incur a 1.5% monthly late interest.
 
 ─────────────────────────────────────────
 
 3. INTELLECTUAL PROPERTY
 
-Upon receipt of full payment, Client will own all custom code and deliverables produced under this Agreement. Freelancer retains the right to reference this project in their portfolio unless Client requests otherwise in writing.
+Upon receipt of full payment, Client receives full assignment of rights to all custom deliverables produced specifically under this Agreement. Specialist retains right to feature anonymized work samples in professional portfolios.
 
 ─────────────────────────────────────────
 
-4. REVISIONS
+4. REVISIONS & CHANGE REQUESTS
 
-This agreement includes [X] rounds of revisions. Additional revisions are billed at $[Rate]/hour.
+This agreement includes [X] rounds of feedback revisions. Additional modifications or scope adjustments are billed at $[Rate]/hour.
 
 ─────────────────────────────────────────
 
 5. CONFIDENTIALITY
 
-Both parties agree to keep confidential any proprietary or sensitive information shared during the project and not to disclose it to third parties.
+Both parties commit to keeping confidential all proprietary or sensitive commercial information shared throughout the collaboration.
 
 ─────────────────────────────────────────
 
-6. INDEPENDENT CONTRACTOR
+6. INDEPENDENT SPECIALIST
 
-Freelancer is an independent contractor. Nothing in this Agreement creates an employment, partnership, or joint venture relationship.
+Specialist operates solely as an independent contractor. Nothing herein creates an employer-employee or agency relationship.
 
 ─────────────────────────────────────────
 
 7. WARRANTIES & LIABILITY
 
-Freelancer will deliver work with reasonable skill and care. Freelancer's total liability under this Agreement is limited to the total fees paid by Client.
+Deliverables will be completed with high industry standards of craftsmanship. Total financial liability under this engagement will not exceed the total fees received.
 
 ─────────────────────────────────────────
 
 8. TERMINATION
 
-Either party may terminate this Agreement with 7 days written notice. Client agrees to pay for all work completed to the date of termination.
+Either party may cancel with 7 days written notice. Client agrees to compensate for all hours and milestones fulfilled up to the termination date.
 
 ─────────────────────────────────────────
 
-9. GOVERNING LAW
-
-This Agreement is governed by the laws of [Your Jurisdiction].
-
-─────────────────────────────────────────
-
-By signing, both parties agree to the terms above.
+By signing, both parties approve and enact the terms detailed above.
 
 ${freelancer || '[Your Name]'}
-Freelancer`,
+Independent Specialist`,
 
-  requirements: (client, freelancer) => `PROJECT REQUIREMENTS DOCUMENT
+  requirements: (client, freelancer) => `PROJECT REQUIREMENTS SPECIFICATION
 
 Project:  [Project Name]
 Client:   ${client || '[Client Name]'}
 Author:   ${freelancer || '[Your Name]'}
 Date:     ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-Version:  1.0 — Draft
+Version:  1.0 — Approved Baseline
 
 ─────────────────────────────────────────
 
-1. PROJECT OVERVIEW
+1. EXECUTIVE SUMMARY
 
-[Describe the project in 2–3 sentences: what it is, who it's for, and what problem it solves.]
+[Describe the project scope: what it builds, target audience, and primary objectives.]
 
-Business goal: [e.g., Replace a manual spreadsheet process with an automated web app]
-Success metric: [e.g., Reduce admin time from 5 hours/week to under 30 minutes]
-
-─────────────────────────────────────────
-
-2. FUNCTIONAL REQUIREMENTS
-
-2.1  Authentication & Users
-     • [e.g., Email/password and Google OAuth login]
-     • [e.g., User roles: Admin and Member]
-     • [e.g., Password reset via email]
-
-2.2  Core Features
-     • [Feature 1 — description]
-     • [Feature 2 — description]
-     • [Feature 3 — description]
-
-2.3  Data & Storage
-     • [e.g., Store user-generated files in Supabase Storage]
-     • [e.g., File size limit: 10 MB per upload]
-
-2.4  Notifications
-     • [e.g., Email notification when X happens]
+Business Goal:   [e.g., Streamline client intake and automated booking]
+Success Metrics: [e.g., 50% reduction in customer support requests]
 
 ─────────────────────────────────────────
 
-3. TECHNICAL REQUIREMENTS
+2. FUNCTIONAL SPECIFICATIONS
 
-Platform:        [Web / iOS / Android / Cross-platform]
-Frontend:        [e.g., Next.js + Tailwind CSS]
-Backend:         [e.g., Supabase — PostgreSQL, Auth, Storage, Edge Functions]
-Hosting:         [e.g., Vercel (frontend) + Supabase Cloud (backend)]
-Browser support: Latest versions of Chrome, Safari, Firefox, Edge
-Performance:     Page load < 2 seconds on standard broadband
-Accessibility:   WCAG 2.1 AA compliance
+2.1  User Identity & Roles
+     • [e.g., Secure authentication via Magic Links and OAuth]
+     • [e.g., Multi-tier roles: Administrator, Collaborator, Viewer]
 
-─────────────────────────────────────────
+2.2  Core Capabilities
+     • [Feature 1 — specification details]
+     • [Feature 2 — specification details]
+     • [Feature 3 — specification details]
 
-4. OUT OF SCOPE
-
-The following are explicitly NOT included in this project:
-
-• [e.g., Native mobile apps (iOS/Android)]
-• [e.g., Third-party integrations beyond those listed above]
-• [e.g., Ongoing maintenance after the handoff period]
+2.3  Data Storage & Assets
+     • [e.g., Encrypted asset storage for high-resolution files]
+     • [e.g., Automatic backup snapshots and retention policies]
 
 ─────────────────────────────────────────
 
-5. TIMELINE & MILESTONES
+3. TECHNICAL CRITERIA
 
-Kickoff meeting:        [Date]
-Requirements sign-off:  [Date]
-First working build:    [Date]
-Client review:          [Date]
-Final delivery:         [Date]
-
-─────────────────────────────────────────
-
-6. ASSUMPTIONS
-
-• Client will provide all content, copy, and assets by [Date]
-• Client will have a designated point of contact available for feedback within 2 business days
-• [Any other assumptions]
+Platform:        [Web Application / iOS / Cross-platform]
+Frontend:        [e.g., Next.js 15, React, Tailwind CSS]
+Backend:         [e.g., Supabase PostgreSQL, Edge Functions]
+Performance:     First Contentful Paint < 1.0s, 95+ Lighthouse Score
+Security:        Full RLS enforcement and HTTPS end-to-end
 
 ─────────────────────────────────────────
 
-7. SIGN-OFF
+4. SCOPE BOUNDARIES
 
-Client approval of this document confirms that the requirements accurately reflect the project needs. Changes to requirements after sign-off may affect the timeline and/or cost and will be handled via a change request.`,
+The following items are outside the current project scope:
+• [e.g., Native iOS/Android builds]
+• [e.g., Custom payment gateways outside Stripe]
+• [e.g., Ongoing SEO management]
+
+─────────────────────────────────────────
+
+5. MILESTONE TARGETS
+
+Kickoff Alignment:        [Date]
+Prototype Verification:   [Date]
+Release Candidate Beta:   [Date]
+Production Launch:        [Date]
+
+─────────────────────────────────────────
+
+6. APPROVAL SIGN-OFF
+
+Client verification confirms that these requirements accurately encapsulate engagement goals. Scope adjustments will follow formal change management.`,
 }
 
-const DOC_TYPES: { type: DocType; label: string; desc: string; icon: React.ElementType; color: string; border: string }[] = [
+const DOC_TYPES: { type: DocType; label: string; desc: string; icon: React.ElementType }[] = [
   {
-    type: 'proposal', label: 'Project Proposal', icon: FileText,
-    desc: 'Scope, timeline, and pricing. Send before a client commits.',
-    color: 'bg-violet-50', border: 'border-violet-200',
+    type: 'proposal',
+    label: 'Project Proposal',
+    icon: FileText,
+    desc: 'Scope, timeline milestones, and investment pricing. Send before client signs off.',
   },
   {
-    type: 'agreement', label: 'Service Agreement', icon: FileSignature,
-    desc: 'Formal contract with payment terms, IP, and signing.',
-    color: 'bg-blue-50', border: 'border-blue-200',
+    type: 'agreement',
+    label: 'Service Agreement',
+    icon: FileSignature,
+    desc: 'Formal legal contract with payment schedule, intellectual property, and terms.',
   },
   {
-    type: 'requirements', label: 'Requirements Doc', icon: ClipboardList,
-    desc: 'Functional and technical requirements for sign-off.',
-    color: 'bg-amber-50', border: 'border-amber-200',
+    type: 'requirements',
+    label: 'Requirements Doc',
+    icon: ClipboardList,
+    desc: 'Functional and technical requirements blueprint for structured scope alignment.',
   },
 ]
 
@@ -314,7 +292,8 @@ export default function NewDocPage() {
 
   async function save(status: 'draft' | 'sent') {
     if (!title.trim()) return
-    setSaving(true); setError('')
+    setSaving(true)
+    setError('')
     const supabase = createClient()
     const { data, error: err } = await supabase.from('documents').insert({
       user_id: userId,
@@ -333,100 +312,233 @@ export default function NewDocPage() {
 
   return (
     <AppLayout>
-      <div className="max-w-2xl animate-fade-in">
-        <Link href="/docs" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" />Back to documents
-        </Link>
+      <DarkShell>
+        <div className="max-w-3xl animate-fade-in relative z-10 pb-12">
+          {/* Back navigation */}
+          <Link
+            href="/docs"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-6"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to documents
+          </Link>
 
-        {step === 'type' ? (
-          <>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">New document</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Choose a template to get started — all pre-filled with professional copy.</p>
-            <div className="space-y-3">
-              {DOC_TYPES.map(({ type, label, desc, icon: Icon, color, border }) => (
-                <button
-                  key={type}
-                  onClick={() => selectType(type)}
-                  className={`w-full flex items-center gap-5 rounded-2xl border ${border} ${color} p-5 text-left hover:shadow-md transition-all group`}
-                >
-                  <div className="w-12 h-12 bg-white dark:bg-slate-900 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <Icon className="w-5 h-5 text-slate-600 dark:text-slate-300" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-semibold text-slate-900 dark:text-white mb-0.5">{label}</div>
-                    <div className="text-sm text-slate-500 dark:text-slate-400">{desc}</div>
-                  </div>
-                  <ArrowLeft className="w-4 h-4 text-slate-300 rotate-180 group-hover:translate-x-1 transition-transform" />
-                </button>
-              ))}
-            </div>
-          </>
-        ) : (
-          <>
-            <button onClick={() => setStep('type')} className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
-              <ArrowLeft className="w-3.5 h-3.5" />Change type
-            </button>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                {DOC_TYPES.find(d => d.type === docType)?.label}
-              </span>
-            </div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">Document details</h1>
+          {step === 'type' ? (
+            <>
+              {/* Header */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                    Document Studio
+                  </span>
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+                  Create document
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+                  Select a tailored template with structured legal and strategic copy to present to clients.
+                </p>
+              </div>
 
-            <div className="space-y-5">
-              {/* Meta */}
-              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Details</h2>
-                <Input label="Document title" placeholder={`e.g. Supabase Integration Proposal — Acme Corp`} value={title} onChange={e => setTitle(e.target.value)} required />
-                <div>
-                  <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Link to project (optional)</label>
-                  <select
-                    value={projectId}
-                    onChange={e => handleProjectChange(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              {/* Template Selection Cards */}
+              <div className="space-y-3.5">
+                {DOC_TYPES.map(({ type, label, desc, icon: Icon }) => (
+                  <button
+                    key={type}
+                    type="button"
+                    onClick={() => selectType(type)}
+                    className="w-full group bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-5 sm:p-6 text-left hover:border-slate-400 dark:hover:border-white/30 transition-all backdrop-blur-md shadow-xs dark:shadow-none flex items-center gap-5"
                   >
-                    <option value="">— No project —</option>
-                    {projects.map(p => <option key={p.id} value={p.id}>{p.project_name} ({p.client_name})</option>)}
-                  </select>
+                    <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center flex-shrink-0 text-slate-700 dark:text-slate-300 group-hover:scale-105 transition-transform">
+                      <Icon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm sm:text-base font-medium text-slate-900 dark:text-white mb-0.5 flex items-center gap-2">
+                        {label}
+                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 font-light line-clamp-2">
+                        {desc}
+                      </div>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white group-hover:translate-x-1 transition-all flex-shrink-0" />
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Change type pill */}
+              <button
+                type="button"
+                onClick={() => setStep('type')}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-4"
+              >
+                <ArrowLeft className="w-3 h-3" /> Change template
+              </button>
+
+              {/* Header */}
+              <div className="mb-8">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
+                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                    {DOC_TYPES.find(d => d.type === docType)?.label}
+                  </span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <Input label="Client name" placeholder="Acme Corp" value={clientName} onChange={e => handleClientNameChange(e.target.value)} />
-                  <Input label="Client email" type="email" placeholder="client@acme.com" value={clientEmail} onChange={e => setClientEmail(e.target.value)} />
+                <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+                  Document details
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+                  Fine-tune proposal terms, milestones, and deliverable content before publishing.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                {/* Meta details card */}
+                <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
+                  <div className="pb-3 border-b border-slate-100 dark:border-white/5">
+                    <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                      Document Metadata
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                      Title, client association, and optional financial commitments.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                      Document title
+                    </label>
+                    <input
+                      className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                      placeholder="e.g. Supabase Integration Proposal — Acme Corp"
+                      value={title}
+                      onChange={e => setTitle(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                      Link to project <span className="font-normal lowercase text-slate-400">(optional)</span>
+                    </label>
+                    <select
+                      value={projectId}
+                      onChange={e => handleProjectChange(e.target.value)}
+                      className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-[#0c0d12] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                    >
+                      <option value="">— Standalone / No linked project —</option>
+                      {projects.map(p => (
+                        <option key={p.id} value={p.id}>
+                          {p.project_name} ({p.client_name})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        Client name
+                      </label>
+                      <input
+                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                        placeholder="Acme Corp"
+                        value={clientName}
+                        onChange={e => handleClientNameChange(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        Client email
+                      </label>
+                      <input
+                        type="email"
+                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                        placeholder="client@acme.com"
+                        value={clientEmail}
+                        onChange={e => setClientEmail(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  {docType !== 'requirements' && (
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        Investment amount ($) <span className="font-normal lowercase text-slate-400">(optional)</span>
+                      </label>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                        placeholder="5000"
+                        value={amount}
+                        onChange={e => setAmount(e.target.value)}
+                      />
+                    </div>
+                  )}
                 </div>
-                {docType !== 'requirements' && (
-                  <Input label="Amount ($) — optional" type="number" min="0" step="0.01" placeholder="5000" value={amount} onChange={e => setAmount(e.target.value)} />
+
+                {/* Content editor */}
+                <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-4 backdrop-blur-md shadow-xs dark:shadow-none">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+                    <div>
+                      <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                        Document Body
+                      </h2>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                        Full markdown content ready for client distribution.
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
+                      {content.length} characters
+                    </span>
+                  </div>
+
+                  <textarea
+                    className="w-full px-4 py-3 text-xs sm:text-sm border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50/60 dark:bg-white/[0.03] text-slate-800 dark:text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-colors resize-none"
+                    rows={26}
+                    value={content}
+                    onChange={e => setContent(e.target.value)}
+                    spellCheck={false}
+                  />
+                </div>
+
+                {error && (
+                  <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs text-rose-700 dark:text-rose-300">
+                    {error}
+                  </div>
                 )}
-              </div>
 
-              {/* Content editor */}
-              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Content</h2>
-                  <span className="text-xs text-slate-400">Edit the template to match your project</span>
+                {/* Action buttons */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => save('draft')}
+                    disabled={!title.trim() || saving}
+                    className="w-full sm:w-auto rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-colors shadow-xs disabled:opacity-50"
+                  >
+                    Save as draft
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => save('sent')}
+                    disabled={!title.trim() || saving}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-6 py-2.5 text-xs transition-all shadow-xs disabled:opacity-50"
+                  >
+                    {saving ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Check className="w-3.5 h-3.5" />
+                    )}
+                    Save & mark sent
+                  </button>
                 </div>
-                <textarea
-                  className="w-full px-4 py-3 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-800 dark:text-slate-100 font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors resize-none"
-                  rows={28}
-                  value={content}
-                  onChange={e => setContent(e.target.value)}
-                  spellCheck={false}
-                />
               </div>
-
-              {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
-
-              <div className="flex gap-3">
-                <Button variant="secondary" onClick={() => save('draft')} loading={saving} disabled={!title.trim()} className="flex-1 justify-center">
-                  Save as draft
-                </Button>
-                <Button onClick={() => save('sent')} loading={saving} disabled={!title.trim()} className="flex-1 justify-center">
-                  <Check className="w-4 h-4" />Save & mark sent
-                </Button>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+            </>
+          )}
+        </div>
+      </DarkShell>
     </AppLayout>
   )
 }

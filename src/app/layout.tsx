@@ -42,7 +42,17 @@ export const metadata: Metadata = {
     title: "Frevio — Weekly Project Updates for Freelancers",
     description: "Send beautiful weekly project updates to clients with one click. Stop writing status emails manually.",
     images: ["/logo.svg"]
-  }
+  },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Frevio",
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

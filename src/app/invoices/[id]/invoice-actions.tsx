@@ -3,8 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { Check, Mail, Pencil, Printer, Send, Trash2 } from 'lucide-react'
+import { Check, Mail, Pencil, Printer, Send, Trash2, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 
 interface Invoice { id: string; status: string; client_email: string | null }
@@ -75,34 +74,39 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       <Link href={`/invoices/${invoice.id}/edit`}>
-        <Button variant="secondary" size="sm">
-          <Pencil className="w-3.5 h-3.5" />Edit
-        </Button>
+        <span className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 cursor-pointer">
+          <Pencil className="w-3.5 h-3.5" /> Edit
+        </span>
       </Link>
-      <Button variant="secondary" size="sm" onClick={() => window.print()}>
-        <Printer className="w-3.5 h-3.5" />Print / PDF
-      </Button>
+      <button 
+        type="button" 
+        onClick={() => window.print()}
+        className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 cursor-pointer"
+      >
+        <Printer className="w-3.5 h-3.5" /> Print / PDF
+      </button>
 
       {invoice.status === 'draft' && (
         invoice.client_email ? (
-          <Button
-            variant="secondary"
-            size="sm"
+          <button
+            type="button"
             onClick={sendInvoice}
-            loading={sendStatus === 'sending'}
-            disabled={sendStatus === 'sent'}
+            disabled={sendStatus === 'sending' || sendStatus === 'sent'}
+            className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
           >
-            {sendStatus === 'sent'
-              ? <><Check className="w-3.5 h-3.5" />Sent!</>
-              : <><Send className="w-3.5 h-3.5" />Send to client</>
-            }
-          </Button>
+            {sendStatus === 'sending' ? (
+              <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending...</>
+            ) : sendStatus === 'sent' ? (
+              <><Check className="w-3.5 h-3.5 text-emerald-500" /> Sent!</>
+            ) : (
+              <><Send className="w-3.5 h-3.5" /> Send to client</>
+            )}
+          </button>
         ) : (
-          <Button
-            variant="secondary"
-            size="sm"
+          <button
+            type="button"
             onClick={async () => {
               setLoading(true)
               setActionError('')
@@ -112,46 +116,59 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
               if (error) { setActionError('Could not update this invoice. Please try again.'); return }
               router.refresh()
             }}
-            loading={loading}
+            disabled={loading}
+            className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
           >
-            <Mail className="w-3.5 h-3.5" />Mark as sent
-          </Button>
+            {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Mail className="w-3.5 h-3.5" />}
+            Mark as sent
+          </button>
         )
       )}
 
       {/* Reminder button — only on sent invoices with a client email */}
       {invoice.status === 'sent' && invoice.client_email && (
-        <Button
-          variant="secondary"
-          size="sm"
+        <button
+          type="button"
           onClick={sendReminder}
-          loading={reminderStatus === 'sending'}
-          disabled={reminderStatus === 'sent'}
+          disabled={reminderStatus === 'sending' || reminderStatus === 'sent'}
+          className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
         >
-          {reminderStatus === 'sent'
-            ? <><Check className="w-3.5 h-3.5" />Reminder sent!</>
-            : <><Mail className="w-3.5 h-3.5" />Send reminder</>
-          }
-        </Button>
+          {reminderStatus === 'sending' ? (
+            <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending...</>
+          ) : reminderStatus === 'sent' ? (
+            <><Check className="w-3.5 h-3.5 text-emerald-500" /> Reminder sent!</>
+          ) : (
+            <><Mail className="w-3.5 h-3.5" /> Send reminder</>
+          )}
+        </button>
       )}
 
       {invoice.status !== 'paid' && (
-        <Button size="sm" onClick={markPaid} loading={loading}>
-          <Check className="w-3.5 h-3.5" />Mark paid
-        </Button>
+        <button 
+          type="button"
+          onClick={markPaid} 
+          disabled={loading}
+          className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3.5 py-1.5 text-xs transition-all shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+        >
+          {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+          Mark paid
+        </button>
       )}
 
       {(sendStatus === 'error' || reminderStatus === 'error') && (
-        <span className="text-xs text-red-600">Failed to send — check client email</span>
+        <span className="text-xs text-rose-500 font-medium">Failed to send — check client email</span>
       )}
-      {actionError && <span className="text-xs text-red-600">{actionError}</span>}
+      {actionError && <span className="text-xs text-rose-500 font-medium">{actionError}</span>}
 
       <button
+        type="button"
         onClick={handleDelete}
-        className="p-2 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors"
+        title="Delete invoice"
+        className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
       >
-        <Trash2 className="w-4 h-4" />
+        <Trash2 className="w-3.5 h-3.5" />
       </button>
     </div>
   )
 }
+

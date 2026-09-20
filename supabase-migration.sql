@@ -1,4 +1,4 @@
--- ClientPulse Database Schema Migration
+-- Frevio Database Schema Migration
 -- Run this script in the Supabase Dashboard SQL Editor (https://supabase.com/dashboard/project/ffdwirtwyprkittwlchn/sql/new)
 -- to bring the remote database schema in sync with the codebase.
 

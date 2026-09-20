@@ -24,17 +24,12 @@ export async function POST(request: Request) {
 
   if (!source) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
 
-  // Free plan check
+  // Project duplication is a Pro+ feature
+  const { isPaidPlan } = await import('@/lib/plans')
   const { data: profile } = await supabase.from('users').select('id, plan, promo_pro, created_at').eq('id', user.id).single()
   const syncedPlan = await checkAndSyncPromoPlan(profile, supabase)
-  if (syncedPlan !== 'pro') {
-    const { count } = await supabase
-      .from('projects')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-    if ((count ?? 0) >= 3) {
-      return NextResponse.json({ error: 'Free plan is limited to 3 projects. Upgrade to Pro.' }, { status: 403 })
-    }
+  if (!isPaidPlan(syncedPlan)) {
+    return NextResponse.json({ error: 'Project duplication requires Pro or higher. Upgrade to duplicate projects.' }, { status: 403 })
   }
 
   const { data: newProject, error } = await supabase

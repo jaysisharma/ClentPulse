@@ -10,12 +10,12 @@ import { RoadmapClient } from './roadmap-client'
 
 function renderInline(text: string): string {
   return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/`(.+?)`/g, '<code class="bg-slate-100 dark:bg-slate-800 text-indigo-700 px-1 py-0.5 rounded text-[0.85em] font-mono">$1</code>')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-indigo-600 hover:underline">$1</a>')
-    .replace(/✅/g, '<span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">✅ Done</span>')
-    .replace(/🔄/g, '<span class="inline-flex items-center gap-1 text-xs font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">🔄 In progress</span>')
-    .replace(/⬜/g, '<span class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">⬜ Pending</span>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-white">$1</strong>')
+    .replace(/`(.+?)`/g, '<code class="bg-slate-100 dark:bg-white/10 text-indigo-600 dark:text-indigo-400 px-1.5 py-0.5 rounded text-[0.85em] font-mono border border-slate-200/60 dark:border-white/10">$1</code>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-indigo-600 dark:text-indigo-400 underline underline-offset-4 hover:opacity-80 transition-opacity">$1</a>')
+    .replace(/✅/g, '<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2 py-0.5 rounded-full">✅ Done</span>')
+    .replace(/🔄/g, '<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-2 py-0.5 rounded-full">🔄 In progress</span>')
+    .replace(/⬜/g, '<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2 py-0.5 rounded-full">⬜ Planned</span>')
     .replace(/📋/g, '📋')
 }
 
@@ -50,32 +50,32 @@ function renderMarkdown(md: string): string {
 
     // HR
     if (/^---+$/.test(trimmed)) {
-      out.push('<hr class="border-slate-200 dark:border-slate-800 my-6" />')
+      out.push('<hr class="border-slate-200 dark:border-white/10 my-6" />')
       continue
     }
 
     // Blockquote
     if (trimmed.startsWith('>')) {
       const content = renderInline(trimmed.slice(1).trim())
-      out.push(`<blockquote class="border-l-4 border-indigo-300 pl-4 text-slate-500 dark:text-slate-400 text-sm italic my-3">${content}</blockquote>`)
+      out.push(`<blockquote class="border-l-2 border-indigo-500 pl-4 text-slate-600 dark:text-slate-400 text-xs italic my-3 bg-indigo-50/30 dark:bg-indigo-500/5 py-2 rounded-r-xl">${content}</blockquote>`)
       continue
     }
 
     // Headings
     if (trimmed.startsWith('#### ')) {
-      out.push(`<h4 class="text-sm font-semibold text-slate-700 dark:text-slate-200 mt-4 mb-1">${renderInline(trimmed.slice(5))}</h4>`)
+      out.push(`<h4 class="text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider mt-4 mb-1">${renderInline(trimmed.slice(5))}</h4>`)
       continue
     }
     if (trimmed.startsWith('### ')) {
-      out.push(`<h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mt-6 mb-2 flex items-center gap-2">${renderInline(trimmed.slice(4))}</h3>`)
+      out.push(`<h3 class="text-sm font-semibold text-slate-900 dark:text-white mt-6 mb-2 flex items-center gap-2">${renderInline(trimmed.slice(4))}</h3>`)
       continue
     }
     if (trimmed.startsWith('## ')) {
-      out.push(`<h2 class="text-xl font-bold text-slate-900 dark:text-white mt-8 mb-3 pb-2 border-b border-slate-200 dark:border-slate-800">${renderInline(trimmed.slice(3))}</h2>`)
+      out.push(`<h2 class="text-base font-medium uppercase tracking-tight text-slate-900 dark:text-white mt-8 mb-3 pb-2 border-b border-slate-200 dark:border-white/10">${renderInline(trimmed.slice(3))}</h2>`)
       continue
     }
     if (trimmed.startsWith('# ')) {
-      out.push(`<h1 class="text-2xl font-bold text-slate-900 dark:text-white mb-1">${renderInline(trimmed.slice(2))}</h1>`)
+      out.push(`<h1 class="text-xl font-light uppercase tracking-tight text-slate-900 dark:text-white mb-2">${renderInline(trimmed.slice(2))}</h1>`)
       continue
     }
 
@@ -90,17 +90,17 @@ function renderMarkdown(md: string): string {
       }
 
       if (!inTable) {
-        out.push('<div class="overflow-x-auto my-4"><table class="w-full text-sm border-collapse">')
+        out.push('<div class="overflow-x-auto my-4 rounded-xl border border-slate-200 dark:border-white/10"><table class="w-full text-xs border-collapse">')
         inTable = true
       }
 
       const tag = !tableHeader ? 'th' : 'td'
       const rowClass = !tableHeader
-        ? 'bg-slate-50 dark:bg-slate-800/40'
-        : 'border-t border-slate-100 dark:border-slate-800 hover:bg-slate-50/60 dark:hover:bg-slate-800/40'
+        ? 'bg-slate-50 dark:bg-white/[0.03]'
+        : 'border-t border-slate-100 dark:border-white/5 hover:bg-slate-50/60 dark:hover:bg-white/[0.02]'
       const cellClass = !tableHeader
-        ? 'px-4 py-2.5 text-left text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider'
-        : 'px-4 py-2.5 align-top'
+        ? 'px-4 py-3 text-left text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider'
+        : 'px-4 py-3 align-top text-slate-700 dark:text-slate-300'
 
       if (!tableHeader) {
         out.push('<thead>')
@@ -118,16 +118,16 @@ function renderMarkdown(md: string): string {
     // List
     if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       if (!inList) {
-        out.push('<ul class="space-y-1.5 my-3 list-none">')
+        out.push('<ul class="space-y-2 my-3 list-none">')
         inList = true
       }
       const content = renderInline(trimmed.slice(2))
-      out.push(`<li class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300"><span class="text-slate-300 mt-0.5 flex-shrink-0">–</span><span>${content}</span></li>`)
+      out.push(`<li class="flex items-start gap-2.5 text-xs text-slate-600 dark:text-slate-300"><span class="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 flex-shrink-0" /><span>${content}</span></li>`)
       continue
     }
 
     // Paragraph
-    out.push(`<p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${renderInline(trimmed)}</p>`)
+    out.push(`<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-normal">${renderInline(trimmed)}</p>`)
   }
 
   if (inList)  out.push('</ul>')

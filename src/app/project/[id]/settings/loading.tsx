@@ -1,46 +1,53 @@
 import { AppLayout } from '@/components/layout/app-layout'
+import { DarkShell } from '@/components/layout/dark-shell'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-lg ${className}`} />
+  return <div className={`bg-slate-200/70 dark:bg-white/5 rounded-xl ${className}`} />
 }
 
 export default function Loading() {
   return (
     <AppLayout>
-      <div className="animate-pulse max-w-xl space-y-6 py-6">
-        <Sk className="h-4 w-36" />
-        <div className="space-y-1">
-          <Sk className="h-7 w-44" />
-          <Sk className="h-4 w-72" />
-        </div>
-        {[...Array(2)].map((_, i) => (
-          <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-            <Sk className="h-4 w-24 mb-2" />
-            <Sk className="h-9 w-full rounded-lg" />
-            <div className="grid grid-cols-2 gap-4">
-              <Sk className="h-9 rounded-lg" />
-              <Sk className="h-9 rounded-lg" />
-            </div>
-            <div className="flex gap-2">
-              {[...Array(9)].map((_, j) => (
-                <Sk key={j} className="w-7 h-7 rounded-full" />
+      <DarkShell>
+        <div className="animate-pulse max-w-4xl mx-auto space-y-6 relative z-10 pb-12">
+          <Sk className="h-4 w-36" />
+          <div className="space-y-2">
+            <Sk className="h-4 w-28" />
+            <Sk className="h-8 w-56" />
+            <Sk className="h-4 w-72" />
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-6 items-start">
+            {/* Nav skeleton */}
+            <div className="w-full md:w-48 flex-shrink-0 flex md:flex-col gap-1">
+              {[...Array(4)].map((_, i) => (
+                <Sk key={i} className="h-10 w-full rounded-xl" />
               ))}
             </div>
+
+            {/* Panel skeleton */}
+            <div className="flex-1 w-full space-y-6">
+              <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 space-y-5">
+                <Sk className="h-4 w-32" />
+                <Sk className="h-10 w-full rounded-xl" />
+                <div className="grid grid-cols-2 gap-4">
+                  <Sk className="h-10 rounded-xl" />
+                  <Sk className="h-10 rounded-xl" />
+                </div>
+                <div className="flex gap-2">
+                  {[...Array(9)].map((_, j) => (
+                    <Sk key={j} className="w-7 h-7 rounded-full" />
+                  ))}
+                </div>
+                <div className="pt-3 border-t border-slate-100 dark:border-white/5">
+                  <Sk className="h-9 w-28 rounded-full" />
+                </div>
+              </div>
+            </div>
           </div>
-        ))}
-        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 flex items-center justify-between">
-          <div className="space-y-1.5">
-            <Sk className="h-4 w-36" />
-            <Sk className="h-3 w-64" />
-          </div>
-          <Sk className="h-8 w-24 rounded-lg" />
         </div>
-        <div className="bg-red-50 rounded-xl border border-red-200 p-6 space-y-3">
-          <Sk className="h-4 w-28" />
-          <Sk className="h-3 w-full" />
-          <Sk className="h-8 w-48 rounded-lg" />
-        </div>
-      </div>
+      </DarkShell>
     </AppLayout>
   )
 }
+

@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
+import { normalizePlan } from '@/lib/plans'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -54,6 +55,9 @@ export async function POST(request: Request) {
 
     if (session.metadata?.type === 'invoice_payment') {
       const invoiceId = session.metadata.invoice_id
+      const projectId = session.metadata.project_id
+      const isDeposit = session.metadata.is_deposit === 'true'
+
       if (invoiceId) {
         const { error } = await supabase
           .from('invoices')
@@ -64,16 +68,29 @@ export async function POST(request: Request) {
           return NextResponse.json({ error: error.message }, { status: 500 })
         }
       }
+
+      if (isDeposit && projectId) {
+        const { error: projError } = await supabase
+          .from('projects')
+          .update({ deposit_paid: true, status: 'active' })
+          .eq('id', projectId)
+        if (projError) {
+          console.error('Failed to update project deposit_paid status:', projError)
+        }
+      }
     } else {
       const customerId = session.customer as string
       const userId = session.client_reference_id || session.metadata?.supabase_user_id
+      const rawTier = session.metadata?.plan_tier || 'pro'
+      const planTier = normalizePlan(rawTier)
+      const orgId = session.metadata?.org_id
 
       let userUpdated = false
       if (userId) {
         // If we have user ID, update their plan, clear promo_pro, and backfill customer ID
         const { data, error } = await supabase
           .from('users')
-          .update({ plan: 'pro', promo_pro: false, stripe_customer_id: customerId })
+          .update({ plan: planTier, promo_pro: false, stripe_customer_id: customerId })
           .eq('id', userId)
           .select()
         if (!error && (data ?? []).length > 0) {
@@ -85,12 +102,21 @@ export async function POST(request: Request) {
         // Fallback: match by stripe_customer_id
         const { error } = await supabase
           .from('users')
-          .update({ plan: 'pro', promo_pro: false })
+          .update({ plan: planTier, promo_pro: false })
           .eq('stripe_customer_id', customerId)
         if (error) {
           console.error('Failed to update user plan on checkout:', error)
           return NextResponse.json({ error: error.message }, { status: 500 })
         }
+      }
+
+      // If this subscription is attached to an organization, update org billing_plan
+      if (orgId) {
+        const orgBillingPlan = planTier === 'agency_scale' ? 'agency_pro' : 'starter'
+        await supabase
+          .from('organizations')
+          .update({ billing_plan: orgBillingPlan, stripe_customer_id: customerId })
+          .eq('id', orgId)
       }
     }
   }
@@ -107,25 +133,73 @@ export async function POST(request: Request) {
       console.error('Failed to update user plan on subscription delete:', error)
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
+
+    // Downgrade any organization tied to this customer
+    await supabase
+      .from('organizations')
+      .update({ billing_plan: 'free' })
+      .eq('stripe_customer_id', customerId)
   }
 
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
-    // Entitlement statuses: a paying customer keeps Pro while active, in trial, or
+    // Entitlement statuses: a paying customer keeps their plan while active, in trial, or
     // in the card-retry grace window (past_due). Only customer.subscription.deleted
     // (or a terminal status) revokes — flipping to free on a transient past_due would
-    // strip Pro mid-cycle from someone whose renewal is simply being retried.
+    // strip access mid-cycle from someone whose renewal is simply being retried.
     const entitled = ['active', 'trialing', 'past_due']
-    const plan = entitled.includes(subscription.status) ? 'pro' : 'free'
+    const isEntitled = entitled.includes(subscription.status)
 
-    const { error } = await supabase
-      .from('users')
-      .update({ plan, ...(plan === 'pro' ? { promo_pro: false } : {}) })
-      .eq('stripe_customer_id', customerId)
-    if (error) {
-      console.error('Failed to update user plan on subscription update:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+    if (!isEntitled) {
+      const { error } = await supabase
+        .from('users')
+        .update({ plan: 'free' })
+        .eq('stripe_customer_id', customerId)
+      if (error) {
+        console.error('Failed to demote user plan on subscription update:', error)
+        return NextResponse.json({ error: error.message }, { status: 500 })
+      }
+      await supabase
+        .from('organizations')
+        .update({ billing_plan: 'free' })
+        .eq('stripe_customer_id', customerId)
+    } else {
+      // Retain or refresh paid entitlement preserving specific plan tier
+      const rawTier = subscription.metadata?.plan_tier
+      const orgId = subscription.metadata?.org_id
+      
+      let resolvedPlan: string = 'pro'
+      if (rawTier) {
+        resolvedPlan = normalizePlan(rawTier)
+      } else {
+        // Check existing user plan to avoid downgrading an existing agency subscription
+        const { data: existingUser } = await supabase
+          .from('users')
+          .select('plan')
+          .eq('stripe_customer_id', customerId)
+          .maybeSingle()
+        if (existingUser?.plan && existingUser.plan !== 'free') {
+          resolvedPlan = existingUser.plan
+        }
+      }
+
+      const { error } = await supabase
+        .from('users')
+        .update({ plan: resolvedPlan, promo_pro: false })
+        .eq('stripe_customer_id', customerId)
+      if (error) {
+        console.error('Failed to update user plan on subscription update:', error)
+        return NextResponse.json({ error: error.message }, { status: 500 })
+      }
+
+      if (orgId && (resolvedPlan === 'agency' || resolvedPlan === 'agency_scale')) {
+        const orgBillingPlan = resolvedPlan === 'agency_scale' ? 'agency_pro' : 'starter'
+        await supabase
+          .from('organizations')
+          .update({ billing_plan: orgBillingPlan })
+          .eq('id', orgId)
+      }
     }
   }
 
@@ -164,7 +238,7 @@ export async function POST(request: Request) {
 <div style="max-width:480px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.08);padding:32px">
   <h1 style="color:#0f172a;font-size:20px;margin:0 0 8px">Payment failed</h1>
   <p style="color:#475569;font-size:15px">Hi ${name},</p>
-  <p style="color:#475569;font-size:15px">We weren't able to process your Frevio Pro subscription payment. Please update your payment method to keep your Pro access.</p>
+  <p style="color:#475569;font-size:15px">We weren't able to process your Frevio subscription payment. Please update your payment method to keep your access.</p>
   <div style="margin:28px 0;text-align:center">
     <a href="${portalUrl}" style="background:#6366F1;color:white;text-decoration:none;padding:12px 28px;border-radius:8px;font-weight:600;font-size:14px;display:inline-block">
       Update payment method →

@@ -5,122 +5,146 @@ export const metadata = {
   title: 'Terms of Service — Frevio',
 }
 
-const UPDATED = 'June 19, 2026'
+const UPDATED = 'September 8, 2026'
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
-      <div className="mx-auto max-w-3xl px-6 py-16">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 py-16 px-4 sm:px-6">
+      <div className="mx-auto max-w-3xl">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800 dark:hover:text-slate-300"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 shadow-xs"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to Frevio
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to Frevio
         </Link>
 
-        <h1 className="mt-8 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Terms of Service
-        </h1>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Last updated: {UPDATED}</p>
+        <div className="mt-8">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              Contractual Framework
+            </span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            Terms of Service
+          </h1>
+          <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono">Effective date: {UPDATED}</p>
+        </div>
 
-        <div className="mt-10 space-y-8 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
+        <div className="mt-8 bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md p-6 sm:p-10 shadow-xs dark:shadow-none space-y-8 text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-300 font-normal">
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">1. Acceptance of terms</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">01.</span> Acceptance of Terms
+            </h2>
             <p>
-              By creating an account or using Frevio (the &ldquo;Service&rdquo;), you agree to these Terms of
-              Service. If you do not agree, do not use the Service. If you use Frevio on behalf of an
-              organization, you represent that you have authority to bind that organization to these terms.
+              By registering an account, integrating third-party tools, or accessing Frevio (&ldquo;the Service&rdquo;), you enter into a legally binding agreement with Frevio. If you disagree with these Terms, you must discontinue platform use immediately. If accessing on behalf of a company or studio, you affirm full legal authority to bind that entity.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">2. The Service</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">02.</span> Scope of Service
+            </h2>
             <p>
-              Frevio is a client-management workspace for freelancers — projects, status updates, invoices,
-              contracts, time tracking, and client portals. We may add, change, or remove features over time.
+              Frevio provides an integrated studio management operating system for freelancers, consultants, and independent agencies. Capabilities encompass project milestone management, client status portals, time tracking, invoice generation, contract agreements, and financial ledger settlements. We continuously iterate and introduce platform capabilities.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">3. Accounts</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">03.</span> Account Integrity & Security
+            </h2>
             <p>
-              You are responsible for safeguarding your login credentials and for all activity under your
-              account. You must provide accurate information and be at least 18 years old. Notify us promptly
-              of any unauthorized use.
+              You are solely responsible for maintaining the confidentiality of your credentials and all actions conducted under your account. You represent that you are at least 18 years of age and will promptly notify our security team of any unauthorized workspace intrusion.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">4. Acceptable use</h2>
-            <p>You agree not to misuse the Service. In particular, you will not:</p>
-            <ul className="list-disc space-y-1.5 pl-6">
-              <li>break the law or infringe others&rsquo; rights;</li>
-              <li>send spam, malware, or fraudulent invoices;</li>
-              <li>attempt to disrupt, reverse-engineer, or gain unauthorized access to the Service;</li>
-              <li>resell or expose the Service to third parties except your own clients.</li>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">04.</span> Acceptable Studio Conduct
+            </h2>
+            <p>Users must adhere to legal and professional conduct. Under no circumstances may users:</p>
+            <ul className="space-y-2 pl-1">
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span>Violate statutory laws, third-party copyrights, trademarks, or trade secrets;</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span>Dispatch unsolicited bulk spam, deceptive communications, or fraudulent financial demands;</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span>Attempt reverse-engineering, security probe penetration, or unauthorized database extraction;</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span>Sub-license or commercially resell the platform architecture without written consent.</span>
+              </li>
             </ul>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">5. Plans, billing, and cancellation</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">05.</span> Subscriptions, Billing & Cancellations
+            </h2>
             <p>
-              Frevio offers a free plan and a paid <strong>Pro</strong> plan. Paid subscriptions are billed in
-              advance through our payment processor, Stripe, and renew automatically until cancelled. You can
-              cancel anytime; access continues until the end of the current billing period. Except where
-              required by law, payments are non-refundable. Promotional offers (such as free launch access)
-              may be limited in quantity, time, or eligibility and may be modified or ended at any time.
+              Frevio provides Free tier access and premium Pro subscriptions. Paid tiers are billed on a recurring basis via Stripe and renew automatically until explicitly cancelled. Cancellations take effect at the conclusion of the active billing cycle. Payments are non-refundable except where mandated by applicable consumer protection laws. Promotional allocations may be adjusted or retired at platform discretion.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">6. Your content</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">06.</span> Workspace Content & Intellectual Property
+            </h2>
             <p>
-              You retain ownership of the content and data you put into Frevio. You grant us a limited license
-              to host and process it solely to operate the Service. You are responsible for the lawfulness of
-              the content you upload and the messages and invoices you send to your clients.
+              You maintain full, unencumbered ownership of all client deliverables, brand media, contracts, invoices, and documents uploaded to Frevio. You grant Frevio a restricted, worldwide license strictly to process, host, and render this data to execute your requested services.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">7. Termination</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">07.</span> Account Termination
+            </h2>
             <p>
-              You may stop using Frevio at any time. We may suspend or terminate accounts that violate these
-              terms or that we reasonably believe create risk or legal exposure.
+              You may close your account at any time via Studio Settings. We reserve the authority to restrict or terminate workspace access in cases of material terms violations, chargeback abuse, or actionable legal liabilities.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">8. Disclaimers &amp; limitation of liability</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">08.</span> Warranties & Liability Limitations
+            </h2>
             <p>
-              The Service is provided &ldquo;as is&rdquo; without warranties of any kind. To the maximum extent
-              permitted by law, Frevio is not liable for indirect, incidental, or consequential damages, and our
-              total liability for any claim will not exceed the amount you paid us in the 12 months before the
-              claim.
+              Frevio is provided &ldquo;as is&rdquo; without implied warranties of any kind. Under no theory of liability shall Frevio or its operators be liable for indirect, incidental, or consequential damages. Total cumulative liability shall not exceed the aggregate fees paid to Frevio in the 12 months preceding the claim.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">9. Changes</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">09.</span> Modifications to Terms
+            </h2>
             <p>
-              We may update these terms from time to time. Material changes will be reflected by the &ldquo;Last
-              updated&rdquo; date above. Continued use after changes means you accept the revised terms.
+              We reserve the right to revise these Terms to reflect legislative updates or product enhancements. Notice of significant revisions will be indicated through the effective date above. Continued platform utilization represents acceptance of modified terms.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">10. Contact</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">10.</span> Inquiries & Legal Notices
+            </h2>
             <p>
-              Questions about these terms? Email{' '}
-              <a href="mailto:support@frevio.cloud" className="font-medium text-accent hover:underline">
-                support@frevio.cloud
-              </a>
-              .
+              For legal communications, terms clarifications, or compliance documentation, reach out to{' '}
+              <a href="mailto:support@frevio.app" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                support@frevio.app
+              </a>.
             </p>
           </section>
         </div>
 
-        <div className="mt-12 border-t border-slate-200 pt-6 text-sm dark:border-slate-800">
-          <Link href="/privacy" className="font-medium text-accent hover:underline">
+        <div className="mt-8 flex items-center justify-between border-t border-slate-200 dark:border-white/10 pt-6 text-xs text-slate-500 dark:text-slate-400">
+          <span>Frevio Studio Operating System</span>
+          <Link href="/privacy" className="font-semibold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
             Privacy Policy →
           </Link>
         </div>

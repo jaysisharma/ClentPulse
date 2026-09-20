@@ -1,5 +1,8 @@
+import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { AdminDashboard } from './admin-dashboard'
+import { isUserAdmin } from '@/lib/auth-admin'
+import { redirect } from 'next/navigation'
 import Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
@@ -9,6 +12,18 @@ interface PageProps {
 }
 
 export default async function AdminPage({ searchParams }: PageProps) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/auth/login')
+  }
+
+  const authorized = await isUserAdmin(supabase, user)
+  if (!authorized) {
+    redirect('/dashboard')
+  }
+
   const adminClient = createAdminClient()
   const resolvedParams = await searchParams
   const activeTab = resolvedParams.tab || 'overview'

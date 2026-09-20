@@ -46,25 +46,25 @@ export function ClientChecklist({
   const allDone = totalDone === total
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+    <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md shadow-xs dark:shadow-none overflow-hidden transition-colors">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="px-6 py-4 border-b border-slate-100 dark:border-white/5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <ClipboardList className="w-4 h-4 text-slate-400" />
-          <span className="font-semibold text-slate-900 text-sm">Project Kickoff Checklist</span>
+          <ClipboardList className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+          <span className="font-semibold text-slate-900 dark:text-white text-sm">Project Deliverable Checklist</span>
         </div>
         {allDone ? (
-          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full">
-            ✓ All done!
+          <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+            ✓ All completed
           </span>
         ) : (
-          <span className="text-xs text-slate-400">{totalDone}/{total} complete</span>
+          <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">{totalDone}/{total} complete</span>
         )}
       </div>
 
       {/* Progress bar */}
       <div className="px-6 pt-4">
-        <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+        <div className="w-full bg-slate-100 dark:bg-white/5 rounded-full h-1.5 overflow-hidden">
           <div
             className="h-1.5 rounded-full transition-all duration-500"
             style={{ width: `${Math.round((totalDone / total) * 100)}%`, backgroundColor: accentColor }}
@@ -76,18 +76,18 @@ export function ClientChecklist({
         {/* Freelancer side — read-only */}
         {myItems.length > 0 && (
           <div>
-            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md w-fit mb-2">
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-full w-fit mb-2.5">
               <User className="w-3.5 h-3.5" />
-              Their tasks
+              Studio Tasks
             </div>
             <div className="space-y-2">
               {myItems.map(item => (
                 <div key={item.id} className="flex items-center gap-2.5">
                   {item.done
                     ? <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: accentColor }} />
-                    : <Circle className="w-4 h-4 flex-shrink-0 text-slate-300" />
+                    : <Circle className="w-4 h-4 flex-shrink-0 text-slate-300 dark:text-slate-600" />
                   }
-                  <span className={`text-sm ${item.done ? 'line-through text-slate-400' : 'text-slate-600'}`}>
+                  <span className={`text-xs sm:text-sm ${item.done ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-700 dark:text-slate-300'}`}>
                     {item.title}
                   </span>
                 </div>
@@ -99,39 +99,39 @@ export function ClientChecklist({
         {/* Client side — interactive */}
         {clientItems.length > 0 && (
           <div>
-            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-violet-600 bg-violet-50 px-2 py-1 rounded-md w-fit mb-2">
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wider text-violet-700 dark:text-violet-400 bg-violet-500/10 border border-violet-500/20 px-2.5 py-1 rounded-full w-fit mb-2.5">
               <Users className="w-3.5 h-3.5" />
-              Your tasks
-              <span className="opacity-60">· tap to check off</span>
+              Client Tasks
+              <span className="opacity-60 font-normal">· tap to check off</span>
             </div>
             <div className="space-y-2">
               {clientItems.map(item => (
                 <button
                   key={item.id}
                   onClick={() => toggleClientItem(item)}
-                  className="w-full flex items-center gap-2.5 text-left group"
+                  className="w-full flex items-center gap-2.5 text-left group py-1"
                 >
                   {item.done
                     ? <CheckCircle2 className="w-4 h-4 flex-shrink-0 transition-colors" style={{ color: accentColor }} />
-                    : <Circle className="w-4 h-4 flex-shrink-0 text-slate-300 group-hover:text-slate-400 transition-colors" />
+                    : <Circle className="w-4 h-4 flex-shrink-0 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-500 transition-colors" />
                   }
-                  <span className={`text-sm transition-colors ${
+                  <span className={`text-xs sm:text-sm transition-colors ${
                     item.done
-                      ? 'line-through text-slate-400'
-                      : 'text-slate-700 group-hover:text-slate-900'
+                      ? 'line-through text-slate-400 dark:text-slate-500'
+                      : 'text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white'
                   }`}>
                     {item.title}
                   </span>
                   {item.done && item.done_at && (
-                    <span className="text-[10px] text-slate-300 ml-auto flex-shrink-0">
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono ml-auto flex-shrink-0">
                       {new Date(item.done_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                     </span>
                   )}
                 </button>
               ))}
             </div>
-            <p className="text-xs text-slate-400 mt-3">
-              Check off items as you complete them — your freelancer will be notified.
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              Check off items as you complete them — your studio team will be notified in real time.
             </p>
           </div>
         )}

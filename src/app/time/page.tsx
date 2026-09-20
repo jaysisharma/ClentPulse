@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { AppLayout } from '@/components/layout/app-layout'
-import { Button } from '@/components/ui/button'
-import { Play, Square, Plus, Trash2, Clock, Timer, Check, X, Search, ChevronDown, Download } from 'lucide-react'
+import { DarkShell } from '@/components/layout/dark-shell'
+import { Play, Square, Plus, Trash2, Clock, Timer, Check, X, Search, ChevronDown, Download, Calendar, TrendingUp, Layers, DollarSign } from 'lucide-react'
 
 interface Project { id: string; project_name: string; color: string; hourly_rate: number | null }
 interface Entry {
@@ -13,6 +13,7 @@ interface Entry {
   description: string
   hours: number
   date: string
+  source?: string | null
   projects: { project_name: string; color: string } | null
 }
 interface ActiveTimer { id: string; project_id: string | null; description: string; started_at: string }
@@ -70,12 +71,19 @@ function fmtDate(dateStr: string) {
 
 // ── stat card ─────────────────────────────────────────────────────────────────
 
-function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function StatCard({ label, value, sub, icon: Icon }: { label: string; value: string; sub?: string; icon?: React.ComponentType<{ className?: string }> }) {
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
-      <div className="text-sm text-slate-500 dark:text-slate-400 mb-1">{label}</div>
-      <div className="text-2xl font-bold text-slate-900 dark:text-white">{value}</div>
-      {sub && <div className="text-xs text-slate-400 mt-1">{sub}</div>}
+    <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{label}</span>
+        {Icon && (
+          <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-600 dark:text-slate-300">
+            <Icon className="w-4 h-4" />
+          </div>
+        )}
+      </div>
+      <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">{value}</div>
+      {sub && <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">{sub}</div>}
     </div>
   )
 }
@@ -122,30 +130,30 @@ function EntryRow({
 
   if (editing) {
     return (
-      <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-xl px-4 py-3">
+      <div className="flex items-center gap-2 rounded-xl border border-indigo-200 dark:border-white/20 bg-slate-50 dark:bg-white/[0.04] px-4 py-3 ring-1 ring-indigo-500/20 dark:ring-white/10">
         <div
-          className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-          style={{ backgroundColor: entry.projects?.color ?? '#cbd5e1' }}
+          className="w-2 h-2 rounded-full flex-shrink-0"
+          style={{ backgroundColor: entry.projects?.color ?? '#94a3b8' }}
         />
         <input
           ref={descRef}
-          className="flex-1 min-w-0 bg-transparent text-sm text-slate-900 dark:text-white font-medium placeholder:text-slate-400 focus:outline-none"
+          className="flex-1 min-w-0 bg-transparent text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none"
           value={desc}
           onChange={e => setDesc(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel() }}
           placeholder="Description"
         />
         <input
-          className="w-20 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 rounded-lg px-2 py-1 text-sm text-right text-slate-900 dark:text-white font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-20 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1 text-xs text-right text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500 dark:focus:border-white/30"
           type="number" step="0.25" min="0.25"
           value={hrs}
           onChange={e => setHrs(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel() }}
         />
-        <button onClick={save} className="p-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+        <button onClick={save} className="p-1.5 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors cursor-pointer">
           <Check className="w-3.5 h-3.5" />
         </button>
-        <button onClick={cancel} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:bg-slate-800 transition-colors">
+        <button onClick={cancel} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -154,25 +162,32 @@ function EntryRow({
 
   return (
     <div
-      className="flex items-center gap-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-4 py-3 group cursor-pointer hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-sm transition-all"
+      className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 hover:bg-slate-50 dark:hover:bg-white/[0.03] px-4 py-3.5 group cursor-pointer ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none transition-all"
       onClick={startEdit}
     >
       <div
-        className="w-2.5 h-2.5 rounded-full flex-shrink-0"
-        style={{ backgroundColor: entry.projects?.color ?? '#cbd5e1' }}
+        className="w-2 h-2 rounded-full flex-shrink-0"
+        style={{ backgroundColor: entry.projects?.color ?? '#94a3b8' }}
       />
       <div className="flex-1 min-w-0">
-        <div className="text-sm text-slate-900 dark:text-white font-medium truncate">{entry.description}</div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-medium text-slate-900 dark:text-white truncate">{entry.description}</span>
+          {entry.source === 'extension' && (
+            <span className="inline-flex items-center text-[10px] font-mono bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-200 dark:border-indigo-500/20 flex-shrink-0">
+              VS Code
+            </span>
+          )}
+        </div>
         {entry.projects && (
-          <div className="text-xs text-slate-400 mt-0.5">{entry.projects.project_name}</div>
+          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{entry.projects.project_name}</div>
         )}
       </div>
-      <div className="text-sm font-bold text-slate-700 dark:text-slate-200 flex-shrink-0 tabular-nums">
+      <div className="text-xs font-mono font-medium text-slate-700 dark:text-slate-200 flex-shrink-0 tabular-nums">
         {fmtHours(entry.hours)}
       </div>
       <button
         onClick={e => { e.stopPropagation(); onDelete(entry.id) }}
-        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-300 hover:text-red-500 hover:bg-red-50 transition-all"
+        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer"
       >
         <Trash2 className="w-3.5 h-3.5" />
       </button>
@@ -378,249 +393,308 @@ export default function TimePage() {
 
   return (
     <AppLayout>
-      <div className="animate-fade-in">
+      <DarkShell>
+        <div className="relative z-10 animate-fade-in space-y-8 pb-10">
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Time tracker</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Track hours across your projects.</p>
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                  Time Tracking
+                </span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+                Time Tracker
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+                Track hours, monitor engineering rhythm, and manage billable sessions.
+              </p>
+            </div>
+            <a
+              href="/api/export-csv?type=time"
+              download
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all w-fit shadow-xs dark:shadow-sm"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Export CSV</span>
+            </a>
           </div>
-          <a
-            href="/api/export-csv?type=time"
-            download
-            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 px-3 py-2 rounded-lg hover:border-indigo-300 hover:text-indigo-600 transition-all"
-          >
-            <Download className="w-3.5 h-3.5" />Export CSV
-          </a>
-        </div>
 
-        {/* Stats strip */}
-        <div className={`grid gap-4 mb-6 ${hasBillable ? 'grid-cols-5' : 'grid-cols-4'}`}>
-          <StatCard label="Today"      value={fmtHours(statsToday)}  sub={mounted ? new Date().toLocaleDateString('en-US', { weekday: 'long' }) : ''} />
-          <StatCard label="This week"  value={fmtHours(statsWeek)}   sub="Mon → today" />
-          <StatCard label="This month" value={fmtHours(statsMonth)}  sub={mounted ? new Date().toLocaleDateString('en-US', { month: 'long' }) : ''} />
-          <StatCard label="All time"   value={fmtHours(statsAll)}    sub={`${entries.length} entries`} />
-          {hasBillable && (
+          {/* Stats strip */}
+          <div className={`grid gap-4 ${hasBillable ? 'grid-cols-2 lg:grid-cols-5' : 'grid-cols-2 lg:grid-cols-4'}`}>
             <StatCard
-              label="Billable (month)"
-              value={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(billableMonth)}
-              sub="based on hourly rates"
+              label="Today"
+              value={fmtHours(statsToday)}
+              sub={mounted ? new Date().toLocaleDateString('en-US', { weekday: 'long' }) : ''}
+              icon={Clock}
             />
-          )}
-        </div>
+            <StatCard
+              label="This week"
+              value={fmtHours(statsWeek)}
+              sub="Mon → today"
+              icon={Calendar}
+            />
+            <StatCard
+              label="This month"
+              value={fmtHours(statsMonth)}
+              sub={mounted ? new Date().toLocaleDateString('en-US', { month: 'long' }) : ''}
+              icon={TrendingUp}
+            />
+            <StatCard
+              label="All time"
+              value={fmtHours(statsAll)}
+              sub={`${entries.length} recorded entries`}
+              icon={Layers}
+            />
+            {hasBillable && (
+              <StatCard
+                label="Billable (month)"
+                value={new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(billableMonth)}
+                sub="based on hourly rates"
+                icon={DollarSign}
+              />
+            )}
+          </div>
 
-        {/* Timer / Manual input card */}
-        <div className={`rounded-xl border mb-8 overflow-hidden transition-all duration-300 ${timerRunning ? 'border-indigo-500' : 'border-slate-200 dark:border-slate-800'}`}>
-
-          {timerRunning ? (
-            /* ── Running state ───────────────────────────────────── */
-            <div className="bg-indigo-600 p-8">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="w-2 h-2 rounded-full bg-white dark:bg-slate-900 animate-pulse" />
-                    <span className="text-xs font-semibold text-indigo-200 uppercase tracking-wider">Recording</span>
+          {/* Timer / Manual input card */}
+          <div className="transition-all duration-300">
+            {timerRunning ? (
+              /* ── Running state ───────────────────────────────────── */
+              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50 dark:bg-[#0c0d12]/95 p-6 sm:p-8 ring-1 ring-emerald-500/20 shadow-lg dark:shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+                <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                      <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400 font-medium">
+                        Active Recording Session
+                      </span>
+                    </div>
+                    <div className="text-5xl sm:text-6xl font-mono font-light text-slate-900 dark:text-white tracking-tight mb-3">
+                      {elapsed(timer!.started_at)}
+                    </div>
+                    <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{timer!.description}</div>
+                    {timer!.project_id && (() => {
+                      const p = projects.find(p => p.id === timer!.project_id)
+                      return p ? (
+                        <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs text-slate-700 dark:text-slate-300">
+                          <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
+                          <span>{p.project_name}</span>
+                        </div>
+                      ) : null
+                    })()}
                   </div>
-                  <div className="text-6xl font-mono font-bold text-white tracking-tight mb-3">
-                    {elapsed(timer!.started_at)}
+                  <div className="flex flex-col items-start sm:items-end gap-2">
+                    <button
+                      onClick={stopTimer}
+                      disabled={stopping}
+                      className="rounded-full bg-rose-500/10 hover:bg-rose-500/20 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 border border-rose-500/30 text-rose-600 dark:text-rose-300 px-5 py-2.5 text-xs font-semibold flex items-center gap-2 transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+                    >
+                      <Square className="w-3.5 h-3.5 fill-current" />
+                      <span>{stopping ? 'Saving session...' : 'Stop & Save'}</span>
+                    </button>
+                    {stopError && (
+                      <span className="text-xs text-rose-600 dark:text-rose-400 max-w-xs">{stopError}</span>
+                    )}
                   </div>
-                  <div className="text-indigo-200 text-base font-medium">{timer!.description}</div>
-                  {timer!.project_id && (() => {
-                    const p = projects.find(p => p.id === timer!.project_id)
-                    return p ? (
-                      <div className="flex items-center gap-1.5 mt-2">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-                        <span className="text-sm text-indigo-300">{p.project_name}</span>
-                      </div>
-                    ) : null
-                  })()}
                 </div>
-                <div className="flex flex-col items-end gap-2">
-                  <Button
-                    variant="secondary"
-                    onClick={stopTimer}
-                    loading={stopping}
-                    className="flex-shrink-0 bg-white/10 border-white/20 text-white hover:bg-white/20"
-                  >
-                    <Square className="w-4 h-4" />Stop & save
-                  </Button>
-                  {stopError && (
-                    <span className="text-xs text-red-300 max-w-xs text-right">{stopError}</span>
+              </div>
+            ) : (
+              /* ── Idle state ──────────────────────────────────────── */
+              <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden">
+                {/* Mode tabs */}
+                <div className="flex items-center gap-1 p-3 border-b border-slate-100 dark:border-white/5">
+                  {(['timer', 'manual'] as const).map(m => (
+                    <button
+                      key={m}
+                      onClick={() => setMode(m)}
+                      className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium rounded-full transition-all capitalize cursor-pointer ${
+                        mode === m
+                          ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+                      }`}
+                    >
+                      {m === 'timer' ? <Timer className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                      <span>{m === 'timer' ? 'Live Timer' : 'Manual Entry'}</span>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="p-5">
+                  {mode === 'timer' ? (
+                    <div className="space-y-3">
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          className="flex-1 px-4 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-light"
+                          placeholder="What are you working on right now?"
+                          value={timerDesc}
+                          onChange={e => setTimerDesc(e.target.value)}
+                          onKeyDown={e => e.key === 'Enter' && startTimer()}
+                        />
+                        <select
+                          value={timerProject}
+                          onChange={e => setTimerProject(e.target.value)}
+                          className="px-3 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-white dark:bg-[#0c0d12] text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all cursor-pointer"
+                        >
+                          <option value="">Select Project (Optional)</option>
+                          {projects.map(p => (
+                            <option key={p.id} value={p.id}>
+                              {p.project_name}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={startTimer}
+                          disabled={startLoading}
+                          className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 font-semibold px-5 py-2.5 text-xs dark:hover:bg-slate-100 transition-all flex items-center justify-center gap-1.5 shadow-sm flex-shrink-0 disabled:opacity-50 cursor-pointer"
+                        >
+                          <Play className="w-3.5 h-3.5 fill-current" />
+                          <span>{startLoading ? 'Starting...' : 'Start'}</span>
+                        </button>
+                      </div>
+                      {startError && (
+                        <p className="text-xs text-rose-600 dark:text-rose-400">{startError}</p>
+                      )}
+                    </div>
+                  ) : (
+                    <form onSubmit={addManual} className="space-y-3">
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          className="flex-1 px-4 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-light"
+                          placeholder="What did you work on?"
+                          value={manDesc}
+                          onChange={e => setManDesc(e.target.value)}
+                          required
+                        />
+                        <input
+                          type="number" step="0.25" min="0.25"
+                          className="w-full sm:w-28 px-4 py-2.5 text-xs font-mono border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all text-right"
+                          placeholder="Hours"
+                          value={manHours}
+                          onChange={e => setManHours(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <select
+                          value={manProject}
+                          onChange={e => setManProject(e.target.value)}
+                          className="flex-1 px-3 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-white dark:bg-[#0c0d12] text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all cursor-pointer"
+                        >
+                          <option value="">No project</option>
+                          {projects.map(p => (
+                            <option key={p.id} value={p.id}>
+                              {p.project_name}
+                            </option>
+                          ))}
+                        </select>
+                        <input
+                          type="date"
+                          className="px-3 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
+                          value={manDate}
+                          onChange={e => setManDate(e.target.value)}
+                        />
+                        <button
+                          type="submit"
+                          disabled={saving}
+                          className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 font-semibold px-5 py-2.5 text-xs dark:hover:bg-slate-100 transition-all flex items-center justify-center gap-1.5 shadow-sm flex-shrink-0 disabled:opacity-50 cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>{saving ? 'Adding...' : 'Log Time'}</span>
+                        </button>
+                      </div>
+                      {manError && (
+                        <p className="text-xs text-rose-600 dark:text-rose-400">{manError}</p>
+                      )}
+                    </form>
                   )}
                 </div>
               </div>
+            )}
+          </div>
+
+          {/* Entry list */}
+          {entries.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-white/10 bg-white/70 dark:bg-[#0c0d12]/60 p-16 text-center ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md">
+              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center mx-auto mb-4">
+                <Clock className="w-6 h-6 text-slate-400" />
+              </div>
+              <h3 className="font-normal text-lg text-slate-900 dark:text-white mb-1">No time logged yet</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-xs font-light">Start a live timer or log a manual entry above to establish your timeline.</p>
             </div>
           ) : (
-            /* ── Idle state ──────────────────────────────────────── */
-            <div className="bg-white dark:bg-slate-900">
-              {/* Mode tabs */}
-              <div className="flex border-b border-slate-100 dark:border-slate-800">
-                {(['timer', 'manual'] as const).map(m => (
-                  <button
-                    key={m}
-                    onClick={() => setMode(m)}
-                    className={`flex items-center gap-2 px-5 py-3.5 text-sm font-medium border-b-2 transition-colors capitalize ${
-                      mode === m
-                        ? 'border-indigo-600 text-indigo-600'
-                        : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700'
-                    }`}
+            <div className="space-y-6">
+              {/* Filter row */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+                  <input
+                    type="text"
+                    placeholder="Search entries…"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    className="w-full bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-light"
+                  />
+                </div>
+                <div className="relative">
+                  <select
+                    value={filterProject}
+                    onChange={e => setFilterProject(e.target.value)}
+                    className="appearance-none bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full pl-4 pr-9 py-2 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 cursor-pointer"
                   >
-                    {m === 'timer' ? <Timer className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                    {m === 'timer' ? 'Timer' : 'Manual'}
-                  </button>
-                ))}
+                    <option value="">All projects</option>
+                    {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+                </div>
               </div>
 
-              <div className="p-5">
-                {mode === 'timer' ? (
-                  <div className="space-y-2">
-                    <div className="flex gap-3">
-                      <input
-                        className="flex-1 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
-                        placeholder="What are you working on?"
-                        value={timerDesc}
-                        onChange={e => setTimerDesc(e.target.value)}
-                        onKeyDown={e => e.key === 'Enter' && startTimer()}
-                      />
-                      <select
-                        value={timerProject}
-                        onChange={e => setTimerProject(e.target.value)}
-                        className="px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
-                      >
-                        <option value="">No project</option>
-                        {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
-                      </select>
-                      <Button onClick={startTimer} loading={startLoading} className="px-5">
-                        <Play className="w-4 h-4" />Start
-                      </Button>
-                    </div>
-                    {startError && (
-                      <p className="text-xs text-red-600">{startError}</p>
-                    )}
-                  </div>
-                ) : (
-                  <form onSubmit={addManual} className="space-y-3">
-                    <div className="flex gap-3">
-                      <input
-                        className="flex-1 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
-                        placeholder="What did you work on?"
-                        value={manDesc}
-                        onChange={e => setManDesc(e.target.value)}
-                        required
-                      />
-                      <input
-                        type="number" step="0.25" min="0.25"
-                        className="w-28 px-4 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors text-right"
-                        placeholder="Hours"
-                        value={manHours}
-                        onChange={e => setManHours(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="flex gap-3">
-                      <select
-                        value={manProject}
-                        onChange={e => setManProject(e.target.value)}
-                        className="flex-1 px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
-                      >
-                        <option value="">No project</option>
-                        {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
-                      </select>
-                      <input
-                        type="date"
-                        className="w-40 px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
-                        value={manDate}
-                        onChange={e => setManDate(e.target.value)}
-                      />
-                      <Button type="submit" loading={saving}>
-                        <Plus className="w-4 h-4" />Add
-                      </Button>
-                    </div>
-                    {manError && (
-                      <p className="text-xs text-red-600">{manError}</p>
-                    )}
-                  </form>
-                )}
-              </div>
+              {filtered.length === 0 ? (
+                <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 py-12 text-center ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
+                  <p className="text-slate-500 dark:text-slate-400 text-xs font-light">No entries match your search criteria.</p>
+                  <button
+                    onClick={() => { setSearch(''); setFilterProject('') }}
+                    className="mt-2 text-xs text-indigo-600 dark:text-white hover:underline font-medium"
+                  >
+                    Reset filters
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {Object.entries(grouped).map(([date, dayEntries]) => {
+                    const dayTotal = dayEntries.reduce((s, e) => s + e.hours, 0)
+                    return (
+                      <div key={date} className="space-y-2.5">
+                        <div className="flex items-center justify-between px-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{fmtDate(date)}</span>
+                            <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">({dayEntries.length})</span>
+                          </div>
+                          <div className="text-xs font-mono font-medium text-slate-600 dark:text-slate-400 tabular-nums">
+                            {fmtHours(dayTotal)}
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          {dayEntries.map(entry => (
+                            <EntryRow
+                              key={entry.id}
+                              entry={entry}
+                              onDelete={deleteEntry}
+                              onSave={saveEdit}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )}
         </div>
-
-        {/* Entry list */}
-        {entries.length === 0 ? (
-          <div className="bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 p-16 text-center">
-            <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <Clock className="w-7 h-7 text-slate-400" />
-            </div>
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-1">No time logged yet</h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm">Start a timer or add a manual entry above.</p>
-          </div>
-        ) : (
-          <>
-            {/* Filter row */}
-            <div className="flex gap-3 mb-5">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                <input
-                  type="text"
-                  placeholder="Search entries…"
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800/60 rounded-xl bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-              <div className="relative">
-                <select
-                  value={filterProject}
-                  onChange={e => setFilterProject(e.target.value)}
-                  className="appearance-none pl-3 pr-8 py-2.5 text-sm border border-slate-200 dark:border-slate-800/60 rounded-xl bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-                >
-                  <option value="">All projects</option>
-                  {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
-                </select>
-                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
-              </div>
-            </div>
-
-            {filtered.length === 0 ? (
-              <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 py-12 text-center">
-                <p className="text-slate-500 dark:text-slate-400 text-sm">No entries match your filters.</p>
-                <button
-                  onClick={() => { setSearch(''); setFilterProject('') }}
-                  className="mt-2 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
-                >
-                  Clear filters
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {Object.entries(grouped).map(([date, dayEntries]) => {
-                  const dayTotal = dayEntries.reduce((s, e) => s + e.hours, 0)
-                  return (
-                    <div key={date}>
-                      <div className="flex items-center justify-between mb-2.5">
-                        <div className="text-sm font-semibold text-slate-700 dark:text-slate-200">{fmtDate(date)}</div>
-                        <div className="text-sm font-semibold text-slate-400 tabular-nums">{fmtHours(dayTotal)}</div>
-                      </div>
-                      <div className="space-y-2">
-                        {dayEntries.map(entry => (
-                          <EntryRow
-                            key={entry.id}
-                            entry={entry}
-                            onDelete={deleteEntry}
-                            onSave={saveEdit}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </>
-        )}
-      </div>
+      </DarkShell>
     </AppLayout>
   )
 }

@@ -53,14 +53,15 @@ function NavLink({
       href={href}
       onClick={onNavigate}
       className={cn(
-        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+        'flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150',
         active
-          ? 'bg-rose-500/15 text-rose-400 font-semibold border border-rose-500/10'
-          : 'text-slate-400 hover:text-white hover:bg-white/5'
+          ? 'bg-rose-500/10 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 font-semibold border border-rose-500/20 dark:border-rose-500/20 shadow-xs'
+          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-white/[0.04]'
       )}
     >
-      <Icon className={cn("w-4 h-4 flex-shrink-0", active ? "text-rose-400" : "text-slate-500")} />
-      {label}
+      <Icon className={cn("w-4 h-4 flex-shrink-0", active ? "text-rose-600 dark:text-rose-400" : "text-slate-400 dark:text-slate-500")} />
+      <span>{label}</span>
+      {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />}
     </Link>
   )
 }
@@ -105,7 +106,7 @@ export function AdminShell({ children, user }: AdminShellProps) {
       title: 'Growth',
       items: [
         { tab: 'funnel',    label: 'Product Funnel', icon: BarChart2,    href: '/admin?tab=funnel' },
-        { tab: 'marketing', label: 'Campaigns/UTMs', icon: Megaphone,    href: '/admin?tab=marketing' },
+        { tab: 'marketing', label: 'Campaigns & UTMs', icon: Megaphone,  href: '/admin?tab=marketing' },
       ]
     },
     {
@@ -136,24 +137,27 @@ export function AdminShell({ children, user }: AdminShellProps) {
   ]
 
   const sidebarContent = (
-    <aside className="w-60 min-h-screen bg-slate-950 border-r border-white/10 flex flex-col fixed left-0 top-0 bottom-0 z-40">
+    <aside className="w-60 min-h-screen bg-white dark:bg-[#07080a] border-r border-slate-200 dark:border-white/10 flex flex-col fixed left-0 top-0 bottom-0 z-40 shadow-sm dark:shadow-2xl transition-colors">
       {/* Admin Logo Header */}
-      <div className="px-5 h-16 flex items-center flex-shrink-0 border-b border-white/5">
-        <Link href="/admin" className="flex items-center gap-2.5">
-          <Shield className="w-6 h-6 text-rose-500" />
+      <div className="px-5 h-16 flex items-center justify-between flex-shrink-0 border-b border-slate-200 dark:border-white/10">
+        <Link href="/admin" className="flex items-center gap-2.5 group">
+          <div className="w-7 h-7 rounded-lg bg-rose-500/10 dark:bg-rose-500/15 border border-rose-500/20 flex items-center justify-center text-rose-500">
+            <Shield className="w-4 h-4" />
+          </div>
           <div>
-            <span className="text-white font-bold text-sm tracking-tight block">Frevio Admin</span>
-            <span className="text-[10px] text-slate-500 font-medium">Control Panel</span>
+            <span className="text-slate-900 dark:text-white font-semibold text-sm tracking-tight block">Frevio</span>
+            <span className="text-[9px] text-rose-600 dark:text-rose-400 font-mono uppercase tracking-wider block font-medium">Admin Studio</span>
           </div>
         </Link>
+        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" title="Admin mode active" />
       </div>
 
       {/* Admin Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-4 overflow-y-auto">
+      <nav className="flex-1 px-3 py-3 space-y-3 overflow-y-auto">
         {adminNavGroups.map(group => (
           <div key={group.title} className="space-y-1">
-            <div className="px-3 mb-1.5">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{group.title}</span>
+            <div className="px-3 mb-1">
+              <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{group.title}</span>
             </div>
             {group.items.map(item => (
               <NavLink
@@ -168,30 +172,30 @@ export function AdminShell({ children, user }: AdminShellProps) {
       </nav>
 
       {/* Admin Actions */}
-      <div className="px-3 py-3 border-t border-white/10 space-y-1">
+      <div className="px-3 py-3 border-t border-slate-200 dark:border-white/10 space-y-1">
         <Link
           href="/dashboard"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] transition-colors w-full text-left"
         >
-          <ArrowLeft className="w-4 h-4 text-slate-500" />
-          Back to App
+          <ArrowLeft className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+          Back to Workspace
         </Link>
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left cursor-pointer"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] transition-colors w-full text-left cursor-pointer"
         >
           {mounted && theme === 'dark' ? (
-            <Sun className="w-4 h-4 text-slate-500" />
+            <Sun className="w-4 h-4 text-slate-400 dark:text-slate-500" />
           ) : (
-            <Moon className="w-4 h-4 text-slate-500" />
+            <Moon className="w-4 h-4 text-slate-400 dark:text-slate-500" />
           )}
           {mounted && theme === 'dark' ? 'Light mode' : 'Dark mode'}
         </button>
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5 transition-colors w-full text-left cursor-pointer"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors w-full text-left cursor-pointer"
         >
-          <LogOut className="w-4 h-4 text-slate-500" />
+          <LogOut className="w-4 h-4 text-rose-500" />
           Sign out
         </button>
       </div>
@@ -199,11 +203,11 @@ export function AdminShell({ children, user }: AdminShellProps) {
   )
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100">
       {/* Mobile overlay */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-30 lg:hidden backdrop-blur-xs"
           onClick={() => setOpen(false)}
         />
       )}
@@ -217,17 +221,17 @@ export function AdminShell({ children, user }: AdminShellProps) {
       </div>
 
       {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-20 print:hidden border-b bg-slate-950 border-white/10">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-20 print:hidden border-b bg-white dark:bg-[#07080a] border-slate-200 dark:border-white/10">
         <button
           onClick={() => setOpen(o => !o)}
-          className="p-2 rounded-lg transition-colors text-slate-400 hover:text-white hover:bg-white/5"
+          className="p-2 rounded-xl transition-colors text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5"
           aria-label="Toggle menu"
         >
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
         <div className="flex items-center gap-2">
-          <Shield className="w-5 h-5 text-rose-500" />
-          <span className="font-semibold text-sm text-white">Frevio Admin</span>
+          <Shield className="w-4 h-4 text-rose-500" />
+          <span className="font-semibold text-sm text-slate-900 dark:text-white">Frevio Admin</span>
         </div>
         <div className="w-9 h-9" /* Spacer */ />
       </div>

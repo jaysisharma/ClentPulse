@@ -28,6 +28,21 @@ export async function GET(request: Request) {
         .eq('id', user.id)
         .single()
       if (!profile?.onboarded) {
+        // Send Welcome email and track signup asynchronously
+        const { sendWelcomeEmail } = await import('@/lib/emails/onboarding')
+        sendWelcomeEmail({
+          email: user.email || '',
+          name: (user.user_metadata?.full_name || user.user_metadata?.name || '') as string
+        }).catch(() => {})
+
+        const { trackActivationEvent } = await import('@/lib/activation')
+        trackActivationEvent({
+          supabase,
+          userId: user.id,
+          eventName: 'signup_completed',
+          metadata: { auth_method: 'google_oauth' }
+        }).catch(() => {})
+
         return NextResponse.redirect(`${origin}/onboarding`)
       }
     }

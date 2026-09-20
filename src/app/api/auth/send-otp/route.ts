@@ -104,9 +104,18 @@ export async function POST(request: Request) {
     }
 
     // 4. Send the OTP email using Resend
-    // Use login@frevio.cloud as the verified domain is active in Resend dashboard
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Frevio <login@frevio.cloud>'
-    
+    // In development, use Resend's built-in test address (no domain verification required).
+    // In production, RESEND_FROM_EMAIL must point to a verified domain.
+    const isDev = process.env.NODE_ENV !== 'production'
+    const fromEmail = isDev
+      ? 'Frevio <onboarding@resend.dev>'
+      : (process.env.RESEND_FROM_EMAIL || 'Frevio <login@frevio.cloud>')
+
+    // Always log the code in dev so you can test without needing email delivery
+    if (isDev) {
+      console.log(`\n[DEV] OTP for ${cleanEmail}: ${otpCode}\n`)
+    }
+
     const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 40px auto; padding: 32px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
         <div style="margin-bottom: 24px; text-align: left;">

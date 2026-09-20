@@ -23,43 +23,52 @@ export function FeedbackWidget({ projectId, accentColor }: { projectId: string; 
 
   if (submitted) {
     return (
-      <div className="flex items-center justify-center gap-2 py-4 text-sm text-slate-500">
-        <Check className="w-4 h-4 text-emerald-500" />
-        Thanks for your feedback!
+      <div className="flex items-center justify-center gap-2 py-3 text-xs font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full max-w-xs mx-auto my-4">
+        <Check className="w-3.5 h-3.5 text-emerald-500" />
+        Feedback received — thank you!
       </div>
     )
   }
 
   return (
     <div className="py-6 text-center">
-      <p className="text-sm text-slate-500 mb-4">How are things looking?</p>
-      <div className="flex items-center justify-center gap-3">
+      <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">
+        Client Sentiment Check
+      </p>
+      <div className="flex items-center justify-center gap-2.5 flex-wrap">
         <button
           onClick={() => { setReaction('thumbs_up'); submit('thumbs_up') }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${reaction === 'thumbs_up' ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-slate-200 text-slate-600 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50'}`}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-full border text-xs font-semibold transition-all ${
+            reaction === 'thumbs_up'
+              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
+              : 'border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10'
+          }`}
         >
-          <ThumbsUp className="w-4 h-4" /> Looking good
+          <ThumbsUp className="w-3.5 h-3.5" /> Looking good
         </button>
         <button
           onClick={() => { setReaction('thumbs_down'); submit('thumbs_down') }}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${reaction === 'thumbs_down' ? 'border-amber-300 bg-amber-50 text-amber-700' : 'border-slate-200 text-slate-600 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50'}`}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-full border text-xs font-semibold transition-all ${
+            reaction === 'thumbs_down'
+              ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+              : 'border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10'
+          }`}
         >
-          <ThumbsDown className="w-4 h-4" /> Have concerns
+          <ThumbsDown className="w-3.5 h-3.5" /> Have questions
         </button>
         <button
-          onClick={() => setShowMessage(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 text-sm font-medium text-slate-600 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50 transition-all"
+          onClick={() => setShowMessage(m => !m)}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 text-xs font-semibold transition-all"
         >
-          <MessageSquare className="w-4 h-4" /> Leave a message
+          <MessageSquare className="w-3.5 h-3.5" /> Send note
         </button>
       </div>
 
       {showMessage && (
-        <div className="mt-4 max-w-sm mx-auto">
+        <div className="mt-4 max-w-sm mx-auto text-left">
           <textarea
-            className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 resize-none"
-            style={{ '--tw-ring-color': accentColor } as React.CSSProperties}
-            placeholder="Your message to the team…"
+            className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 resize-none transition-colors"
+            placeholder="Share private thoughts with the studio team…"
             rows={3}
             value={message}
             onChange={e => setMessage(e.target.value)}
@@ -67,10 +76,10 @@ export function FeedbackWidget({ projectId, accentColor }: { projectId: string; 
           <button
             disabled={!message.trim() || loading}
             onClick={() => submit('question', message)}
-            className="mt-2 w-full py-2 rounded-xl text-sm font-semibold text-white transition-opacity disabled:opacity-50"
+            className="mt-2 w-full py-2.5 rounded-full text-xs font-semibold text-white transition-opacity disabled:opacity-50 shadow-xs"
             style={{ backgroundColor: accentColor }}
           >
-            {loading ? 'Sending…' : 'Send message'}
+            {loading ? 'Submitting…' : 'Submit Note'}
           </button>
         </div>
       )}

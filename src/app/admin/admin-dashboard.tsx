@@ -171,54 +171,54 @@ function areaPath(values: number[], max: number) {
 const BROADCAST_TEMPLATES = [
   {
     name: '🚀 Product Launch',
-    subject: 'Frevio is officially live! Here is how to double your client engagement',
+    subject: 'Frevio is live! Here is how to elevate your client experience',
     html: `<!DOCTYPE html>
 <html>
-<body style="font-family: sans-serif; padding: 20px; background-color: #f8fafc; color: #0f172a;">
-  <div style="max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
+<body style="font-family: sans-serif; padding: 20px; background-color: #08090a; color: #f8fafc;">
+  <div style="max-width: 500px; margin: 0 auto; background: #0c0d12; padding: 30px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);">
     <h2 style="color: #6366f1; margin-top: 0;">Welcome to Frevio, {{name}}!</h2>
-    <p>We are thrilled to let you know that Frevio is officially live! You can now send beautiful weekly project updates to clients with just one click.</p>
-    <p>To help you get started, we've prepared a brief onboarding checklist inside your dashboard.</p>
+    <p>We are thrilled to let you know that Frevio is officially live! You can now send beautiful project updates, client portals, and track deliverables with ease.</p>
+    <p>To help you get started, we've prepared a brief onboarding checklist inside your workspace.</p>
     <div style="margin: 28px 0; text-align: center;">
-      <a href="https://frevio.cloud/dashboard" style="background: #6366f1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Go to Dashboard</a>
+      <a href="https://frevio.app/dashboard" style="background: #ffffff; color: #08090a; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Open Studio</a>
     </div>
-    <p style="color: #64748b; font-size: 12px; border-t: 1px solid #e2e8f0; padding-top: 16px; margin-top: 24px;">Frevio Team</p>
+    <p style="color: #64748b; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 24px;">Frevio Team</p>
   </div>
 </body>
 </html>`
   },
   {
-    name: '💎 Pro Promo',
+    name: '💎 Studio Pro Upgrade',
     subject: 'Claim your 3 months of Frevio Pro for FREE',
     html: `<!DOCTYPE html>
 <html>
-<body style="font-family: sans-serif; padding: 20px; background-color: #f8fafc; color: #0f172a;">
-  <div style="max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
-    <h2 style="color: #db2777; margin-top: 0;">Frevio Pro Exclusive Upgrade, {{name}}!</h2>
-    <p>We noticed you are doing amazing work on your free plan. For a limited time, we are unlocking 3 months of Frevio Pro for free!</p>
-    <p>Pro tier features include custom branding, unlimited weekly project logs, invoice delivery trackers, and full-featured client feedback portals.</p>
+<body style="font-family: sans-serif; padding: 20px; background-color: #08090a; color: #f8fafc;">
+  <div style="max-width: 500px; margin: 0 auto; background: #0c0d12; padding: 30px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);">
+    <h2 style="color: #f43f5e; margin-top: 0;">Frevio Pro Exclusive Upgrade, {{name}}!</h2>
+    <p>We noticed your excellent studio work on the free plan. For a limited time, we are unlocking 3 months of Frevio Pro for free!</p>
+    <p>Pro tier features include custom branding, unlimited client portals, ledger exports, contracts, and priority settlement integrations.</p>
     <div style="margin: 28px 0; text-align: center;">
-      <a href="https://frevio.cloud/upgrade" style="background: #db2777; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Claim Free Pro</a>
+      <a href="https://frevio.app/upgrade" style="background: #f43f5e; color: white; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Claim Free Pro</a>
     </div>
-    <p style="color: #64748b; font-size: 12px; border-t: 1px solid #e2e8f0; padding-top: 16px; margin-top: 24px;">This offer expires in 7 days.</p>
+    <p style="color: #64748b; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 24px;">This offer expires in 7 days.</p>
   </div>
 </body>
 </html>`
   },
   {
-    name: '📝 Feedback Survey',
+    name: '📝 Studio Feedback',
     subject: 'Frevio Feedback: How can we make client reporting better for you?',
     html: `<!DOCTYPE html>
 <html>
-<body style="font-family: sans-serif; padding: 20px; background-color: #f8fafc; color: #0f172a;">
-  <div style="max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
-    <h2 style="color: #475569; margin-top: 0;">How is your experience so far, {{name}}?</h2>
-    <p>We are always striving to improve Frevio. Could you spare 2 minutes to tell us how you use the weekly update features, and what we should build next?</p>
+<body style="font-family: sans-serif; padding: 20px; background-color: #08090a; color: #f8fafc;">
+  <div style="max-width: 500px; margin: 0 auto; background: #0c0d12; padding: 30px; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);">
+    <h2 style="color: #94a3b8; margin-top: 0;">How is your experience so far, {{name}}?</h2>
+    <p>We are always striving to improve Frevio. Could you spare 2 minutes to tell us how you use the studio features, and what we should build next?</p>
     <p>Your feedback directly shapes our product roadmap!</p>
     <div style="margin: 28px 0; text-align: center;">
-      <a href="https://frevio.cloud/roadmap" style="background: #475569; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Give Feedback</a>
+      <a href="https://frevio.app/roadmap" style="background: #ffffff; color: #08090a; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Give Feedback</a>
     </div>
-    <p style="color: #64748b; font-size: 12px; border-t: 1px solid #e2e8f0; padding-top: 16px; margin-top: 24px;">Thank you for your support!</p>
+    <p style="color: #64748b; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 24px;">Thank you for your support!</p>
   </div>
 </body>
 </html>`
@@ -238,7 +238,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
   // Email Broadcast State Hooks
   const [broadcastTarget, setBroadcastTarget] = useState<'all' | 'leads' | 'free' | 'pro'>('all')
   const [broadcastSubject, setBroadcastSubject] = useState('')
-  const [broadcastFrom, setBroadcastFrom] = useState('ClientPulse Announcements <onboarding@resend.dev>')
+  const [broadcastFrom, setBroadcastFrom] = useState('Frevio Announcements <onboarding@resend.dev>')
   const [broadcastHtml, setBroadcastHtml] = useState('<h1>Hello {{name}},</h1>\n<p>We are excited to share some new updates...</p>')
   const [sendingBroadcast, setSendingBroadcast] = useState(false)
   const [broadcastResult, setBroadcastResult] = useState<{ success: boolean; sentCount?: number; failCount?: number; totalCount?: number; error?: string } | null>(null)
@@ -261,7 +261,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
   const [signupChartHover, setSignupChartHover] = useState<number | null>(null)
 
   // Marketing UTM Builder state
-  const [utmBase, setUtmBase] = useState('https://frevio.cloud')
+  const [utmBase, setUtmBase] = useState('https://frevio.app')
   const [utmSource, setUtmSource] = useState('twitter')
   const [utmMedium, setUtmMedium] = useState('social')
   const [utmCampaign, setUtmCampaign] = useState('launch-promo')

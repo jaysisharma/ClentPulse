@@ -74,6 +74,23 @@ export async function POST(request: Request) {
         console.error('[Verify OTP] Supabase Admin Create User Error:', createError)
         return NextResponse.json({ error: createError.message }, { status: 400 })
       }
+
+      // Send Welcome Email asynchronously
+      const { sendWelcomeEmail } = await import('@/lib/emails/onboarding')
+      sendWelcomeEmail({ email: cleanEmail, name: record.temp_name }).catch(err => {
+        console.warn('[Verify OTP] Failed to send welcome email:', err)
+      })
+
+      // Track signup_completed activation event
+      if (newUser?.user?.id) {
+        const { trackActivationEvent } = await import('@/lib/activation')
+        trackActivationEvent({
+          supabase: supabaseAdmin,
+          userId: newUser.user.id,
+          eventName: 'signup_completed',
+          metadata: { auth_method: 'email_otp' }
+        }).catch(() => {})
+      }
     }
 
     // 5. Invalidate / delete the verified OTP code

@@ -87,12 +87,12 @@ export function ClientMessagesPanel({ projects }: { projects: PanelProject[] }) 
       {/* Message Button inside Header */}
       <button
         onClick={() => setDrawerOpen(true)}
-        className="relative p-2 rounded-lg text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+        className="relative p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer border border-slate-200/60 dark:border-white/10"
         aria-label="Open messages"
       >
-        <MessageSquare className="w-5 h-5" />
+        <MessageSquare className="w-4 h-4" />
         {totalUnread > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white animate-pulse">
+          <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white dark:border-[#08090a] animate-pulse">
             {totalUnread}
           </span>
         )}
@@ -103,24 +103,24 @@ export function ClientMessagesPanel({ projects }: { projects: PanelProject[] }) 
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 transition-opacity"
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity"
             onClick={() => setDrawerOpen(false)}
           />
 
           {/* Drawer Container */}
-          <aside className="fixed inset-y-0 right-0 z-50 w-[420px] max-w-full bg-white shadow-2xl flex flex-col border-l border-slate-200 animate-slide-in text-left">
+          <aside className="fixed inset-y-0 right-0 z-50 w-[420px] max-w-full bg-white dark:bg-[#0c0d12] shadow-2xl flex flex-col border-l border-slate-200 dark:border-white/10 animate-slide-in text-left">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-3 flex-shrink-0">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between gap-3 flex-shrink-0 bg-slate-50/50 dark:bg-white/[0.02]">
               <div className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-indigo-600" />
-                <span className="font-bold text-slate-900 text-lg">Messages</span>
+                <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                <span className="font-semibold text-slate-900 dark:text-white text-base">Studio Messages</span>
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+                className="p-1.5 rounded-xl text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                 aria-label="Close drawer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
@@ -129,16 +129,16 @@ export function ClientMessagesPanel({ projects }: { projects: PanelProject[] }) 
               {/* Selector for projects */}
               {projects.length > 1 && (
                 <div className="mb-4 flex-shrink-0">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                    Select Project
+                  <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">
+                    Select Project Channel
                   </label>
                   <select
                     value={selectedId}
                     onChange={e => setSelectedId(e.target.value)}
-                    className="w-full text-sm text-slate-700 border border-slate-200 rounded-xl px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                    className="w-full text-xs font-medium text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 bg-slate-50/60 dark:bg-white/[0.03] focus:outline-none focus:border-slate-400 dark:focus:border-white/30 cursor-pointer"
                   >
                     {projects.map(p => (
-                      <option key={p.id} value={p.id}>
+                      <option key={p.id} value={p.id} className="bg-white dark:bg-[#0c0d12] text-slate-900 dark:text-white">
                         {p.project_name} {unreadCounts[p.id] > 0 ? `(${unreadCounts[p.id]} unread)` : ''}
                       </option>
                     ))}

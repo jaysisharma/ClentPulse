@@ -1,4 +1,4 @@
--- ClientPulse — Freelancer feature suite migration
+-- Frevio — Freelancer feature suite migration
 -- Run in the Supabase Dashboard SQL Editor.
 -- Safe to re-run (idempotent).
 

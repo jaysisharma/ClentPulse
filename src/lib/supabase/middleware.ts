@@ -2,8 +2,9 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 const FREELANCER_PATHS = [
-  '/dashboard', '/project', '/clients', '/settings', '/invoices', '/docs',
+  '/dashboard', '/project', '/clients', '/settings', '/settings/integrations', '/invoices', '/docs',
   '/time', '/earnings', '/testimonials', '/portfolio', '/archive', '/upgrade',
+  '/admin',
 ]
 
 export async function updateSession(request: NextRequest) {

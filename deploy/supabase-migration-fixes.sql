@@ -1,4 +1,4 @@
--- ClientPulse Schema Fixes and Enhancements
+-- Frevio Schema Fixes and Enhancements
 -- Safe to run in Supabase SQL editor.
 
 -- 1. Update public.time_entries to support invoicing

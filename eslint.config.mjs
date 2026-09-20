@@ -8,6 +8,7 @@ const eslintConfig = defineConfig([
   {
     rules: {
       "react-hooks/set-state-in-effect": "off",
+      "react-hooks/purity": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "react/no-unescaped-entities": "off",
     },
@@ -18,6 +19,8 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "extension/dist/**",
+    "extension/out/**",
     "next-env.d.ts",
   ]),
 ]);

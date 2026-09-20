@@ -1,5 +1,5 @@
 -- ============================================================================
--- ClientPulse Analytics & Admin Migration
+-- Frevio Analytics & Admin Migration
 -- 
 -- Run this once in the Supabase Dashboard SQL Editor (https://supabase.com/dashboard)
 -- to add visitor tracking and enable admin credentials.
@@ -58,7 +58,7 @@ alter table public.page_visits add column if not exists city text;
 -- ============================================================================
 -- HOW TO ENABLE ADMIN PERMISSIONS FOR YOUR ACCOUNT:
 -- 
--- Log in to ClientPulse on the frontend first (to create your user row).
+-- Log in to Frevio on the frontend first (to create your user row).
 -- Then, run the following SQL query to grant yourself admin status:
 -- 
 -- update public.users

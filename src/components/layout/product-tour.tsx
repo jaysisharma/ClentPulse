@@ -58,23 +58,13 @@ export function ProductTour() {
     height: number
   } | null>(null)
 
-  // Listen to the custom tour event
+  // Listen to the custom tour event (triggered on demand via TourTrigger)
   useEffect(() => {
     function handleStartTour() {
       setStep(0)
       setIsOpen(true)
     }
     window.addEventListener('start-frevio-tour', handleStartTour)
-
-    // Check if new user who hasn't completed tour yet
-    const completed = localStorage.getItem('frevio-tour-completed')
-    if (!completed) {
-      const timer = setTimeout(() => {
-        setIsOpen(true)
-      }, 1500)
-      return () => clearTimeout(timer)
-    }
-
     return () => window.removeEventListener('start-frevio-tour', handleStartTour)
   }, [])
 

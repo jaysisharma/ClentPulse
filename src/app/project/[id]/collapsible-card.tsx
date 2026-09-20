@@ -45,7 +45,7 @@ export function CollapsibleCard({
   }
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800/60 shadow-sm rounded-2xl overflow-hidden">
+    <div className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none rounded-2xl overflow-hidden backdrop-blur-md">
       <div className="flex items-center justify-between px-5 py-4 gap-2">
         <button
           type="button"
@@ -58,7 +58,7 @@ export function CollapsibleCard({
           />
           {icon}
           <span className="text-sm font-semibold text-slate-900 dark:text-white truncate">{title}</span>
-          {meta != null && <span className="text-xs text-slate-400 flex-shrink-0">{meta}</span>}
+          {meta != null && <span className="text-xs text-slate-500 dark:text-slate-400 flex-shrink-0 font-mono">{meta}</span>}
         </button>
         <div className="flex items-center gap-2">
           {action && <div className="flex-shrink-0">{action}</div>}
@@ -66,14 +66,14 @@ export function CollapsibleCard({
             <button
               onClick={handleHide}
               disabled={hiding}
-              className="text-xs font-semibold text-slate-400 hover:text-slate-600 transition-colors bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 px-2 py-0.5 rounded-md hover:bg-slate-100 dark:bg-slate-800 disabled:opacity-50 cursor-pointer flex-shrink-0"
+              className="text-[11px] font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2.5 py-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-50 cursor-pointer flex-shrink-0"
             >
               {hiding ? 'Hiding…' : 'Hide'}
             </button>
           )}
         </div>
       </div>
-      {open && <div className="px-5 pb-5 border-t border-slate-100 dark:border-slate-800 pt-4">{children}</div>}
+      {open && <div className="px-5 pb-5 border-t border-slate-100 dark:border-white/5 pt-4">{children}</div>}
     </div>
   )
 }

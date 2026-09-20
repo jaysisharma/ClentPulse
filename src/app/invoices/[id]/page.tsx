@@ -6,6 +6,8 @@ import { ArrowLeft } from 'lucide-react'
 import { InvoiceActions } from './invoice-actions'
 import { InvoicePrint } from './invoice-print'
 
+import { DarkShell } from '@/components/layout/dark-shell'
+
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
@@ -19,16 +21,22 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
   return (
     <AppLayout>
-      <div className="max-w-2xl animate-fade-in">
-        <div className="flex items-center justify-between mb-6">
-          <Link href="/invoices" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 transition-colors">
-            <ArrowLeft className="w-4 h-4" />Back to invoices
-          </Link>
-          <InvoiceActions invoice={{ id: invoice.id, status: invoice.status, client_email: invoice.client_email }} />
-        </div>
+      <DarkShell>
+        <div className="max-w-3xl animate-fade-in relative z-10 pb-12">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <Link 
+              href="/invoices" 
+              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to invoices
+            </Link>
+            <InvoiceActions invoice={{ id: invoice.id, status: invoice.status, client_email: invoice.client_email }} />
+          </div>
 
-        <InvoicePrint invoice={invoice} owner={owner} />
-      </div>
+          <InvoicePrint invoice={invoice} owner={owner} />
+        </div>
+      </DarkShell>
     </AppLayout>
   )
 }
+

@@ -2,138 +2,165 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { generateSlug } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import {
-  User, FolderPlus, Link2, Check, ArrowRight,
-  ArrowLeft, Clock, FileText, LayoutDashboard, Sparkles,
-  Palette, Wallet, Upload,
+  Sparkles, User, Building2, FolderPlus, Send, Eye,
+  Check, Copy, ArrowRight, ArrowLeft, Lock, Mail, Plus,
+  Trash2, ShieldCheck, Globe, Palette, Upload, Loader2, ExternalLink
 } from 'lucide-react'
 
-const COLORS = ['#6366F1', '#8B5CF6', '#EC4899', '#22C55E', '#3B82F6', '#F97316']
-
-const STEPS = [
-  { icon: User,       label: 'Your name'     },
-  { icon: Palette,    label: 'Your brand'    },
-  { icon: FolderPlus, label: 'First project' },
-  { icon: Wallet,     label: 'Get paid'      },
-  { icon: Sparkles,   label: 'You\'re in!'   },
+const COLORS = [
+  '#6366F1', '#8B5CF6', '#EC4899', '#22C55E', '#3B82F6', '#F97316'
 ]
 
-// ── helpers ───────────────────────────────────────────────────────────────────
+type OnboardingStep =
+  | 'welcome'
+  | 'persona'
+  | 'project'
+  | 'team'
+  | 'update'
+  | 'portal'
+  | 'complete'
 
-async function ensureUniqueSlug(supabase: ReturnType<typeof createClient>, base: string): Promise<string> {
-  let slug = base
-  let attempt = 0
-  while (attempt < 5) {
-    const { count } = await supabase
-      .from('projects')
-      .select('id', { count: 'exact', head: true })
-      .eq('slug', slug)
-    if ((count ?? 0) === 0) return slug
-    attempt++
-    slug = `${base}-${Math.random().toString(36).slice(2, 6)}`
-  }
-  return slug
-}
-
-// ── page ──────────────────────────────────────────────────────────────────────
+type Persona = 'freelancer' | 'agency'
 
 export default function OnboardingPage() {
   const router = useRouter()
-  const [step, setStep]     = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [error, setError]   = useState('')
+  const [initLoading, setInitLoading] = useState(true)
   const [userId, setUserId] = useState('')
-  const [copied, setCopied] = useState(false)
-  const [visible, setVisible] = useState(true)
-  const stepTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [userEmail, setUserEmail] = useState('')
+  const [step, setStep] = useState<OnboardingStep>('welcome')
+  const [persona, setPersona] = useState<Persona>('freelancer')
+
+  // Step 1: Welcome & Studio Identity
+  const [name, setName] = useState('')
+  const [studioName, setStudioName] = useState('')
+  const [accentColor, setAccentColor] = useState(COLORS[0])
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [logoUploading, setLogoUploading] = useState(false)
+  const [logoError, setLogoError] = useState('')
+
+  // Step 3: First Project
+  const [projectName, setProjectName] = useState('')
+  const [clientName, setClientName] = useState('')
+  const [clientEmail, setClientEmail] = useState('')
+  const [projectColor, setProjectColor] = useState(COLORS[0])
+  const [projectId, setProjectId] = useState<string | null>(null)
+  const [projectSlug, setProjectSlug] = useState('')
+  const [orgId, setOrgId] = useState<string | null>(null)
+
+  // Agency Team Invites
+  const [inviteEmails, setInviteEmails] = useState<string[]>([])
+  const [currentInviteEmail, setCurrentInviteEmail] = useState('')
+  const [invitingTeam, setInvitingTeam] = useState(false)
+
+  // Step 4: First Update Composer
+  const [updateCompleted, setUpdateCompleted] = useState('Kickoff checklist established and initial project scope defined.')
+  const [updateNext, setUpdateNext] = useState('Reviewing client assets and preparing initial concepts.')
+  const [updateNote, setUpdateNote] = useState('')
+  const [updatePublished, setUpdatePublished] = useState(false)
+
+  // Step 5: Portal Settings & Sharing
+  const [passcode, setPasscode] = useState('')
+  const [savingPasscode, setSavingPasscode] = useState(false)
+  const [copiedLink, setCopiedLink] = useState(false)
+  const [inviteSent, setInviteSent] = useState(false)
+  const [sendingInvite, setSendingInvite] = useState(false)
+
+  // UI state
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => () => {
-    if (stepTimerRef.current)   clearTimeout(stepTimerRef.current)
     if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
   }, [])
 
-  // Step 1 — name
-  const [name, setName] = useState('')
-
-  // Step 2 — brand
-  const [accentColor, setAccentColor] = useState(COLORS[0])
-  const [logoUrl, setLogoUrl]         = useState<string | null>(null)
-  const [logoUploading, setLogoUploading] = useState(false)
-  const [logoError, setLogoError]     = useState('')
-
-  // Step 3 — first project
-  const [clientName, setClientName]   = useState('')
-  const [clientEmail, setClientEmail] = useState('')
-  const [projectName, setProjectName] = useState('')
-  const [color, setColor]             = useState(COLORS[0])
-
-  // Step 4 — get paid
-  const [hourlyRate, setHourlyRate] = useState('')
-  const [budget, setBudget]         = useState('')
-
-  // Step 5 (result)
-  const [projectSlug, setProjectSlug] = useState('')
-  const [projectId, setProjectId]     = useState('')
-  const [skipped, setSkipped]         = useState(false)
-
+  // ── Load persisted state on mount ──────────────────────────────────────────
   useEffect(() => {
     const supabase = createClient()
-    supabase.auth.getUser().then(({ data }: { data: any }) => {
+    supabase.auth.getUser().then(async ({ data }: { data: any }) => {
       const user = data?.user
-      if (!user) { router.push('/auth/login'); return }
+      if (!user) {
+        router.push('/auth/login')
+        return
+      }
       setUserId(user.id)
-      supabase.from('users').select('name, accent_color, logo_url').eq('id', user.id).single()
-        .then(({ data }: { data: any }) => {
-          if (data?.name) setName(data.name)
-          if (data?.accent_color) setAccentColor(data.accent_color)
-          if (data?.logo_url) setLogoUrl(data.logo_url)
-        })
+      setUserEmail(user.email || '')
+
+      try {
+        const res = await fetch('/api/onboarding/state')
+        const data = await res.json()
+        if (data.profile) {
+          if (data.profile.onboarded) {
+            router.push('/dashboard')
+            return
+          }
+          if (data.profile.name) setName(data.profile.name)
+          if (data.profile.studio_name) setStudioName(data.profile.studio_name)
+          if (data.profile.accent_color) setAccentColor(data.profile.accent_color)
+          if (data.profile.logo_url) setLogoUrl(data.profile.logo_url)
+          if (data.profile.onboarding_persona) setPersona(data.profile.onboarding_persona)
+          if (data.profile.onboarding_step && data.profile.onboarding_step !== 'complete') {
+            setStep(data.profile.onboarding_step)
+          }
+          if (data.profile.onboarding_org_id) setOrgId(data.profile.onboarding_org_id)
+        }
+
+        if (data.project) {
+          setProjectId(data.project.id)
+          setProjectName(data.project.project_name)
+          setClientName(data.project.client_name)
+          setClientEmail(data.project.client_email || '')
+          setProjectSlug(data.project.slug)
+          setProjectColor(data.project.color || COLORS[0])
+          if (data.project.passcode) setPasscode(data.project.passcode)
+        }
+      } catch (err) {
+        console.error('Failed to load onboarding state:', err)
+      } finally {
+        setInitLoading(false)
+      }
     })
   }, [router])
 
-  // Mark onboarding complete once the user reaches the final step — this covers
-  // both finishing the flow and skipping to the end. The auth redirect gate keys
-  // off this flag, so without it new users would be sent back here on next login.
-  useEffect(() => {
-    if (step !== 4 || !userId) return
-    const supabase = createClient()
-    supabase.from('users').update({ onboarded: true }).eq('id', userId).then(() => {})
-  }, [step, userId])
-
-  // Animated step transition
-  function goTo(target: number) {
-    setVisible(false)
-    if (stepTimerRef.current) clearTimeout(stepTimerRef.current)
-    stepTimerRef.current = setTimeout(() => { setStep(target); setError(''); setVisible(true) }, 180)
+  // ── Sync step to DB ────────────────────────────────────────────────────────
+  async function persistStep(nextStep: OnboardingStep, extraUpdates: Record<string, any> = {}) {
+    setStep(nextStep)
+    setError('')
+    try {
+      await fetch('/api/onboarding/state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          onboarding_step: nextStep,
+          onboarding_persona: persona,
+          ...extraUpdates,
+        }),
+      })
+    } catch (err) {
+      console.warn('Failed to persist onboarding state:', err)
+    }
   }
 
-  // ── step handlers ─────────────────────────────────────────────────────────
-
-  async function handleStep1(e: React.FormEvent) {
+  // ── Step 1: Welcome & Studio Identity ──────────────────────────────────────
+  async function handleWelcome(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) return
     setLoading(true)
-    const supabase = createClient()
-    await supabase.from('users').update({ name: name.trim() }).eq('id', userId)
-    setLoading(false)
-    goTo(1)
-  }
-
-  async function handleBrand(e: React.FormEvent) {
-    e.preventDefault()
-    setLoading(true)
     setError('')
-    const supabase = createClient()
-    // Logo (if any) was already saved on upload; persist the accent choice here.
-    const { error: err } = await supabase.from('users').update({ accent_color: accentColor }).eq('id', userId)
+
+    const cleanName = name.trim()
+    const cleanStudio = studioName.trim() || cleanName
+
+    await persistStep('persona', {
+      name: cleanName,
+      studio_name: cleanStudio,
+      accent_color: accentColor,
+    })
+
     setLoading(false)
-    if (err) { setError(err.message); return }
-    goTo(2)
   }
 
   async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -141,189 +168,417 @@ export default function OnboardingPage() {
     if (!file || !userId) return
     setLogoUploading(true)
     setLogoError('')
-    const supabase = createClient()
-    const ext = file.name.split('.').pop()
-    const path = `${userId}/logo.${ext}`
-    const { error } = await supabase.storage.from('logos').upload(path, file, { upsert: true })
-    if (error) { setLogoError('Couldn’t upload your logo — you can add one later in Settings.'); setLogoUploading(false); return }
-    const { data: { publicUrl } } = supabase.storage.from('logos').getPublicUrl(path)
-    const { error: updErr } = await supabase.from('users').update({ logo_url: publicUrl }).eq('id', userId)
-    if (updErr) { setLogoError('Logo uploaded but not saved — try again or add it later in Settings.'); setLogoUploading(false); return }
-    setLogoUrl(publicUrl)
-    setLogoUploading(false)
+
+    try {
+      const supabase = createClient()
+      const ext = file.name.split('.').pop()
+      const path = `${userId}/logo.${ext}`
+      const { error: uploadErr } = await supabase.storage
+        .from('logos')
+        .upload(path, file, { upsert: true })
+
+      if (uploadErr) {
+        setLogoError('Could not upload logo. You can add one later in Settings.')
+        setLogoUploading(false)
+        return
+      }
+
+      const { data: { publicUrl } } = supabase.storage.from('logos').getPublicUrl(path)
+      await fetch('/api/onboarding/state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ logo_url: publicUrl }),
+      })
+      setLogoUrl(publicUrl)
+    } catch (err) {
+      setLogoError('Logo upload failed. You can add one later.')
+    } finally {
+      setLogoUploading(false)
+    }
   }
 
-  async function handleStep2(e: React.FormEvent) {
-    e.preventDefault()
+  // ── Step 2: Persona Choice ────────────────────────────────────────────────
+  async function handleSelectPersona(selected: Persona) {
+    setPersona(selected)
     setLoading(true)
     setError('')
+
+    let createdOrgId = orgId
+    if (selected === 'agency' && !createdOrgId) {
+      try {
+        const res = await fetch('/api/organizations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: studioName || `${name}'s Studio`,
+            accent_color: accentColor,
+          }),
+        })
+        const data = await res.json()
+        if (data.organization?.id) {
+          createdOrgId = data.organization.id
+          setOrgId(createdOrgId)
+        }
+      } catch (err) {
+        console.warn('Agency organization creation deferred:', err)
+      }
+    }
+
+    await persistStep('project', {
+      onboarding_persona: selected,
+      onboarding_org_id: createdOrgId,
+    })
+    setLoading(false)
+  }
+
+  // ── Step 3: First Project ─────────────────────────────────────────────────
+  async function handleCreateProject(e: React.FormEvent) {
+    e.preventDefault()
+    if (!projectName.trim() || !clientName.trim()) return
+    setLoading(true)
+    setError('')
+
     const supabase = createClient()
-    const base = generateSlug(projectName)
-    const slug = await ensureUniqueSlug(supabase, base)
-    const { data, error: err } = await supabase
+
+    // 1. Duplicate Prevention: Check if user already created their onboarding project
+    if (projectId) {
+      // Simply update the existing project record rather than creating a duplicate
+      const { error: updateErr } = await supabase
+        .from('projects')
+        .update({
+          project_name: projectName.trim(),
+          client_name: clientName.trim(),
+          client_email: clientEmail.trim() || null,
+          color: projectColor,
+        })
+        .eq('id', projectId)
+
+      if (updateErr) {
+        setError(updateErr.message)
+        setLoading(false)
+        return
+      }
+
+      await persistStep(persona === 'agency' ? 'team' : 'update', {
+        onboarding_project_id: projectId,
+      })
+      setLoading(false)
+      return
+    }
+
+    // 2. Create fresh project
+    const baseSlug = generateSlug(projectName.trim())
+    let slug = baseSlug
+    let attempt = 0
+    while (attempt < 5) {
+      const { count } = await supabase
+        .from('projects')
+        .select('id', { count: 'exact', head: true })
+        .eq('slug', slug)
+      if ((count ?? 0) === 0) break
+      attempt++
+      slug = `${baseSlug}-${Math.random().toString(36).slice(2, 6)}`
+    }
+
+    const { data: newProj, error: createErr } = await supabase
       .from('projects')
       .insert({
         user_id: userId,
-        client_name: clientName,
-        client_email: clientEmail || null,
-        project_name: projectName,
+        org_id: orgId || null,
+        client_name: clientName.trim(),
+        client_email: clientEmail.trim() || null,
+        project_name: projectName.trim(),
         slug,
-        color,
+        color: projectColor,
         status: 'active',
       })
       .select()
       .single()
-    if (err) { setError(err.message); setLoading(false); return }
-    setProjectSlug(slug)
-    setProjectId(data.id)
-    setSkipped(false)
+
+    if (createErr) {
+      setError(
+        createErr.message.includes('FREE_PROJECT_LIMIT')
+          ? "You've reached your free plan limit of 2 active projects."
+          : "We couldn't create your project. Please try again."
+      )
+      setLoading(false)
+      return
+    }
+
+    setProjectId(newProj.id)
+    setProjectSlug(newProj.slug)
+
+    // 3. Seed starter checklist items automatically
+    try {
+      await supabase.from('checklist_items').insert([
+        { project_id: newProj.id, user_id: userId, title: 'Project kickoff & scope alignment', assigned_to: 'freelancer', position: 0 },
+        { project_id: newProj.id, user_id: userId, title: 'Provide brand assets, copy & access logins', assigned_to: 'client', position: 1 },
+        { project_id: newProj.id, user_id: userId, title: 'First concept review & walkthrough', assigned_to: 'freelancer', position: 2 },
+        { project_id: newProj.id, user_id: userId, title: 'Final deliverable approval & signoff', assigned_to: 'client', position: 3 },
+      ])
+    } catch (chkErr) {
+      console.warn('Checklist seeding warning:', chkErr)
+    }
+
+    // 4. Track first_project_created activation event
+    fetch('/api/activation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventName: 'first_project_created',
+        projectId: newProj.id,
+        metadata: { persona, hasClientEmail: Boolean(clientEmail.trim()) },
+      }),
+    }).catch(() => {})
+
+    await persistStep(persona === 'agency' ? 'team' : 'update', {
+      onboarding_project_id: newProj.id,
+    })
     setLoading(false)
-    goTo(3)
   }
 
-  async function handleSkipProject() {
-    setSkipped(true)
-    goTo(4)
-  }
-
-  async function handleGetPaid(e: React.FormEvent) {
+  // ── Step 3b: Agency Team Invites ──────────────────────────────────────────
+  async function handleSendTeamInvites(e: React.FormEvent) {
     e.preventDefault()
+    if (!orgId || inviteEmails.length === 0) {
+      await persistStep('update')
+      return
+    }
+
+    setInvitingTeam(true)
+    setError('')
+
+    try {
+      for (const email of inviteEmails) {
+        await fetch(`/api/organizations/${orgId}/invites`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, role: 'member' }),
+        })
+      }
+    } catch (err) {
+      console.warn('Team invites sent with partial warnings')
+    } finally {
+      setInvitingTeam(false)
+      await persistStep('update')
+    }
+  }
+
+  function addInviteEmail() {
+    const clean = currentInviteEmail.trim().toLowerCase()
+    if (clean && clean.includes('@') && !inviteEmails.includes(clean)) {
+      setInviteEmails(prev => [...prev, clean])
+      setCurrentInviteEmail('')
+    }
+  }
+
+  // ── Step 4: First Update ──────────────────────────────────────────────────
+  async function handlePublishUpdate(e: React.FormEvent) {
+    e.preventDefault()
+    if (!projectId) return
     setLoading(true)
     setError('')
+
     const supabase = createClient()
-    const { error: err } = await supabase
-      .from('projects')
-      .update({
-        hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
-        budget: budget ? parseFloat(budget) : null,
+    const bullets = [updateCompleted.trim(), updateNext.trim()].filter(Boolean)
+
+    const { data: updateData, error: updateErr } = await supabase
+      .from('updates')
+      .insert({
+        project_id: projectId,
+        bullets,
+        note: updateNote.trim() || null,
+        sent_at: new Date().toISOString(),
       })
-      .eq('id', projectId)
+      .select()
+      .single()
+
+    if (updateErr) {
+      setError("Your update couldn't be published. Please try again.")
+      setLoading(false)
+      return
+    }
+
+    setUpdatePublished(true)
+
+    // Track first_update_published activation event
+    fetch('/api/activation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventName: 'first_update_published',
+        projectId,
+        metadata: { bulletCount: bullets.length },
+      }),
+    }).catch(() => {})
+
+    await persistStep('portal')
     setLoading(false)
-    if (err) { setError(err.message); return }
-    goTo(4)
   }
 
-  const publicUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/p/${projectSlug}`
+  // ── Step 5: Portal Settings & Sharing ─────────────────────────────────────
+  const portalUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/p/${projectSlug}`
 
-  async function copyLink() {
-    await navigator.clipboard.writeText(publicUrl)
-    setCopied(true)
+  async function copyPortalLink() {
+    await navigator.clipboard.writeText(portalUrl)
+    setCopiedLink(true)
     if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
-    copiedTimerRef.current = setTimeout(() => setCopied(false), 2000)
+    copiedTimerRef.current = setTimeout(() => setCopiedLink(false), 2000)
+
+    fetch('/api/activation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventName: 'first_portal_viewed',
+        projectId,
+      }),
+    }).catch(() => {})
   }
 
-  // ── render ────────────────────────────────────────────────────────────────
+  async function handleSavePasscode() {
+    if (!projectId) return
+    setSavingPasscode(true)
+    const supabase = createClient()
+    await supabase
+      .from('projects')
+      .update({ passcode: passcode.trim() || null })
+      .eq('id', projectId)
+    setSavingPasscode(false)
+  }
+
+  async function handleSendClientEmail() {
+    if (!projectId || !clientEmail) return
+    setSendingInvite(true)
+    try {
+      const res = await fetch(`/api/projects/${projectId}/send-portal-invite`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipientEmail: clientEmail }),
+      })
+      if (res.ok) {
+        setInviteSent(true)
+      }
+    } catch (err) {
+      console.warn('Invite email error:', err)
+    } finally {
+      setSendingInvite(false)
+    }
+  }
+
+  // ── Step 6: Complete & Handoff ────────────────────────────────────────────
+  async function handleFinish(destination: 'project' | 'dashboard') {
+    setLoading(true)
+    await persistStep('complete', { onboarded: true })
+    if (destination === 'project' && projectId) {
+      router.push(`/project/${projectId}`)
+    } else {
+      router.push('/dashboard')
+    }
+  }
+
+  if (initLoading) {
+    return (
+      <div className="min-h-screen bg-[#08090a] flex items-center justify-center text-white">
+        <Loader2 className="w-6 h-6 animate-spin text-indigo-400" />
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#08090a] text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 relative selection:bg-indigo-500/30 selection:text-white">
+      {/* Background ambient glow */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Logo */}
-      <div className="flex items-center gap-2 mb-10">
-        <img src="/logo.svg" alt="Frevio Logo" className="w-9 h-9" />
-        <span className="text-xl font-semibold text-slate-900">Frevio</span>
+      {/* Frevio Brand Header */}
+      <div className="flex items-center gap-2.5 mb-8 relative z-10">
+        <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center text-slate-950 font-bold text-sm shadow-md">
+          <Sparkles className="w-4 h-4 text-indigo-600" />
+        </div>
+        <span className="text-lg font-light uppercase tracking-wider text-white">
+          Frevio
+        </span>
       </div>
 
-      {/* Progress bar */}
-      <div className="flex items-center gap-2 sm:gap-3 mb-10">
-        {STEPS.map((s, i) => (
-          <div key={i} className="flex items-center gap-2 sm:gap-3">
-            <div className={`flex items-center gap-2 text-sm font-medium transition-colors duration-200 ${
-              i === step ? 'text-indigo-600' : i < step ? 'text-emerald-600' : 'text-slate-400'
-            }`}>
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs transition-all duration-200 ${
-                i === step ? 'bg-indigo-600 text-white scale-110' :
-                i < step  ? 'bg-emerald-500 text-white' :
-                            'bg-slate-200 text-slate-500'
-              }`}>
-                {i < step ? <Check className="w-3.5 h-3.5" /> : i + 1}
+      {/* Main Form Container */}
+      <div className="w-full max-w-xl relative z-10 animate-fade-in">
+
+        {/* ── STEP 1: Welcome & Studio Identity ────────────────────────────── */}
+        {step === 'welcome' && (
+          <div className="bg-[#0c0d12]/95 rounded-3xl border border-white/10 p-7 sm:p-9 shadow-2xl backdrop-blur-xl space-y-6">
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">
+                <span>Welcome</span>
               </div>
-              <span className="hidden md:block">{s.label}</span>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                Let&apos;s set up your Frevio workspace.
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-light mt-1.5 leading-relaxed">
+                We&apos;ll get your first client project ready in a few minutes.
+              </p>
             </div>
-            {i < STEPS.length - 1 && (
-              <div className={`w-5 sm:w-8 h-px transition-colors duration-300 ${i < step ? 'bg-emerald-300' : 'bg-slate-200'}`} />
-            )}
-          </div>
-        ))}
-      </div>
 
-      {/* Card */}
-      <div
-        className="w-full max-w-md transition-opacity duration-180"
-        style={{ opacity: visible ? 1 : 0 }}
-      >
-
-        {/* ── Step 1 — Name ──────────────────────────────────────────────── */}
-        {step === 0 && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-            <div className="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center mb-5">
-              <User className="w-5 h-5 text-indigo-600" />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">What&apos;s your name?</h1>
-            <p className="text-slate-500 text-sm mb-6">
-              This appears on your invoices, emails, and client status pages.
-            </p>
-            <form onSubmit={handleStep1} className="space-y-4">
-              <Input
-                label="Your name"
-                placeholder="Alex Johnson"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                required
-                autoFocus
-              />
-              <Button type="submit" loading={loading} disabled={!name.trim()} className="w-full justify-center">
-                Continue <ArrowRight className="w-4 h-4" />
-              </Button>
-            </form>
-          </div>
-        )}
-
-        {/* ── Step 2 — Brand ─────────────────────────────────────────────── */}
-        {step === 1 && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-            <button
-              onClick={() => goTo(0)}
-              className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors mb-5"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Back
-            </button>
-
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5" style={{ backgroundColor: `${accentColor}1a` }}>
-              <Palette className="w-5 h-5" style={{ color: accentColor }} />
-            </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">Make it yours</h1>
-            <p className="text-slate-500 text-sm mb-6">
-              Pick an accent colour and add your logo — they brand your client status pages, invoices, and portal.
-            </p>
-
-            <form onSubmit={handleBrand} className="space-y-5">
-              {/* Accent color */}
+            <form onSubmit={handleWelcome} className="space-y-5">
               <div>
-                <label className="text-sm font-medium text-slate-700 block mb-2">Accent colour</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Full name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Alex Rivera"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Studio or business name <span className="text-slate-500 font-normal lowercase">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Rivera Creative"
+                  value={studioName}
+                  onChange={e => setStudioName(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                  Brand Accent Color
+                </label>
                 <div className="flex gap-2.5 flex-wrap">
                   {COLORS.map(c => (
                     <button
-                      key={c} type="button" onClick={() => setAccentColor(c)}
-                      className="w-8 h-8 rounded-full transition-transform hover:scale-110 focus:outline-none"
-                      style={{ backgroundColor: c, outline: accentColor === c ? `3px solid ${c}` : 'none', outlineOffset: '2px' }}
-                      aria-label={`Accent ${c}`}
+                      key={c}
+                      type="button"
+                      onClick={() => setAccentColor(c)}
+                      className="w-8 h-8 rounded-full transition-transform hover:scale-110 focus:outline-none ring-1 ring-white/10 cursor-pointer"
+                      style={{
+                        backgroundColor: c,
+                        outline: accentColor === c ? `3px solid ${c}` : 'none',
+                        outlineOffset: '2px',
+                      }}
+                      aria-label={`Select accent ${c}`}
                     />
                   ))}
                 </div>
               </div>
 
-              {/* Logo */}
               <div>
-                <label className="text-sm font-medium text-slate-700 block mb-2">
-                  Logo <span className="text-slate-400 font-normal">(optional)</span>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                  Studio Logo <span className="text-slate-500 font-normal lowercase">(optional)</span>
                 </label>
-                <label className="flex items-center gap-3 border-2 border-dashed border-slate-200 rounded-xl p-4 text-sm text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-500 transition-colors w-full cursor-pointer">
+                <label className="flex items-center gap-3 border-2 border-dashed border-white/10 rounded-xl p-4 text-xs sm:text-sm text-slate-400 hover:border-white/20 hover:text-white transition-colors w-full cursor-pointer bg-white/[0.02]">
                   {logoUrl ? (
-                    <img src={logoUrl} alt="Logo" className="h-8 w-auto object-contain rounded" />
+                    <img src={logoUrl} alt="Logo preview" className="h-8 w-auto object-contain rounded" />
                   ) : (
-                    <Upload className="w-4 h-4 flex-shrink-0" />
+                    <Upload className="w-4 h-4 flex-shrink-0 text-slate-400" />
                   )}
-                  <span>{logoUploading ? 'Uploading…' : logoUrl ? 'Change logo' : 'Upload logo'}</span>
+                  <span>{logoUploading ? 'Uploading…' : logoUrl ? 'Change logo' : 'Upload logo (PNG, SVG, JPG)'}</span>
                   <input
                     type="file"
                     accept="image/png,image/jpeg,image/svg+xml,image/webp"
@@ -332,280 +587,613 @@ export default function OnboardingPage() {
                     disabled={logoUploading}
                   />
                 </label>
-                {logoError && <p className="text-xs text-red-600 mt-1.5">{logoError}</p>}
+                {logoError && <p className="text-xs text-rose-400 mt-1">{logoError}</p>}
               </div>
 
-              {error && (
-                <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>
-              )}
-
-              <Button type="submit" loading={loading} className="w-full justify-center">
-                Continue <ArrowRight className="w-4 h-4" />
-              </Button>
-            </form>
-
-            <div className="mt-4 text-center">
               <button
-                onClick={() => goTo(2)}
-                className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+                type="submit"
+                disabled={loading || !name.trim()}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer disabled:opacity-50"
               >
-                Skip — I&apos;ll set this up later
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </form>
+          </div>
+        )}
+
+        {/* ── STEP 2: Persona Choice ───────────────────────────────────────── */}
+        {step === 'persona' && (
+          <div className="bg-[#0c0d12]/95 rounded-3xl border border-white/10 p-7 sm:p-9 shadow-2xl backdrop-blur-xl space-y-6">
+            <button
+              type="button"
+              onClick={() => setStep('welcome')}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white transition-colors mb-2 cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Back
+            </button>
+
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">
+                <span>Work Style</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                How do you work?
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-light mt-1.5">
+                We&apos;ll tailor your initial workspace and client tools accordingly.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <button
+                type="button"
+                onClick={() => handleSelectPersona('freelancer')}
+                className={`w-full text-left p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
+                  persona === 'freelancer'
+                    ? 'border-indigo-500/50 bg-indigo-500/10 text-white shadow-lg'
+                    : 'border-white/10 bg-white/[0.02] hover:border-white/20 text-slate-300'
+                }`}
+              >
+                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-indigo-400 mt-0.5">
+                  <User className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-white">I&apos;m a freelancer</div>
+                  <div className="text-xs text-slate-400 font-light mt-1 leading-relaxed">
+                    I work with clients on my own. Keep things simple, direct, and fast.
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-slate-400 self-center" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSelectPersona('agency')}
+                className={`w-full text-left p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
+                  persona === 'agency'
+                    ? 'border-indigo-500/50 bg-indigo-500/10 text-white shadow-lg'
+                    : 'border-white/10 bg-white/[0.02] hover:border-white/20 text-slate-300'
+                }`}
+              >
+                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-emerald-400 mt-0.5">
+                  <Building2 className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold text-sm text-white">I run a studio or agency</div>
+                  <div className="text-xs text-slate-400 font-light mt-1 leading-relaxed">
+                    I work with a team, project managers, and multiple concurrent client projects.
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-slate-400 self-center" />
               </button>
             </div>
           </div>
         )}
 
-        {/* ── Step 3 — First project ─────────────────────────────────────── */}
-        {step === 2 && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+        {/* ── STEP 3: First Project ────────────────────────────────────────── */}
+        {step === 'project' && (
+          <div className="bg-[#0c0d12]/95 rounded-3xl border border-white/10 p-7 sm:p-9 shadow-2xl backdrop-blur-xl space-y-6">
             <button
-              onClick={() => goTo(1)}
-              className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors mb-5"
+              type="button"
+              onClick={() => setStep('persona')}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white transition-colors mb-2 cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </button>
 
-            <div className="w-11 h-11 bg-indigo-50 rounded-xl flex items-center justify-center mb-5">
-              <FolderPlus className="w-5 h-5 text-indigo-600" />
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 mb-2">
+                <span>First Project</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                Let&apos;s create your first project.
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-light mt-1.5">
+                This is what your client will see in their Frevio workspace.
+              </p>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">Create your first project</h1>
-            <p className="text-slate-500 text-sm mb-6">
-              Add a client and project — you can always change these later.
-            </p>
-            <form onSubmit={handleStep2} className="space-y-4">
-              <Input
-                label="Client name"
-                placeholder="Acme Corp"
-                value={clientName}
-                onChange={e => setClientName(e.target.value)}
-                required
-              />
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-slate-700">
-                  Client email <span className="text-slate-400 font-normal">(optional)</span>
+
+            <form onSubmit={handleCreateProject} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Project name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Website redesign"
+                  value={projectName}
+                  onChange={e => setProjectName(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Client name
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Acme Studio"
+                  value={clientName}
+                  onChange={e => setClientName(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Client email <span className="text-slate-500 font-normal lowercase">(optional)</span>
                 </label>
                 <input
                   type="email"
                   placeholder="client@acme.com"
                   value={clientEmail}
                   onChange={e => setClientEmail(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
                 />
               </div>
-              <Input
-                label="Project name"
-                placeholder="Website Redesign"
-                value={projectName}
-                onChange={e => setProjectName(e.target.value)}
-                required
-              />
+
               <div>
-                <label className="text-sm font-medium text-slate-700 block mb-2">Project colour</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                  Project Color Badge
+                </label>
                 <div className="flex gap-2">
                   {COLORS.map(c => (
                     <button
-                      key={c} type="button" onClick={() => setColor(c)}
-                      className="w-8 h-8 rounded-full transition-transform hover:scale-110 focus:outline-none"
-                      style={{ backgroundColor: c, outline: color === c ? `3px solid ${c}` : 'none', outlineOffset: '2px' }}
+                      key={c}
+                      type="button"
+                      onClick={() => setProjectColor(c)}
+                      className="w-8 h-8 rounded-full transition-transform hover:scale-110 focus:outline-none ring-1 ring-white/10 cursor-pointer"
+                      style={{
+                        backgroundColor: c,
+                        outline: projectColor === c ? `3px solid ${c}` : 'none',
+                        outlineOffset: '2px',
+                      }}
                     />
                   ))}
                 </div>
               </div>
 
               {error && (
-                <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>
+                <div className="text-xs text-rose-400 bg-rose-950/40 border border-rose-800/50 rounded-xl p-3">
+                  {error}
+                </div>
               )}
 
-              <div className="flex gap-3 pt-1">
-                <Button type="button" variant="secondary" onClick={handleSkipProject} className="justify-center">
-                  Skip for now
-                </Button>
-                <Button type="submit" loading={loading} className="flex-1 justify-center">
-                  Create project <ArrowRight className="w-4 h-4" />
-                </Button>
-              </div>
-              <p className="text-xs text-slate-400 text-center">
-                No project yet? Skip and explore — you can add one anytime from the dashboard.
-              </p>
+              <button
+                type="submit"
+                disabled={loading || !projectName.trim() || !clientName.trim()}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer disabled:opacity-50 mt-2"
+              >
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                <span>Continue</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </form>
           </div>
         )}
 
-        {/* ── Step 4 — Get paid ──────────────────────────────────────────── */}
-        {step === 3 && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
-            <button
-              onClick={() => goTo(2)}
-              className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 transition-colors mb-5"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Back
-            </button>
-
-            <div className="w-11 h-11 bg-emerald-50 rounded-xl flex items-center justify-center mb-5">
-              <Wallet className="w-5 h-5 text-emerald-600" />
+        {/* ── STEP 3b: Agency Team Invites (Optional) ──────────────────────── */}
+        {step === 'team' && (
+          <div className="bg-[#0c0d12]/95 rounded-3xl border border-white/10 p-7 sm:p-9 shadow-2xl backdrop-blur-xl space-y-6">
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-2">
+                <span>Studio Team</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                Bring your team into Frevio
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-light mt-1.5">
+                You can invite your team now or do it later from Settings.
+              </p>
             </div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">How do you bill this project?</h1>
-            <p className="text-slate-500 text-sm mb-6">
-              Set a rate or budget for <span className="font-medium text-slate-700">{projectName}</span> — it powers your earnings and billable-hours tracking. Both optional.
-            </p>
 
-            <form onSubmit={handleGetPaid} className="space-y-4">
-              <Input
-                label="Hourly rate (USD)"
-                type="number" min="0" step="0.01"
-                placeholder="150"
-                value={hourlyRate}
-                onChange={e => setHourlyRate(e.target.value)}
-              />
-              <Input
-                label="Project budget (USD)"
-                type="number" min="0" step="0.01"
-                placeholder="5000"
-                value={budget}
-                onChange={e => setBudget(e.target.value)}
-              />
+            <form onSubmit={handleSendTeamInvites} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Team member email
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    placeholder="colleague@agency.com"
+                    value={currentInviteEmail}
+                    onChange={e => setCurrentInviteEmail(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault()
+                        addInviteEmail()
+                      }
+                    }}
+                    className="flex-1 rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
+                  />
+                  <button
+                    type="button"
+                    onClick={addInviteEmail}
+                    className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-white transition-colors cursor-pointer"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
 
-              {error && (
-                <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</div>
+              {inviteEmails.length > 0 && (
+                <div className="space-y-2 pt-2">
+                  <div className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">
+                    Pending invitations ({inviteEmails.length}):
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {inviteEmails.map(m => (
+                      <span
+                        key={m}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-slate-200"
+                      >
+                        <Mail className="w-3 h-3 text-slate-400" />
+                        <span>{m}</span>
+                        <button
+                          type="button"
+                          onClick={() => setInviteEmails(prev => prev.filter(x => x !== m))}
+                          className="text-slate-500 hover:text-white ml-1 cursor-pointer"
+                        >
+                          &times;
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
 
-              <Button type="submit" loading={loading} className="w-full justify-center">
-                Continue <ArrowRight className="w-4 h-4" />
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <button
+                  type="submit"
+                  disabled={invitingTeam}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer"
+                >
+                  {invitingTeam ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  <span>{inviteEmails.length > 0 ? 'Invite team & continue' : 'Continue'}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => persistStep('update')}
+                  className="rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white py-3 px-5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  I&apos;ll do this later
+                </button>
+              </div>
             </form>
+          </div>
+        )}
 
-            <div className="mt-4 text-center">
+        {/* ── STEP 4: First Update ─────────────────────────────────────────── */}
+        {step === 'update' && (
+          <div className="bg-[#0c0d12]/95 rounded-3xl border border-white/10 p-7 sm:p-9 shadow-2xl backdrop-blur-xl space-y-6">
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">
+                <span>First Update</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                Give your client their first update.
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-light mt-1.5 leading-relaxed">
+                A simple progress update is all you need to see Frevio from your client&apos;s perspective.
+              </p>
+            </div>
+
+            <form onSubmit={handlePublishUpdate} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  What was completed
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={updateCompleted}
+                  onChange={e => setUpdateCompleted(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  What&apos;s next
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={updateNext}
+                  onChange={e => setUpdateNext(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                  Note or needs from client <span className="text-slate-500 font-normal lowercase">(optional)</span>
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="e.g. Please confirm login details when ready."
+                  value={updateNote}
+                  onChange={e => setUpdateNote(e.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none transition-colors resize-none"
+                />
+              </div>
+
+              {error && (
+                <div className="text-xs text-rose-400 bg-rose-950/40 border border-rose-800/50 rounded-xl p-3">
+                  {error}
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => persistStep('portal')}
+                  className="rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white py-3 px-5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer"
+                >
+                  Skip update
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading || !updateCompleted.trim()}
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer disabled:opacity-50"
+                >
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  <span>Publish update</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* ── STEP 5: The Aha Moment / Client Portal Preview ───────────────── */}
+        {step === 'portal' && (
+          <div className="bg-[#0c0d12]/95 rounded-3xl border border-white/10 p-7 sm:p-9 shadow-2xl backdrop-blur-xl space-y-6">
+            <div>
+              <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-2">
+                <span>The Client Experience</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                This is what your client sees.
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-light mt-1.5 leading-relaxed">
+                A live, interactive portal branded with your studio identity. No account or password required for them to view progress.
+              </p>
+            </div>
+
+            {/* Live Client Portal Preview Box */}
+            <div className="rounded-2xl border border-white/10 bg-[#08090a] p-5 space-y-4 shadow-inner">
+              {/* Fake browser address bar */}
+              <div className="flex items-center justify-between gap-3 border-b border-white/5 pb-3">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-rose-500/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-amber-500/60" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/60" />
+                </div>
+                <div className="flex-1 text-center font-mono text-[11px] text-slate-400 truncate bg-white/5 rounded-lg py-1 px-3 border border-white/5">
+                  {portalUrl}
+                </div>
+                <a
+                  href={portalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-400 hover:text-white transition-colors"
+                  title="Open portal in new tab"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+
+              {/* Portal Content Snippet */}
+              <div className="space-y-4 pt-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {logoUrl ? (
+                      <img src={logoUrl} alt="Logo" className="w-8 h-8 object-contain rounded" />
+                    ) : (
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white"
+                        style={{ backgroundColor: accentColor }}
+                      >
+                        {(studioName || name).charAt(0)}
+                      </div>
+                    )}
+                    <div>
+                      <div className="text-xs font-semibold text-white">{projectName}</div>
+                      <div className="text-[11px] text-slate-400 font-light">{clientName}</div>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono font-semibold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Active Now
+                  </span>
+                </div>
+
+                {/* Latest Update Card Preview */}
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-4 text-xs space-y-2">
+                  <div className="text-[10px] font-semibold uppercase tracking-wider text-indigo-400">
+                    Latest Progress Update
+                  </div>
+                  <ul className="space-y-1.5 text-slate-300 font-light list-disc list-inside">
+                    <li>{updateCompleted}</li>
+                    <li>{updateNext}</li>
+                  </ul>
+                  {updateNote && (
+                    <div className="text-[11px] text-slate-400 italic pt-1 border-t border-white/5">
+                      Note: {updateNote}
+                    </div>
+                  )}
+                </div>
+
+                {/* Starter Checklist Indicator */}
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3 text-xs flex items-center justify-between text-slate-400 font-light">
+                  <span className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-indigo-400" />
+                    4 Kickoff Checklist items initialized
+                  </span>
+                  <span className="text-[10px] font-mono text-emerald-400">Ready</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Share link & Passcode options */}
+            <div className="space-y-4 pt-2">
+              <div>
+                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  Share this link with your client
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={portalUrl}
+                    className="flex-1 rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-300 font-mono select-all focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={copyPortalLink}
+                    className="px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-white transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                  >
+                    {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedLink ? 'Copied' : 'Copy link'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Passcode Protection (Optional) */}
+              <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Portal Passcode Protection</span>
+                  </div>
+                  <div className="text-[11px] text-slate-400 font-light mt-0.5">
+                    {passcode ? 'Passcode enabled for additional security' : 'Optional PIN protection for this workspace'}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    placeholder="e.g. 1234"
+                    maxLength={10}
+                    value={passcode}
+                    onChange={e => setPasscode(e.target.value)}
+                    className="w-24 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs font-mono text-center text-white focus:outline-none focus:border-indigo-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSavePasscode}
+                    disabled={savingPasscode}
+                    className="px-3 py-1 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-xs text-white transition-colors cursor-pointer"
+                  >
+                    {savingPasscode ? 'Saving…' : 'Save PIN'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Email direct to client button if email provided */}
+              {clientEmail && (
+                <div className="rounded-xl border border-white/5 bg-white/[0.02] p-3.5 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-indigo-400" />
+                      <span>Email portal link to {clientEmail}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-400 font-light mt-0.5">
+                      Sends a clean invitation email with direct portal access
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSendClientEmail}
+                    disabled={sendingInvite || inviteSent}
+                    className="px-3.5 py-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-xs font-semibold text-indigo-300 transition-colors cursor-pointer flex-shrink-0"
+                  >
+                    {sendingInvite ? 'Sending…' : inviteSent ? 'Sent ✓' : 'Send invitation'}
+                  </button>
+                </div>
+              )}
+
               <button
-                onClick={() => goTo(4)}
-                className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+                type="button"
+                onClick={() => persistStep('complete')}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer mt-4"
               >
-                Skip — set rates later
+                <span>Continue to complete</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
         )}
 
-        {/* ── Step 5 — Done ──────────────────────────────────────────────── */}
-        {step === 4 && (
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+        {/* ── STEP 6: Completion Screen ────────────────────────────────────── */}
+        {step === 'complete' && (
+          <div className="bg-[#0c0d12]/95 rounded-3xl border border-white/10 p-7 sm:p-9 shadow-2xl backdrop-blur-xl text-center space-y-6">
+            <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center justify-center mx-auto text-emerald-400">
+              <Sparkles className="w-7 h-7" />
+            </div>
 
-            {/* Header */}
-            <div className="text-center mb-7">
-              <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="w-7 h-7 text-emerald-600" />
-              </div>
-              <h1 className="text-2xl font-bold text-slate-900 mb-1">You&apos;re all set, {name.split(' ')[0]}!</h1>
-              <p className="text-slate-500 text-sm">
-                {skipped
-                  ? 'Your account is ready. Here\'s where to start.'
-                  : 'Your project is live. Here\'s what to do next.'}
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
+                Your client workspace is ready.
+              </h1>
+              <p className="text-xs sm:text-sm text-slate-400 font-light mt-2 max-w-md mx-auto leading-relaxed">
+                Your project is live. Share the portal with your client and keep every update, approval, and payment in one place.
               </p>
             </div>
 
-            {/* Share link — only shown when a project was created */}
-            {!skipped && (
-              <div className="mb-6">
-                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Client status page</div>
-                <div className="flex gap-2">
-                  <div className="flex-1 bg-slate-50 rounded-xl border border-slate-200 px-3 py-2.5 text-sm text-slate-600 font-mono truncate">
-                    {publicUrl}
-                  </div>
-                  <Button variant="secondary" onClick={copyLink} className="flex-shrink-0">
-                    {copied ? <><Check className="w-3.5 h-3.5 text-emerald-500" />Copied!</> : <><Link2 className="w-4 h-4" />Copy</>}
-                  </Button>
-                </div>
+            {/* Direct copy link snippet */}
+            <div className="bg-[#08090a] rounded-2xl border border-white/10 p-4 max-w-md mx-auto text-left">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-1.5">
+                Client Portal URL
               </div>
-            )}
-
-            {/* Next-step action cards */}
-            <div className="space-y-2 mb-6">
-              {skipped ? (
-                <>
-                  <ActionCard
-                    icon={<FolderPlus className="w-4 h-4 text-indigo-600" />}
-                    label="Create your first project"
-                    sub="Add a client and start tracking work"
-                    onClick={() => router.push('/project/new')}
-                  />
-                  <ActionCard
-                    icon={<LayoutDashboard className="w-4 h-4 text-slate-500" />}
-                    label="Explore the dashboard"
-                    sub="See everything Frevio can do"
-                    onClick={() => router.push('/dashboard')}
-                  />
-                  <ActionCard
-                    icon={<FileText className="w-4 h-4 text-slate-500" />}
-                    label="Create an invoice"
-                    sub="Bill a client right away"
-                    onClick={() => router.push('/invoices/new')}
-                  />
-                </>
-              ) : (
-                <>
-                  <ActionCard
-                    icon={<ArrowRight className="w-4 h-4 text-indigo-600" />}
-                    label="Post your first update"
-                    sub="Let your client know you've started"
-                    onClick={() => router.push(`/project/${projectId}`)}
-                    primary
-                  />
-                  <ActionCard
-                    icon={<FileText className="w-4 h-4 text-slate-500" />}
-                    label="Create an invoice"
-                    sub="Bill your client for this project"
-                    onClick={() => router.push('/invoices/new')}
-                  />
-                  <ActionCard
-                    icon={<Clock className="w-4 h-4 text-slate-500" />}
-                    label="Start the time tracker"
-                    sub="Log hours as you work"
-                    onClick={() => router.push('/time')}
-                  />
-                </>
-              )}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={portalUrl}
+                  className="flex-1 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-300 font-mono select-all focus:outline-none truncate"
+                />
+                <button
+                  type="button"
+                  onClick={copyPortalLink}
+                  className="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-white transition-colors cursor-pointer inline-flex items-center gap-1.5 flex-shrink-0"
+                >
+                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copiedLink ? 'Copied' : 'Copy'}</span>
+                </button>
+              </div>
             </div>
 
-            <button
-              onClick={() => router.push('/dashboard')}
-              className="w-full text-center text-sm text-slate-400 hover:text-slate-600 transition-colors"
-            >
-              Go to dashboard
-            </button>
+            {/* CTAs */}
+            <div className="space-y-3 pt-2 max-w-md mx-auto">
+              <button
+                type="button"
+                onClick={() => handleFinish('project')}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer"
+              >
+                <span>Open project</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleFinish('dashboard')}
+                className="w-full text-center text-xs font-semibold uppercase tracking-wider text-slate-400 hover:text-white transition-colors py-2 cursor-pointer"
+              >
+                Go to dashboard &rarr;
+              </button>
+            </div>
           </div>
         )}
+
       </div>
     </div>
-  )
-}
-
-// ── Action card component ─────────────────────────────────────────────────────
-
-function ActionCard({
-  icon, label, sub, onClick, primary = false,
-}: {
-  icon: React.ReactNode
-  label: string
-  sub: string
-  onClick: () => void
-  primary?: boolean
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`w-full flex items-center gap-4 rounded-xl border px-4 py-3.5 text-left transition-all hover:shadow-sm group ${
-        primary
-          ? 'border-indigo-200 bg-indigo-50 hover:border-indigo-300'
-          : 'border-slate-200 bg-white hover:border-slate-300 dark:hover:border-slate-700'
-      }`}
-    >
-      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${primary ? 'bg-indigo-100' : 'bg-slate-100'}`}>
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className={`text-sm font-semibold ${primary ? 'text-indigo-900' : 'text-slate-900'}`}>{label}</div>
-        <div className="text-xs text-slate-400 mt-0.5">{sub}</div>
-      </div>
-      <ArrowRight className={`w-4 h-4 flex-shrink-0 transition-transform group-hover:translate-x-0.5 ${primary ? 'text-indigo-400' : 'text-slate-300'}`} />
-    </button>
   )
 }

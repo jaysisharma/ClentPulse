@@ -18,9 +18,12 @@ export function CopyLinkButton({ url }: { url: string }) {
   }
 
   return (
-    <Button variant="secondary" size="sm" onClick={copy}>
-      {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-      {copied ? 'Copied!' : 'Copy link'}
-    </Button>
+    <button
+      onClick={copy}
+      className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white px-3 py-1 text-xs transition-colors shadow-xs inline-flex items-center gap-1.5"
+    >
+      {copied ? <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+      <span>{copied ? 'Copied!' : 'Copy link'}</span>
+    </button>
   )
 }

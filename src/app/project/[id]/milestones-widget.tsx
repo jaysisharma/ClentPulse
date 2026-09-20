@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { CheckCircle2, Circle, Plus, Trash2, Flag } from 'lucide-react'
+import { CheckCircle2, Circle, Plus, Trash2, Flag, Receipt } from 'lucide-react'
 import { CollapsibleCard } from './collapsible-card'
+import Link from 'next/link'
 
 interface Milestone {
   id: string
@@ -89,7 +90,7 @@ export function MilestonesWidget({
       action={
         <button
           onClick={() => setAdding(a => !a)}
-          className="text-xs font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+          className="text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
         >
           {adding ? 'Cancel' : '+ Add'}
         </button>
@@ -98,7 +99,7 @@ export function MilestonesWidget({
 
       {/* Progress bar */}
       {total > 0 && (
-        <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mb-4 overflow-hidden">
+        <div className="w-full bg-slate-100 dark:bg-white/5 rounded-full h-1.5 mb-4 overflow-hidden">
           <div
             className="h-1.5 rounded-full transition-all duration-500"
             style={{ width: `${Math.round((done / total) * 100)}%`, backgroundColor: color }}
@@ -110,7 +111,7 @@ export function MilestonesWidget({
       {adding && (
         <div className="flex gap-2 mb-3">
           <input
-            className="flex-1 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
+            className="flex-1 px-3 py-2 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all"
             placeholder="Milestone title"
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
@@ -119,14 +120,14 @@ export function MilestonesWidget({
           />
           <input
             type="date"
-            className="w-36 px-3 py-2 text-sm border border-slate-200 dark:border-slate-800 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors"
+            className="w-32 px-2.5 py-2 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all [color-scheme:light] dark:[color-scheme:dark]"
             value={newDate}
             onChange={e => setNewDate(e.target.value)}
           />
           <button
             onClick={addMilestone}
             disabled={!newTitle.trim() || saving}
-            className="px-3 py-2 rounded-lg text-white text-sm font-medium disabled:opacity-50 transition-colors"
+            className="px-3 py-2 rounded-xl text-white text-xs font-semibold disabled:opacity-50 transition-all shadow-xs"
             style={{ backgroundColor: color }}
           >
             <Plus className="w-4 h-4" />
@@ -138,7 +139,7 @@ export function MilestonesWidget({
       {milestones.length === 0 && !adding ? (
         <p className="text-xs text-slate-400 text-center py-2">No milestones yet. Add one to track key deliverables.</p>
       ) : (
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {milestones.map(m => {
             const overdue = isOverdue(m)
             return (
@@ -146,20 +147,28 @@ export function MilestonesWidget({
                 <button onClick={() => toggle(m)} className="flex-shrink-0">
                   {m.done
                     ? <CheckCircle2 className="w-4 h-4" style={{ color }} />
-                    : <Circle className={`w-4 h-4 ${overdue ? 'text-red-400' : 'text-slate-300'} hover:text-slate-400 transition-colors`} />
+                    : <Circle className={`w-4 h-4 ${overdue ? 'text-rose-500' : 'text-slate-300 dark:text-slate-600'} hover:text-slate-500 transition-colors`} />
                   }
                 </button>
-                <span className={`flex-1 text-sm min-w-0 truncate ${m.done ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                <span className={`flex-1 text-xs min-w-0 truncate ${m.done ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-200'}`}>
                   {m.title}
                 </span>
                 {m.due_date && (
-                  <span className={`text-xs flex-shrink-0 ${overdue ? 'text-red-500 font-medium' : m.done ? 'text-slate-300' : 'text-slate-400'}`}>
+                  <span className={`text-[11px] font-mono flex-shrink-0 ${overdue ? 'text-rose-500 font-medium' : m.done ? 'text-slate-400 dark:text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}>
                     {fmtDate(m.due_date)}
                   </span>
                 )}
+                <Link
+                  href={`/invoices/new?projectId=${projectId}&milestoneTitle=${encodeURIComponent(m.title)}`}
+                  title="Create Invoice from this Milestone"
+                  className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-1 text-[10px] font-mono text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-2 py-0.5 rounded transition-all hover:bg-indigo-100 dark:hover:bg-indigo-500/20 flex-shrink-0"
+                >
+                  <Receipt className="w-3 h-3" />
+                  <span>Invoice</span>
+                </Link>
                 <button
                   onClick={() => remove(m.id)}
-                  className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all flex-shrink-0"
+                  className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-500 transition-all flex-shrink-0 p-1"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

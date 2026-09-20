@@ -1,6 +1,7 @@
 # Frevio — Feature Tracker
 
-> Status: ✅ Done · 📋 Planned
+> Status: ✅ Done · 📋 Planned  
+> 📌 **Master Roadmap & Product Tracker:** See [`PRODUCT_TRACKER.md`](./PRODUCT_TRACKER.md) for full freelancer status & the upcoming Agency SaaS evolution.
 
 ---
 
@@ -158,6 +159,21 @@
 |---|---|---|---|
 | 15 | **Project kickoff checklist** — dual-sided todo list (freelancer + client tasks) before work begins | ✅ Done | `checklist_items` table + `KickoffChecklist` widget + `ClientChecklist` on status page |
 
+### Batch 9 — Editor Extension & Real-Time Presence
+| # | Feature | Status | Notes |
+|---|---|---|---|
+| 16 | **VS Code / Antigravity Extension** — auto-detect active coding, smart idle pause, link workspaces | ✅ Done | `extension/` package, commands, status bar, and heartbeat engine |
+| 17 | **Real-time Client Presence** — live "Currently working" pulse + recent activity on client status page | ✅ Done | `/p/[slug]` dynamic presence badge + project settings toggle |
+| 18 | **Extension API & Token Management** — bearer authentication, token generation & revocation | ✅ Done | `/api/extension/token`, `/api/extension/projects`, `/api/extension/heartbeat` |
+| 19 | **Automated Time Consolidation** — merge consecutive coding intervals into clean time entries | ✅ Done | Consolidated into `time_entries` with `[VS Code]` source badge |
+
+### Batch 10 — Instant Freelancer Activity Alerts
+| # | Feature | Status | Notes |
+|---|---|---|---|
+| 20 | **Client comment email alert** — notifies freelancer when client comments on an update | ✅ Done | `/api/update-comment` + `notifyFreelancerOfComment` via Resend |
+| 21 | **Status feedback email alert** — alerts freelancer on 👍/👎/messages from client status page | ✅ Done | `/api/feedback` + `notifyFreelancerOfFeedback` via Resend |
+| 22 | **Approval response email alert** — immediate notification when client approves or requests changes | ✅ Done | `/api/approvals/[id]` + `notifyFreelancerOfApproval` via Resend |
+
 ---
 
 ## 📋 Icebox (future ideas)
@@ -169,4 +185,4 @@
 
 ---
 
-_Last updated: 2026-05-31_
+_Last updated: 2026-09-08_

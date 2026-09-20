@@ -100,25 +100,56 @@ export function ProjectMessages({
     setLoadingMore(false)
   }
 
+  const [typingUser, setTypingUser] = useState<string | null>(null)
+  const typingTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const lastBroadcastRef = useRef<number>(0)
+  const channelRef = useRef<ReturnType<ReturnType<typeof createClient>['channel']> | null>(null)
+
   // Live updates: append messages from the other participant as they arrive.
-  // RLS scopes the stream to this project's owner/client, and we dedupe so the
-  // sender's own optimistic insert isn't added twice.
+  // Also receive Realtime broadcast typing indicator from the counterpart.
   useEffect(() => {
     const supabase = createClient()
     const channel = supabase
-      .channel(`comments:${projectId}:${Math.random()}`)
+      .channel(`comments:${projectId}`)
       .on(
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'comments', filter: `project_id=eq.${projectId}` },
         (payload: { new: Comment }) => {
           const c = payload.new
           setComments(prev => (prev.some(x => x.id === c.id) ? prev : [...prev, c]))
+          setTypingUser(null)
           requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }))
         },
       )
+      .on('broadcast', { event: 'typing' }, ({ payload }: { payload: { role: string; name: string } }) => {
+        if (payload.role !== viewerRole) {
+          setTypingUser(payload.name)
+          if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
+          typingTimerRef.current = setTimeout(() => setTypingUser(null), 3000)
+        }
+      })
       .subscribe()
-    return () => { supabase.removeChannel(channel) }
-  }, [projectId])
+
+    channelRef.current = channel
+
+    return () => {
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
+      supabase.removeChannel(channel)
+    }
+  }, [projectId, viewerRole])
+
+  const handleTyping = (text: string) => {
+    setBody(text)
+    const now = Date.now()
+    if (text.trim() && now - lastBroadcastRef.current > 2000) {
+      lastBroadcastRef.current = now
+      channelRef.current?.send({
+        type: 'broadcast',
+        event: 'typing',
+        payload: { role: viewerRole, name: viewerName },
+      })
+    }
+  }
 
   async function send(e: React.FormEvent) {
     e.preventDefault()
@@ -163,7 +194,7 @@ export function ProjectMessages({
                   type="button"
                   onClick={loadMore}
                   disabled={loadingMore}
-                  className="text-xs text-indigo-600 hover:text-indigo-700 font-medium py-1.5 px-3 rounded-lg bg-indigo-50 hover:bg-indigo-100 transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                  className="text-xs text-indigo-600 dark:text-indigo-400 font-medium py-1.5 px-3 rounded-lg bg-indigo-50 hover:bg-indigo-100 dark:bg-white/5 dark:hover:bg-white/10 border border-transparent dark:border-white/10 transition-colors disabled:opacity-50 flex items-center gap-1.5"
                 >
                   {loadingMore && <Loader2 className="w-3 h-3 animate-spin" />}
                   {loadingMore ? 'Loading older messages...' : 'Load older messages'}
@@ -177,7 +208,9 @@ export function ProjectMessages({
                   <div
                     className={cn(
                       'w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0',
-                      c.author_role === 'owner' ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-600',
+                      c.author_role === 'owner'
+                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300'
+                        : 'bg-slate-200 text-slate-600 dark:bg-white/10 dark:text-slate-300',
                     )}
                   >
                     {initials(c.author_name)}
@@ -186,12 +219,14 @@ export function ProjectMessages({
                     <div
                       className={cn(
                         'inline-block rounded-2xl px-3.5 py-2 text-sm whitespace-pre-wrap break-words text-left',
-                        mine ? 'bg-indigo-600 text-white rounded-br-md' : 'bg-slate-100 text-slate-800 rounded-bl-md',
+                        mine
+                          ? 'bg-indigo-600 text-white rounded-br-md shadow-2xs'
+                          : 'bg-slate-100 dark:bg-[#12131a] border border-transparent dark:border-white/10 text-slate-800 dark:text-slate-200 rounded-bl-md shadow-2xs',
                       )}
                     >
                       {c.body}
                     </div>
-                    <div className="text-[11px] text-slate-400 mt-1 px-1">
+                    <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 px-1">
                       {mine ? 'You' : c.author_name} · {timeLabel(c.created_at)}
                     </div>
                   </div>
@@ -203,15 +238,27 @@ export function ProjectMessages({
         <div ref={endRef} />
       </div>
 
+      {/* Typing indicator */}
+      {typingUser && (
+        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 italic px-2 pt-2 animate-fade-in">
+          <span className="flex gap-1 items-center">
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+          </span>
+          <span>{typingUser} is typing…</span>
+        </div>
+      )}
+
       {/* Composer */}
-      <form onSubmit={send} className="mt-4 flex items-end gap-2 border-t border-slate-100 pt-4">
+      <form onSubmit={send} className="mt-3 flex items-end gap-2 border-t border-slate-100 dark:border-white/10 pt-3">
         <textarea
           value={body}
-          onChange={e => setBody(e.target.value)}
+          onChange={e => handleTyping(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) send(e) }}
           placeholder="Write a message…"
           rows={1}
-          className="flex-1 resize-none px-3.5 py-2.5 text-sm border border-slate-200 rounded-xl bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition-colors"
+          className="flex-1 resize-none px-3.5 py-2.5 text-sm border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-[#0c0d12] transition-colors"
         />
         <button
           type="submit"

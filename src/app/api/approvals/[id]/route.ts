@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { notifyFreelancerOfApproval } from '@/lib/notifications'
 
 const ALLOWED_STATUSES = ['approved', 'declined']
 
@@ -23,5 +24,13 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   }).eq('id', id).eq('status', 'pending')
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Notify freelancer via email in the background
+  notifyFreelancerOfApproval({
+    approvalId: id,
+    status,
+    feedback: feedback || null,
+  }).catch(err => console.error('Failed to notify freelancer of approval response:', err))
+
   return NextResponse.json({ success: true })
 }

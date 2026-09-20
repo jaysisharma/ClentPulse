@@ -2,11 +2,42 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
 import { DarkShell } from '@/components/layout/dark-shell'
-import { Button } from '@/components/ui/button'
-import { StatCard } from '@/components/ui/stat-card'
 import { ClientsView, type ClientCard } from './clients-view'
 import Link from 'next/link'
-import { Users, Activity, ShieldCheck, Plus } from 'lucide-react'
+import { Users, Activity, ShieldCheck, Plus, Sparkles } from 'lucide-react'
+
+function OveradsClientStatCard({
+  label,
+  value,
+  icon: Icon,
+  caption,
+}: {
+  label: string
+  value: number
+  icon: React.ElementType
+  caption?: string
+}) {
+  return (
+    <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 hover:border-slate-300 dark:hover:border-white/20 transition-all duration-200 shadow-xs dark:shadow-sm flex flex-col justify-between">
+      <div>
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{label}</span>
+          <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400">
+            <Icon className="w-3.5 h-3.5" />
+          </div>
+        </div>
+        <div className="mt-3 text-2xl sm:text-3xl font-light font-mono tracking-tight text-slate-900 dark:text-white tabular-nums">
+          {value}
+        </div>
+      </div>
+      {caption && (
+        <div className="mt-2 text-xs text-slate-500 dark:text-slate-400 truncate">
+          {caption}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default async function ClientsPage() {
   const supabase = await createClient()
@@ -19,11 +50,8 @@ export default async function ClientsPage() {
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
-  // Fail honestly: surface a DB error instead of rendering an empty "no clients"
-  // state that hides the real problem — matches the dashboard/projects pages.
   if (error) throw new Error(`Failed to load clients: ${error.message}`)
 
-  // Group projects by client — keyed by email if set, otherwise by name.
   type Project = {
     id: string; project_name: string; client_name: string
     client_email: string | null; client_user_id: string | null; color: string; status: string
@@ -61,46 +89,77 @@ export default async function ClientsPage() {
   return (
     <AppLayout>
       <DarkShell>
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Clients</h1>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5">
-              {totalClients > 0
-                ? `${totalClients} client${totalClients !== 1 ? 's' : ''} across your projects.`
-                : 'All clients across your projects.'}
-            </p>
-          </div>
-          <Link href="/project/new">
-            <Button size="sm"><Plus className="w-4 h-4" />New project</Button>
-          </Link>
-        </div>
-
-        {clients.length === 0 ? (
-          /* Empty state */
-          <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 p-14 text-center">
-            <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center mx-auto mb-4">
-              <Users className="w-6 h-6 text-slate-400" />
+        <div className="relative z-10 space-y-7 pb-10">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+                Clients
+              </h1>
+              <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5 flex items-center gap-2">
+                <span>{totalClients > 0 ? `${totalClients} client${totalClients !== 1 ? 's' : ''} across your projects` : 'Manage all client relationships'}</span>
+              </p>
             </div>
-            <h3 className="font-semibold text-slate-900 dark:text-white mb-2">No clients yet</h3>
-            <p className="text-slate-500 dark:text-slate-400 text-sm mb-5">Create a project and add a client to get started.</p>
-            <Link href="/project/new" className="inline-block">
-              <Button><Plus className="w-4 h-4" />New project</Button>
+
+            <Link href="/project/new">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 px-4 py-2 text-xs font-semibold dark:hover:bg-slate-100 transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add client via project
+              </button>
             </Link>
           </div>
-        ) : (
-          <div className="space-y-8">
-            {/* Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <StatCard label="Total clients"      value={totalClients}  icon={Users} />
-              <StatCard label="Active clients"      value={activeClients} icon={Activity} />
-              <StatCard label="With portal access"  value={withPortal}    icon={ShieldCheck} />
-            </div>
 
-            {/* Searchable client list */}
+          {/* 3 Overview KPI tiles */}
+          {totalClients > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <OveradsClientStatCard
+                label="Total Clients"
+                value={totalClients}
+                icon={Users}
+                caption="Recorded across all projects"
+              />
+              <OveradsClientStatCard
+                label="Active Clients"
+                value={activeClients}
+                icon={Activity}
+                caption={`${activeClients} with in-flight work`}
+              />
+              <OveradsClientStatCard
+                label="Portal Access"
+                value={withPortal}
+                icon={ShieldCheck}
+                caption={`${withPortal} authenticated on status portal`}
+              />
+            </div>
+          )}
+
+          {/* Empty state or clients view */}
+          {totalClients === 0 ? (
+            <div className="rounded-3xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-16 px-6 flex flex-col items-center text-center shadow-md dark:shadow-xl">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <h2 className="text-xl font-normal text-slate-900 dark:text-white tracking-tight mt-5">No clients added yet</h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm">
+                Clients are automatically added when you create projects and send progress updates.
+              </p>
+              <Link href="/project/new" className="mt-6">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 px-6 py-2.5 text-xs font-semibold dark:hover:bg-slate-100 transition-all shadow-md cursor-pointer"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  Create project with client
+                </button>
+              </Link>
+            </div>
+          ) : (
             <ClientsView clients={clients} />
-          </div>
-        )}
+          )}
+        </div>
       </DarkShell>
     </AppLayout>
   )

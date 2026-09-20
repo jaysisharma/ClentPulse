@@ -120,6 +120,7 @@ describe('NewProjectForm Component', () => {
     // Expect insertion to Supabase projects table
     expect(mockInsert).toHaveBeenCalledWith({
       user_id: 'user-123',
+      org_id: null,
       client_name: 'Globex',
       client_email: 'globex@corp.com',
       project_name: 'Cloud Infrastructure',

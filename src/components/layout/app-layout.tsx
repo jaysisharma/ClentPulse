@@ -122,12 +122,12 @@ export function AppLayout({
   const totalUnread = Object.values(unreadCounts).reduce((a, b) => a + b, 0)
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 transition-colors">
 
       {/* Mobile overlay */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
@@ -138,26 +138,26 @@ export function AppLayout({
       </div>
 
       {/* Mobile top bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-20 print:hidden border-b bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
+      <div className="lg:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-20 print:hidden border-b bg-white/95 dark:bg-[#07080a] border-slate-200 dark:border-white/10 backdrop-blur-md">
         <button
           onClick={() => setOpen(o => !o)}
-          className="p-2 rounded-lg transition-colors text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+          className="p-2 rounded-lg transition-colors text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/5"
           aria-label="Toggle menu"
         >
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
         <Link href="/dashboard" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Frevio" className="w-7 h-7" />
+          <img src="/logo.svg" alt="Frevio" className="w-6 h-6" />
           <span className="font-semibold text-sm text-slate-900 dark:text-white">Frevio</span>
         </Link>
         <button
           onClick={() => setDrawerOpen(true)}
-          className="relative p-2 rounded-lg transition-colors text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+          className="relative p-2 rounded-lg transition-colors text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/5"
           aria-label="Open messages"
         >
           <MessageSquare className="w-5 h-5" />
           {totalUnread > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white animate-pulse">
+            <span className="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white dark:border-[#07080a] animate-pulse">
               {totalUnread}
             </span>
           )}
@@ -168,12 +168,12 @@ export function AppLayout({
       <div className="hidden lg:block fixed top-6 right-8 z-30">
         <button
           onClick={() => setDrawerOpen(true)}
-          className="relative p-2.5 rounded-xl border shadow-sm transition-all hover:shadow-md flex items-center justify-center cursor-pointer bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700"
+          className="relative p-2.5 rounded-full border shadow-md dark:shadow-xl transition-all hover:scale-105 flex items-center justify-center cursor-pointer bg-white dark:bg-[#0c0d12] border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
           aria-label="Open messages"
         >
-          <MessageSquare className="w-5 h-5" />
+          <MessageSquare className="w-4 h-4" />
           {totalUnread > 0 && (
-            <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold h-4.5 w-4.5 rounded-full flex items-center justify-center border-2 border-white animate-pulse">
+            <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center border-2 border-white dark:border-[#0c0d12] animate-pulse">
               {totalUnread}
             </span>
           )}
@@ -185,21 +185,21 @@ export function AppLayout({
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 transition-opacity"
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity"
             onClick={() => setDrawerOpen(false)}
           />
 
           {/* Drawer container */}
-          <aside className="fixed inset-y-0 right-0 z-50 w-[420px] max-w-full bg-white shadow-2xl flex flex-col border-l border-slate-200 animate-slide-in">
+          <aside className="fixed inset-y-0 right-0 z-50 w-[420px] max-w-full bg-white dark:bg-[#0c0d12] shadow-2xl flex flex-col border-l border-slate-200 dark:border-white/10 animate-slide-in">
             {/* Header */}
-            <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-3 flex-shrink-0">
+            <div className="px-5 py-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between gap-3 flex-shrink-0">
               <div className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-indigo-600" />
-                <span className="font-bold text-slate-900 text-lg">Messages</span>
+                <MessageSquare className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                <span className="font-bold text-slate-900 dark:text-white text-lg">Messages</span>
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
                 aria-label="Close drawer"
               >
                 <X className="w-5 h-5" />
@@ -210,20 +210,20 @@ export function AppLayout({
             <div className="flex-1 min-h-0 flex flex-col p-5">
               {projects.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center text-slate-400 p-6">
-                  <MessageSquare className="w-10 h-10 mb-3 text-slate-300" />
+                  <MessageSquare className="w-10 h-10 mb-3 text-slate-300 dark:text-slate-600" />
                   <p className="text-sm">No active projects to message.</p>
                 </div>
               ) : (
                 <>
                   {/* Selector for projects */}
                   <div className="mb-4 flex-shrink-0">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1.5">
                       Select Project
                     </label>
                     <select
                       value={selectedProjectId}
                       onChange={e => setSelectedProjectId(e.target.value)}
-                      className="w-full text-sm text-slate-700 border border-slate-200 rounded-xl px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                      className="w-full text-sm text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2 bg-white dark:bg-white/[0.04] focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                     >
                       {projects.map(p => (
                         <option key={p.id} value={p.id}>

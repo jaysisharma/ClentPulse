@@ -3,13 +3,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { AppLayout } from '@/components/layout/app-layout'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { DarkShell } from '@/components/layout/dark-shell'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   ArrowLeft, Upload, X, Code2, Globe,
-  Image as ImageIcon, Plus, Loader2,
+  Image as ImageIcon, Plus, Loader2, Sparkles,
 } from 'lucide-react'
 
 // Extract embed URL from YouTube or Loom share links
@@ -123,33 +122,50 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
 
   async function handleSave() {
     if (!title.trim() || !userId) return
-    setSaving(true); setError('')
+    setSaving(true)
+    setError('')
     const supabase = createClient()
 
     // Insert on first save; reuse the id on retries so we never create duplicates.
     let itemId = editId ?? createdId
     if (!itemId) {
       const { data, error: insertErr } = await supabase.from('portfolio_items').insert({
-        user_id: userId, title: title.trim(),
+        user_id: userId,
+        title: title.trim(),
         description: description || null,
-        live_url: liveUrl || null, github_url: githubUrl || null,
-        video_url: videoUrl || null, screenshots: [], tags,
+        live_url: liveUrl || null,
+        github_url: githubUrl || null,
+        video_url: videoUrl || null,
+        screenshots: [],
+        tags,
       }).select().single()
-      if (insertErr || !data) { setError(insertErr?.message ?? 'Insert failed'); setSaving(false); return }
+      if (insertErr || !data) {
+        setError(insertErr?.message ?? 'Save failed')
+        setSaving(false)
+        return
+      }
       itemId = data.id
       setCreatedId(data.id)
     }
-    if (!itemId) { setSaving(false); return }  // guaranteed set above; narrows the type
+    if (!itemId) { setSaving(false); return }
 
     const { urls: newUrls, failedIdx } = await uploadScreenshots(itemId)
     const allShots = [...existingShots, ...newUrls]
 
     const { error: err } = await supabase.from('portfolio_items').update({
-      title: title.trim(), description: description || null,
-      live_url: liveUrl || null, github_url: githubUrl || null,
-      video_url: videoUrl || null, screenshots: allShots, tags,
+      title: title.trim(),
+      description: description || null,
+      live_url: liveUrl || null,
+      github_url: githubUrl || null,
+      video_url: videoUrl || null,
+      screenshots: allShots,
+      tags,
     }).eq('id', itemId)
-    if (err) { setError(err.message); setSaving(false); return }
+    if (err) {
+      setError(err.message)
+      setSaving(false)
+      return
+    }
 
     // Some screenshots failed to upload — keep only those still selected so the
     // user can retry, and don't navigate away pretending everything saved.
@@ -171,167 +187,326 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
   const videoEmbed = videoUrl ? getEmbedUrl(videoUrl) : null
   const totalShots = existingShots.length + pendingPreviews.length
 
-  if (loading) return <AppLayout><div className="text-slate-400 text-sm animate-pulse">Loading…</div></AppLayout>
+  if (loading) {
+    return (
+      <AppLayout>
+        <DarkShell>
+          <div className="max-w-3xl py-12 flex items-center gap-3 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
+            <Loader2 className="w-4 h-4 animate-spin text-slate-900 dark:text-white" />
+            Loading work item…
+          </div>
+        </DarkShell>
+      </AppLayout>
+    )
+  }
 
   return (
     <AppLayout>
-      <div className="max-w-2xl animate-fade-in">
-        <Link href="/portfolio" className="inline-flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" />Back to portfolio
-        </Link>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{editId ? 'Edit work item' : 'Add work item'}</h1>
-        <p className="text-slate-500 dark:text-slate-400 text-sm mb-8">Showcase a project with screenshots, a demo, links, and a case study.</p>
+      <DarkShell>
+        <div className="max-w-3xl animate-fade-in relative z-10 pb-12">
+          {/* Back link */}
+          <Link
+            href="/portfolio"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-6"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to portfolio
+          </Link>
 
-        <div className="space-y-5">
-
-          {/* Basic info */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Project info</h2>
-            <Input label="Title" placeholder="Supabase backend for Acme Corp" value={title} onChange={e => setTitle(e.target.value)} required autoFocus />
-            <div>
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Case study / description</label>
-              <textarea
-                className="w-full px-3 py-2.5 text-sm border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white dark:focus:bg-slate-800  transition-colors resize-none"
-                rows={5}
-                placeholder="Describe what you built, the challenge you solved, the tech stack, and the outcome. This is your case study."
-                value={description}
-                onChange={e => setDesc(e.target.value)}
-              />
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                Showcase Studio
+              </span>
             </div>
+            <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+              {editId ? 'Edit work item' : 'Add work item'}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+              Showcase a client project with high-resolution imagery, interactive demo links, and a concise case study.
+            </p>
+          </div>
 
-            {/* Tags */}
-            <div>
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1.5">Tags <span className="text-slate-400 font-normal">(press Enter to add)</span></label>
-              <div className="flex flex-wrap gap-2 p-2.5 border border-slate-200 dark:border-slate-800 rounded-xl bg-slate-50 dark:bg-slate-800/40 min-h-[44px] focus-within:ring-2 focus-within:ring-indigo-500 focus-within:bg-white dark:focus-within:bg-slate-800  transition-colors">
-                {tags.map(t => (
-                  <span key={t} className="inline-flex items-center gap-1 bg-indigo-100 text-indigo-700 text-xs font-medium px-2.5 py-1 rounded-full">
-                    {t}
-                    <button type="button" onClick={() => setTags(prev => prev.filter(x => x !== t))} className="hover:text-indigo-900">
-                      <X className="w-2.5 h-2.5" />
-                    </button>
-                  </span>
-                ))}
+          <div className="space-y-6">
+            {/* Project info card */}
+            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="pb-3 border-b border-slate-100 dark:border-white/5">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                  Project Overview
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                  Name, narrative case study, and category tags.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Project Title
+                </label>
                 <input
-                  className="flex-1 min-w-24 text-sm bg-transparent focus:outline-none placeholder:text-slate-400"
-                  placeholder={tags.length ? '' : 'Next.js, Supabase, TypeScript…'}
-                  value={tagInput}
-                  onChange={e => setTagInput(e.target.value)}
-                  onKeyDown={addTag}
+                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                  placeholder="e.g. Next.js SaaS Platform Architecture — Acme Corp"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  required
+                  autoFocus
                 />
               </div>
-            </div>
-          </div>
 
-          {/* Links */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 space-y-4">
-            <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Links</h2>
-            <div className="relative">
-              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none mt-3.5" />
-              <Input label="Live URL" type="url" placeholder="https://yourproject.com" value={liveUrl} onChange={e => setLiveUrl(e.target.value)} className="pl-9" />
-            </div>
-            <div className="relative">
-              <Code2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none mt-3.5" />
-              <Input label="GitHub repository" type="url" placeholder="https://github.com/you/repo" value={githubUrl} onChange={e => setCode2Url(e.target.value)} className="pl-9" />
-            </div>
-            <div>
-              <Input label="Demo video URL (YouTube or Loom)" type="url" placeholder="https://youtube.com/watch?v=… or loom.com/share/…" value={videoUrl} onChange={e => setVideoUrl(e.target.value)} />
-              {videoUrl && !videoEmbed && (
-                <p className="text-xs text-amber-600 mt-1.5">Paste a YouTube or Loom URL to embed the video.</p>
-              )}
-              {videoEmbed && (
-                <div className="mt-3 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 aspect-video">
-                  <iframe src={videoEmbed} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Screenshots */}
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6">
-            <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Screenshots</h2>
-                <p className="text-xs text-slate-400 mt-0.5">PNG, JPG, WebP — max 5 MB each</p>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Case Study & Highlights
+                </label>
+                <textarea
+                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors resize-none"
+                  rows={5}
+                  placeholder="Summarize the client problem, technical stack used, and key business outcomes achieved…"
+                  value={description}
+                  onChange={e => setDesc(e.target.value)}
+                />
               </div>
-              <Button variant="secondary" size="sm" onClick={() => fileRef.current?.click()}>
-                <Plus className="w-3.5 h-3.5" />Add images
-              </Button>
-              <input
-                ref={fileRef} type="file" accept="image/*" multiple className="hidden"
-                onChange={e => addFiles(e.target.files)}
-              />
+
+              {/* Tags */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Stack & Domains <span className="text-slate-400 font-normal lowercase">(press Enter to add)</span>
+                </label>
+                <div className="flex flex-wrap gap-2 p-3 border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50/60 dark:bg-white/[0.03] min-h-[48px] focus-within:border-slate-400 dark:focus-within:border-white/30 transition-colors">
+                  {tags.map(t => (
+                    <span
+                      key={t}
+                      className="inline-flex items-center gap-1.5 bg-slate-200/70 dark:bg-white/10 text-slate-800 dark:text-slate-200 text-xs font-medium px-3 py-1 rounded-full"
+                    >
+                      {t}
+                      <button
+                        type="button"
+                        onClick={() => setTags(prev => prev.filter(x => x !== t))}
+                        className="text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ))}
+                  <input
+                    className="flex-1 min-w-28 text-xs sm:text-sm bg-transparent focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-white"
+                    placeholder={tags.length ? '' : 'e.g. Next.js, Supabase, Stripe, Tailwind…'}
+                    value={tagInput}
+                    onChange={e => setTagInput(e.target.value)}
+                    onKeyDown={addTag}
+                  />
+                </div>
+              </div>
             </div>
 
-            {totalShots === 0 ? (
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="w-full border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl py-10 flex flex-col items-center gap-2 text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-500 transition-colors"
-              >
-                <ImageIcon className="w-8 h-8" />
-                <span className="text-sm">Click to upload screenshots</span>
-                <span className="text-xs">or drag and drop</span>
-              </button>
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {existingShots.map(url => (
-                  <div key={url} className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
-                    <img src={url} alt="" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeExisting(url)}
-                      className="absolute top-1.5 right-1.5 w-6 h-6 bg-black/50 hover:bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
-                    >
-                      <X className="w-3 h-3 text-white" />
-                    </button>
+            {/* Links card */}
+            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="pb-3 border-b border-slate-100 dark:border-white/5">
+                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                  Live URLs & Media
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                  Direct production links, source repositories, and walkthrough screencasts.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Live Production URL
+                </label>
+                <div className="relative">
+                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <input
+                    type="url"
+                    placeholder="https://example.com"
+                    value={liveUrl}
+                    onChange={e => setLiveUrl(e.target.value)}
+                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Code Repository <span className="font-normal lowercase text-slate-400">(optional)</span>
+                </label>
+                <div className="relative">
+                  <Code2 className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                  <input
+                    type="url"
+                    placeholder="https://github.com/org/repo"
+                    value={githubUrl}
+                    onChange={e => setCode2Url(e.target.value)}
+                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  Walkthrough Video <span className="font-normal lowercase text-slate-400">(YouTube or Loom)</span>
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://youtube.com/watch?v=… or https://loom.com/share/…"
+                  value={videoUrl}
+                  onChange={e => setVideoUrl(e.target.value)}
+                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                />
+                {videoUrl && !videoEmbed && (
+                  <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-1.5">
+                    Note: Paste a valid YouTube or Loom share URL to generate an interactive embed.
+                  </p>
+                )}
+                {videoEmbed && (
+                  <div className="mt-3 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 aspect-video shadow-xs">
+                    <iframe
+                      src={videoEmbed}
+                      className="w-full h-full"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
                   </div>
-                ))}
-                {pendingPreviews.map((src, i) => (
-                  <div key={i} className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800">
-                    <img src={src} alt="" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-indigo-600/10 flex items-center justify-center">
-                      <span className="text-xs font-medium text-indigo-700 bg-white/90 px-2 py-0.5 rounded-full">New</span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removePending(i)}
-                      className="absolute top-1.5 right-1.5 w-6 h-6 bg-black/50 hover:bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all"
-                    >
-                      <X className="w-3 h-3 text-white" />
-                    </button>
-                  </div>
-                ))}
+                )}
+              </div>
+            </div>
+
+            {/* Screenshots Card */}
+            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-4 backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+                <div>
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                    Showcase Gallery
+                  </h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                    PNG, JPG, WebP — Up to 5 MB per asset.
+                  </p>
+                </div>
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="aspect-video rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 hover:text-slate-500 transition-colors"
+                  className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
                 >
-                  <Upload className="w-5 h-5" />
+                  <Plus className="w-3.5 h-3.5" /> Add images
                 </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={e => addFiles(e.target.files)}
+                />
+              </div>
+
+              {totalShots === 0 ? (
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl py-12 flex flex-col items-center gap-2.5 text-slate-400 dark:text-slate-500 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+                    <ImageIcon className="w-6 h-6 text-slate-400" />
+                  </div>
+                  <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                    Upload showcase screenshots
+                  </span>
+                  <span className="text-[11px] font-light text-slate-400 dark:text-slate-500">
+                    Drag and drop or browse files from your computer
+                  </span>
+                </button>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+                  {existingShots.map(url => (
+                    <div
+                      key={url}
+                      className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10"
+                    >
+                      <img src={url} alt="" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeExisting(url)}
+                        className="absolute top-2 right-2 w-6 h-6 bg-black/60 hover:bg-rose-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all text-white"
+                        title="Delete image"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                  {pendingPreviews.map((src, i) => (
+                    <div
+                      key={i}
+                      className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10"
+                    >
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                      <div className="absolute top-2 left-2">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-700 bg-white/95 dark:bg-slate-900/90 dark:text-indigo-300 px-2 py-0.5 rounded-full shadow-xs border border-indigo-500/20">
+                          New
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removePending(i)}
+                        className="absolute top-2 right-2 w-6 h-6 bg-black/60 hover:bg-rose-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all text-white"
+                        title="Remove image"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => fileRef.current?.click()}
+                    className="aspect-video rounded-xl border-2 border-dashed border-slate-200 dark:border-white/10 flex flex-col items-center justify-center gap-1 text-slate-400 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+                  >
+                    <Upload className="w-5 h-5" />
+                    <span className="text-[10px] font-semibold uppercase tracking-wider">Add more</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {error && (
+              <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs text-rose-700 dark:text-rose-300">
+                {error}
               </div>
             )}
-          </div>
 
-          {error && <div className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-3">{error}</div>}
-
-          <div className="flex gap-3">
-            <Link href="/portfolio" className="flex-1">
-              <Button variant="secondary" className="w-full justify-center">Cancel</Button>
-            </Link>
-            <Button
-              onClick={handleSave}
-              loading={saving || uploading}
-              disabled={!title.trim()}
-              className="flex-1 justify-center"
-            >
-              {uploading
-                ? <><Loader2 className="w-4 h-4 animate-spin" />Uploading…</>
-                : editId ? 'Save changes' : 'Add to portfolio'
-              }
-            </Button>
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+              <Link
+                href="/portfolio"
+                className="w-full sm:w-auto text-center rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-colors shadow-xs"
+              >
+                Cancel
+              </Link>
+              <button
+                type="button"
+                onClick={handleSave}
+                disabled={!title.trim() || saving || uploading}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-6 py-2.5 text-xs transition-all shadow-xs disabled:opacity-50"
+              >
+                {uploading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    Uploading screenshots…
+                  </>
+                ) : saving ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    Saving…
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    {editId ? 'Save changes' : 'Add to portfolio'}
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </DarkShell>
     </AppLayout>
   )
 }

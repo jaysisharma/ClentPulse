@@ -3,6 +3,7 @@ import { checkAndSyncPromoPlan } from '@/lib/plans'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { getWeekOf } from '@/lib/utils'
+import { logAgencyActivity } from '@/lib/activity'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -24,14 +25,27 @@ export async function POST(request: Request) {
 
   const { data: update } = await supabase
     .from('updates')
-    .select('*, projects(project_name, client_name, client_email, slug, color, user_id)')
+    .select('*, projects(id, project_name, client_name, client_email, slug, color, user_id, org_id)')
     .eq('id', updateId)
     .single()
 
   if (!update) return NextResponse.json({ error: 'Update not found' }, { status: 404 })
 
   const project = update.projects
-  if (project.user_id !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  let hasPermission = project.user_id === user.id
+  if (!hasPermission && project.org_id) {
+    const { data: membership } = await supabase
+      .from('organization_members')
+      .select('role')
+      .eq('org_id', project.org_id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+    if (membership && ['owner', 'admin'].includes(membership.role)) {
+      hasPermission = true
+    }
+  }
+
+  if (!hasPermission) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const { data: owner } = await supabase
     .from('users')
@@ -43,9 +57,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Owner profile not found' }, { status: 404 })
   }
 
+  const { isPaidPlan } = await import('@/lib/plans')
   const syncedPlan = await checkAndSyncPromoPlan(owner, supabase)
-  if (!syncedPlan || syncedPlan !== 'pro') {
-    return NextResponse.json({ error: 'Auto email requires Pro plan' }, { status: 403 })
+  if (!isPaidPlan(syncedPlan)) {
+    return NextResponse.json({ error: 'Auto email requires Pro plan or higher' }, { status: 403 })
   }
 
   const accentColor = owner.accent_color ?? '#6366F1'
@@ -101,7 +116,31 @@ export async function POST(request: Request) {
     html,
   })
 
-  await supabase.from('updates').update({ sent_at: new Date().toISOString() }).eq('id', updateId)
+  await supabase
+    .from('updates')
+    .update({
+      sent_at: new Date().toISOString(),
+      review_status: 'published',
+      approved_by: user.id,
+      approved_at: new Date().toISOString(),
+    })
+    .eq('id', updateId)
+
+  if (project.org_id) {
+    await logAgencyActivity({
+      supabase,
+      orgId: project.org_id,
+      projectId: project.id,
+      userId: user.id,
+      action: 'update.published',
+      entityType: 'update',
+      entityId: updateId,
+      details: {
+        week_of: weekOf,
+        recipient,
+      },
+    })
+  }
 
   return NextResponse.json({ success: true })
 }

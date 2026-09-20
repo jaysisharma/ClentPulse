@@ -98,37 +98,37 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
   const empty = totalRev === 0 && totalExp === 0
 
   return (
-    <div className="rounded-2xl border p-6 sm:p-7 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800/60">
+    <div className="rounded-2xl border p-6 sm:p-7 bg-white dark:bg-[#0c0d12] border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-7">
         <div>
-          <h2 className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Money in vs out</h2>
+          <h2 className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Cash Flow · Money in vs out</h2>
           <div className="flex items-baseline gap-2 mt-1.5">
-            <span className={`text-3xl font-bold tabular-nums ${net >= 0 ? 'text-slate-900 dark:text-white' : 'text-rose-500'}`}>{fmt$(net)}</span>
-            <span className="text-sm font-medium text-slate-400">net</span>
+            <span className={`text-3xl font-light font-mono tabular-nums tracking-tight ${net >= 0 ? 'text-slate-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>{fmt$(net)}</span>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">net profit</span>
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-1 mt-3">
-            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: REV_COLOR }} />
-              {fmt$(totalRev)} <span className="text-slate-400">in</span>
+            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: REV_COLOR }} />
+              {fmt$(totalRev)} <span className="text-slate-400">collected</span>
             </span>
-            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: EXP_COLOR }} />
-              {fmt$(totalExp)} <span className="text-slate-400">out</span>
+            <span className="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: EXP_COLOR }} />
+              {fmt$(totalExp)} <span className="text-slate-400">expenses</span>
             </span>
           </div>
         </div>
 
         {/* Range tabs */}
-        <div className="flex items-center gap-1 p-1 rounded-lg self-start bg-slate-100 dark:bg-slate-800">
+        <div className="flex items-center gap-1 p-1 rounded-full self-start bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10">
           {RANGES.map(r => (
             <button
               key={r.key}
               onClick={() => setRangeKey(r.key)}
-              className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
                 rangeKey === r.key
-                  ? 'bg-white dark:bg-slate-950 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
               }`}
             >
               {r.label}
@@ -138,7 +138,7 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
       </div>
 
       {empty ? (
-        <div className="h-56 flex items-center justify-center text-sm text-slate-400 font-medium">No money in or out in this period yet.</div>
+        <div className="h-56 flex items-center justify-center text-sm text-slate-500 dark:text-slate-400 font-medium">No money in or out in this period yet.</div>
       ) : (
         <>
           {/* Plot */}
@@ -176,7 +176,7 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
                 >
                   {hover === i && (
                     <>
-                      <div className="absolute top-0 bottom-0 w-px bg-slate-200 dark:bg-slate-700" style={{ left: `${xPct(i, n)}%` }} />
+                      <div className="absolute top-0 bottom-0 w-px bg-slate-300 dark:bg-slate-700" style={{ left: `${xPct(i, n)}%` }} />
                       {(['rev', 'exp'] as const).map(k => (
                         <div
                           key={k}
@@ -202,7 +202,7 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
           {/* x-axis labels */}
           <div className="flex mt-2">
             {buckets.map((b, i) => (
-              <span key={i} className="flex-1 text-[10px] text-slate-400 font-semibold text-center truncate">
+              <span key={i} className="flex-1 text-[10px] text-slate-500 dark:text-slate-400 font-semibold text-center truncate">
                 {i % labelEvery === 0 ? b.label : ''}
               </span>
             ))}

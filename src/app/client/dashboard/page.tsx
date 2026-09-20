@@ -11,9 +11,9 @@ import { CompletedProjectPopup } from '@/components/project/completed-project-po
 import Link from 'next/link'
 
 const INVOICE_STATUS_BADGE: Record<string, string> = {
-  draft: 'bg-slate-100 text-slate-600',
-  sent: 'bg-amber-50 text-amber-700',
-  paid: 'bg-emerald-50 text-emerald-700',
+  draft: 'bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/10',
+  sent: 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20',
+  paid: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20',
 }
 
 const INVOICE_SORT: Record<string, number> = { sent: 0, draft: 1, paid: 2 }
@@ -84,18 +84,26 @@ export default async function ClientDashboardPage() {
   const firstName = clientName.split(' ')[0]
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-white font-sans relative selection:bg-slate-200 dark:selection:bg-white/20">
+      {/* Subtle top ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-80 bg-indigo-500/5 dark:bg-indigo-500/[0.03] blur-3xl pointer-events-none" />
+
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      <header className="bg-white/80 dark:bg-[#08090a]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-white/10 sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-slate-900 text-white dark:bg-white dark:text-slate-950 rounded-xl flex items-center justify-center shadow-xs">
+              <Zap className="w-4 h-4" />
             </div>
-            <span className="font-semibold text-slate-900">Client portal</span>
+            <div>
+              <span className="font-semibold text-slate-900 dark:text-white tracking-tight">Client Portal</span>
+              <span className="hidden sm:inline-block text-[10px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-2.5 px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10">
+                Studio Space
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-500 hidden sm:inline">{user.email}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline font-mono">{user.email}</span>
             {allProjects.length > 0 && (
               <ClientMessagesPanel
                 projects={allProjects.map(p => ({ id: p.id, project_name: p.project_name, client_name: p.client_name }))}
@@ -104,270 +112,305 @@ export default async function ClientDashboardPage() {
             <SignOutButton />
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-4xl mx-auto px-6 py-10 space-y-10">
+      <div className="max-w-4xl mx-auto px-6 py-10 space-y-10 relative">
 
-            {/* Greeting */}
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-                {firstName ? `Hi ${firstName} 👋` : 'Welcome 👋'}
-              </h1>
-              <p className="text-slate-500 text-sm mt-1">
-                Your projects, documents, invoices, and messages — all in one place.
-              </p>
+        {/* Greeting */}
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/[0.03] shadow-xs mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              Verified Client Overview
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            {firstName ? `Welcome back, ${firstName}` : 'Welcome to your portal'}
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1.5 leading-relaxed">
+            Real-time milestone tracking, contracts, invoices, and studio communication in one centralized hub.
+          </p>
 
-              {/* At-a-glance stats */}
-              <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-5">
-                <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5">
-                  <div className="flex items-center gap-1.5 text-slate-400">
-                    <FolderOpen className="w-3.5 h-3.5" />
-                    <span className="text-[11px] font-semibold uppercase tracking-wider">Projects</span>
-                  </div>
-                  <div className="text-2xl font-bold text-slate-900 mt-2 tabular-nums">{activeProjectCount}</div>
-                  <div className="text-xs text-slate-400 mt-0.5">{allProjects.length} total · {activeProjectCount} active</div>
-                </div>
+          {/* At-a-glance stats */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-6">
+            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md p-4 sm:p-5 shadow-xs dark:shadow-none">
+              <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500">
+                <FolderOpen className="w-3.5 h-3.5" />
+                <span className="text-[10px] font-semibold uppercase tracking-wider">Active Projects</span>
+              </div>
+              <div className="text-2xl font-light text-slate-900 dark:text-white mt-2 tabular-nums">{activeProjectCount}</div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">{allProjects.length} total · {activeProjectCount} ongoing</div>
+            </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5">
-                  <div className="flex items-center gap-1.5 text-slate-400">
-                    <Wallet className="w-3.5 h-3.5" />
-                    <span className="text-[11px] font-semibold uppercase tracking-wider">Amount due</span>
-                  </div>
-                  <div className={`text-2xl font-bold mt-2 tabular-nums ${owedTotal > 0 ? 'text-amber-600' : 'text-slate-900'}`}>
-                    {fmtMoney(owedTotal)}
-                  </div>
-                  <div className="text-xs text-slate-400 mt-0.5">
-                    {unpaidInvoices.length} unpaid invoice{unpaidInvoices.length !== 1 ? 's' : ''}
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5">
-                  <div className="flex items-center gap-1.5 text-slate-400">
-                    {attentionCount > 0 ? <AlertCircle className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-                    <span className="text-[11px] font-semibold uppercase tracking-wider">To review</span>
-                  </div>
-                  <div className={`text-2xl font-bold mt-2 tabular-nums ${attentionCount > 0 ? 'text-amber-600' : 'text-emerald-600'}`}>
-                    {attentionCount}
-                  </div>
-                  <div className="text-xs text-slate-400 mt-0.5">{attentionCount > 0 ? 'need your action' : 'all caught up'}</div>
-                </div>
+            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md p-4 sm:p-5 shadow-xs dark:shadow-none">
+              <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500">
+                <Wallet className="w-3.5 h-3.5" />
+                <span className="text-[10px] font-semibold uppercase tracking-wider">Balance Due</span>
+              </div>
+              <div className={`text-2xl font-light mt-2 tabular-nums ${owedTotal > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-900 dark:text-white'}`}>
+                {fmtMoney(owedTotal)}
+              </div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                {unpaidInvoices.length} outstanding invoice{unpaidInvoices.length !== 1 ? 's' : ''}
               </div>
             </div>
 
+            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md p-4 sm:p-5 shadow-xs dark:shadow-none">
+              <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500">
+                {attentionCount > 0 ? <AlertCircle className="w-3.5 h-3.5" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
+                <span className="text-[10px] font-semibold uppercase tracking-wider">Pending Action</span>
+              </div>
+              <div className={`text-2xl font-light mt-2 tabular-nums ${attentionCount > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                {attentionCount}
+              </div>
+              <div className="text-xs text-slate-400 dark:text-slate-500 mt-1">{attentionCount > 0 ? 'items require your review' : 'all caught up'}</div>
+            </div>
+          </div>
+        </div>
 
-            {/* Needs your attention */}
-            {attentionCount > 0 && (
-              <div>
-                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Needs your attention</h2>
-                <div className="space-y-3">
+        {/* Needs your attention */}
+        {attentionCount > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Pending Your Review ({attentionCount})
+              </h2>
+            </div>
+            <div className="space-y-3">
+              {/* Pending approvals */}
+              {pendingApprovals.map(a => (
+                <div key={a.id}>
+                  <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mb-1.5 ml-1 uppercase tracking-wider">{a.projectName}</p>
+                  <ApprovalCard approval={a} accentColor="#6366F1" />
+                </div>
+              ))}
 
-                  {/* Pending approvals */}
-                  {pendingApprovals.map(a => (
-                    <div key={a.id}>
-                      <p className="text-xs text-slate-400 mb-1.5 ml-1">{a.projectName}</p>
-                      <ApprovalCard approval={a} accentColor="#6366F1" />
+              {/* Unsigned contracts */}
+              {unsignedContracts.map(c => (
+                <Link
+                  key={c.id}
+                  href={`/contract/${c.id}`}
+                  className="flex items-center gap-4 bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-amber-300 dark:border-amber-500/30 p-5 hover:border-amber-400 dark:hover:border-amber-500/50 transition-colors group shadow-xs dark:shadow-none"
+                >
+                  <div className="w-9 h-9 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0 text-amber-600 dark:text-amber-400">
+                    <FileSignature className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold text-slate-900 dark:text-white truncate">{c.title}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{c.projectName} · Awaiting your signature</div>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-amber-500 transition-colors flex-shrink-0" />
+                </Link>
+              ))}
+
+              {/* Unpaid invoices */}
+              {unpaidInvoices.map(inv => {
+                const total = (inv.items ?? []).reduce((s, i) => s + (i.amount ?? 0), 0)
+                return (
+                  <Link
+                    key={inv.id}
+                    href={`/invoice/${inv.id}`}
+                    className="flex items-center gap-4 bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-amber-300 dark:border-amber-500/30 p-5 hover:border-amber-400 dark:hover:border-amber-500/50 transition-colors group shadow-xs dark:shadow-none"
+                  >
+                    <div className="w-9 h-9 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center flex-shrink-0 text-amber-600 dark:text-amber-400">
+                      <FileText className="w-4 h-4" />
                     </div>
-                  ))}
-
-                  {/* Unsigned contracts */}
-                  {unsignedContracts.map(c => (
-                    <Link
-                      key={c.id}
-                      href={`/contract/${c.id}`}
-                      className="flex items-center gap-4 bg-white rounded-2xl border border-amber-200 p-5 hover:border-amber-300 transition-colors group"
-                    >
-                      <div className="w-9 h-9 bg-amber-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <FileSignature className="w-4 h-4 text-amber-600" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-slate-900 dark:text-white truncate">{inv.invoice_number}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        {fmtMoney(total)} due
+                        {inv.due_date ? ` · ${new Date(inv.due_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-slate-900 truncate">{c.title}</div>
-                        <div className="text-sm text-slate-400">{c.projectName} · Awaiting your signature</div>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-amber-500 transition-colors flex-shrink-0" />
-                    </Link>
-                  ))}
+                    </div>
+                    <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3.5 py-1.5 rounded-full flex-shrink-0 group-hover:bg-amber-500/20 transition-colors">
+                      Pay Now
+                    </span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
-                  {/* Unpaid invoices */}
-                  {unpaidInvoices.map(inv => {
-                    const total = (inv.items ?? []).reduce((s, i) => s + (i.amount ?? 0), 0)
+        {/* Projects */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <FolderOpen className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              Active Engagements
+            </h2>
+          </div>
+
+          {!allProjects.length ? (
+            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-dashed border-slate-200 dark:border-white/10 p-10 text-center text-xs text-slate-400 dark:text-slate-500">
+              No projects linked to this portal yet. Your studio lead will share a live link as soon as your workspace is active.
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {/* Active / Paused Projects */}
+              {allProjects.filter(p => p.status !== 'completed').length > 0 && (
+                <div className="space-y-4">
+                  {allProjects.filter(p => p.status !== 'completed').map(p => {
+                    const latestUpdate = [...p.updates]
+                      .filter(u => u.sent_at)
+                      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+
                     return (
-                      <Link
-                        key={inv.id}
-                        href={`/invoice/${inv.id}`}
-                        className="flex items-center gap-4 bg-white rounded-2xl border border-amber-200 p-5 hover:border-amber-300 transition-colors group"
-                      >
-                        <div className="w-9 h-9 bg-amber-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <FileText className="w-4 h-4 text-amber-600" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-semibold text-slate-900 truncate">{inv.invoice_number}</div>
-                          <div className="text-sm text-slate-400">
-                            {fmtMoney(total)} due
-                            {inv.due_date ? ` · ${new Date(inv.due_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}
+                      <div key={p.id} className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md overflow-hidden shadow-xs dark:shadow-none transition-colors">
+                        {/* Project header */}
+                        <Link
+                          href={`/p/${p.slug}`}
+                          className="flex items-center gap-4 p-5 hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors group"
+                        >
+                          <div className="w-2.5 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: p.color || '#6366F1' }} />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-sm font-semibold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                              {p.project_name}
+                            </div>
+                            <div className="flex items-center gap-2 mt-1">
+                              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: p.status === 'active' ? '#22c55e' : '#94a3b8' }} />
+                              <span className="text-xs text-slate-400 dark:text-slate-500 capitalize">{p.status}</span>
+                              <span className="text-slate-300 dark:text-slate-600">·</span>
+                              <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">{p.updates.filter(u => u.sent_at).length} updates</span>
+                            </div>
                           </div>
-                        </div>
-                        <span className="text-xs font-semibold text-amber-700 bg-amber-100/70 px-3 py-1.5 rounded-lg flex-shrink-0 group-hover:bg-amber-100 transition-colors">Pay now</span>
-                      </Link>
+                          <span className="text-xs text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white font-medium flex items-center gap-1.5 flex-shrink-0 px-3 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 transition-all">
+                            View Portal <ArrowRight className="w-3 h-3" />
+                          </span>
+                        </Link>
+
+                        {/* Latest update inline */}
+                        {latestUpdate ? (
+                          <div className="px-5 pb-5 border-t border-slate-100 dark:border-white/5 bg-slate-50/30 dark:bg-white/[0.01]">
+                            <div className="flex items-center gap-2 py-3">
+                              <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                              <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+                                Latest Briefing · {new Date(latestUpdate.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                              </span>
+                            </div>
+                            <ul className="space-y-2">
+                              {(latestUpdate.bullets ?? []).filter(Boolean).map((b, i) => (
+                                <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                                  <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: p.color || '#6366F1' }} />
+                                  <span>{b}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : (
+                          <div className="px-5 pb-4 border-t border-slate-100 dark:border-white/5 pt-3">
+                            <p className="text-xs text-slate-400 dark:text-slate-500">No project updates posted yet.</p>
+                          </div>
+                        )}
+                      </div>
                     )
                   })}
-
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Projects */}
-            <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Your projects</h2>
-              {!allProjects.length ? (
-                <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-10 text-center text-sm text-slate-400">
-                  No projects here yet. Your freelancer will share a status link as soon as your project is set up — you can always view it without signing in.
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  {/* Active / Paused Projects */}
-                  {allProjects.filter(p => p.status !== 'completed').length > 0 && (
-                    <div className="space-y-4">
-                      {allProjects.filter(p => p.status !== 'completed').map(p => {
-                        const latestUpdate = [...p.updates]
-                          .filter(u => u.sent_at)
-                          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+              {/* Completed Projects Section */}
+              {completedProjects.length > 0 && (
+                <div className="pt-2">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3 ml-1">
+                    Archived & Completed
+                  </h3>
+                  <div className="space-y-4">
+                    {completedProjects.map(p => {
+                      const hasTestimonial = testimonialProjectIds.has(p.id)
 
-                        return (
-                          <div key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                            {/* Project header */}
-                            <Link
-                              href={`/p/${p.slug}`}
-                              className="flex items-center gap-4 p-5 hover:bg-slate-50 transition-colors group"
-                            >
-                              <div className="w-3 h-10 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
+                      return (
+                        <div key={p.id} className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md overflow-hidden shadow-xs dark:shadow-none transition-colors">
+                          <div className="flex items-center justify-between p-5 hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors group">
+                            <div className="flex items-center gap-4 flex-1 min-w-0">
+                              <div className="w-2.5 h-10 rounded-full flex-shrink-0 bg-slate-300 dark:bg-slate-700" />
                               <div className="flex-1 min-w-0">
-                                <div className="font-semibold text-slate-900 truncate">{p.project_name}</div>
-                                <div className="flex items-center gap-2 mt-0.5">
-                                  <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: p.status === 'active' ? '#22c55e' : '#94a3b8' }} />
-                                  <span className="text-sm text-slate-400 capitalize">{p.status}</span>
-                                  <span className="text-slate-300">·</span>
-                                  <span className="text-sm text-slate-400">{p.updates.filter(u => u.sent_at).length} updates</span>
-                                </div>
-                              </div>
-                              <span className="text-xs text-indigo-600 font-medium group-hover:underline flex items-center gap-1 flex-shrink-0">
-                                View all <ArrowRight className="w-3 h-3" />
-                              </span>
-                            </Link>
-
-                            {/* Latest update inline */}
-                            {latestUpdate ? (
-                              <div className="px-5 pb-5 border-t border-slate-100">
-                                <div className="flex items-center gap-2 py-3">
-                                  <Clock className="w-3.5 h-3.5 text-slate-400" />
-                                  <span className="text-xs text-slate-400 font-medium">Latest update · {new Date(latestUpdate.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                                </div>
-                                <ul className="space-y-2">
-                                  {(latestUpdate.bullets ?? []).filter(Boolean).map((b, i) => (
-                                    <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
-                                      <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: p.color }} />
-                                      {b}
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            ) : (
-                              <div className="px-5 pb-4 border-t border-slate-100 pt-3">
-                                <p className="text-sm text-slate-400">No updates sent yet.</p>
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )}
-
-                  {/* Completed Projects Section */}
-                  {completedProjects.length > 0 && (
-                    <div className="pt-2">
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 ml-1">Completed Projects</h3>
-                      <div className="space-y-4">
-                        {completedProjects.map(p => {
-                          const hasTestimonial = testimonialProjectIds.has(p.id)
-
-                          return (
-                            <div key={p.id} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-                              <div className="flex items-center justify-between p-5 hover:bg-slate-50 transition-colors group">
-                                <div className="flex items-center gap-4 flex-1 min-w-0">
-                                  <div className="w-3 h-10 rounded-full flex-shrink-0 bg-slate-300" />
-                                  <div className="flex-1 min-w-0">
-                                    <Link href={`/p/${p.slug}`} className="font-semibold text-slate-800 hover:text-indigo-600 transition-colors truncate block">
-                                      {p.project_name}
-                                    </Link>
-                                    <div className="flex items-center gap-2 mt-0.5">
-                                      <span className="text-xs text-slate-400 capitalize bg-slate-100 px-2 py-0.5 rounded-full font-medium">Completed</span>
-                                      {hasTestimonial ? (
-                                        <span className="text-xs text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">Testimonial submitted</span>
-                                      ) : (
-                                        <span className="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">Testimonial pending</span>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                  {!hasTestimonial && (
-                                    <Link href={`/testimonial/${p.id}`}>
-                                      <button className="text-xs font-semibold px-3 py-1.5 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-sm">
-                                        Leave testimonial
-                                      </button>
-                                    </Link>
+                                <Link href={`/p/${p.slug}`} className="text-sm font-semibold text-slate-800 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors truncate block">
+                                  {p.project_name}
+                                </Link>
+                                <div className="flex items-center gap-2 mt-1">
+                                  <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2 py-0.5 rounded-full font-medium">
+                                    Completed
+                                  </span>
+                                  {hasTestimonial ? (
+                                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium">
+                                      Testimonial Submitted
+                                    </span>
+                                  ) : (
+                                    <span className="text-[10px] text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full font-medium">
+                                      Testimonial Requested
+                                    </span>
                                   )}
-                                  <Link
-                                    href={`/p/${p.slug}`}
-                                    className="text-xs text-indigo-600 font-medium hover:underline flex items-center gap-1 flex-shrink-0"
-                                  >
-                                    View updates <ArrowRight className="w-3 h-3" />
-                                  </Link>
                                 </div>
                               </div>
                             </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
+                            <div className="flex items-center gap-3">
+                              {!hasTestimonial && (
+                                <Link href={`/testimonial/${p.id}`}>
+                                  <button className="text-xs font-semibold px-3 py-1.5 rounded-full text-white bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 transition-all shadow-xs">
+                                    Leave Testimonial
+                                  </button>
+                                </Link>
+                              )}
+                              <Link
+                                href={`/p/${p.slug}`}
+                                className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium flex items-center gap-1 flex-shrink-0"
+                              >
+                                View Portal <ArrowRight className="w-3 h-3" />
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
               )}
             </div>
+          )}
+        </div>
 
-            {/* Invoices */}
-            {allInvoices.length > 0 && (
-              <div>
-                <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Invoices</h2>
-                <div className="space-y-2">
-                  {allInvoices.map(inv => {
-                    const total = (inv.items ?? []).reduce((s, i) => s + (i.amount ?? 0), 0)
-                    return (
-                      <Link
-                        key={inv.id}
-                        href={`/invoice/${inv.id}`}
-                        className="flex items-center justify-between bg-white rounded-2xl border border-slate-200 px-5 py-4 hover:border-indigo-300 transition-colors"
-                      >
-                        <div>
-                          <div className="font-medium text-slate-900">{inv.invoice_number}</div>
-                          {inv.due_date && (
-                            <div className="text-xs text-slate-400 mt-0.5">
-                              Due {new Date(inv.due_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                            </div>
-                          )}
+        {/* Invoices */}
+        {allInvoices.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Wallet className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Invoices & Statements
+              </h2>
+            </div>
+            <div className="space-y-2.5">
+              {allInvoices.map(inv => {
+                const total = (inv.items ?? []).reduce((s, i) => s + (i.amount ?? 0), 0)
+                return (
+                  <Link
+                    key={inv.id}
+                    href={`/invoice/${inv.id}`}
+                    className="flex items-center justify-between bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md px-5 py-4 hover:border-slate-300 dark:hover:border-white/20 transition-colors shadow-xs dark:shadow-none group"
+                  >
+                    <div>
+                      <div className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                        {inv.invoice_number}
+                      </div>
+                      {inv.due_date && (
+                        <div className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                          Due {new Date(inv.due_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${INVOICE_STATUS_BADGE[inv.status]}`}>
-                            {inv.status}
-                          </span>
-                          <span className="font-semibold text-slate-900 tabular-nums">{fmtMoney(total)}</span>
-                          <ArrowRight className="w-4 h-4 text-slate-300" />
-                        </div>
-                      </Link>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
+                      )}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full capitalize ${INVOICE_STATUS_BADGE[inv.status]}`}>
+                        {inv.status}
+                      </span>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-white tabular-nums">{fmtMoney(total)}</span>
+                      <ArrowRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors" />
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
       </div>
 

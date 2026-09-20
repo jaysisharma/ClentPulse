@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { isUserAdmin } from '@/lib/auth-admin'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -13,13 +14,8 @@ export async function POST(request: Request) {
     }
 
     // 2. Query permissions
-    const { data: profile, error: profileError } = await supabase
-      .from('users')
-      .select('is_admin')
-      .eq('id', user.id)
-      .single()
-
-    if (profileError || !profile?.is_admin) {
+    const isAuthorized = await isUserAdmin(supabase, user)
+    if (!isAuthorized) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 

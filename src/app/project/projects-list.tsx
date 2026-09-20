@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
-import { Search, Send, ChevronRight } from 'lucide-react'
+import { Search, Send, ChevronRight, Plus, FolderPlus } from 'lucide-react'
 
 interface Update { id: string; sent_at: string | null }
 interface Approval { id: string; status: string }
@@ -40,10 +40,10 @@ type Health =
   | { tone: 'idle'; label: string }
 
 const HEALTH_STYLE: Record<Health['tone'], string> = {
-  danger: 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-900/40',
-  warn: 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-900/40',
-  ok: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/40',
-  idle: 'bg-slate-50 text-slate-500 border-slate-200/70 dark:bg-slate-800/40 dark:text-slate-400 dark:border-slate-700/60',
+  danger: 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/20',
+  warn: 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20',
+  ok: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20',
+  idle: 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10',
 }
 
 const STATUSES = ['all', 'active', 'paused', 'completed'] as const
@@ -66,7 +66,6 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
     const invoiced  = (p.invoices ?? []).flatMap(i => i.items ?? []).reduce((s, it) => s + (it.amount ?? 0), 0)
     const pct = budgetVal > 0 ? Math.min((invoiced / budgetVal) * 100, 100) : 0
 
-    // One pill, most pressing signal first.
     const health: Health =
       isOverdue ? { tone: 'danger', label: `No update · ${daysAgo(latest?.sent_at ?? p.created_at)}d` }
       : unsigned > 0 ? { tone: 'warn', label: 'Contract unsigned' }
@@ -97,71 +96,93 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
   return (
     <div className="space-y-4">
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
-        {projects.length >= 8 && (
-          <div className="relative w-full sm:max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search projects or clients…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-transparent transition-all"
-            />
-          </div>
-        )}
-        <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700/60 p-1 rounded-lg w-fit">
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+        {/* Status segmented pill */}
+        <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full w-fit ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm">
           {STATUSES.map(s => (
             <button
               key={s}
               onClick={() => setStatus(s)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold capitalize transition-colors cursor-pointer ${
-                status === s ? 'bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm border border-slate-200/50 dark:border-slate-700/50' : 'text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
+              className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer ${
+                status === s
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
               }`}
             >
               {s}
               {counts[s] > 0 && (
-                <span className={`ml-1.5 text-[10px] font-semibold ${status === s ? 'text-indigo-600' : 'text-slate-400'}`}>{counts[s]}</span>
+                <span className={`ml-1.5 text-[10px] font-mono ${status === s ? 'text-slate-200 dark:text-slate-900' : 'text-slate-400 dark:text-slate-500'}`}>
+                  {counts[s]}
+                </span>
               )}
             </button>
           ))}
         </div>
+
+        {/* Search input */}
+        <div className="relative w-full sm:max-w-xs">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search projects or clients…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all ring-1 ring-slate-950/5 dark:ring-white/5 font-light"
+          />
+        </div>
       </div>
 
-      {/* Table */}
-      {filtered.length === 0 ? (
-        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/60 p-12 text-center shadow-sm">
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">No projects match your filters.</p>
+      {/* Projects Table */}
+      {projects.length === 0 ? (
+        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-14 px-6 text-center shadow-xs dark:shadow-sm">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
+            <FolderPlus className="w-6 h-6" />
+          </div>
+          <h3 className="text-base font-medium text-slate-900 dark:text-white">No projects yet</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto font-light">
+            Create your first project to start working with clients in Frevio.
+          </p>
+          <Link
+            href="/project/new"
+            className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold px-4 py-2 text-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-xs"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Create project</span>
+          </Link>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-12 text-center shadow-xs dark:shadow-sm">
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">No projects match your filter or search query.</p>
         </div>
       ) : (
-        <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/60 shadow-sm overflow-hidden">
+        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm overflow-hidden">
           {/* Column headers (desktop only) */}
-          <div className="hidden md:grid grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+          <div className="hidden md:grid grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-100 dark:border-white/5 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
             <span>Project</span>
             <span>Health</span>
             <span>Budget</span>
-            <span>Last activity</span>
+            <span>Last Activity</span>
             <span className="text-right">Action</span>
           </div>
 
-          <div className="divide-y divide-slate-100 dark:divide-slate-800/60">
+          <div className="divide-y divide-slate-100 dark:divide-white/5">
             {filtered.map(p => (
               <div
                 key={p.id}
-                className="md:grid md:grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] md:items-center gap-4 px-5 py-4 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors flex flex-col"
+                className="md:grid md:grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] md:items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors flex flex-col"
               >
                 {/* Project */}
                 <Link href={`/project/${p.id}`} className="flex items-center gap-3 min-w-0 group">
                   <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
                   <div className="min-w-0">
-                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{p.project_name}</p>
-                    <p className="text-xs text-slate-400 truncate">{p.client_name}</p>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">{p.project_name}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{p.client_name}</p>
                   </div>
                 </Link>
 
                 {/* Health */}
                 <div className="mt-2 md:mt-0">
-                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${HEALTH_STYLE[p.health.tone]}`}>
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${HEALTH_STYLE[p.health.tone]}`}>
                     {p.health.tone === 'ok' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
                     {p.health.label}
                   </span>
@@ -171,21 +192,21 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
                 <div className="mt-3 md:mt-0">
                   {p.budgetVal > 0 ? (
                     <div className="max-w-[200px]">
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1 font-medium">
-                        <span className="font-bold text-slate-700 dark:text-slate-200 tabular-nums">{fmt$(p.invoiced)}</span>
-                        <span className="text-slate-400 tabular-nums">/ {fmt$(p.budgetVal)}</span>
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 mb-1 font-mono">
+                        <span className="text-slate-900 dark:text-white font-medium tabular-nums">{fmt$(p.invoiced)}</span>
+                        <span className="text-slate-400 dark:text-slate-500 tabular-nums">/ {fmt$(p.budgetVal)}</span>
                       </div>
-                      <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                      <div className="w-full bg-slate-100 dark:bg-white/10 rounded-full h-1.5 overflow-hidden">
                         <div className="h-1.5 rounded-full transition-all duration-500" style={{ width: `${Math.round(p.pct)}%`, backgroundColor: p.color }} />
                       </div>
                     </div>
                   ) : (
-                    <span className="text-xs text-slate-300 dark:text-slate-600">No budget</span>
+                    <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">No budget set</span>
                   )}
                 </div>
 
                 {/* Last activity */}
-                <div className="mt-2 md:mt-0 text-xs text-slate-500 dark:text-slate-400 font-medium">
+                <div className="mt-2 md:mt-0 text-xs text-slate-500 dark:text-slate-400">
                   {p.latest ? `Updated ${formatDate(p.latest.sent_at!)}` : 'No updates yet'}
                 </div>
 
@@ -193,11 +214,11 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
                 <div className="mt-3 md:mt-0 flex items-center gap-2 md:justify-end">
                   <Link
                     href={`/project/${p.id}/update`}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
                   >
-                    <Send className="w-3.5 h-3.5" /> Send update
+                    <Send className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> Send update
                   </Link>
-                  <Link href={`/project/${p.id}`} className="text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 transition-colors hidden md:block">
+                  <Link href={`/project/${p.id}`} className="text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-slate-300 transition-colors hidden md:block">
                     <ChevronRight className="w-4 h-4" />
                   </Link>
                 </div>

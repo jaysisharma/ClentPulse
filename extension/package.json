@@ -1,0 +1,74 @@
+{
+  "name": "frevio-extension",
+  "displayName": "Frevio — Developer Presence & Time Tracking",
+  "description": "Automatic coding activity & real-time presence sync for freelancers and clients on Frevio.",
+  "version": "0.1.0",
+  "publisher": "frevio",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "frevio.setToken",
+        "title": "Frevio: Set API Token"
+      },
+      {
+        "command": "frevio.linkProject",
+        "title": "Frevio: Link Workspace to Project"
+      },
+      {
+        "command": "frevio.unlinkProject",
+        "title": "Frevio: Unlink Workspace from Project"
+      },
+      {
+        "command": "frevio.toggleTracking",
+        "title": "Frevio: Pause / Resume Tracking"
+      },
+      {
+        "command": "frevio.openDashboard",
+        "title": "Frevio: Open Project in Browser"
+      }
+    ],
+    "configuration": {
+      "title": "Frevio",
+      "properties": {
+        "frevio.apiBaseUrl": {
+          "type": "string",
+          "default": "https://app.frevio.cloud",
+          "description": "Base URL for the Frevio web application (e.g. http://localhost:3000 for local development)."
+        },
+        "frevio.heartbeatIntervalSeconds": {
+          "type": "number",
+          "default": 120,
+          "minimum": 30,
+          "maximum": 300,
+          "description": "Interval in seconds between heartbeats sent to Frevio when actively coding."
+        },
+        "frevio.idleTimeoutMinutes": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 30,
+          "description": "Minutes of inactivity before pausing tracking and marking status as idle."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -watch -p ."
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0"
+  }
+}

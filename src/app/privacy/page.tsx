@@ -1,116 +1,145 @@
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, ShieldCheck } from 'lucide-react'
 
 export const metadata = {
   title: 'Privacy Policy — Frevio',
 }
 
-const UPDATED = 'June 19, 2026'
+const UPDATED = 'September 8, 2026'
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-white dark:bg-slate-950">
-      <div className="mx-auto max-w-3xl px-6 py-16">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 py-16 px-4 sm:px-6">
+      <div className="mx-auto max-w-3xl">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition-colors hover:text-slate-800 dark:hover:text-slate-300"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 shadow-xs"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to Frevio
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to Frevio
         </Link>
 
-        <h1 className="mt-8 text-4xl font-bold tracking-tight text-slate-900 dark:text-white">
-          Privacy Policy
-        </h1>
-        <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Last updated: {UPDATED}</p>
+        <div className="mt-8">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              Legal & Privacy Compliance
+            </span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            Privacy Policy
+          </h1>
+          <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono">Effective date: {UPDATED}</p>
+        </div>
 
-        <div className="mt-10 space-y-8 text-[15px] leading-relaxed text-slate-600 dark:text-slate-300">
+        <div className="mt-8 bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md p-6 sm:p-10 shadow-xs dark:shadow-none space-y-8 text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-300 font-normal">
           <section className="space-y-3">
             <p>
-              This policy explains what information Frevio (&ldquo;we&rdquo;) collects, how we use it, and the
-              choices you have. By using Frevio you agree to this policy.
+              This policy explains what information Frevio (&ldquo;we&rdquo;, &ldquo;our&rdquo;, or &ldquo;the Service&rdquo;) collects, how we use it, and the
+              choices you have. By accessing or using Frevio, you consent to the practices described in this policy.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">1. Information we collect</h2>
-            <ul className="list-disc space-y-1.5 pl-6">
-              <li><strong>Account data</strong> — your name, email, and password (stored hashed by our auth provider).</li>
-              <li><strong>Workspace data</strong> — the clients, projects, updates, invoices, contracts, and time entries you create.</li>
-              <li><strong>Billing data</strong> — handled by Stripe; we store a customer ID and plan status, never full card numbers.</li>
-              <li><strong>Usage data</strong> — basic logs needed to operate and secure the Service.</li>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">01.</span> Information We Collect
+            </h2>
+            <ul className="space-y-2 pl-1">
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span><strong className="font-semibold text-slate-900 dark:text-white">Account data</strong> — your name, email address, avatar, and authentication credentials (hashed and secured via our identity provider).</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span><strong className="font-semibold text-slate-900 dark:text-white">Workspace records</strong> — client profiles, project milestones, status logs, itemized invoices, contract terms, and recorded billable hours.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span><strong className="font-semibold text-slate-900 dark:text-white">Financial & billing data</strong> — encrypted and processed exclusively through Stripe; we maintain customer tokens and subscription tier states, never raw credit card details.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span><strong className="font-semibold text-slate-900 dark:text-white">Operational logs</strong> — essential access records and diagnostic signals required to safeguard infrastructure against malicious activity and ensure high availability.</span>
+              </li>
             </ul>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">2. How we use it</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">02.</span> How We Utilize Information
+            </h2>
             <p>
-              We use your information to provide and improve the Service, process payments, send
-              transactional email (verification codes, invoices, reminders, and digests), prevent abuse, and
-              meet legal obligations. We do not sell your personal information.
+              We process data to deliver, maintain, and optimize the Frevio platform, facilitate secure payment processing, dispatch vital notifications (verification tokens, invoice payment receipts, deadline reminders, and weekly digests), prevent fraudulent actions, and satisfy statutory compliance. We never monetize, sell, or rent your personal data to external advertisers.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">3. Service providers</h2>
-            <p>We share data only with vendors who help us run Frevio:</p>
-            <ul className="list-disc space-y-1.5 pl-6">
-              <li><strong>Supabase</strong> — database, authentication, and file storage.</li>
-              <li><strong>Stripe</strong> — payment processing and subscription billing.</li>
-              <li><strong>Resend</strong> — sending transactional email.</li>
-              <li><strong>Our hosting provider</strong> — running the application servers.</li>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">03.</span> Infrastructure Partners
+            </h2>
+            <p>Data is transferred strictly to vetted cloud infrastructure providers required to operate Frevio:</p>
+            <ul className="space-y-2 pl-1">
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span><strong className="font-semibold text-slate-900 dark:text-white">Supabase</strong> — managed PostgreSQL database, authentication, and encrypted document storage.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span><strong className="font-semibold text-slate-900 dark:text-white">Stripe</strong> — PCI-DSS Level 1 payment gateways, subscription settlements, and invoice checkout portals.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span><strong className="font-semibold text-slate-900 dark:text-white">Resend</strong> — transactional email delivery for updates, approvals, and reminders.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-2 flex-shrink-0" />
+                <span><strong className="font-semibold text-slate-900 dark:text-white">Vercel</strong> — global edge execution and web serving environment.</span>
+              </li>
             </ul>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">4. Cookies</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">04.</span> Cookies & Local State
+            </h2>
             <p>
-              We use essential cookies to keep you signed in and to remember preferences such as theme. The
-              &ldquo;Remember me&rdquo; option controls whether your session persists after you close the
-              browser. We do not use third-party advertising cookies.
+              We deploy essential first-party cookies and local storage tokens strictly to maintain authenticated user sessions and store interface preferences (such as light or dark themes). We do not embed third-party surveillance or tracking pixels.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">5. Data retention</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">05.</span> Data Retention & Purging
+            </h2>
             <p>
-              We keep your data while your account is active. If you delete your account, we remove your
-              workspace data within a reasonable period, except where we must retain records (for example,
-              invoices) to comply with law.
+              Workspace assets are retained while your subscription is active. Upon account termination, workspace records are permanently purged following standard grace periods, excluding financial transaction ledgers mandated by tax authorities.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">6. Security</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">06.</span> Security Architecture
+            </h2>
             <p>
-              We protect your data with encryption in transit, row-level access controls, and least-privilege
-              access to credentials. No system is perfectly secure, but we work to safeguard your information
-              and will notify you of incidents as required by law.
+              We enforce end-to-end TLS encryption in transit, AES-256 encryption at rest, Supabase Row-Level Security (RLS) policies at the database layer, and isolated secret management.
             </p>
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">7. Your rights</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="text-indigo-600 dark:text-indigo-400 font-mono">07.</span> Your Rights & Inquiries
+            </h2>
             <p>
-              You may access, correct, export, or delete your personal data. Email us and we will respond
-              within a reasonable time. Depending on where you live, you may have additional rights under laws
-              such as GDPR or CCPA.
-            </p>
-          </section>
-
-          <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">8. Contact</h2>
-            <p>
-              Privacy questions or requests? Email{' '}
-              <a href="mailto:support@frevio.cloud" className="font-medium text-accent hover:underline">
-                support@frevio.cloud
-              </a>
-              .
+              You maintain the right to inspect, export, modify, or permanently expunge your personal records under applicable GDPR and CCPA statutes. For inquiries, contact our data protection team directly at{' '}
+              <a href="mailto:support@frevio.app" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                support@frevio.app
+              </a>.
             </p>
           </section>
         </div>
 
-        <div className="mt-12 border-t border-slate-200 pt-6 text-sm dark:border-slate-800">
-          <Link href="/terms" className="font-medium text-accent hover:underline">
+        <div className="mt-8 flex items-center justify-between border-t border-slate-200 dark:border-white/10 pt-6 text-xs text-slate-500 dark:text-slate-400">
+          <span>Frevio Studio Operating System</span>
+          <Link href="/terms" className="font-semibold text-slate-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
             Terms of Service →
           </Link>
         </div>
