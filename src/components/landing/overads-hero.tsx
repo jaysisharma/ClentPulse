@@ -5,24 +5,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import {
   ArrowUpRight, Check, CheckCircle2, Lock, DollarSign, TrendingUp,
-  Terminal, FileCode, Sparkles, FolderKanban, Clock, CreditCard, Zap
+  FileCode, Sparkles, FolderKanban, Clock, CreditCard, Zap,
+  LayoutDashboard, FolderOpen, Users, FileText, Wallet, Timer, Send,
+  AlertCircle, ChevronRight, ArrowRight, Plus
 } from 'lucide-react'
 import gsap from 'gsap'
-
-const WORKFLOW_PROMPTS = [
-  "Broadcast live coding status: 'Payment webhook refactor'...",
-  "Draft this week's progress update for Acme Corp in 1-click...",
-  "Convert 16.5 logged VS Code hours into a Stripe invoice...",
-  "Send contract agreement for client sign-off with 50% deposit...",
-]
 
 interface HeroProps {
   signupHref: string
 }
 
 export function OveradsHero({ signupHref }: HeroProps) {
-  const [promptIdx, setPromptIdx] = useState(0)
-  const [isFading, setIsFading] = useState(false)
   const [approvedState, setApprovedState] = useState(false)
 
   const sectionRef = useRef<HTMLElement>(null)
@@ -31,20 +24,6 @@ export function OveradsHero({ signupHref }: HeroProps) {
   const ctaRef = useRef<HTMLDivElement>(null)
   const mockupRef = useRef<HTMLDivElement>(null)
   const channelsRef = useRef<HTMLDivElement>(null)
-
-  // Rotating workflow prompt interval
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsFading(true)
-      const timer = setTimeout(() => {
-        setPromptIdx((prev) => (prev + 1) % WORKFLOW_PROMPTS.length)
-        setIsFading(false)
-      }, 240)
-      return () => clearTimeout(timer)
-    }, 4200)
-
-    return () => clearInterval(interval)
-  }, [])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -109,10 +88,10 @@ export function OveradsHero({ signupHref }: HeroProps) {
           />
         </div>
 
-        {/* Overads Radial Vignette Overlay */}
+        {/* Radial Vignette Overlay (Top Clear, subtle contrast around content) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_100%_78%_at_50%_50%,rgba(0,0,0,0.58)_0%,rgba(0,0,0,0.52)_50%,rgba(0,0,0,0.36)_80%,rgba(0,0,0,0.22)_100%)] md:bg-[radial-gradient(ellipse_59%_69%_at_50%_50%,rgba(0,0,0,0.52)_0%,rgba(0,0,0,0.45)_45%,rgba(0,0,0,0.26)_74%,rgba(0,0,0,0.08)_100%)]"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_100%_65%_at_50%_65%,rgba(0,0,0,0.48)_0%,rgba(0,0,0,0.35)_40%,rgba(0,0,0,0)_80%)]"
         />
 
         {/* Bottom Fade to White */}
@@ -121,25 +100,32 @@ export function OveradsHero({ signupHref }: HeroProps) {
           className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-40 bg-gradient-to-b from-transparent to-white"
         />
 
-        {/* ── 2. FOREGROUND HERO CONTENT (Exact Overads Text) ── */}
-        <div className="relative z-10 flex w-full max-w-3xl flex-col items-center text-center">
+        {/* ── 2. FOREGROUND HERO CONTENT ── */}
+        <div className="relative z-10 flex w-full max-w-4xl flex-col items-center text-center">
           <h1
             ref={titleRef}
-            className="text-3xl font-light uppercase leading-[0.98] tracking-[-0.02em] text-white sm:text-4xl md:text-5xl lg:text-6xl"
+            className="text-4xl sm:text-6xl md:text-7xl font-light tracking-[-0.025em] leading-[1.15] max-w-4xl text-balance text-white"
           >
-            <span className="block">Your marketing</span>
-            <span className="block">runs itself.</span>
-            <span className="block">You just approve.</span>
+            Stop answering{' '}
+            <span className="font-serif italic font-normal text-amber-300">
+              &ldquo;Any updates?&rdquo;
+            </span>{' '}
+            texts at 11 PM.
           </h1>
 
           <p
             ref={subtitleRef}
-            className="mt-5 max-w-xl text-balance text-sm font-light leading-relaxed text-white/75 md:text-base"
+            className="mt-6 max-w-4xl text-sm font-light leading-relaxed text-white/85 sm:text-base md:text-lg"
           >
-            overads watches your ads, your posts and how AI talks about your brand, then does the work: the post drafted, the losing campaign flagged, Monday&apos;s report written. Nothing goes out without your yes. Free, no card.
+            <span className="md:whitespace-nowrap block">
+              Frevio gives your clients a single, passcode-locked dashboard to track project milestones, sign agreements,
+            </span>
+            <span className="block mt-1">
+              and pay invoices via Stripe. No client registrations required.
+            </span>
           </p>
 
-          <div ref={ctaRef} className="mt-8 flex flex-col items-center gap-4 w-full">
+          <div ref={ctaRef} className="mt-8 flex items-center justify-center">
             <Link
               href={signupHref}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-white font-medium text-slate-950 hover:bg-white/90 h-11 px-7 text-sm transition-all hover:scale-[1.02] shadow-xl cursor-pointer"
@@ -147,42 +133,16 @@ export function OveradsHero({ signupHref }: HeroProps) {
               <span>Start free</span>
               <ArrowUpRight className="size-4" />
             </Link>
-
-            {/* Interactive Live Command Terminal Box */}
-            <div className="mt-2 w-full max-w-lg sm:max-w-xl">
-              <Link
-                href={signupHref}
-                className="group flex w-full items-center gap-3 rounded-2xl border border-white/20 bg-white/10 p-2.5 pl-4 text-left shadow-[0_15px_35px_-10px_rgba(0,0,0,0.2)] backdrop-blur-xl transition-all duration-200 hover:border-white/40 hover:bg-white/15"
-              >
-                <div className="size-7 rounded-lg bg-white/15 flex items-center justify-center text-white/80 group-hover:text-white transition-colors flex-shrink-0">
-                  <Terminal className="w-3.5 h-3.5" />
-                </div>
-
-                <div className="flex min-w-0 flex-1 items-center overflow-hidden py-1 text-xs sm:text-sm text-white/90 h-8">
-                  <span
-                    className={`truncate transition-all duration-300 font-mono ${
-                      isFading ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'
-                    }`}
-                  >
-                    {WORKFLOW_PROMPTS[promptIdx]}
-                  </span>
-                </div>
-
-                <div className="inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-slate-950 transition-transform group-hover:scale-105 shadow-sm">
-                  <ArrowUpRight className="size-4" />
-                </div>
-              </Link>
-            </div>
           </div>
         </div>
 
-        {/* ── 3. DASHBOARD WORKSPACE SHOWCASE (The Dashboard Mockup) ── */}
+        {/* ── 3. DASHBOARD WORKSPACE SHOWCASE (The Real Frevio Dashboard) ── */}
         <div
           ref={mockupRef}
-          className="relative z-10 mt-14 w-full max-w-5xl mx-auto rounded-2xl border border-slate-200/90 bg-white shadow-[0_30px_90px_-20px_rgba(0,0,0,0.18)] ring-1 ring-slate-900/5 overflow-hidden text-left"
+          className="relative z-10 mt-14 w-full max-w-6xl xl:max-w-7xl mx-auto rounded-3xl border border-slate-200/90 bg-white shadow-[0_35px_120px_-20px_rgba(0,0,0,0.24)] ring-1 ring-slate-900/5 overflow-hidden text-left"
         >
           {/* Top Window Title Bar */}
-          <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/90 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/90 px-6 py-3.5 select-none">
             <div className="flex items-center gap-2">
               <div className="size-3 rounded-full bg-[#ff5f56]" />
               <div className="size-3 rounded-full bg-[#ffbd2e]" />
@@ -191,160 +151,322 @@ export function OveradsHero({ signupHref }: HeroProps) {
 
             <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-1 text-xs text-slate-700 font-mono shadow-2xs">
               <Lock className="w-3 h-3 text-emerald-600" />
-              <span>frevio.app/workspace</span>
+              <span>frevio.cloud/dashboard</span>
               <span className="text-emerald-700 font-sans text-[11px] bg-emerald-50 px-1.5 py-0.2 rounded font-medium">
                 Live
               </span>
             </div>
 
             <div className="flex items-center gap-2 text-xs text-slate-600">
-              <span className="hidden sm:inline font-medium">Studio Workspace</span>
+              <span className="hidden sm:inline font-medium">Creative Studio</span>
               <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
             </div>
           </div>
 
-          {/* Workspace Layout: Left Quick Metrics + Right Project Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 bg-gradient-to-b from-transparent to-slate-50/50">
+          {/* Full App Workspace Layout: Sidebar + Main Dashboard */}
+          <div className="flex bg-slate-50/50">
             
-            {/* Left Summary Panel (4 Cols) */}
-            <div className="lg:col-span-4 space-y-4">
-              <div className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                Your Workspace
+            {/* Left App Sidebar (Desktop only) */}
+            <div className="hidden md:flex w-60 bg-white border-r border-slate-200/80 p-5 flex-col justify-between select-none flex-shrink-0">
+              <div className="space-y-6">
+                {/* Logo and Workspace Label */}
+                <div className="flex items-center gap-3 px-2">
+                  <div className="size-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-xs">
+                    <Sparkles className="size-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="block font-bold text-sm text-slate-900 truncate">Frevio Studio</span>
+                    <span className="block text-[11px] text-slate-400 font-mono">Pro Plan</span>
+                  </div>
+                </div>
+
+                {/* Sidebar Navigation */}
+                <div className="space-y-1.5 text-xs font-medium text-slate-600">
+                  <div className="flex items-center gap-3 px-3 py-2.5 bg-indigo-50/80 text-indigo-900 rounded-xl font-semibold border border-indigo-100/60 shadow-2xs">
+                    <LayoutDashboard className="size-4 text-indigo-600" />
+                    <span>Dashboard</span>
+                    <span className="ml-auto size-1.5 rounded-full bg-indigo-600" />
+                  </div>
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
+                    <FolderOpen className="size-4 text-slate-400" />
+                    <span>Projects</span>
+                  </div>
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
+                    <Users className="size-4 text-slate-400" />
+                    <span>Clients</span>
+                  </div>
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
+                    <FileText className="size-4 text-slate-400" />
+                    <span>Invoices</span>
+                  </div>
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
+                    <Timer className="size-4 text-slate-400" />
+                    <span>Time Log</span>
+                  </div>
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
+                    <TrendingUp className="size-4 text-slate-400" />
+                    <span>Earnings</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Metric 1: Active Projects */}
-              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs space-y-1">
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Active Projects</span>
-                  <span className="size-2 rounded-full bg-emerald-500" />
+              {/* VS Code Extension Live Sync Badge */}
+              <div className="space-y-3.5 pt-5 border-t border-slate-100">
+                <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-3.5 space-y-1.5 shadow-2xs">
+                  <div className="flex items-center gap-2 text-[11px] font-semibold text-emerald-800">
+                    <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
+                    <span>VS Code Live Pulse</span>
+                  </div>
+                  <p className="text-[11px] text-emerald-700 font-mono leading-tight truncate">
+                    auth-middleware.ts
+                  </p>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-semibold text-slate-950">4</span>
-                  <span className="text-xs text-slate-500">2 pending review</span>
-                </div>
-              </div>
 
-              {/* Metric 2: Stripe Invoiced */}
-              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs space-y-1">
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Invoiced (MTD)</span>
-                  <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-semibold text-slate-950 font-mono">$14,250</span>
-                  <span className="text-xs font-semibold text-emerald-600">+28%</span>
-                </div>
-              </div>
-
-              {/* Metric 3: Outstanding Due */}
-              <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs space-y-1">
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span>Outstanding</span>
-                  <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-semibold text-slate-950 font-mono">$2,400</span>
-                  <span className="text-xs text-slate-500">1 invoice due</span>
-                </div>
-              </div>
-
-              {/* Quick Extension Status Pill */}
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3.5 flex items-center gap-3">
-                <div className="size-2.5 rounded-full bg-emerald-500 animate-ping flex-shrink-0" />
-                <div className="text-xs">
-                  <span className="text-slate-900 font-medium">VS Code Live Sync: </span>
-                  <span className="text-emerald-800 font-mono font-semibold">auth-middleware.ts</span>
+                <div className="flex items-center gap-2.5 px-1">
+                  <div className="size-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-xs">
+                    JS
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold text-slate-900 truncate">Jay Sharma</div>
+                    <div className="text-[11px] text-slate-400 truncate">Senior Engineer</div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Live Projects & Settlement List (8 Cols) */}
-            <div className="lg:col-span-8 space-y-3">
-              <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">
-                <span>Recent Projects</span>
-                <Link href={signupHref} className="text-indigo-600 hover:text-indigo-800 transition-colors lowercase font-normal text-xs">
-                  view all →
-                </Link>
-              </div>
-
-              {/* Project Row 1: Website Redesign (Acme Studio) */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 shadow-2xs transition-all">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-semibold text-slate-900">Website Redesign</h4>
-                    <span className="text-xs text-slate-400">·</span>
-                    <span className="text-xs text-slate-500">Acme Studio</span>
-                  </div>
-                  <p className="text-xs text-slate-600">
-                    Milestone 2 of 4 · Database & Stripe Webhooks
+            {/* Main Dashboard Area */}
+            <div className="flex-1 p-6 sm:p-8 lg:p-9 space-y-6 overflow-hidden">
+              
+              {/* Dashboard Greeting Header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-2xl sm:text-3xl font-light uppercase tracking-tight text-slate-900">
+                    Good Morning, Jay
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1 flex items-center gap-2">
+                    <span>3 active projects</span>
+                    <span className="text-slate-300">·</span>
+                    <span className="text-amber-600 font-medium">2 need attention</span>
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3 self-end sm:self-center">
-                  <div className="h-1.5 w-24 rounded-full bg-slate-100 overflow-hidden hidden md:block">
-                    <div className="h-full w-[85%] bg-gradient-to-r from-emerald-500 to-indigo-600" />
+                <div className="flex items-center gap-2.5 select-none">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-2xs">
+                    <Timer className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Log time</span>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                    <span className="size-1.5 rounded-full bg-emerald-500" />
-                    In progress
+                  <div className="inline-flex items-center gap-2 rounded-full bg-slate-950 text-white px-4 py-2 text-xs font-semibold shadow-xs hover:bg-slate-800 transition-colors">
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>New project</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 4 Overads KPI Stat Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* KPI 1: Outstanding */}
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Outstanding</span>
+                    <div className="size-7 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
+                      <DollarSign className="size-3.5" />
+                    </div>
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-light font-mono text-rose-600 tabular-nums">$4,850</div>
+                  <div className="text-xs text-slate-500 truncate">1 overdue invoice</div>
+                </div>
+
+                {/* KPI 2: This Month */}
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">This Month</span>
+                    <div className="size-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                      <Wallet className="size-3.5" />
+                    </div>
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-light font-mono text-slate-950 tabular-nums">$12,300</div>
+                  <div className="text-xs text-emerald-600 font-semibold flex items-center gap-0.5">
+                    <span>↑ $2,400</span> <span className="text-slate-500 font-normal">vs last month</span>
+                  </div>
+                </div>
+
+                {/* KPI 3: Hours This Week */}
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Hours / Wk</span>
+                    <div className="size-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                      <Timer className="size-3.5" />
+                    </div>
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-light font-mono text-slate-950 tabular-nums">24h 10m</div>
+                  <div className="text-xs text-emerald-600 font-semibold flex items-center gap-0.5">
+                    <span>↑ 4h 15m</span> <span className="text-slate-500 font-normal">more</span>
+                  </div>
+                </div>
+
+                {/* KPI 4: Active Projects */}
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Active</span>
+                    <div className="size-7 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                      <FolderOpen className="size-3.5" />
+                    </div>
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-light font-mono text-slate-950 tabular-nums">3</div>
+                  <div className="text-xs text-slate-500 truncate">of 4 total</div>
+                </div>
+              </div>
+
+              {/* Main Two-Column Split: Needs Attention + Projects List */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                
+                {/* Left (7 Cols): Needs Attention Checklist */}
+                <div className="lg:col-span-7 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5 font-semibold text-amber-600 uppercase tracking-wider text-[11px]">
+                      <AlertCircle className="size-3.5" />
+                      <span>Needs Attention</span>
+                    </div>
+                    <span className="text-xs text-slate-400">2 actions required</span>
+                  </div>
+
+                  {/* Attention Item 1 */}
+                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/40 p-4 hover:border-amber-300 transition-colors shadow-2xs">
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="size-9 rounded-xl bg-amber-100/80 border border-amber-200 flex items-center justify-center text-amber-700 flex-shrink-0">
+                        <Send className="size-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <h5 className="text-sm font-semibold text-slate-900 truncate">Acme Website Redesign</h5>
+                        <p className="text-xs text-slate-500 truncate">No update sent in 7+ days · Acme Corp</p>
+                      </div>
+                    </div>
+                    <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-950 text-white text-xs font-medium shadow-xs flex-shrink-0 cursor-pointer hover:bg-slate-800 transition-colors">
+                      <span>Send update</span>
+                      <ChevronRight className="size-3.5" />
+                    </div>
+                  </div>
+
+                  {/* Attention Item 2: Interactive 1-Click Client Sign-off */}
+                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-indigo-200/80 bg-indigo-50/40 p-4 hover:border-indigo-300 transition-colors shadow-2xs">
+                    <div className="flex items-center gap-3.5 min-w-0">
+                      <div className="size-9 rounded-xl bg-indigo-100/80 border border-indigo-200 flex items-center justify-center text-indigo-700 flex-shrink-0">
+                        <CheckCircle2 className="size-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <h5 className="text-sm font-semibold text-slate-900 truncate">Brand Identity Mockup Draft</h5>
+                        <p className="text-xs text-indigo-900/70 truncate">Waiting on client approval · Northstar</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setApprovedState(!approvedState)}
+                      className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex-shrink-0 ${
+                        approvedState
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs'
+                      }`}
+                    >
+                      {approvedState ? (
+                        <>
+                          <Check className="size-3.5 text-white" />
+                          <span>Approved</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="size-3.5" />
+                          <span>1-Click Sign</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Right (5 Cols): Live Projects Mini List */}
+                <div className="lg:col-span-5 space-y-3">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold uppercase tracking-wider text-slate-500 text-[11px]">Active Projects</span>
+                    <span className="text-xs text-indigo-600 font-medium hover:underline cursor-pointer">View all →</span>
+                  </div>
+
+                  <div className="rounded-2xl border border-slate-200 bg-white divide-y divide-slate-100 shadow-2xs overflow-hidden">
+                    {/* Project Row 1 */}
+                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-slate-50/80 transition-colors">
+                      <div className="min-w-0 flex items-center gap-3">
+                        <span className="size-2 rounded-full bg-indigo-600 flex-shrink-0" />
+                        <div className="min-w-0">
+                          <span className="block text-xs font-semibold text-slate-900 truncate">Acme Redesign</span>
+                          <span className="block text-[11px] text-slate-400 truncate">Acme Corp</span>
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 flex-shrink-0">
+                        On track
+                      </span>
+                    </div>
+
+                    {/* Project Row 2 */}
+                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-slate-50/80 transition-colors">
+                      <div className="min-w-0 flex items-center gap-3">
+                        <span className="size-2 rounded-full bg-emerald-500 flex-shrink-0" />
+                        <div className="min-w-0">
+                          <span className="block text-xs font-semibold text-slate-900 truncate">Stripe Billing API</span>
+                          <span className="block text-[11px] text-slate-400 truncate">Voxel Labs</span>
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono flex-shrink-0">
+                        $3,200 Paid
+                      </span>
+                    </div>
+
+                    {/* Project Row 3 */}
+                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-slate-50/80 transition-colors">
+                      <div className="min-w-0 flex items-center gap-3">
+                        <span className="size-2 rounded-full bg-amber-500 flex-shrink-0" />
+                        <div className="min-w-0">
+                          <span className="block text-xs font-semibold text-slate-900 truncate">Northstar Brand</span>
+                          <span className="block text-[11px] text-slate-400 truncate">Northstar Co</span>
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 flex-shrink-0">
+                        Update due
+                      </span>
+                    </div>
+
+                    {/* Project Row 4 */}
+                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-slate-50/80 transition-colors">
+                      <div className="min-w-0 flex items-center gap-3">
+                        <span className="size-2 rounded-full bg-violet-500 flex-shrink-0" />
+                        <div className="min-w-0">
+                          <span className="block text-xs font-semibold text-slate-900 truncate">SaaS Client Portal</span>
+                          <span className="block text-[11px] text-slate-400 truncate">Acme Ventures</span>
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-violet-50 text-violet-700 border border-violet-200 flex-shrink-0">
+                        Milestone 3
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bottom Quick Strip: Recent Cash Flow / Paid Invoices Bar */}
+              <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-3">
+                  <div className="size-8 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 flex-shrink-0">
+                    <CheckCircle2 className="size-4" />
+                  </div>
+                  <div>
+                    <span className="font-semibold text-slate-900">Weekly Revenue Velocity: </span>
+                    <span className="text-slate-500">3 invoices settled via Stripe this week</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 self-end sm:self-auto font-mono">
+                  <span className="text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/60">
+                    +$5,600.00 MTD
                   </span>
-                </div>
-              </div>
-
-              {/* Project Row 2: Brand Identity (Northstar) - 1-Click Interactive Sign-off */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-indigo-200 bg-indigo-50/30 p-4 hover:border-indigo-300 shadow-2xs transition-all">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-semibold text-slate-900">Brand Identity & Design System</h4>
-                    <span className="text-xs text-slate-400">·</span>
-                    <span className="text-xs text-slate-500">Northstar</span>
-                  </div>
-                  <p className="text-xs text-indigo-900/80">
-                    AI Weekly Digest #3 ready for staging sign-off
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2 self-end sm:self-center">
-                  <button
-                    type="button"
-                    onClick={() => setApprovedState(!approvedState)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                      approvedState
-                        ? 'bg-emerald-600 text-white'
-                        : 'bg-slate-950 text-white hover:bg-slate-800 shadow-xs'
-                    }`}
-                  >
-                    {approvedState ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-white" />
-                        <span>Deliverable Approved</span>
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-indigo-300" />
-                        <span>1-Click Approval</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Project Row 3: API Architecture (Voxel Labs) */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 hover:border-slate-300 shadow-2xs transition-all">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-semibold text-slate-900">Stripe Checkout & Billing Engine</h4>
-                    <span className="text-xs text-slate-400">·</span>
-                    <span className="text-xs text-slate-500">Voxel Labs</span>
-                  </div>
-                  <p className="text-xs text-slate-600">
-                    Invoice #INV-2026-084 · $3,200.00 USD
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-3 self-end sm:self-center">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono">
-                    ✓ Paid (Instant)
+                  <span className="text-[11px] text-indigo-600 font-sans hover:underline cursor-pointer">
+                    View Invoices →
                   </span>
                 </div>
               </div>

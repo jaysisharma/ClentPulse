@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { OveradsNavbar } from '@/components/landing/overads-navbar'
 import { OveradsHero } from '@/components/landing/overads-hero'
+import { ProblemSolutionSection } from '@/components/landing/problem-solution-section'
 import { OveradsWorkflowsSection } from '@/components/landing/overads-workflows-section'
 import { OveradsScreensShowcase } from '@/components/landing/overads-screens-showcase'
 import { OveradsComparisonTable } from '@/components/landing/overads-comparison-table'
@@ -33,7 +34,10 @@ export default async function LandingPage() {
         {/* ── 1. Hero: Light Uppercase Display + Rotating Prompts + Workspace Showcase ── */}
         <OveradsHero signupHref={signupHref} />
 
-        {/* ── 2. Workflows: Plain English Automation ("Tell it once. It does it every week.") ── */}
+        {/* ── 2. The 11 PM Problem vs. The Frevio Solution (Before / After Split) ── */}
+        <ProblemSolutionSection signupHref={signupHref} />
+
+        {/* ── 3. Workflows: Plain English Automation ("Tell it once. It does it every week.") ── */}
         <OveradsWorkflowsSection signupHref={signupHref} />
 
         {/* ── 3. Screens: Inside Frevio ("Three screens. That is the whole job.") ── */}
