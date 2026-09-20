@@ -5,16 +5,92 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
 import { DarkShell } from '@/components/layout/dark-shell'
-import { Check, Upload, Sun, Moon, Copy, Code2, Key, Trash2, ArrowUpRight, Sparkles, ExternalLink, Gift } from 'lucide-react'
-import { PLAN_BLURB, normalizePlan } from '@/lib/plans'
+import {
+  Check, Upload, Sun, Moon, Copy, Code2, Key, Trash2,
+  ArrowUpRight, Sparkles, ExternalLink, Gift, Zap, Shield,
+  Crown
+} from 'lucide-react'
+import { PLAN_BLURB, FREE_FEATURES, PRO_FEATURES, AGENCY_FEATURES, normalizePlan, type PlanTier } from '@/lib/plans'
 import { buildReferralUrl } from '@/lib/referrals'
 import { useTheme } from '@/components/theme-provider'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 const ACCENT_COLORS = [
   '#6366F1', '#8B5CF6', '#EC4899', '#EF4444',
   '#F97316', '#22C55E', '#14B8A6', '#3B82F6',
 ]
+
+const PLAN_META: Record<PlanTier, {
+  label: string
+  icon: React.ElementType
+  color: string
+  bg: string
+  border: string
+  features: string[]
+}> = {
+  free: {
+    label: 'Free',
+    icon: Zap,
+    color: 'text-slate-500 dark:text-slate-400',
+    bg: 'bg-slate-100 dark:bg-white/5',
+    border: 'border-slate-200 dark:border-white/10',
+    features: FREE_FEATURES,
+  },
+  pro: {
+    label: 'Pro',
+    icon: Sparkles,
+    color: 'text-indigo-600 dark:text-indigo-400',
+    bg: 'bg-indigo-50 dark:bg-indigo-500/10',
+    border: 'border-indigo-200 dark:border-indigo-500/20',
+    features: PRO_FEATURES,
+  },
+  agency: {
+    label: 'Agency',
+    icon: Shield,
+    color: 'text-violet-600 dark:text-violet-400',
+    bg: 'bg-violet-50 dark:bg-violet-500/10',
+    border: 'border-violet-200 dark:border-violet-500/20',
+    features: AGENCY_FEATURES,
+  },
+  agency_scale: {
+    label: 'Agency Scale',
+    icon: Crown,
+    color: 'text-amber-600 dark:text-amber-400',
+    bg: 'bg-amber-50 dark:bg-amber-500/10',
+    border: 'border-amber-200 dark:border-amber-500/20',
+    features: AGENCY_FEATURES,
+  },
+}
+
+function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn(
+      'rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 shadow-xs dark:shadow-none ring-1 ring-slate-950/5 dark:ring-white/5',
+      className
+    )}>
+      {children}
+    </div>
+  )
+}
+
+function SectionHeader({ title, description, badge }: {
+  title: string
+  description?: string
+  badge?: React.ReactNode
+}) {
+  return (
+    <div className="flex items-start justify-between gap-3 mb-5">
+      <div>
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-white">{title}</h2>
+        {description && (
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed font-light">{description}</p>
+        )}
+      </div>
+      {badge}
+    </div>
+  )
+}
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -31,19 +107,17 @@ export default function SettingsPage() {
   const [userId, setUserId] = useState('')
   const [billingError, setBillingError] = useState('')
   const [refCopied, setRefCopied] = useState(false)
-  const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  function handleCopyReferral() {
-    const link = buildReferralUrl(username || userId || 'creator')
-    navigator.clipboard.writeText(link)
-    setRefCopied(true)
-    setTimeout(() => setRefCopied(false), 2000)
-  }
-
-  useEffect(() => () => { if (savedTimerRef.current) clearTimeout(savedTimerRef.current) }, [])
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const [logoUploading, setLogoUploading] = useState(false)
   const [justUpgraded, setJustUpgraded] = useState(false)
+  const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const [tokens, setTokens] = useState<{ id: string; token_preview: string; name: string; last_used_at: string | null; created_at: string }[]>([])
+  const [generatedToken, setGeneratedToken] = useState<string | null>(null)
+  const [tokenCopied, setTokenCopied] = useState(false)
+  const [generatingToken, setGeneratingToken] = useState(false)
+
+  useEffect(() => () => { if (savedTimerRef.current) clearTimeout(savedTimerRef.current) }, [])
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get('upgraded') === '1') {
@@ -69,19 +143,19 @@ export default function SettingsPage() {
     })
   }, [])
 
-  const [tokens, setTokens] = useState<{ id: string; token_preview: string; name: string; last_used_at: string | null; created_at: string }[]>([])
-  const [generatedToken, setGeneratedToken] = useState<string | null>(null)
-  const [tokenCopied, setTokenCopied] = useState(false)
-  const [generatingToken, setGeneratingToken] = useState(false)
-
   useEffect(() => {
     fetch('/api/extension/token')
       .then(res => res.json())
-      .then(data => {
-        if (data.tokens) setTokens(data.tokens)
-      })
+      .then(data => { if (data.tokens) setTokens(data.tokens) })
       .catch(() => {})
   }, [])
+
+  function handleCopyReferral() {
+    const link = buildReferralUrl(username || userId || 'creator')
+    navigator.clipboard.writeText(link)
+    setRefCopied(true)
+    setTimeout(() => setRefCopied(false), 2000)
+  }
 
   async function handleGenerateToken() {
     setGeneratingToken(true)
@@ -162,10 +236,6 @@ export default function SettingsPage() {
     setLogoUploading(false)
   }
 
-  function handleUpgrade() {
-    router.push('/upgrade')
-  }
-
   async function handleManageBilling() {
     setBillingError('')
     const res = await fetch('/api/billing-portal', { method: 'POST' })
@@ -174,78 +244,115 @@ export default function SettingsPage() {
     setBillingError(json.error ?? 'Failed to open billing portal.')
   }
 
+  const normalizedPlan = normalizePlan(plan)
+  const planMeta = PLAN_META[normalizedPlan]
+  const PlanIcon = planMeta.icon
+  const isPaid = normalizedPlan !== 'free'
+
   return (
     <AppLayout>
       <DarkShell>
-        <div className="relative z-10 animate-fade-in space-y-8 pb-12 max-w-3xl">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-                <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
-                  Account & Studio Settings
-                </span>
-              </div>
-              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
-                Settings
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
-                Manage your profile identity, workspace appearance, editor extensions, and subscriptions.
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full px-3.5 py-1.5">
-                TIER // {plan.toUpperCase()}
+        <div className="relative z-10 max-w-2xl pb-12 space-y-6 animate-fade-in">
+
+          {/* ── Page Header ────────────────────────────────────────────── */}
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
+              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                Account Settings
               </span>
             </div>
+            <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+              Settings
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+              Manage your profile, workspace, integrations, and subscription.
+            </p>
           </div>
 
-          {/* Upgrade Success Notification */}
+          {/* ── Upgrade Success Banner ─────────────────────────────────── */}
           {justUpgraded && (
-            <div className="rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-950/20 p-5 flex items-center gap-3.5">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
+            <div className="rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-950/20 p-4 flex items-center gap-3.5">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
                 <Check className="w-4 h-4" />
               </div>
               <div>
-                <div className="font-medium text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm">You&apos;re now on Frevio Pro</div>
-                <div className="text-emerald-700 dark:text-emerald-400/80 text-[11px] mt-0.5">
+                <div className="font-semibold text-emerald-900 dark:text-emerald-200 text-sm">You&apos;re now on Frevio Pro 🎉</div>
+                <div className="text-emerald-700 dark:text-emerald-400/80 text-xs mt-0.5">
                   All Pro features and unlimited client portals have been unlocked.
                 </div>
               </div>
             </div>
           )}
 
-          {/* Integrations shortcut */}
-          <Link
-            href="/settings/integrations"
-            className="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 px-5 py-4 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none hover:border-indigo-300 dark:hover:border-indigo-700/50 transition-colors group"
-          >
-            <div>
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-                Integrations
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
-                Connect Google Drive, Calendar, GitHub, and Figma to your projects.
+          {/* ── Current Plan Card (PROMINENT) ─────────────────────────── */}
+          <SectionCard>
+            <div className={cn('rounded-t-2xl p-5 border-b', planMeta.bg, planMeta.border)}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center border', planMeta.bg, planMeta.border)}>
+                    <PlanIcon className={cn('w-5 h-5', planMeta.color)} />
+                  </div>
+                  <div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">Current Plan</div>
+                    <div className={cn('text-lg font-bold leading-tight', planMeta.color)}>{planMeta.label}</div>
+                  </div>
+                </div>
+                {isPaid ? (
+                  <button
+                    onClick={handleManageBilling}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 px-4 py-1.5 text-xs font-medium transition-all cursor-pointer"
+                  >
+                    Manage Billing
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+                ) : (
+                  <Link
+                    href="/upgrade"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 text-xs font-semibold transition-all shadow-sm"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    Upgrade
+                  </Link>
+                )}
+              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-3 font-light leading-relaxed">
+                {PLAN_BLURB[normalizedPlan]}
               </p>
             </div>
-            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors flex-shrink-0" />
-          </Link>
+            {/* Plan feature highlights */}
+            <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
+              {planMeta.features.slice(0, 8).map(f => (
+                <div key={f} className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+                  <Check className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                  <span>{f}</span>
+                </div>
+              ))}
+              {!isPaid && (
+                <div className="col-span-full mt-2 pt-3 border-t border-slate-100 dark:border-white/5">
+                  <Link href="/upgrade" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
+                    See everything included in Pro →
+                  </Link>
+                </div>
+              )}
+            </div>
+            {billingError && (
+              <div className="px-5 pb-4">
+                <p className="text-xs text-rose-600 dark:text-rose-400">{billingError}</p>
+              </div>
+            )}
+          </SectionCard>
 
-          {/* Profile &amp; Public Identity */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 p-6 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none space-y-5">
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-                Profile & Public Identity
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
-                Set how you appear to clients across project portals and your public portfolio URL.
-              </p>
-            </div>
+          {/* ── Profile & Public Identity ──────────────────────────────── */}
+          <SectionCard className="p-5">
+            <SectionHeader
+              title="Profile & Identity"
+              description="How you appear to clients across project portals and your public portfolio."
+            />
 
             <form onSubmit={handleSave} className="space-y-4">
               <div>
-                <label htmlFor="display-name" className="text-[10px] font-medium uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400 block mb-2">
+                <label htmlFor="display-name" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
                   Display Name
                 </label>
                 <input
@@ -254,13 +361,13 @@ export default function SettingsPage() {
                   value={name}
                   onChange={e => setName(e.target.value)}
                   placeholder="e.g. Alex Rivera"
-                  className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-light"
+                  className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
                 />
               </div>
 
               <div>
-                <label htmlFor="portfolio-username" className="text-[10px] font-medium uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400 block mb-2">
-                  Portfolio Handle / Slug
+                <label htmlFor="portfolio-username" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                  Portfolio Handle
                 </label>
                 <input
                   id="portfolio-username"
@@ -268,111 +375,94 @@ export default function SettingsPage() {
                   value={username}
                   onChange={e => setUsername(e.target.value.toLowerCase())}
                   placeholder="alexrivera"
-                  className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-light"
+                  className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
                 />
                 {username && !usernameError && (
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 font-light">Public Showcase:</span>
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <span className="text-[11px] text-slate-400">Public URL:</span>
                     <Link
                       href={`/u/${username}`}
                       target="_blank"
-                      className="text-[11px] font-mono text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1 transition-colors"
+                      className="text-[11px] font-mono text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
                     >
                       /u/{username}
                       <ExternalLink className="w-3 h-3" />
                     </Link>
                   </div>
                 )}
-                {usernameError && (
-                  <p className="text-xs text-rose-600 dark:text-rose-400 mt-1.5">{usernameError}</p>
-                )}
+                {usernameError && <p className="text-xs text-rose-600 dark:text-rose-400 mt-1.5">{usernameError}</p>}
               </div>
 
               {saveError && <p className="text-xs text-rose-600 dark:text-rose-400">{saveError}</p>}
 
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
-                >
-                  {loading ? (
-                    <>Saving...</>
-                  ) : saved ? (
-                    <><Check className="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600" /> Changes Saved</>
-                  ) : (
-                    'Save Profile Changes'
-                  )}
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? 'Saving…' : saved ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Saved</> : 'Save Changes'}
+              </button>
             </form>
-          </div>
+          </SectionCard>
 
-          {/* Interface Theme */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 p-6 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none space-y-4">
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-                Workspace Theme
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
-                Toggle between obsidian dark mode and light studio view.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3 max-w-md">
+          {/* ── Appearance ────────────────────────────────────────────── */}
+          <SectionCard className="p-5">
+            <SectionHeader
+              title="Appearance"
+              description="Toggle between dark and light workspace modes."
+            />
+            <div className="grid grid-cols-2 gap-3 max-w-xs">
               <button
                 type="button"
                 onClick={() => setTheme('light')}
-                className={`flex flex-col items-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                className={cn(
+                  'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all cursor-pointer',
                   theme === 'light'
-                    ? 'border-indigo-500 bg-indigo-50/50 ring-1 ring-indigo-500/30 text-indigo-950 dark:border-white/30 dark:bg-white/[0.08] dark:text-white'
-                    : 'border-slate-200 bg-slate-50/50 text-slate-600 hover:bg-slate-100 dark:border-white/5 dark:bg-white/[0.02] dark:text-slate-400 dark:hover:bg-white/[0.05] dark:hover:text-white'
-                }`}
+                    ? 'border-indigo-400 bg-indigo-50 dark:border-white/30 dark:bg-white/[0.08] text-indigo-700 dark:text-white ring-1 ring-indigo-400/30'
+                    : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 dark:border-white/5 dark:bg-white/[0.02] dark:text-slate-400 dark:hover:bg-white/[0.05]'
+                )}
               >
-                <Sun className={`w-5 h-5 ${theme === 'light' ? 'text-amber-500' : 'text-slate-400 dark:text-slate-500'}`} />
-                <span className="text-xs font-medium">Light Studio</span>
+                <Sun className={cn('w-5 h-5', theme === 'light' ? 'text-amber-500' : 'text-slate-400 dark:text-slate-500')} />
+                <span className="text-xs font-medium">Light</span>
               </button>
               <button
                 type="button"
                 onClick={() => setTheme('dark')}
-                className={`flex flex-col items-center gap-2.5 p-4 rounded-xl border transition-all cursor-pointer ${
+                className={cn(
+                  'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all cursor-pointer',
                   theme === 'dark'
-                    ? 'border-slate-900 bg-slate-900 text-white dark:border-white/30 dark:bg-white/[0.08] dark:ring-1 dark:ring-white/15 dark:text-white'
-                    : 'border-slate-200 bg-slate-50/50 text-slate-600 hover:bg-slate-100 dark:border-white/5 dark:bg-white/[0.02] dark:text-slate-400 dark:hover:bg-white/[0.05] dark:hover:text-white'
-                }`}
+                    ? 'border-slate-700 bg-slate-900 text-white dark:border-white/30 dark:bg-white/[0.08] ring-1 ring-white/15'
+                    : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 dark:border-white/5 dark:bg-white/[0.02] dark:text-slate-400 dark:hover:bg-white/[0.05]'
+                )}
               >
-                <Moon className={`w-5 h-5 ${theme === 'dark' ? 'text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`} />
-                <span className="text-xs font-medium">Obsidian Dark</span>
+                <Moon className={cn('w-5 h-5', theme === 'dark' ? 'text-indigo-400' : 'text-slate-400 dark:text-slate-500')} />
+                <span className="text-xs font-medium">Dark</span>
               </button>
             </div>
-          </div>
+          </SectionCard>
 
-          {/* Studio Branding */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 p-6 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none space-y-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-                  Studio Branding
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
-                  Customize the brand color and logo displayed on your client deliverables.
-                </p>
-              </div>
-              {plan !== 'pro' ? (
-                <span className="text-[10px] font-mono uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-2.5 py-1 rounded-full">
-                  PRO FEATURE
-                </span>
-              ) : (
-                <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-2.5 py-1 rounded-full">
-                  ACTIVE
-                </span>
-              )}
-            </div>
+          {/* ── Studio Branding ───────────────────────────────────────── */}
+          <SectionCard className="p-5">
+            <SectionHeader
+              title="Studio Branding"
+              description="Customize the accent color and logo shown on client deliverables."
+              badge={
+                !isPaid ? (
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
+                    Pro
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
+                    Active
+                  </span>
+                )
+              }
+            />
 
-            <div className={`space-y-5 ${plan !== 'pro' ? 'opacity-40 pointer-events-none' : ''}`}>
+            <div className={cn('space-y-5', !isPaid && 'opacity-40 pointer-events-none select-none')}>
               <div>
-                <label className="text-[10px] font-medium uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400 block mb-2.5">
-                  Brand Accent Spectrum
+                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
+                  Accent Color
                 </label>
                 <div className="flex gap-2.5 flex-wrap">
                   {ACCENT_COLORS.map(c => (
@@ -384,7 +474,7 @@ export default function SettingsPage() {
                       style={{
                         backgroundColor: c,
                         boxShadow: accentColor === c ? `0 0 14px ${c}88` : 'none',
-                        outline: accentColor === c ? `2px solid #6366F1` : 'none',
+                        outline: accentColor === c ? `2px solid ${c}` : 'none',
                         outlineOffset: '2px',
                       }}
                     >
@@ -395,10 +485,10 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="text-[10px] font-medium uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400 block mb-2.5">
-                  Brand Icon / Wordmark
+                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                  Brand Logo
                 </label>
-                <label className="flex items-center gap-3.5 border border-dashed border-slate-300 dark:border-white/15 rounded-xl p-4 text-xs text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-700 dark:hover:text-slate-200 transition-colors w-full cursor-pointer bg-slate-50/50 dark:bg-white/[0.02]">
+                <label className="flex items-center gap-3 border border-dashed border-slate-300 dark:border-white/15 rounded-xl p-4 text-xs text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-700 dark:hover:text-slate-200 transition-colors w-full cursor-pointer bg-slate-50/50 dark:bg-white/[0.02]">
                   {logoUrl ? (
                     <img src={logoUrl} alt="Logo" className="h-8 w-auto object-contain rounded bg-white dark:bg-black/40 p-1 border border-slate-200 dark:border-white/10" />
                   ) : (
@@ -406,7 +496,7 @@ export default function SettingsPage() {
                       <Upload className="w-4 h-4" />
                     </div>
                   )}
-                  <span>{logoUploading ? 'Uploading asset…' : logoUrl ? 'Change logo asset' : 'Upload PNG, SVG, or WEBP (max 2MB)'}</span>
+                  <span>{logoUploading ? 'Uploading…' : logoUrl ? 'Change logo' : 'Upload PNG, SVG, or WEBP (max 2MB)'}</span>
                   <input
                     type="file"
                     accept="image/png,image/jpeg,image/svg+xml,image/webp"
@@ -418,51 +508,71 @@ export default function SettingsPage() {
                 {logoError && <p className="text-xs text-rose-600 dark:text-rose-400 mt-1.5">{logoError}</p>}
               </div>
 
-              {plan === 'pro' && (
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    disabled={loading}
-                    className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer"
-                  >
-                    {saved ? <><Check className="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600" /> Saved</> : 'Save Branding'}
-                  </button>
-                </div>
+              {isPaid && (
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  disabled={loading}
+                  className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+                >
+                  {saved ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Saved</> : 'Save Branding'}
+                </button>
               )}
             </div>
-          </div>
 
-          {/* Code Editor Extension */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 p-6 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none space-y-5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                  <Code2 className="w-4 h-4" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-                    Code Editor Extension
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-light">VS Code / Cursor / Antigravity live sync</p>
-                </div>
+            {!isPaid && (
+              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5">
+                <Link
+                  href="/upgrade"
+                  className="inline-flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold"
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Upgrade to Pro to unlock branding
+                </Link>
               </div>
-              <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full">
-                LIVE SYNC
+            )}
+          </SectionCard>
+
+          {/* ── Integrations ──────────────────────────────────────────── */}
+          <Link
+            href="/settings/integrations"
+            className="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 px-5 py-4 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none hover:border-indigo-300 dark:hover:border-indigo-700/50 transition-colors group"
+          >
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Integrations</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                Connect Google Drive, Calendar, GitHub, and Figma.
+              </p>
+            </div>
+            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors flex-shrink-0" />
+          </Link>
+
+          {/* ── Code Editor Extension ─────────────────────────────────── */}
+          <SectionCard className="p-5">
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
+                <Code2 className="w-4 h-4" />
+              </div>
+              <div>
+                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Code Editor Extension</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light">VS Code · Cursor · Antigravity live sync</p>
+              </div>
+              <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full">
+                Live Sync
               </span>
             </div>
 
-            <p className="text-xs text-slate-600 dark:text-slate-400 font-light leading-relaxed">
-              Sync active coding intervals and live status to your client portals automatically. Only tracks workspace timestamps and duration — never shares raw code, filenames, or file contents.
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed mb-4">
+              Sync active coding intervals and live status to your client portals automatically. Only tracks workspace timestamps and duration — never raw code or filenames.
             </p>
 
             {generatedToken && (
-              <div className="p-4 rounded-xl border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/20 space-y-2">
+              <div className="p-4 mb-4 rounded-xl border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/20 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-                    Generated Extension Token
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                    Generated Token
                   </span>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400/80">Copy now — won&apos;t be shown again</span>
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400/80">Copy now — won&apos;t show again</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <code className="flex-1 bg-white dark:bg-black/60 px-3 py-2 rounded-lg border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono text-slate-800 dark:text-emerald-200 overflow-x-auto select-all">
@@ -472,7 +582,7 @@ export default function SettingsPage() {
                     onClick={() => copyToken(generatedToken)}
                     className="rounded-full border border-emerald-300 dark:border-emerald-500/30 bg-white dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 px-3 py-1.5 text-xs transition-all flex items-center gap-1.5 cursor-pointer flex-shrink-0"
                   >
-                    {tokenCopied ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {tokenCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                     {tokenCopied ? 'Copied' : 'Copy'}
                   </button>
                 </div>
@@ -480,9 +590,9 @@ export default function SettingsPage() {
             )}
 
             {tokens.length > 0 && (
-              <div className="space-y-2.5">
-                <label className="text-[10px] font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                  Active Extension Pairs ({tokens.length})
+              <div className="space-y-2 mb-4">
+                <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                  Active Keys ({tokens.length})
                 </label>
                 <div className="space-y-2">
                   {tokens.map(t => (
@@ -490,24 +600,24 @@ export default function SettingsPage() {
                       key={t.id}
                       className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02]"
                     >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <Key className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0" />
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Key className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" />
                         <div className="min-w-0">
                           <div className="text-xs font-medium text-slate-900 dark:text-white">{t.name}</div>
-                          <div className="text-[11px] text-slate-500 font-mono">{t.token_preview}</div>
+                          <div className="text-[11px] text-slate-400 font-mono truncate">{t.token_preview}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 flex-shrink-0">
                         {t.last_used_at && (
-                          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400 hidden sm:inline">
+                          <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
                             Synced {new Date(t.last_used_at).toLocaleDateString()}
                           </span>
                         )}
                         <button
                           onClick={() => handleRevokeToken(t.id)}
-                          className="text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 flex items-center gap-1 cursor-pointer transition-colors p-1"
+                          className="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400/70 dark:hover:text-rose-300 flex items-center gap-1 cursor-pointer transition-colors"
                         >
-                          <Trash2 className="w-3.5 h-3.5" /> Revoke
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
@@ -516,111 +626,45 @@ export default function SettingsPage() {
               </div>
             )}
 
-            <div>
-              <button
-                onClick={handleGenerateToken}
-                disabled={generatingToken}
-                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
-              >
-                <Key className="w-3.5 h-3.5" />
-                {generatingToken ? 'Generating...' : tokens.length > 0 ? 'Generate New Key' : 'Generate Extension Key'}
-              </button>
-            </div>
+            <button
+              onClick={handleGenerateToken}
+              disabled={generatingToken}
+              className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              <Key className="w-3.5 h-3.5" />
+              {generatingToken ? 'Generating…' : tokens.length > 0 ? 'Generate New Key' : 'Generate Extension Key'}
+            </button>
 
-            <div className="pt-3 border-t border-slate-200 dark:border-white/5 space-y-1.5 text-xs text-slate-500 dark:text-slate-400 font-light">
-              <p className="font-medium text-slate-700 dark:text-slate-300 text-xs">Setup in 60 seconds:</p>
-              <p className="text-[11px]">1. Open Command Palette in VS Code / Cursor (<kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono text-slate-600 dark:text-slate-300">Cmd+Shift+P</kbd>).</p>
-              <p className="text-[11px]">2. Search <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Set API Token</code> and paste your generated key.</p>
-              <p className="text-[11px]">3. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Link Workspace to Project</code> to start automated sync.</p>
+            <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 space-y-1 text-[11px] text-slate-500 dark:text-slate-400 font-light">
+              <p className="font-semibold text-slate-700 dark:text-slate-300 text-xs mb-1.5">Setup in 60 seconds:</p>
+              <p>1. Open Command Palette <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono text-slate-600 dark:text-slate-300">Cmd+Shift+P</kbd></p>
+              <p>2. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Set API Token</code> and paste your key.</p>
+              <p>3. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Link Workspace to Project</code> to start sync.</p>
             </div>
-          </div>
+          </SectionCard>
 
-          {/* Referral & Growth Partner */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 p-6 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none space-y-5">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <Gift className="w-4 h-4 text-indigo-500" />
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-                  Referral Link & Viral Credits
-                </h2>
-              </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light">
-                Share your unique link with clients or fellow creators. When they join and subscribe, you receive recurring platform credits.
-              </p>
-            </div>
-
+          {/* ── Referral ──────────────────────────────────────────────── */}
+          <SectionCard className="p-5">
+            <SectionHeader
+              title="Referral Link"
+              description="Share your link and earn recurring credits when friends join and subscribe."
+              badge={<Gift className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />}
+            />
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02]">
-              <div className="flex-1 font-mono text-xs text-slate-700 dark:text-slate-300 truncate px-2">
+              <div className="flex-1 font-mono text-xs text-slate-700 dark:text-slate-300 truncate px-1">
                 {buildReferralUrl(username || userId || 'creator')}
               </div>
               <button
                 type="button"
                 onClick={handleCopyReferral}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 text-xs font-semibold uppercase tracking-wider transition-all shadow-xs cursor-pointer flex-shrink-0"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 text-xs font-semibold transition-all shadow-xs cursor-pointer flex-shrink-0"
               >
                 {refCopied ? <Check className="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                <span>{refCopied ? 'Link Copied' : 'Copy Referral Link'}</span>
+                {refCopied ? 'Copied!' : 'Copy Link'}
               </button>
             </div>
-          </div>
+          </SectionCard>
 
-          {/* Billing & Subscription */}
-          <div id="billing" className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/80 p-6 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none space-y-5">
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
-                Subscription & Billing
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
-                Manage your tier subscription, payment invoices, and billing portal.
-              </p>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02]">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">Current Tier:</span>
-                  <span className={`text-[10px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
-                    normalizePlan(plan) !== 'free'
-                      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20'
-                      : 'text-slate-600 dark:text-slate-400 bg-slate-200/70 dark:bg-white/5 border border-slate-300 dark:border-white/10'
-                  }`}>
-                    {normalizePlan(plan) === 'agency_scale'
-                      ? 'Agency Scale'
-                      : normalizePlan(plan) === 'agency'
-                      ? 'Agency'
-                      : normalizePlan(plan) === 'pro'
-                      ? 'Pro Plan'
-                      : 'Free Tier'}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light">
-                  {PLAN_BLURB[normalizePlan(plan)]}
-                </p>
-              </div>
-
-              {plan === 'free' ? (
-                <button
-                  onClick={handleUpgrade}
-                  className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-5 py-2 text-xs transition-all shadow-sm flex items-center gap-1.5 cursor-pointer flex-shrink-0"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-400 dark:text-indigo-600" />
-                  Upgrade to Pro
-                </button>
-              ) : (
-                <button
-                  onClick={handleManageBilling}
-                  className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 px-4 py-2 text-xs transition-all flex items-center gap-1.5 cursor-pointer flex-shrink-0"
-                >
-                  Manage Billing
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            {billingError && (
-              <p className="text-xs text-rose-600 dark:text-rose-400">{billingError}</p>
-            )}
-          </div>
         </div>
       </DarkShell>
     </AppLayout>

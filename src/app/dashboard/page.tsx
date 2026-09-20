@@ -377,6 +377,7 @@ export default async function DashboardPage({
     lastWeekRes,
     expensesRes,
     timerRes,
+    tokenCountRes,
   ] = await Promise.all([
     supabase
       .from('projects')
@@ -389,6 +390,7 @@ export default async function DashboardPage({
     supabase.from('time_entries').select('hours').eq('user_id', user.id).gte('date', lastWeekStart).lt('date', weekStart),
     supabase.from('expenses').select('date, amount').eq('user_id', user.id),
     supabase.from('timers').select('description, project_id, started_at').eq('user_id', user.id).maybeSingle(),
+    supabase.from('api_tokens').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
   ])
 
   const criticalError = projectsRes.error || invoicesRes.error || expensesRes.error
@@ -416,6 +418,7 @@ export default async function DashboardPage({
   const runningTimer = timerRes.data as { description: string | null; project_id: string | null; started_at: string } | null
   const timerProject = runningTimer?.project_id ? allProjects.find(p => p.id === runningTimer.project_id) : null
   const isFree = plan !== 'pro'
+  const hasExtensionToken = (tokenCountRes.count ?? 0) > 0
 
   const sumItems = (inv: { items: { amount: number }[] }[]) =>
     inv.flatMap(i => i.items ?? []).reduce((s, item) => s + (item.amount ?? 0), 0)
@@ -516,10 +519,10 @@ export default async function DashboardPage({
                   {attentionCount > 0 ? `${attentionCount} item${attentionCount !== 1 ? 's' : ''} need attention` : 'all projects on track'}
                 </span>
               </p>
-              <TourTrigger />
             </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
+              <TourTrigger />
               <Link href="/time" data-tour-time-btn="">
                 <button
                   type="button"
@@ -541,21 +544,23 @@ export default async function DashboardPage({
             </div>
           </div>
 
-          {/* ── Editor Extension Live Status Strip ───────────────────── */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs dark:shadow-sm ring-1 ring-slate-950/5 dark:ring-white/5">
-            <div className="flex items-center gap-2.5">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="text-slate-900 dark:text-slate-200 font-medium">Editor Extension Sync</span>
-              <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">·</span>
-              <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">Streaming active coding status directly from your editor</span>
+          {/* ── Editor Extension Live Status Strip (only shown if user has set up tokens) ── */}
+          {hasExtensionToken && (
+            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs dark:shadow-sm ring-1 ring-slate-950/5 dark:ring-white/5">
+              <div className="flex items-center gap-2.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-slate-900 dark:text-slate-200 font-medium">Editor Extension Sync</span>
+                <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">·</span>
+                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">Streaming active coding status directly from your editor</span>
+              </div>
+              <Link href="/settings" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors font-medium flex items-center gap-1 text-[11px] self-start sm:self-auto">
+                Extension Tokens <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
-            <Link href="/settings" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors font-medium flex items-center gap-1 text-[11px] self-start sm:self-auto">
-              Extension Tokens <ChevronRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+          )}
 
           {isNewUser ? (
             /* ── New-user setup state ─────────────────────────────────── */
@@ -579,33 +584,6 @@ export default async function DashboardPage({
             </div>
           ) : (
             <>
-              {/* Contextual Onboarding Guidance (Progressive next action) */}
-              {activeProjects.length > 0 && (() => {
-                const totalUpdates = activeProjects.reduce((acc, p) => acc + (p.updates?.length || 0), 0)
-                const firstProj = activeProjects[0]
-                if (totalUpdates === 0) {
-                  return (
-                    <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/10 px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                      <div className="flex items-center gap-2.5">
-                        <Sparkles className="w-4 h-4 text-indigo-400 flex-shrink-0" />
-                        <div>
-                          <span className="font-semibold text-white">Next: Publish an update on {firstProj.project_name}.</span>
-                          <span className="text-slate-400 ml-1.5 hidden sm:inline">Show your client that work has officially kicked off.</span>
-                        </div>
-                      </div>
-                      <Link
-                        href={`/project/${firstProj.id}/update`}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-white text-slate-950 font-semibold px-3.5 py-1.5 text-xs hover:bg-slate-100 transition-colors shadow-xs flex-shrink-0 self-start sm:self-auto"
-                      >
-                        <span>Send update</span>
-                        <ArrowRight className="w-3 h-3" />
-                      </Link>
-                    </div>
-                  )
-                }
-                return null
-              })()}
-
               {/* ── 4 Overads KPI number boxes ─────────────────────────── */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <OveradsKpiCard
@@ -799,24 +777,12 @@ export default async function DashboardPage({
                     </section>
                   )}
 
-                  {/* ── New Invoice Shortcut ─────────────────────────────── */}
-                  <Link href="/invoices/new" className="flex items-center gap-3 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 px-4 py-3.5 hover:border-slate-300 dark:hover:border-white/20 transition-all shadow-xs dark:shadow-sm group">
-                    <span className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-500/20 transition-colors">
-                      <FileText className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-semibold text-slate-900 dark:text-white">Create new invoice</p>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">Bill client with Stripe Checkout</p>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors ml-auto flex-shrink-0" />
-                  </Link>
-
-                  {/* ── Projects list ────────────────────────────────────── */}
+                  {/* ── Recent Activity ──────────────────────────────────── */}
                   <section className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Active Projects</h2>
+                      <h2 className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Recent Activity</h2>
                       <Link href="/project" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 inline-flex items-center gap-0.5">
-                        View all <ChevronRight className="w-3.5 h-3.5" />
+                        All projects <ChevronRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
 
@@ -825,52 +791,66 @@ export default async function DashboardPage({
                         <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center">
                           <FolderOpen className="w-4 h-4 text-slate-400" />
                         </div>
-                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">No active projects</p>
+                        <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">No active projects yet</p>
                         <Link href="/project/new" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 inline-flex items-center gap-1 mt-1">
                           <Plus className="w-3 h-3" /> Start a project
                         </Link>
                       </div>
                     ) : (
                       <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden shadow-xs dark:shadow-sm">
-                        {activeProjects.slice(0, 5).map(p => (
-                          <Link
-                            key={p.id}
-                            href={`/project/${p.id}`}
-                            className="flex items-center gap-3 p-3.5 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group"
-                          >
-                            <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">{p.project_name}</p>
-                              <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{p.client_name}</p>
-                            </div>
-                            <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors flex-shrink-0" />
-                          </Link>
-                        ))}
+                        {activeProjects.slice(0, 5).map(p => {
+                          const sent = p.updates.filter(u => u.sent_at).sort((a, b) => new Date(b.sent_at!).getTime() - new Date(a.sent_at!).getTime())
+                          const lastUpdate = sent[0]
+                          const daysSince = lastUpdate
+                            ? Math.floor((Date.now() - new Date(lastUpdate.sent_at!).getTime()) / 86_400_000)
+                            : null
+                          const stale = daysSince !== null && daysSince > 7
+                          return (
+                            <Link
+                              key={p.id}
+                              href={`/project/${p.id}`}
+                              className="flex items-center gap-3 p-3.5 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group"
+                            >
+                              <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 mt-0.5" style={{ backgroundColor: p.color }} />
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">{p.project_name}</p>
+                                <p className={cn('text-[11px] truncate', stale ? 'text-amber-500 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400')}>
+                                  {lastUpdate
+                                    ? daysSince === 0 ? 'Updated today' : daysSince === 1 ? 'Updated yesterday' : `Updated ${daysSince}d ago`
+                                    : 'No update sent yet'}
+                                </p>
+                              </div>
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors flex-shrink-0" />
+                            </Link>
+                          )
+                        })}
                       </div>
                     )}
                   </section>
 
+                  {/* ── Upgrade nudge (Free tier only) ───────────────────── */}
+                  {isFree && (
+                    <Link
+                      href="/upgrade"
+                      className="flex items-center gap-3 rounded-2xl bg-gradient-to-br from-indigo-950/60 to-[#0c0d14] border border-indigo-500/25 px-4 py-3.5 hover:border-indigo-500/50 transition-all group shadow-sm"
+                    >
+                      <span className="w-8 h-8 rounded-lg bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                        <Sparkles className="w-4 h-4 text-indigo-400" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-semibold text-white">Upgrade to Pro</p>
+                        <p className="text-[11px] text-indigo-300/70">Unlimited projects · custom branding · auto emails</p>
+                      </div>
+                      <ArrowUpRight className="w-4 h-4 text-indigo-400 group-hover:text-white transition-colors flex-shrink-0" />
+                    </Link>
+                  )}
+
                 </div>
 
               </div>
-
-              {/* ── Upgrade Banner (Free tier) ─────────────────────────── */}
-              {isFree && (
-                <div className="rounded-2xl bg-gradient-to-r from-indigo-950/40 via-[#0c0d14] to-indigo-950/40 border border-indigo-500/20 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
-                  <div>
-                    <div className="text-xs font-semibold text-white uppercase tracking-wider">Frevio Pro</div>
-                    <div className="text-sm font-medium text-slate-200 mt-0.5">Unlock unlimited projects, automatic client notifications & white-label portals.</div>
-                  </div>
-                  <Link
-                    href="/upgrade"
-                    className="inline-flex items-center justify-center bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold px-4 py-2 rounded-full transition-all hover:scale-[1.02] shadow-sm self-start sm:self-auto"
-                  >
-                    Upgrade Plan <ArrowUpRight className="w-3.5 h-3.5 ml-1" />
-                  </Link>
-                </div>
-              )}
             </>
           )}
+
         </div>
       </DarkShell>
       <ProductTour userId={user.id} isAgency={activeWorkspaceId !== 'personal'} />

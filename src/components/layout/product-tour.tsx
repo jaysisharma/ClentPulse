@@ -358,10 +358,12 @@ export function TourTrigger() {
   return (
     <button
       onClick={startTour}
-      className="inline-flex items-center gap-1.5 text-xs text-indigo-500 hover:text-indigo-600 dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold transition-colors focus:outline-none hover:underline mt-1 cursor-pointer"
+      title="Take a quick tour"
+      aria-label="Start product tour"
+      className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-3 py-2 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer shadow-xs dark:shadow-none"
     >
       <HelpCircle className="w-3.5 h-3.5" />
-      Take a quick tour
+      <span className="hidden sm:inline">Tour</span>
     </button>
   )
 }
