@@ -304,22 +304,20 @@ export function OveradsHero({ signupHref }: HeroProps) {
           <span className="tracking-tight text-emerald-800 font-medium">Built for Freelancers & Independent Studios</span>
         </div>
 
-        {/* Hero Title (Overads.io light uppercase signature) */}
+        {/* Hero Title */}
         <h1
           ref={titleRef}
-          className="text-4xl sm:text-6xl md:text-7xl font-light uppercase tracking-[-0.02em] leading-[0.98] max-w-3xl text-balance text-slate-950"
+          className="text-4xl sm:text-6xl md:text-7xl font-light tracking-[-0.025em] leading-[1.05] max-w-4xl text-balance text-slate-950"
         >
-          <span className="block">Your client work</span>
-          <span className="block text-slate-800">runs itself.</span>
-          <span className="block text-indigo-600">You just approve.</span>
+          Stop answering <span className="text-indigo-600 font-normal">&ldquo;Any updates?&rdquo;</span> texts at 11 PM.
         </h1>
 
         {/* Subtitle */}
         <p
           ref={subtitleRef}
-          className="mt-6 max-w-xl text-balance text-sm font-light leading-relaxed text-slate-600 md:text-base"
+          className="mt-6 max-w-2xl text-balance text-sm font-light leading-relaxed text-slate-600 md:text-base"
         >
-          Frevio watches your code, your Figma files and your hours, then drafts the work: the milestone recap written, the invoice generated, the client portal updated. Nothing goes out without your yes. Free, no card.
+          Frevio gives your clients a single, passcode-locked dashboard to track project milestones, sign agreements, and pay invoices via Stripe. No client registrations required.
         </p>
 
         {/* Interactive Live Command Terminal Box */}
