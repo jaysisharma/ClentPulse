@@ -226,15 +226,15 @@ export function OveradsTestimonials() {
     <section
       id="testimonials"
       ref={sectionRef}
-      className="relative isolate py-28 px-4 sm:px-6 lg:px-8 bg-[#08090a] border-t border-white/5 overflow-hidden"
+      className="relative isolate py-28 px-4 sm:px-6 lg:px-8 bg-white border-t border-slate-200/80 overflow-hidden"
     >
       {/* ── Background Ambient Light Mesh ── */}
       <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[550px] w-[800px] rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.14)_0%,rgba(16,185,129,0.06)_40%,transparent_70%)] blur-3xl opacity-70" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[550px] w-[800px] rounded-full bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.08)_0%,rgba(16,185,129,0.04)_40%,transparent_70%)] blur-3xl opacity-70" />
         <div
-          className="absolute inset-0 opacity-15 [mask-image:radial-gradient(ellipse_75%_65%_at_50%_45%,#000_30%,transparent_85%)]"
+          className="absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_75%_65%_at_50%_45%,#000_30%,transparent_85%)]"
           style={{
-            backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 1px, transparent 1px)',
+            backgroundImage: 'linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px)',
             backgroundSize: '40px 40px',
           }}
         />
@@ -245,27 +245,27 @@ export function OveradsTestimonials() {
         {/* ── 1. Section Header & Segmented Filter Tabs ── */}
         <div ref={headerRef} className="text-center max-w-3xl mx-auto space-y-5 mb-16">
           
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
+          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-600 font-semibold">
             <span>Testimonials</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-slate-950 leading-[0.98]">
             Loved by specialists. Trusted by clients.
           </h2>
 
-          <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-slate-600 font-light leading-relaxed max-w-2xl mx-auto">
             See how solo engineers, senior designers, and independent studios eliminate client friction, get invoices settled faster, and run like 50-person powerhouses.
           </p>
 
           {/* Perspective Filter Tabs */}
-          <div className="inline-flex items-center gap-1.5 p-1.5 rounded-full border border-white/10 bg-[#0e1017]/90 backdrop-blur-xl shadow-lg mt-4">
+          <div className="inline-flex items-center gap-1.5 p-1.5 rounded-full border border-slate-200 bg-slate-100/80 shadow-xs mt-4">
             <button
               type="button"
               onClick={() => handleFilterChange('all')}
               className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                 filter === 'all'
-                  ? 'bg-white text-slate-950 shadow-md font-semibold'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-white text-slate-950 shadow-sm font-semibold'
+                  : 'text-slate-600 hover:text-slate-950 hover:bg-white/60'
               }`}
             >
               All Perspectives ({TESTIMONIALS.length})
@@ -275,8 +275,8 @@ export function OveradsTestimonials() {
               onClick={() => handleFilterChange('freelancer')}
               className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                 filter === 'freelancer'
-                  ? 'bg-white text-slate-950 shadow-md font-semibold'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-white text-slate-950 shadow-sm font-semibold'
+                  : 'text-slate-600 hover:text-slate-950 hover:bg-white/60'
               }`}
             >
               Freelancers & Studios (4)
@@ -286,8 +286,8 @@ export function OveradsTestimonials() {
               onClick={() => handleFilterChange('client')}
               className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                 filter === 'client'
-                  ? 'bg-white text-slate-950 shadow-md font-semibold'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-white text-slate-950 shadow-sm font-semibold'
+                  : 'text-slate-600 hover:text-slate-950 hover:bg-white/60'
               }`}
             >
               Hiring Clients (2)
@@ -307,13 +307,13 @@ export function OveradsTestimonials() {
               <div
                 key={t.id}
                 onMouseMove={handleCardMouseMove}
-                className="group relative flex flex-col justify-between rounded-2xl border border-white/10 bg-[#0c0e14]/90 p-6 sm:p-7 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8)] backdrop-blur-xl transition-all duration-300 hover:border-white/25 hover:-translate-y-1 overflow-hidden"
+                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 sm:p-7 shadow-[0_10px_30px_rgba(0,0,0,0.03)] hover:border-slate-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden"
               >
                 {/* Localized Hover Cursor Spotlight */}
                 <div
                   className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100 -z-10"
                   style={{
-                    background: `radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.12), transparent 40%)`,
+                    background: `radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.08), transparent 40%)`,
                   }}
                 />
 
@@ -326,23 +326,23 @@ export function OveradsTestimonials() {
                       ))}
                     </div>
 
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 text-emerald-300 font-mono text-xs font-medium">
-                      <Icon className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800 font-mono text-xs font-medium">
+                      <Icon className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
                       <span>{t.metric}</span>
                     </div>
                   </div>
 
                   {/* Main Quote */}
                   <div className="relative mb-6">
-                    <Quote className="w-8 h-8 text-white/5 absolute -top-3 -left-2 -z-10" />
-                    <p className="text-sm sm:text-base text-slate-200 font-normal leading-relaxed">
+                    <Quote className="w-8 h-8 text-slate-200 absolute -top-3 -left-2 -z-10" />
+                    <p className="text-sm sm:text-base text-slate-700 font-normal leading-relaxed">
                       &ldquo;{t.quote}&rdquo;
                     </p>
                   </div>
                 </div>
 
                 {/* Author Information Strip */}
-                <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-3">
+                <div className="pt-4 border-t border-slate-150 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     {/* Gradient Avatar */}
                     <div
@@ -352,17 +352,17 @@ export function OveradsTestimonials() {
                     </div>
 
                     <div className="min-w-0">
-                      <div className="text-sm font-semibold text-white truncate flex items-center gap-1.5">
+                      <div className="text-sm font-semibold text-slate-950 truncate flex items-center gap-1.5">
                         <span className="truncate">{t.author}</span>
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
                       </div>
-                      <div className="text-xs text-slate-400 truncate">
-                        {t.role} · <span className="text-slate-300 font-medium">{t.company}</span>
+                      <div className="text-xs text-slate-500 truncate">
+                        {t.role} · <span className="text-slate-800 font-medium">{t.company}</span>
                       </div>
                     </div>
                   </div>
 
-                  <span className="text-[11px] font-mono capitalize px-2.5 py-0.5 rounded-md bg-white/5 text-slate-300 border border-white/10 flex-shrink-0">
+                  <span className="text-[11px] font-mono capitalize px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200 flex-shrink-0">
                     {t.type}
                   </span>
                 </div>
@@ -374,30 +374,30 @@ export function OveradsTestimonials() {
         {/* ── 3. High-Trust Verified Proof Ribbon ── */}
         <div
           ref={statsRef}
-          className="mt-16 pt-10 border-t border-white/10 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-sm text-slate-300 text-center"
+          className="mt-16 pt-10 border-t border-slate-200 flex flex-wrap items-center justify-center gap-x-12 gap-y-4 text-sm text-slate-600 text-center"
         >
           <div className="flex items-center gap-2.5">
-            <span className="text-lg font-bold text-white font-mono">4.9 / 5.0</span>
+            <span className="text-lg font-bold text-slate-950 font-mono">4.9 / 5.0</span>
             <div className="flex items-center gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
               ))}
             </div>
-            <span className="text-slate-400">Average Client Rating</span>
+            <span className="text-slate-500">Average Client Rating</span>
           </div>
 
-          <span className="hidden sm:inline text-slate-600">·</span>
+          <span className="hidden sm:inline text-slate-300">·</span>
 
           <div className="flex items-center gap-2.5">
-            <span className="text-lg font-bold text-emerald-400 font-mono">&gt; $2.4M</span>
-            <span className="text-slate-400">Milestones Settled via Stripe</span>
+            <span className="text-lg font-bold text-emerald-600 font-mono">&gt; $2.4M</span>
+            <span className="text-slate-500">Milestones Settled via Stripe</span>
           </div>
 
-          <span className="hidden sm:inline text-slate-600">·</span>
+          <span className="hidden sm:inline text-slate-300">·</span>
 
           <div className="flex items-center gap-2.5">
-            <span className="text-lg font-bold text-indigo-400 font-mono">99.8%</span>
-            <span className="text-slate-400">On-Time Deliverable Sign-off</span>
+            <span className="text-lg font-bold text-indigo-600 font-mono">99.8%</span>
+            <span className="text-slate-500">On-Time Deliverable Sign-off</span>
           </div>
         </div>
 

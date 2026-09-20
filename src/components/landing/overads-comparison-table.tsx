@@ -64,34 +64,34 @@ const COMPARISON_ROWS: RowItem[] = [
 
 export function OveradsComparisonTable() {
   return (
-    <section id="comparison" className="w-full py-20 md:py-28 relative isolate overflow-hidden bg-[#08090a] border-t border-white/5">
+    <section id="comparison" className="w-full py-20 md:py-28 relative isolate overflow-hidden bg-[#f8f9fb] border-t border-slate-200/80">
       <div className="mx-auto w-full max-w-6xl px-6">
         {/* Section Header */}
         <div className="mb-12 max-w-2xl space-y-4 md:mb-16">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
+          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-600 font-semibold">
             <span>Honest comparison</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-slate-950 leading-[0.98]">
             The whole studio’s work, or four tools and chasing
           </h2>
-          <p className="text-sm leading-relaxed text-slate-400 md:text-base font-light">
+          <p className="text-sm leading-relaxed text-slate-600 md:text-base font-light">
             Every job a modern independent studio does, in one login, free. The same jobs split across point tools bill per seat and never quite talk to each other; traditional freelancing leaves you chasing invoices.
           </p>
         </div>
 
         {/* Desktop Comparison Table */}
-        <div className="relative hidden overflow-hidden rounded-3xl bg-[#0B0C12] ring-1 ring-white/10 md:block shadow-2xl">
+        <div className="relative hidden overflow-hidden rounded-3xl bg-white ring-1 ring-slate-200 shadow-[0_15px_40px_rgba(0,0,0,0.04)] md:block">
           {/* Header Row */}
-          <div className="grid items-end gap-x-2 border-b border-white/10 px-4 pb-5 pt-6 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)] bg-white/[0.02]">
+          <div className="grid items-end gap-x-2 border-b border-slate-200 px-4 pb-5 pt-6 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)] bg-slate-50/70">
             <div aria-hidden="true" />
-            <div className="text-[11px] uppercase tracking-wider font-mono text-slate-400 font-semibold">Key capabilities</div>
+            <div className="text-[11px] uppercase tracking-wider font-mono text-slate-600 font-semibold">Key capabilities</div>
             <div className="flex items-center justify-center">
-              <span className="inline-flex h-8 items-center gap-2 rounded-full bg-white text-slate-950 font-bold px-4 text-xs font-mono">
+              <span className="inline-flex h-8 items-center gap-2 rounded-full bg-slate-950 text-white font-bold px-4 text-xs font-mono shadow-sm">
                 Frevio
               </span>
             </div>
-            <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-slate-400">A stack of tools</div>
-            <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-slate-400">Traditional way</div>
+            <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-slate-500 font-medium">A stack of tools</div>
+            <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-slate-500 font-medium">Traditional way</div>
           </div>
 
           {/* Table Data Rows */}
@@ -99,39 +99,39 @@ export function OveradsComparisonTable() {
             {COMPARISON_ROWS.map((row) => (
               <div
                 key={row.id}
-                className="grid items-stretch gap-x-2 border-b border-white/[0.05] px-4 transition-colors last:border-b-0 hover:bg-white/[0.02] md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)]"
+                className="grid items-stretch gap-x-2 border-b border-slate-100 px-4 transition-colors last:border-b-0 hover:bg-slate-50/80 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)]"
               >
-                <div className="flex items-center justify-end py-5 text-right font-mono text-xs tabular-nums text-slate-500">
+                <div className="flex items-center justify-end py-5 text-right font-mono text-xs tabular-nums text-slate-400">
                   {row.id}
                 </div>
-                <div className="flex items-center py-5 text-sm leading-snug text-white font-medium">
+                <div className="flex items-center py-5 text-sm leading-snug text-slate-900 font-medium">
                   {row.title}
                 </div>
 
-                {/* Frevio Column (Featured with light background) */}
-                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center bg-white/[0.03] border-x border-white/[0.04]">
-                  <Check className="size-4 text-emerald-400" />
-                  <span className="text-xs font-semibold text-white">{row.frevio.text}</span>
+                {/* Frevio Column (Featured with light indigo background) */}
+                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center bg-indigo-50/35 border-x border-indigo-100/70">
+                  <Check className="size-4 text-emerald-600" />
+                  <span className="text-xs font-semibold text-slate-950">{row.frevio.text}</span>
                 </div>
 
                 {/* Stack of Tools Column */}
-                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-slate-400">
+                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-slate-600">
                   {row.stack.status === 'partial' ? (
-                    <Minus className="size-4 text-slate-500" />
+                    <Minus className="size-4 text-slate-400" />
                   ) : (
                     <X className="size-4 text-rose-500" />
                   )}
-                  <span className="text-xs text-slate-400">{row.stack.text}</span>
+                  <span className="text-xs text-slate-600">{row.stack.text}</span>
                 </div>
 
                 {/* Traditional Freelancing Column */}
-                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-slate-400">
+                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-slate-600">
                   {row.traditional.status === 'no' ? (
                     <X className="size-4 text-rose-500" />
                   ) : (
-                    <Minus className="size-4 text-slate-500" />
+                    <Minus className="size-4 text-slate-400" />
                   )}
-                  <span className="text-xs text-slate-400">{row.traditional.text}</span>
+                  <span className="text-xs text-slate-600">{row.traditional.text}</span>
                 </div>
               </div>
             ))}
@@ -141,31 +141,31 @@ export function OveradsComparisonTable() {
         {/* Mobile View Cards */}
         <div className="space-y-4 md:hidden">
           {COMPARISON_ROWS.map((row) => (
-            <div key={row.id} className="overflow-hidden rounded-2xl bg-[#0B0C12] border border-white/10 p-5 space-y-3">
+            <div key={row.id} className="overflow-hidden rounded-2xl bg-white border border-slate-200 p-5 space-y-3 shadow-xs">
               <div className="flex items-baseline gap-2.5">
-                <span className="font-mono text-[11px] tabular-nums text-indigo-400 font-bold">{row.id}</span>
-                <h3 className="text-sm font-semibold text-white">{row.title}</h3>
+                <span className="font-mono text-[11px] tabular-nums text-indigo-600 font-bold">{row.id}</span>
+                <h3 className="text-sm font-semibold text-slate-950">{row.title}</h3>
               </div>
               <div className="space-y-2">
-                <div className="flex items-center gap-3 rounded-xl p-3 bg-white/[0.04] border border-white/10">
-                  <Check className="size-4 text-emerald-400 flex-shrink-0" />
+                <div className="flex items-center gap-3 rounded-xl p-3 bg-indigo-50/50 border border-indigo-100">
+                  <Check className="size-4 text-emerald-600 flex-shrink-0" />
                   <div>
-                    <div className="text-[10px] uppercase font-mono text-indigo-400 font-bold">Frevio</div>
-                    <div className="text-xs font-semibold text-white">{row.frevio.text}</div>
+                    <div className="text-[10px] uppercase font-mono text-indigo-600 font-bold">Frevio</div>
+                    <div className="text-xs font-semibold text-slate-950">{row.frevio.text}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 rounded-xl p-3 bg-white/[0.015] border border-white/[0.04] text-slate-400">
-                  <Minus className="size-4 text-slate-500 flex-shrink-0" />
+                <div className="flex items-center gap-3 rounded-xl p-3 bg-slate-50 border border-slate-200 text-slate-600">
+                  <Minus className="size-4 text-slate-400 flex-shrink-0" />
                   <div>
-                    <div className="text-[10px] uppercase font-mono text-slate-500">A stack of tools</div>
-                    <div className="text-xs text-slate-400">{row.stack.text}</div>
+                    <div className="text-[10px] uppercase font-mono text-slate-500 font-medium">A stack of tools</div>
+                    <div className="text-xs text-slate-600">{row.stack.text}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 rounded-xl p-3 bg-white/[0.015] border border-white/[0.04] text-slate-400">
+                <div className="flex items-center gap-3 rounded-xl p-3 bg-slate-50 border border-slate-200 text-slate-600">
                   <X className="size-4 text-rose-500 flex-shrink-0" />
                   <div>
-                    <div className="text-[10px] uppercase font-mono text-slate-500">Traditional way</div>
-                    <div className="text-xs text-slate-400">{row.traditional.text}</div>
+                    <div className="text-[10px] uppercase font-mono text-slate-500 font-medium">Traditional way</div>
+                    <div className="text-xs text-slate-600">{row.traditional.text}</div>
                   </div>
                 </div>
               </div>

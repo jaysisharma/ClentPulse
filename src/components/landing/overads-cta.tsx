@@ -65,29 +65,29 @@ export function OveradsCta({ signupHref }: Props) {
   }, [])
 
   return (
-    <section ref={containerRef} className="px-3 py-12 md:px-6 md:py-20 bg-[#08090a]">
+    <section ref={containerRef} className="px-3 py-12 md:px-6 md:py-20 bg-white border-t border-slate-200/80">
       <div
         ref={bannerRef}
-        className="max-w-5xl mx-auto rounded-[28px] md:rounded-[36px] bg-gradient-to-b from-[#13141d] to-[#0c0d14] border border-white/10 p-10 sm:p-16 text-center space-y-6 shadow-2xl relative overflow-hidden"
+        className="max-w-5xl mx-auto rounded-[28px] md:rounded-[36px] bg-gradient-to-b from-slate-50 via-white to-slate-50 border border-slate-200 p-10 sm:p-16 text-center space-y-6 shadow-[0_20px_60px_rgba(0,0,0,0.05)] relative overflow-hidden"
       >
         <div
           ref={glowRef}
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-indigo-500/15 blur-[130px] rounded-full"
+          className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-indigo-500/8 blur-[130px] rounded-full"
         />
-        <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
+        <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-600 font-semibold">
           <span>Get Started</span>
         </div>
-        <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
+        <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-slate-950 leading-[0.98]">
           Your client work runs itself. You just approve.
         </h2>
-        <p className="max-w-xl mx-auto text-sm sm:text-base text-slate-400 font-light leading-relaxed">
+        <p className="max-w-xl mx-auto text-sm sm:text-base text-slate-600 font-light leading-relaxed">
           Set up your first project in five minutes. Connect your tools and send your first client status link today. Free forever.
         </p>
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href={signupHref}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-semibold text-slate-950 transition-all hover:bg-slate-100 hover:scale-[1.02] shadow-[0_0_30px_-5px_rgba(255,255,255,0.35)] cursor-pointer"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-8 text-sm font-semibold text-white transition-all hover:bg-slate-800 hover:scale-[1.02] shadow-lg shadow-slate-950/15 cursor-pointer"
           >
             <span>Start free</span>
             <ArrowRight className="w-4 h-4" />

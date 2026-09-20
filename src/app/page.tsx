@@ -19,7 +19,7 @@ export default async function LandingPage() {
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
   return (
-    <div className="min-h-screen bg-[#08090a] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
+    <div className="min-h-screen bg-white font-sans text-slate-900 antialiased selection:bg-indigo-500/20 selection:text-indigo-900">
 
       {/* ── 0. Floating Glass Navbar (Overads Pill Nav) ── */}
       <OveradsNavbar
@@ -49,16 +49,16 @@ export default async function LandingPage() {
         <OveradsTestimonials />
 
         {/* ── 7. Pricing: Simple Plans. Predictable Growth. ── */}
-        <section id="pricing" className="py-24 lg:py-32 px-4 sm:px-6 bg-[#08090a] border-t border-white/5">
+        <section id="pricing" className="py-24 lg:py-32 px-4 sm:px-6 bg-[#f8f9fb] border-t border-slate-200/80">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
-              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
+              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-600 font-semibold">
                 <span>Pricing</span>
               </div>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-slate-950 leading-[0.98]">
                 Simple plans. Predictable growth.
               </h2>
-              <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-600 font-light leading-relaxed">
                 Start completely free for 2 active projects. Upgrade to Pro or Agency as your studio scales.
               </p>
             </div>
@@ -68,16 +68,16 @@ export default async function LandingPage() {
         </section>
 
         {/* ── 8. FAQ: Frequently Answered ── */}
-        <section id="faq" className="py-24 lg:py-32 px-6 bg-[#08090a] border-t border-white/5">
+        <section id="faq" className="py-24 lg:py-32 px-6 bg-white border-t border-slate-200/80">
           <div className="max-w-4xl mx-auto">
             <div className="text-center space-y-4 mb-16">
-              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
+              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-600 font-semibold">
                 <span>FAQ</span>
               </div>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-slate-950 leading-[0.98]">
                 Frequently answered
               </h2>
-              <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-600 font-light leading-relaxed">
                 Everything you need to know about the client operating system.
               </p>
             </div>
@@ -92,29 +92,29 @@ export default async function LandingPage() {
       </main>
 
       {/* ── Footer: Ultra-Clean Studio Footer ── */}
-      <footer className="border-t border-white/5 bg-[#050608] py-16 px-6 text-xs text-slate-500">
+      <footer className="border-t border-slate-200 bg-slate-50 py-16 px-6 text-xs text-slate-600">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-2.5">
-            <Logo className="w-5 h-5 text-white" />
-            <span className="font-bold text-white text-sm tracking-tight font-mono">Frevio</span>
-            <span className="text-slate-700">/</span>
-            <span className="text-slate-400 font-light">The client operating system for modern studios</span>
+            <Logo className="w-5 h-5 text-slate-950" />
+            <span className="font-bold text-slate-950 text-sm tracking-tight font-mono">Frevio</span>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-500 font-light">The client operating system for modern studios</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6 text-slate-400 font-mono text-[11px]">
-            <a href="#workflows" className="hover:text-white transition-colors">Workflows</a>
-            <a href="#screens" className="hover:text-white transition-colors">Inside</a>
-            <a href="#comparison" className="hover:text-white transition-colors">Comparison</a>
-            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+          <div className="flex flex-wrap items-center gap-6 text-slate-600 font-mono text-[11px]">
+            <a href="#workflows" className="hover:text-slate-950 transition-colors">Workflows</a>
+            <a href="#screens" className="hover:text-slate-950 transition-colors">Inside</a>
+            <a href="#comparison" className="hover:text-slate-950 transition-colors">Comparison</a>
+            <a href="#pricing" className="hover:text-slate-950 transition-colors">Pricing</a>
+            <a href="#faq" className="hover:text-slate-950 transition-colors">FAQ</a>
+            <Link href="/terms" className="hover:text-slate-950 transition-colors">Terms</Link>
+            <Link href="/privacy" className="hover:text-slate-950 transition-colors">Privacy</Link>
           </div>
 
           <div className="flex items-center gap-2 text-slate-500 font-mono text-[11px]">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>All systems operational</span>
-            <span className="text-slate-700">·</span>
+            <span className="text-slate-300">·</span>
             <span>© {new Date().getFullYear()} Frevio Inc.</span>
           </div>
         </div>

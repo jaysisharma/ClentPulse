@@ -70,7 +70,7 @@ export function LandingFaq() {
   }, [])
 
   return (
-    <div ref={containerRef} className="mx-auto max-w-3xl divide-y divide-white/10">
+    <div ref={containerRef} className="mx-auto max-w-3xl divide-y divide-slate-200">
       {FAQS.map((f, i) => {
         const isOpen = open === i
         return (
@@ -81,7 +81,7 @@ export function LandingFaq() {
             >
               <span
                 className={`text-base sm:text-lg font-medium transition-colors ${
-                  isOpen ? 'text-white font-semibold' : 'text-slate-300 group-hover:text-white'
+                  isOpen ? 'text-slate-950 font-semibold' : 'text-slate-800 group-hover:text-slate-950'
                 }`}
               >
                 {f.q}
@@ -89,8 +89,8 @@ export function LandingFaq() {
               <span
                 className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border transition-all ${
                   isOpen
-                    ? 'bg-white/15 border-white/25 text-white'
-                    : 'bg-white/[0.04] border-white/10 text-slate-400 group-hover:bg-white/10 group-hover:text-white'
+                    ? 'bg-slate-950 border-slate-950 text-white shadow-xs'
+                    : 'bg-slate-100 border-slate-200 text-slate-600 group-hover:bg-slate-200 group-hover:text-slate-950'
                 }`}
               >
                 {isOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
@@ -102,7 +102,7 @@ export function LandingFaq() {
               }`}
             >
               <div className="overflow-hidden">
-                <p className="max-w-2xl text-[14px] sm:text-[15px] leading-relaxed text-slate-400">
+                <p className="max-w-2xl text-[14px] sm:text-[15px] leading-relaxed text-slate-600">
                   {f.a}
                 </p>
               </div>

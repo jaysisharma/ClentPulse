@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowUpRight, Check, ArrowRight, ShieldCheck, Clock, Terminal, CreditCard, Radio, Sparkles } from 'lucide-react'
+import { ArrowUpRight, ArrowRight } from 'lucide-react'
 
 interface WorkflowTab {
   id: string
@@ -80,17 +80,17 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
   const active = WORKFLOWS.find((w) => w.id === activeTabId) || WORKFLOWS[0]
 
   return (
-    <section id="workflows" className="relative w-full py-20 md:py-28 bg-[#08090a] border-t border-white/5">
+    <section id="workflows" className="relative w-full py-20 md:py-28 bg-[#f8f9fb] border-t border-slate-200/80">
       <div className="mx-auto w-full max-w-6xl px-6">
         {/* Section Header */}
         <div className="mx-auto mb-10 max-w-3xl space-y-4 text-center md:mb-12">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
+          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-600 font-semibold">
             <span>Workflows</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-slate-950 leading-[0.98]">
             Tell it once. It does it every week.
           </h2>
-          <p className="mx-auto max-w-2xl text-balance text-sm leading-relaxed text-slate-400 md:text-base font-light">
+          <p className="mx-auto max-w-2xl text-balance text-sm leading-relaxed text-slate-600 md:text-base font-light">
             Client automation in plain English. A dashboard shows you the problem and leaves the work to you. Frevio does the work, then hands it to you to approve. Pick one and watch.
           </p>
         </div>
@@ -116,8 +116,8 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
                   }}
                   className={`inline-flex min-h-10 items-center justify-center rounded-full px-4 py-2 text-center text-[13px] font-medium leading-tight transition-all cursor-pointer sm:shrink-0 sm:px-5 sm:text-sm ${
                     isSelected
-                      ? 'bg-white text-slate-950 font-semibold shadow-md'
-                      : 'bg-white/[0.04] text-slate-400 hover:bg-white/[0.08] hover:text-white border border-white/[0.06]'
+                      ? 'bg-slate-950 text-white font-semibold shadow-md'
+                      : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200/90 shadow-2xs'
                   }`}
                 >
                   {w.title}
@@ -126,24 +126,24 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
             })}
           </div>
 
-          {/* Workflow Canvas Box */}
-          <div className="mt-6 overflow-hidden rounded-3xl bg-[#0B0C12] ring-1 ring-white/10 shadow-2xl">
+          {/* Workflow Canvas Box (Light Mode Glass Card) */}
+          <div className="mt-6 overflow-hidden rounded-3xl bg-white ring-1 ring-slate-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
             {/* Header Title inside card */}
-            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-6 pt-6 md:px-9 md:pt-8 border-b border-white/[0.05] pb-4">
-              <p className="text-lg font-light tracking-tight text-white md:text-xl font-mono">
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-6 pt-6 md:px-9 md:pt-8 border-b border-slate-200/80 pb-4 bg-white">
+              <p className="text-lg font-light tracking-tight text-slate-900 md:text-xl font-mono">
                 {active.title}
               </p>
-              <span className="text-xs font-mono text-emerald-400 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs font-mono text-emerald-700 font-semibold flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Active Automation
               </span>
             </div>
 
             {/* Dot-grid Connecting Node Flow Track */}
-            <div className="border-b border-white/[0.07] bg-white/[0.02] [background-image:radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:18px_18px]">
+            <div className="border-b border-slate-200/80 bg-slate-50/70 [background-image:radial-gradient(rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:18px_18px]">
               <div className="flex items-center justify-between gap-4 px-6 pt-4 md:px-9">
-                <p className="text-[11px] uppercase tracking-wider font-mono text-white/40">How it is built</p>
-                <p className="text-[11.5px] text-white/40 font-mono">Every step is yours to edit</p>
+                <p className="text-[11px] uppercase tracking-wider font-mono text-slate-500 font-semibold">How it is built</p>
+                <p className="text-[11.5px] text-slate-500 font-mono">Every step is yours to edit</p>
               </div>
 
               {/* Node diagram */}
@@ -151,14 +151,14 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
                 <ol className="flex flex-col items-stretch md:flex-row gap-2 md:gap-0">
                   {/* Node 1: WHEN */}
                   <li className="flex-none">
-                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-white/10 md:w-[200px] bg-[#07080D]">
+                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-slate-200 md:w-[200px] bg-white shadow-2xs">
                       <span
                         aria-hidden="true"
-                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-[#07080D] md:left-auto md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -bottom-1.5 md:-right-1.5 md:bottom-auto bg-indigo-400"
+                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-white md:left-auto md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -bottom-1.5 md:-right-1.5 md:bottom-auto bg-indigo-600"
                       />
-                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-400 font-bold">When</p>
-                      <p className="mt-1 text-[13px] font-medium leading-snug text-white">{active.whenTitle}</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-slate-400">{active.whenSub}</p>
+                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-600 font-bold">When</p>
+                      <p className="mt-1 text-[13px] font-medium leading-snug text-slate-900">{active.whenTitle}</p>
+                      <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{active.whenSub}</p>
                     </div>
                   </li>
 
@@ -166,20 +166,20 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
                   <li className="flex min-w-0 flex-col items-center md:flex-1 md:flex-row">
                     <span
                       aria-hidden="true"
-                      className="h-5 w-px shrink-0 md:h-px md:w-auto md:min-w-5 md:flex-1 bg-white/20"
+                      className="h-5 w-px shrink-0 md:h-px md:w-auto md:min-w-5 md:flex-1 bg-slate-300"
                     />
-                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-white/10 md:w-[210px] bg-[#07080D]">
+                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-slate-200 md:w-[210px] bg-white shadow-2xs">
                       <span
                         aria-hidden="true"
-                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-[#07080D] md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -top-1.5 md:-left-1.5 bg-indigo-400"
+                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-white md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -top-1.5 md:-left-1.5 bg-indigo-600"
                       />
                       <span
                         aria-hidden="true"
-                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-[#07080D] md:left-auto md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -bottom-1.5 md:-right-1.5 md:bottom-auto bg-indigo-400"
+                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-white md:left-auto md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -bottom-1.5 md:-right-1.5 md:bottom-auto bg-indigo-600"
                       />
-                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-400 font-bold">Do</p>
-                      <p className="mt-1 text-[13px] font-medium leading-snug text-white">{active.do1Title}</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-slate-400">{active.do1Sub}</p>
+                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-600 font-bold">Do</p>
+                      <p className="mt-1 text-[13px] font-medium leading-snug text-slate-900">{active.do1Title}</p>
+                      <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{active.do1Sub}</p>
                     </div>
                   </li>
 
@@ -187,16 +187,16 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
                   <li className="flex min-w-0 flex-col items-center md:flex-1 md:flex-row">
                     <span
                       aria-hidden="true"
-                      className="h-5 w-px shrink-0 md:h-px md:w-auto md:min-w-5 md:flex-1 bg-white/20"
+                      className="h-5 w-px shrink-0 md:h-px md:w-auto md:min-w-5 md:flex-1 bg-slate-300"
                     />
-                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-white/10 md:w-[210px] bg-[#07080D]">
+                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-slate-200 md:w-[210px] bg-white shadow-2xs">
                       <span
                         aria-hidden="true"
-                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-[#07080D] md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -top-1.5 md:-left-1.5 bg-indigo-400"
+                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-white md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -top-1.5 md:-left-1.5 bg-indigo-600"
                       />
-                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-400 font-bold">Do</p>
-                      <p className="mt-1 text-[13px] font-medium leading-snug text-white">{active.do2Title}</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-slate-400">{active.do2Sub}</p>
+                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-600 font-bold">Do</p>
+                      <p className="mt-1 text-[13px] font-medium leading-snug text-slate-900">{active.do2Title}</p>
+                      <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{active.do2Sub}</p>
                     </div>
                   </li>
                 </ol>
@@ -205,41 +205,41 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
 
             {/* "One Run" 3-Column Execution Stage */}
             <div className="px-6 pt-7 md:px-9 flex items-center justify-between">
-              <p className="text-[11px] uppercase tracking-widest font-mono text-white/40">One Run Execution</p>
-              <span className="text-[11px] font-mono text-slate-400">Step 1 to 3</span>
+              <p className="text-[11px] uppercase tracking-widest font-mono text-slate-500 font-semibold">One Run Execution</p>
+              <span className="text-[11px] font-mono text-slate-500">Step 1 to 3</span>
             </div>
 
             {/* Step header indicator */}
-            <div className="relative mt-4 hidden grid-cols-3 md:grid border-b border-white/[0.07]">
+            <div className="relative mt-4 hidden grid-cols-3 md:grid border-b border-slate-200/80">
               <div className="flex items-start gap-3 px-9 pb-4">
-                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-white/10 text-white">
+                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-slate-100 text-slate-800">
                   1
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[14px] font-medium text-white">It watches</span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-400">
+                  <span className="block text-[14px] font-medium text-slate-900">It watches</span>
+                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-500">
                     Your code, your Figma files and your hours.
                   </span>
                 </span>
               </div>
               <div className="flex items-start gap-3 px-9 pb-4">
-                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-white/10 text-white">
+                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-slate-100 text-slate-800">
                   2
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[14px] font-medium text-white">It does the work</span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-400">
+                  <span className="block text-[14px] font-medium text-slate-900">It does the work</span>
+                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-500">
                     Reads what changed and drafts what needs doing.
                   </span>
                 </span>
               </div>
               <div className="flex items-start gap-3 px-9 pb-4">
-                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-white/10 text-white">
+                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-slate-100 text-slate-800">
                   3
                 </span>
                 <span className="min-w-0">
-                  <span className="block text-[14px] font-medium text-white">You approve</span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-400">
+                  <span className="block text-[14px] font-medium text-slate-900">You approve</span>
+                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-500">
                     Nothing goes out without your yes.
                   </span>
                 </span>
@@ -249,55 +249,55 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
             {/* Step Cards Grid */}
             <div className="grid gap-x-0 gap-y-6 px-6 pb-6 pt-4 md:grid-cols-3 md:px-0 md:pb-9 md:pt-0">
               {/* Column 1: It watches */}
-              <div className="space-y-3 md:min-h-[220px] md:px-9 md:pt-6 md:border-r md:border-white/[0.07]">
+              <div className="space-y-3 md:min-h-[220px] md:px-9 md:pt-6 md:border-r md:border-slate-200/80">
                 <p className="flex items-center gap-2.5 md:hidden">
-                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-white/10 text-white">
+                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-slate-100 text-slate-800">
                     1
                   </span>
-                  <span className="text-[13px] font-medium text-white">It watches</span>
+                  <span className="text-[13px] font-medium text-slate-900">It watches</span>
                 </p>
-                <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/[0.08]">
+                <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-200 shadow-2xs">
                   <div className="flex items-baseline justify-between gap-3">
-                    <span className="text-[11px] font-medium text-indigo-400">Frevio noticed</span>
-                    <span className="text-[10.5px] tabular-nums font-mono text-white/40">Mon 9:00</span>
+                    <span className="text-[11px] font-medium text-indigo-600">Frevio noticed</span>
+                    <span className="text-[10.5px] tabular-nums font-mono text-slate-400">Mon 9:00</span>
                   </div>
-                  <p className="mt-2 text-[13.5px] leading-snug text-slate-200">{active.watchNote}</p>
+                  <p className="mt-2 text-[13.5px] leading-snug text-slate-800">{active.watchNote}</p>
                 </div>
               </div>
 
               {/* Column 2: It does the work */}
-              <div className="space-y-3 md:min-h-[220px] md:px-9 md:pt-6 md:border-r md:border-white/[0.07]">
+              <div className="space-y-3 md:min-h-[220px] md:px-9 md:pt-6 md:border-r md:border-slate-200/80">
                 <p className="flex items-center gap-2.5 md:hidden">
-                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-white/10 text-white">
+                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-slate-100 text-slate-800">
                     2
                   </span>
-                  <span className="text-[13px] font-medium text-white">It does the work</span>
+                  <span className="text-[13px] font-medium text-slate-900">It does the work</span>
                 </p>
-                <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/[0.08]">
+                <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-200 shadow-2xs">
                   <div className="flex items-baseline justify-between gap-3">
-                    <span className="text-[11px] font-medium text-slate-400">It verified</span>
-                    <span className="text-[10.5px] tabular-nums font-mono text-white/40">Mon 9:00</span>
+                    <span className="text-[11px] font-medium text-slate-500">It verified</span>
+                    <span className="text-[10.5px] tabular-nums font-mono text-slate-400">Mon 9:00</span>
                   </div>
-                  <p className="mt-2 text-[13px] leading-snug text-slate-200">{active.checkNote}</p>
+                  <p className="mt-2 text-[13px] leading-snug text-slate-800">{active.checkNote}</p>
                 </div>
-                <div className="rounded-2xl bg-white/[0.04] p-4 ring-1 ring-white/[0.08]">
+                <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-200 shadow-2xs">
                   <div className="flex items-baseline justify-between gap-3">
-                    <span className="text-[11px] font-medium text-indigo-400">It suggests</span>
-                    <span className="text-[10.5px] tabular-nums font-mono text-white/40">Mon 9:01</span>
+                    <span className="text-[11px] font-medium text-indigo-600">It suggests</span>
+                    <span className="text-[10.5px] tabular-nums font-mono text-slate-400">Mon 9:01</span>
                   </div>
-                  <p className="mt-2 text-[13px] leading-snug text-slate-200">{active.suggestNote}</p>
+                  <p className="mt-2 text-[13px] leading-snug text-slate-800">{active.suggestNote}</p>
                 </div>
               </div>
 
               {/* Column 3: You approve */}
               <div className="space-y-3 md:min-h-[220px] md:px-9 md:pt-6">
                 <p className="flex items-center gap-2.5 md:hidden">
-                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-white/10 text-white">
+                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-slate-100 text-slate-800">
                     3
                   </span>
-                  <span className="text-[13px] font-medium text-white">You approve</span>
+                  <span className="text-[13px] font-medium text-slate-900">You approve</span>
                 </p>
-                <div className="rounded-2xl bg-white p-5 shadow-xl text-slate-950">
+                <div className="rounded-2xl bg-white p-5 shadow-lg border border-indigo-100 ring-1 ring-indigo-500/10 text-slate-950">
                   <p className="text-[14px] font-semibold leading-snug text-slate-900">
                     {approved === true
                       ? 'Approved! Dispatching to client portal...'
@@ -317,7 +317,7 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
                       className={`rounded-full px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
                         approved === true
                           ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-950 text-white hover:bg-slate-800'
+                          : 'bg-slate-950 text-white hover:bg-slate-800 shadow-xs'
                       }`}
                     >
                       {approved === true ? 'Approved ✓' : 'Yes, do it'}
@@ -325,7 +325,7 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
                     <button
                       type="button"
                       onClick={() => setApproved(false)}
-                      className="rounded-full px-4 py-2 text-xs font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+                      className="rounded-full px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer"
                     >
                       Not now
                     </button>
@@ -338,21 +338,21 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
 
         {/* 3 Editorial Value Propositions */}
         <dl className="mt-12 grid gap-x-10 gap-y-6 md:mt-16 md:grid-cols-3">
-          <div className="border-t border-white/10 pt-5">
-            <dt className="font-heading text-base font-medium text-white">Starts by itself</dt>
-            <dd className="mt-1.5 text-sm leading-relaxed text-slate-400 font-light">
+          <div className="border-t border-slate-200 pt-5">
+            <dt className="font-heading text-base font-semibold text-slate-950">Starts by itself</dt>
+            <dd className="mt-1.5 text-sm leading-relaxed text-slate-600 font-light">
               On a schedule, when something happens, or the moment milestone hours cross your line.
             </dd>
           </div>
-          <div className="border-t border-white/10 pt-5">
-            <dt className="font-heading text-base font-medium text-white">Knows your whole desk</dt>
-            <dd className="mt-1.5 text-sm leading-relaxed text-slate-400 font-light">
+          <div className="border-t border-slate-200 pt-5">
+            <dt className="font-heading text-base font-semibold text-slate-950">Knows your whole desk</dt>
+            <dd className="mt-1.5 text-sm leading-relaxed text-slate-600 font-light">
               It reads your code commits, your Figma files and your hours. Add a Google Drive folder and it syncs that too.
             </dd>
           </div>
-          <div className="border-t border-white/10 pt-5">
-            <dt className="font-heading text-base font-medium text-white">Yours in a minute</dt>
-            <dd className="mt-1.5 text-sm leading-relaxed text-slate-400 font-light">
+          <div className="border-t border-slate-200 pt-5">
+            <dt className="font-heading text-base font-semibold text-slate-950">Yours in a minute</dt>
+            <dd className="mt-1.5 text-sm leading-relaxed text-slate-600 font-light">
               Switch on a ready-made template, or describe your own workflow and edit every step.
             </dd>
           </div>
@@ -362,14 +362,14 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
         <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6 md:mt-14">
           <Link
             href={signupHref}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-white font-semibold text-slate-950 hover:bg-slate-100 h-11 px-7 text-sm transition-all shadow-md cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 font-semibold text-white hover:bg-slate-800 h-11 px-7 text-sm transition-all shadow-md cursor-pointer"
           >
             Start free
             <ArrowUpRight className="size-4" />
           </Link>
           <a
             href="#comparison"
-            className="inline-flex items-center gap-1.5 text-sm text-white underline decoration-white/30 underline-offset-4 hover:decoration-white transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-950 transition-colors font-medium"
           >
             See how it compares
             <ArrowRight className="size-3.5" />
