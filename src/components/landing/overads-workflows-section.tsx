@@ -2,379 +2,445 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { ArrowUpRight, ArrowRight } from 'lucide-react'
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Sparkles,
+  CheckCircle2
+} from 'lucide-react'
 
-interface WorkflowTab {
+interface WorkflowScenario {
   id: string
-  title: string
-  whenTitle: string
-  whenSub: string
-  do1Title: string
-  do1Sub: string
-  do2Title: string
-  do2Sub: string
-  watchNote: string
-  checkNote: string
-  suggestNote: string
+  tabLabel: string
+  tool: string
+  toolBadge: string
+  triggerTitle: string
+  triggerTime: string
+  codeSnippet: {
+    line1: string
+    line2: string
+    line3: string
+  }
+  meta: string
+  actionBadge: string
+  actionTitle: string
+  recipient: string
+  greeting: string
+  bullets: string[]
+  question: string
+  buttonText: string
+  successNote: string
 }
 
-const WORKFLOWS: WorkflowTab[] = [
-  {
-    id: 'guard',
-    title: 'Guard my milestones',
-    whenTitle: 'Hours reach 16.5 billable',
-    whenSub: 'Milestone 2 threshold crossed',
-    do1Title: 'Propose milestone deliverable review',
-    do1Sub: 'Waits for your yes',
-    do2Title: 'Prepare Stripe invoice & notify client',
-    do2Sub: 'Your encrypted portal',
-    watchNote: 'Frevio noticed: Acme Rebrand reached 16.5 billable hours. Milestone 2 threshold reached.',
-    checkNote: 'All Figma specifications and Git commits finalized for Sprint 4. Not a draft.',
-    suggestNote: 'Publish review & issue Milestone 2 invoice for $3,200.00. That secures payment before weekend.',
-  },
+const SCENARIOS: WorkflowScenario[] = [
   {
     id: 'monday',
-    title: 'Write my Monday update',
-    whenTitle: 'Every Monday at 9:00 AM',
-    whenSub: 'Scheduled weekly cadence',
-    do1Title: 'Synthesize Git & Figma changes',
-    do1Sub: 'AI drafted summary',
-    do2Title: 'Publish brief to client portal',
-    do2Sub: 'Waits for your yes',
-    watchNote: 'Frevio noticed: 14 commits merged and 3 Figma prototypes updated since Friday.',
-    checkNote: 'Changes analyzed in your studio brand voice. Key highlights and blockers isolated.',
-    suggestNote: 'Send 3-point briefing to Claire at Acme. Shows clear momentum without writing an email.',
+    tabLabel: 'Monday Client Brief',
+    tool: 'GitHub + Figma',
+    toolBadge: 'Branch: main',
+    triggerTitle: '14 Commits Merged & 3 Specs Updated',
+    triggerTime: 'Every Monday · 9:00 AM',
+    codeSnippet: {
+      line1: 'commit 7a8f92c (HEAD -> main)',
+      line2: 'feat(checkout): stripe payments & responsive audit',
+      line3: '+142 lines · 4 files changed · 3 figma frames synced'
+    },
+    meta: 'Detected merged commits on main & updated prototype links since Friday',
+    actionBadge: 'Monday Broadcast Draft',
+    actionTitle: 'Week 4 Progress Briefing',
+    recipient: 'To: Claire (Acme Corp) · frevio.cloud/p/acme',
+    greeting: 'Hey Claire, here is what we wrapped up since Friday:',
+    bullets: [
+      'Stripe checkout flow deployed to acme-preview.vercel.app',
+      'Mobile navigation responsive audit completed across iPhone & Android',
+      'Next: Final QA pass before Thursday stakeholder review'
+    ],
+    question: 'Send Monday brief to Claire?',
+    buttonText: 'Publish to Client Portal',
+    successNote: 'Published to Acme client portal. Claire notified via email.'
+  },
+  {
+    id: 'guard',
+    tabLabel: 'Milestone Scope Guard',
+    tool: 'VS Code Timer',
+    toolBadge: 'Limit: 16.5 hrs',
+    triggerTitle: 'Milestone 2 Threshold Crossed',
+    triggerTime: 'Today · 2:15 PM',
+    codeSnippet: {
+      line1: 'pulse: Acme Rebrand / Phase 2',
+      line2: 'logged: 16.5 billable hours (threshold reached)',
+      line3: 'status: 100% of sprint deliverables finalized'
+    },
+    meta: 'Monitors logged editor hours against contract milestone limits',
+    actionBadge: 'Milestone Lock & Invoicing',
+    actionTitle: 'Milestone 2 Scope Lock & Invoice #104',
+    recipient: 'To: Acme Corp Billing · frevio.cloud/p/acme',
+    greeting: 'Sprint 4 deliverables complete. Ready to lock scope & issue invoice:',
+    bullets: [
+      'All Sprint 4 Figma specifications verified and signed',
+      'Invoice #104 pre-filled for $3,200.00 USD (deposit credited)',
+      'Scope locked to prevent unpaid out-of-contract additions'
+    ],
+    question: 'Lock Milestone 2 & dispatch invoice?',
+    buttonText: 'Approve & Issue Invoice',
+    successNote: 'Milestone 2 locked for review. Stripe invoice dispatched.'
   },
   {
     id: 'invoice',
-    title: 'Convert hours to invoice',
-    whenTitle: 'Milestone marked approved by client',
-    whenSub: 'Timestamped sign-off',
-    do1Title: 'Calculate logged time & deductions',
-    do1Sub: 'Zero manual math',
-    do2Title: 'Generate Stripe payment link',
-    do2Sub: 'Waits for your yes',
-    watchNote: 'Frevio noticed: Client approved Milestone 2: Design Architecture at 12:43 PM.',
-    checkNote: 'Exact contract rate ($150/hr × 21.3 hrs + $3,200 fixed fee). Deposit already deducted.',
-    suggestNote: 'Dispatch Stripe invoice INV-2026-084. Direct bank settlement in 48 hours.',
+    tabLabel: 'Instant Invoicing',
+    tool: 'Client Portal',
+    toolBadge: 'Audit: #VER-891',
+    triggerTitle: 'Deliverable Approved on Mobile',
+    triggerTime: 'Today · 12:43 PM',
+    codeSnippet: {
+      line1: 'approval: Design System v2.4 (Final)',
+      line2: 'signoff: David (Client CEO) via mobile browser',
+      line3: 'timestamp: 2026-09-21 12:43:09 UTC · Verified'
+    },
+    meta: 'Client signed deliverable inside their passcode portal',
+    actionBadge: 'Stripe Payment Ready',
+    actionTitle: 'Invoice INV-2026-084 ($3,200)',
+    recipient: 'To: David (Acme CEO) · frevio.cloud/p/acme',
+    greeting: 'Deliverable sign-off recorded. Stripe invoice generated:',
+    bullets: [
+      'Calculated 21.3 hrs @ $150/hr + fixed fee ($3,200 total)',
+      'Pre-linked to Apple Pay, Google Pay & Card checkout in 1 tap',
+      'Receipt PDF auto-generated with zero manual math'
+    ],
+    question: 'Dispatch Stripe payment link to David?',
+    buttonText: 'Send Stripe Payment Link',
+    successNote: 'Stripe invoice active. 1-click payment link live in portal.'
   },
   {
     id: 'sync',
-    title: 'Sync Figma & GitHub',
-    whenTitle: 'New commit tagged `v2.0-release`',
-    whenSub: 'Repository event',
-    do1Title: 'Attach preview specs & live links',
-    do1Sub: 'Extracts release assets',
-    do2Title: 'Update live portal timeline',
-    do2Sub: 'Waits for your yes',
-    watchNote: 'Frevio noticed: Production build deployed to staging environment.',
-    checkNote: 'Staging URL verified active. 4 design deliverables linked with zero broken files.',
-    suggestNote: 'Post deliverable link directly to client timeline. Ready for stakeholder sign-off.',
-  },
+    tabLabel: 'Deploy & Specs Sync',
+    tool: 'Vercel + GitHub',
+    toolBadge: 'Tag: v2.0-staging',
+    triggerTitle: 'Production Staging Build Live',
+    triggerTime: 'Today · 4:15 PM',
+    codeSnippet: {
+      line1: 'deploy: https://acme-preview.vercel.app (200 OK)',
+      line2: 'assets: 4 Figma prototype specs extracted',
+      line3: 'verification: zero broken links · staging active'
+    },
+    meta: 'Webhook fired on successful Vercel staging deployment',
+    actionBadge: 'Timeline Update Ready',
+    actionTitle: 'Staging Preview & Deliverable Sync',
+    recipient: 'To: Acme Stakeholders · frevio.cloud/p/acme',
+    greeting: 'New production preview verified. Ready for stakeholder review:',
+    bullets: [
+      'Live staging preview link attached directly to portal timeline',
+      '4 finalized Figma spec files attached with 1-click preview',
+      'Pre-configured for client feedback without email ping-pong'
+    ],
+    question: 'Sync staging build to client portal?',
+    buttonText: 'Sync to Client Portal',
+    successNote: 'Portal timeline updated. Staging preview online for review.'
+  }
 ]
 
 export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) {
-  const [activeTabId, setActiveTabId] = useState('guard')
-  const [approved, setApproved] = useState<boolean | null>(null)
+  const [activeTabId, setActiveTabId] = useState('monday')
+  const [approvedTabIds, setApprovedTabIds] = useState<Record<string, boolean>>({})
 
-  const active = WORKFLOWS.find((w) => w.id === activeTabId) || WORKFLOWS[0]
+  const active = SCENARIOS.find((s) => s.id === activeTabId) || SCENARIOS[0]
+  const isApproved = Boolean(approvedTabIds[active.id])
+
+  const handleToggleApprove = () => {
+    setApprovedTabIds((prev) => ({
+      ...prev,
+      [active.id]: !prev[active.id]
+    }))
+  }
 
   return (
-    <section id="workflows" className="relative w-full py-20 md:py-28 bg-[#f8f9fb] border-t border-slate-200/80">
-      <div className="mx-auto w-full max-w-6xl px-6">
+    <section
+      id="workflows"
+      className="scroll-mt-24 sm:scroll-mt-28 relative w-full py-20 md:py-28 bg-[#090A0F] border-t border-white/[0.08] text-white overflow-hidden"
+    >
+      <div className="mx-auto w-full max-w-6xl px-5 sm:px-6 space-y-10 sm:space-y-12">
+
         {/* Section Header */}
-        <div className="mx-auto mb-10 max-w-3xl space-y-4 text-center md:mb-12">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-600 font-semibold">
+        <div className="mx-auto max-w-2xl space-y-3 text-center">
+          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400 font-semibold">
+            <span className="size-1.5 rounded-full bg-indigo-400" />
             <span>Workflows</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-slate-950 leading-[0.98]">
-            Tell it once. It does it every week.
+
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light tracking-[-0.02em] text-white leading-[1.05]">
+            Tell it once. <br className="hidden sm:inline" />
+            <span className="font-normal text-slate-400">It runs every week.</span>
           </h2>
-          <p className="mx-auto max-w-2xl text-balance text-sm leading-relaxed text-slate-600 md:text-base font-light">
-            Client automation in plain English. A dashboard shows you the problem and leaves the work to you. Frevio does the work, then hands it to you to approve. Pick one and watch.
+
+          <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
+            Frevio monitors your desk, drafts updates in your studio voice, and waits for your 1-click yes.
           </p>
         </div>
 
-        {/* Tab Buttons List */}
-        <div>
-          <div
-            role="tablist"
-            aria-label="Example workflows"
-            className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-center"
-          >
-            {WORKFLOWS.map((w) => {
-              const isSelected = w.id === activeTabId
+        {/* ── High-Contrast Scenario Switcher Tabs ── */}
+        <div className="flex justify-center">
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 p-1.5 bg-[#12141e] rounded-full border border-white/[0.08] shadow-lg">
+            {SCENARIOS.map((s) => {
+              const isSelected = s.id === activeTabId
+              const isDone = approvedTabIds[s.id]
+
               return (
                 <button
-                  key={w.id}
+                  key={s.id}
                   type="button"
-                  role="tab"
-                  aria-selected={isSelected}
-                  onClick={() => {
-                    setActiveTabId(w.id)
-                    setApproved(null)
-                  }}
-                  className={`inline-flex min-h-10 items-center justify-center rounded-full px-4 py-2 text-center text-[13px] font-medium leading-tight transition-all cursor-pointer sm:shrink-0 sm:px-5 sm:text-sm ${
+                  onClick={() => setActiveTabId(s.id)}
+                  className={`inline-flex items-center gap-2 px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-slate-950 text-white font-semibold shadow-md'
-                      : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200/90 shadow-2xs'
+                      ? 'bg-white text-slate-950 shadow-md ring-2 ring-white/20'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  {w.title}
+                  <span>{s.tabLabel}</span>
+                  {isDone ? (
+                    <span className="size-2 rounded-full bg-emerald-400 ring-2 ring-emerald-950" />
+                  ) : isSelected ? (
+                    <span className="size-1.5 rounded-full bg-indigo-600 animate-pulse" />
+                  ) : null}
                 </button>
               )
             })}
           </div>
+        </div>
 
-          {/* Workflow Canvas Box (Light Mode Glass Card) */}
-          <div className="mt-6 overflow-hidden rounded-3xl bg-white ring-1 ring-slate-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.06)]">
-            {/* Header Title inside card */}
-            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 px-6 pt-6 md:px-9 md:pt-8 border-b border-slate-200/80 pb-4 bg-white">
-              <p className="text-lg font-light tracking-tight text-slate-900 md:text-xl font-mono">
-                {active.title}
+        {/* ── TACTILE DUAL ARTIFACT CARD: Left Event ➔ Right Studio Action ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+
+          {/* ══════════════════════════════════════════════════════════
+              LEFT: Real Trigger Event (Terminal / Commit / Spec Card)
+             ══════════════════════════════════════════════════════════ */}
+          <div className="lg:col-span-5 rounded-3xl bg-[#0e1017] text-slate-100 p-6 sm:p-7 border border-white/[0.08] shadow-2xl flex flex-col justify-between relative overflow-hidden">
+            
+            <div className="space-y-5">
+              
+              {/* Tool Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-indigo-500 animate-ping" />
+                  <span className="font-mono text-indigo-400 font-bold uppercase tracking-wider text-[11px]">
+                    {active.tool}
+                  </span>
+                </div>
+                <span className="text-slate-400 font-mono text-[11px]">
+                  {active.triggerTime}
+                </span>
+              </div>
+
+              {/* Event Title */}
+              <div>
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-widest block mb-1">
+                  Event Triggered
+                </span>
+                <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
+                  {active.triggerTitle}
+                </h3>
+              </div>
+
+              {/* Terminal Code Snippet (Tactile artifact) */}
+              <div className="rounded-2xl bg-[#05060a] border border-white/[0.06] p-4 font-mono text-xs space-y-1.5 shadow-inner">
+                <div className="flex items-center gap-1.5 pb-2 mb-2 border-b border-white/[0.06] text-[10px] text-slate-500">
+                  <span className="size-2 rounded-full bg-red-500/80" />
+                  <span className="size-2 rounded-full bg-yellow-500/80" />
+                  <span className="size-2 rounded-full bg-green-500/80" />
+                  <span className="ml-2 text-slate-400">{active.toolBadge}</span>
+                </div>
+
+                <p className="text-indigo-400 text-[11px] truncate">
+                  $ {active.codeSnippet.line1}
+                </p>
+                <p className="text-emerald-400 text-[11px] truncate">
+                  &gt; {active.codeSnippet.line2}
+                </p>
+                <p className="text-slate-400 text-[11px] truncate">
+                  &gt; {active.codeSnippet.line3}
+                </p>
+              </div>
+
+              <p className="text-xs text-slate-400 leading-relaxed font-light">
+                {active.meta}
               </p>
-              <span className="text-xs font-mono text-emerald-700 font-semibold flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Active Automation
+
+            </div>
+
+            {/* Bottom Pipeline Status */}
+            <div className="mt-6 pt-4 border-t border-white/[0.08] flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span>Automatic trigger</span>
+              <span className="text-indigo-400 flex items-center gap-1">
+                <Sparkles className="size-3" />
+                Drafts in 0.4s
               </span>
             </div>
 
-            {/* Dot-grid Connecting Node Flow Track */}
-            <div className="border-b border-slate-200/80 bg-slate-50/70 [background-image:radial-gradient(rgba(0,0,0,0.06)_1px,transparent_1px)] [background-size:18px_18px]">
-              <div className="flex items-center justify-between gap-4 px-6 pt-4 md:px-9">
-                <p className="text-[11px] uppercase tracking-wider font-mono text-slate-500 font-semibold">How it is built</p>
-                <p className="text-[11.5px] text-slate-500 font-mono">Every step is yours to edit</p>
-              </div>
+          </div>
 
-              {/* Node diagram */}
-              <div className="px-6 pb-6 pt-4 md:px-9">
-                <ol className="flex flex-col items-stretch md:flex-row gap-2 md:gap-0">
-                  {/* Node 1: WHEN */}
-                  <li className="flex-none">
-                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-slate-200 md:w-[200px] bg-white shadow-2xs">
-                      <span
-                        aria-hidden="true"
-                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-white md:left-auto md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -bottom-1.5 md:-right-1.5 md:bottom-auto bg-indigo-600"
-                      />
-                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-600 font-bold">When</p>
-                      <p className="mt-1 text-[13px] font-medium leading-snug text-slate-900">{active.whenTitle}</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{active.whenSub}</p>
-                    </div>
-                  </li>
+          {/* ══════════════════════════════════════════════════════════
+              RIGHT: The Frevio Studio Action Card (The Approval Gate)
+             ══════════════════════════════════════════════════════════ */}
+          <div className={`lg:col-span-7 rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-2xl transition-all duration-300 relative overflow-hidden border-2 ${
+            isApproved
+              ? 'bg-[#0e1017] text-slate-100 border-emerald-500/80 ring-2 ring-emerald-500/20'
+              : 'bg-[#12141e] text-white border-indigo-500/40 ring-2 ring-indigo-500/20'
+          }`}>
 
-                  {/* Connecting Line 1 */}
-                  <li className="flex min-w-0 flex-col items-center md:flex-1 md:flex-row">
-                    <span
-                      aria-hidden="true"
-                      className="h-5 w-px shrink-0 md:h-px md:w-auto md:min-w-5 md:flex-1 bg-slate-300"
-                    />
-                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-slate-200 md:w-[210px] bg-white shadow-2xs">
-                      <span
-                        aria-hidden="true"
-                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-white md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -top-1.5 md:-left-1.5 bg-indigo-600"
-                      />
-                      <span
-                        aria-hidden="true"
-                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-white md:left-auto md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -bottom-1.5 md:-right-1.5 md:bottom-auto bg-indigo-600"
-                      />
-                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-600 font-bold">Do</p>
-                      <p className="mt-1 text-[13px] font-medium leading-snug text-slate-900">{active.do1Title}</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{active.do1Sub}</p>
-                    </div>
-                  </li>
+            {/* Glowing Accent Bar at top of hero card */}
+            <div
+              aria-hidden="true"
+              className={`absolute top-0 inset-x-0 h-1.5 transition-colors ${
+                isApproved ? 'bg-emerald-500' : 'bg-gradient-to-r from-indigo-500 to-purple-500'
+              }`}
+            />
 
-                  {/* Connecting Line 2 */}
-                  <li className="flex min-w-0 flex-col items-center md:flex-1 md:flex-row">
-                    <span
-                      aria-hidden="true"
-                      className="h-5 w-px shrink-0 md:h-px md:w-auto md:min-w-5 md:flex-1 bg-slate-300"
-                    />
-                    <div className="relative w-full shrink-0 rounded-2xl px-4 py-3.5 ring-1 ring-slate-200 md:w-[210px] bg-white shadow-2xs">
-                      <span
-                        aria-hidden="true"
-                        className="absolute left-1/2 size-2.5 -translate-x-1/2 rounded-full ring-2 ring-white md:top-1/2 md:translate-x-0 md:-translate-y-1/2 -top-1.5 md:-left-1.5 bg-indigo-600"
-                      />
-                      <p className="text-[10px] uppercase font-mono tracking-widest text-indigo-600 font-bold">Do</p>
-                      <p className="mt-1 text-[13px] font-medium leading-snug text-slate-900">{active.do2Title}</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-slate-500">{active.do2Sub}</p>
-                    </div>
-                  </li>
-                </ol>
-              </div>
-            </div>
-
-            {/* "One Run" 3-Column Execution Stage */}
-            <div className="px-6 pt-7 md:px-9 flex items-center justify-between">
-              <p className="text-[11px] uppercase tracking-widest font-mono text-slate-500 font-semibold">One Run Execution</p>
-              <span className="text-[11px] font-mono text-slate-500">Step 1 to 3</span>
-            </div>
-
-            {/* Step header indicator */}
-            <div className="relative mt-4 hidden grid-cols-3 md:grid border-b border-slate-200/80">
-              <div className="flex items-start gap-3 px-9 pb-4">
-                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-slate-100 text-slate-800">
-                  1
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-[14px] font-medium text-slate-900">It watches</span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-500">
-                    Your code, your Figma files and your hours.
+            <div className="space-y-5">
+              
+              {/* Top Banner */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.08] text-xs">
+                <div className="flex items-center gap-2">
+                  <span className={`px-2.5 py-1 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider ${
+                    isApproved
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                  }`}>
+                    {active.actionBadge}
                   </span>
-                </span>
-              </div>
-              <div className="flex items-start gap-3 px-9 pb-4">
-                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-slate-100 text-slate-800">
-                  2
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-[14px] font-medium text-slate-900">It does the work</span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-500">
-                    Reads what changed and drafts what needs doing.
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-start gap-3 px-9 pb-4">
-                <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-semibold tabular-nums bg-slate-100 text-slate-800">
-                  3
-                </span>
-                <span className="min-w-0">
-                  <span className="block text-[14px] font-medium text-slate-900">You approve</span>
-                  <span className="mt-0.5 block text-[12px] leading-snug text-slate-500">
-                    Nothing goes out without your yes.
-                  </span>
-                </span>
-              </div>
-            </div>
+                </div>
 
-            {/* Step Cards Grid */}
-            <div className="grid gap-x-0 gap-y-6 px-6 pb-6 pt-4 md:grid-cols-3 md:px-0 md:pb-9 md:pt-0">
-              {/* Column 1: It watches */}
-              <div className="space-y-3 md:min-h-[220px] md:px-9 md:pt-6 md:border-r md:border-slate-200/80">
-                <p className="flex items-center gap-2.5 md:hidden">
-                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-slate-100 text-slate-800">
-                    1
-                  </span>
-                  <span className="text-[13px] font-medium text-slate-900">It watches</span>
+                <span className={`inline-flex items-center gap-1.5 text-xs font-mono font-bold px-3 py-1 rounded-full ${
+                  isApproved
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                    : 'bg-amber-500/15 text-amber-300 border border-amber-500/30 animate-pulse'
+                }`}>
+                  <span className={`size-1.5 rounded-full ${isApproved ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                  {isApproved ? 'Live in Client Portal' : 'Awaiting Your 1-Click Yes'}
+                </span>
+              </div>
+
+              {/* Title and Recipient */}
+              <div className="space-y-1">
+                <span className="text-[11px] font-mono text-slate-400">
+                  {active.recipient}
+                </span>
+                <h3 className="text-lg sm:text-xl font-bold leading-snug text-white">
+                  {active.actionTitle}
+                </h3>
+              </div>
+
+              {/* The Drafted Deliverable View */}
+              <div className="rounded-2xl p-4 sm:p-5 space-y-3 text-xs leading-relaxed border bg-[#0e1017] border-white/[0.08] text-slate-300">
+                <p className="font-medium text-white">
+                  &ldquo;{active.greeting}&rdquo;
                 </p>
-                <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-200 shadow-2xs">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="text-[11px] font-medium text-indigo-600">Frevio noticed</span>
-                    <span className="text-[10.5px] tabular-nums font-mono text-slate-400">Mon 9:00</span>
-                  </div>
-                  <p className="mt-2 text-[13.5px] leading-snug text-slate-800">{active.watchNote}</p>
-                </div>
+
+                <ul className="space-y-2 pt-1">
+                  {active.bullets.map((bullet, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5">
+                      <span className="size-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 text-[10px] font-bold">
+                        ✓
+                      </span>
+                      <span className="text-[13px] text-slate-300">{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
-              {/* Column 2: It does the work */}
-              <div className="space-y-3 md:min-h-[220px] md:px-9 md:pt-6 md:border-r md:border-slate-200/80">
-                <p className="flex items-center gap-2.5 md:hidden">
-                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-slate-100 text-slate-800">
-                    2
-                  </span>
-                  <span className="text-[13px] font-medium text-slate-900">It does the work</span>
-                </p>
-                <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-200 shadow-2xs">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="text-[11px] font-medium text-slate-500">It verified</span>
-                    <span className="text-[10.5px] tabular-nums font-mono text-slate-400">Mon 9:00</span>
-                  </div>
-                  <p className="mt-2 text-[13px] leading-snug text-slate-800">{active.checkNote}</p>
-                </div>
-                <div className="rounded-2xl bg-slate-50/80 p-4 ring-1 ring-slate-200 shadow-2xs">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="text-[11px] font-medium text-indigo-600">It suggests</span>
-                    <span className="text-[10.5px] tabular-nums font-mono text-slate-400">Mon 9:01</span>
-                  </div>
-                  <p className="mt-2 text-[13px] leading-snug text-slate-800">{active.suggestNote}</p>
-                </div>
+            </div>
+
+            {/* Bottom 1-Click Action Bar */}
+            <div className="mt-6 pt-5 border-t border-white/[0.08] space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-slate-200">
+                  {isApproved ? 'Delivered to Client' : active.question}
+                </span>
+                <span className="text-[11px] font-mono text-slate-400">
+                  {isApproved ? 'Status: Active' : 'Human in the loop'}
+                </span>
               </div>
 
-              {/* Column 3: You approve */}
-              <div className="space-y-3 md:min-h-[220px] md:px-9 md:pt-6">
-                <p className="flex items-center gap-2.5 md:hidden">
-                  <span className="grid size-5 place-items-center rounded-full text-[10px] font-semibold tabular-nums bg-slate-100 text-slate-800">
-                    3
-                  </span>
-                  <span className="text-[13px] font-medium text-slate-900">You approve</span>
-                </p>
-                <div className="rounded-2xl bg-white p-5 shadow-lg border border-indigo-100 ring-1 ring-indigo-500/10 text-slate-950">
-                  <p className="text-[14px] font-semibold leading-snug text-slate-900">
-                    {approved === true
-                      ? 'Approved! Dispatching to client portal...'
-                      : approved === false
-                      ? 'Skipped for now.'
-                      : 'Go ahead with this?'}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    {approved === true
-                      ? 'Client notified and Stripe invoice created.'
-                      : 'Nothing updates without your manual confirmation.'}
-                  </p>
-                  <div className="mt-4 flex min-h-8 items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setApproved(true)}
-                      className={`rounded-full px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
-                        approved === true
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-950 text-white hover:bg-slate-800 shadow-xs'
-                      }`}
-                    >
-                      {approved === true ? 'Approved ✓' : 'Yes, do it'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setApproved(false)}
-                      className="rounded-full px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100 transition-colors cursor-pointer"
-                    >
-                      Not now
-                    </button>
-                  </div>
-                </div>
+              <button
+                type="button"
+                onClick={handleToggleApprove}
+                className={`w-full py-3.5 px-6 rounded-2xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2.5 transition-all cursor-pointer shadow-lg hover:scale-[1.01] ${
+                  isApproved
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/30'
+                    : 'bg-white hover:bg-indigo-600 hover:text-white text-slate-950 shadow-white/10'
+                }`}
+              >
+                {isApproved ? (
+                  <>
+                    <CheckCircle2 className="size-4" />
+                    <span>Approved &amp; Published ✓</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{active.buttonText}</span>
+                    <ArrowRight className="size-4" />
+                  </>
+                )}
+              </button>
+
+              <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono pt-1">
+                <span>{isApproved ? active.successNote : 'Nothing sends automatically without your yes'}</span>
+                {isApproved && (
+                  <button
+                    type="button"
+                    onClick={handleToggleApprove}
+                    className="text-slate-400 hover:text-white underline cursor-pointer"
+                  >
+                    Reset
+                  </button>
+                )}
               </div>
             </div>
+
+          </div>
+
+        </div>
+
+        {/* 3 Footnote Pillars */}
+        <div className="grid gap-4 sm:grid-cols-3 pt-2">
+          <div className="p-4 rounded-2xl bg-[#0e1017] border border-white/[0.08] space-y-1 shadow-2xs">
+            <h4 className="text-xs font-semibold text-white">Starts by itself</h4>
+            <p className="text-xs text-slate-400 leading-relaxed font-light">
+              Triggers on schedules, GitHub commits, or logged milestone hours.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-[#0e1017] border border-white/[0.08] space-y-1 shadow-2xs">
+            <h4 className="text-xs font-semibold text-white">Drafted in your voice</h4>
+            <p className="text-xs text-slate-400 leading-relaxed font-light">
+              Synthesizes real work into concise, polished client updates.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-[#0e1017] border border-white/[0.08] space-y-1 shadow-2xs">
+            <h4 className="text-xs font-semibold text-white">You hold the keys</h4>
+            <p className="text-xs text-slate-400 leading-relaxed font-light">
+              100% human-in-the-loop. Nothing dispatches without your 1-click yes.
+            </p>
           </div>
         </div>
 
-        {/* 3 Editorial Value Propositions */}
-        <dl className="mt-12 grid gap-x-10 gap-y-6 md:mt-16 md:grid-cols-3">
-          <div className="border-t border-slate-200 pt-5">
-            <dt className="font-heading text-base font-semibold text-slate-950">Starts by itself</dt>
-            <dd className="mt-1.5 text-sm leading-relaxed text-slate-600 font-light">
-              On a schedule, when something happens, or the moment milestone hours cross your line.
-            </dd>
-          </div>
-          <div className="border-t border-slate-200 pt-5">
-            <dt className="font-heading text-base font-semibold text-slate-950">Knows your whole desk</dt>
-            <dd className="mt-1.5 text-sm leading-relaxed text-slate-600 font-light">
-              It reads your code commits, your Figma files and your hours. Add a Google Drive folder and it syncs that too.
-            </dd>
-          </div>
-          <div className="border-t border-slate-200 pt-5">
-            <dt className="font-heading text-base font-semibold text-slate-950">Yours in a minute</dt>
-            <dd className="mt-1.5 text-sm leading-relaxed text-slate-600 font-light">
-              Switch on a ready-made template, or describe your own workflow and edit every step.
-            </dd>
-          </div>
-        </dl>
-
         {/* Section CTAs */}
-        <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6 md:mt-14">
+        <div className="flex items-center justify-center gap-4 pt-2">
           <Link
             href={signupHref}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 font-semibold text-white hover:bg-slate-800 h-11 px-7 text-sm transition-all shadow-md cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-full bg-white font-semibold text-slate-950 hover:bg-slate-200 h-11 px-7 text-sm transition-all shadow-md cursor-pointer"
           >
-            Start free
+            <span>Start free</span>
             <ArrowUpRight className="size-4" />
           </Link>
           <a
-            href="#comparison"
-            className="inline-flex items-center gap-1.5 text-sm text-slate-900 underline decoration-slate-300 underline-offset-4 hover:decoration-slate-950 transition-colors font-medium"
+            href="#screens"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-400 hover:text-white transition-colors font-medium"
           >
-            See how it compares
+            <span>See the 3 screens</span>
             <ArrowRight className="size-3.5" />
           </a>
         </div>
+
       </div>
     </section>
   )

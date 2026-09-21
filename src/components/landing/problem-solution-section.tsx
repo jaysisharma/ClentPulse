@@ -2,8 +2,14 @@
 
 import Link from 'next/link'
 import {
-  ArrowRight, ArrowUpRight, Check, X,
-  Clock, Lock, DollarSign, MessageCircle, FileText, Smartphone
+  ArrowRight,
+  Lock,
+  MessageSquare,
+  Mail,
+  Hash,
+  Radio,
+  FileCheck,
+  Receipt
 } from 'lucide-react'
 
 interface Props {
@@ -12,191 +18,200 @@ interface Props {
 
 export function ProblemSolutionSection({ signupHref }: Props) {
   return (
-    <section id="the-story" className="py-24 sm:py-32 px-5 sm:px-8 bg-white border-t border-slate-200/80 text-slate-900">
-      <div className="max-w-5xl mx-auto space-y-16 sm:space-y-20">
-        
-        {/* Editorial Story Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-600 font-semibold">
+    <section id="the-story" className="relative py-20 sm:py-28 px-5 sm:px-8 bg-[#090A0F] border-t border-white/[0.08] text-white overflow-hidden">
+      <div className="max-w-5xl mx-auto space-y-12 sm:space-y-14">
+
+        {/* Story Header */}
+        <div className="text-center max-w-2xl mx-auto space-y-3.5">
+          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400 font-semibold">
+            <span className="size-1.5 rounded-full bg-indigo-400" />
             <span>The Reality</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-slate-950 leading-[0.98]">
+          <h2 className="text-3xl sm:text-5xl font-light tracking-tight text-white leading-[1.08]">
             Clients don&apos;t ping to annoy you. <br />
-            <span className="font-normal">They ping because they can&apos;t see.</span>
+            <span className="font-normal text-slate-400">They ping because they can&apos;t see.</span>
           </h2>
 
-          <p className="text-sm sm:text-base md:text-lg text-slate-600 font-light leading-relaxed max-w-2xl mx-auto">
-            When there is no single place to check progress, WhatsApp becomes your dashboard. Here is how your week changes when you give them one passcode link instead.
+          <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
+            Without a single link to check, your personal inbox becomes their project tracker. One permanent link changes the dynamic completely.
           </p>
         </div>
 
-        {/* Realistic Story Cards: Left (The Everyday Hassle) vs Right (The Frevio Way) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
-          
-          {/* ── LEFT: The Everyday Hassle ── */}
-          <div className="rounded-2xl border border-slate-200 bg-[#fbfbfc] p-6 sm:p-8 flex flex-col justify-between shadow-2xs">
+        {/* Night vs Day Visual Story */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+
+          {/* ── Left: The 11:42 PM Phone Screen (Before) ── */}
+          <div className="rounded-3xl bg-[#0e1017] text-slate-100 p-6 sm:p-7 flex flex-col justify-between border border-white/[0.08] shadow-2xl relative overflow-hidden">
             <div className="space-y-6">
-              
-              {/* Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-slate-200">
-                <div className="flex items-center gap-2">
-                  <span className="size-2 rounded-full bg-slate-400" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 font-mono">
-                    Scattered across 4 apps
-                  </span>
+
+              {/* iPhone-style Lockscreen Header */}
+              <div className="text-center space-y-1 pt-1 pb-2">
+                <div className="inline-flex items-center justify-center size-5 mx-auto rounded-full bg-white/10 text-slate-400">
+                  <Lock className="size-2.5" />
                 </div>
-                <span className="text-xs text-slate-400 font-mono">11:42 PM</span>
-              </div>
-
-              {/* Realistic Mobile Message Cards */}
-              <div className="space-y-3">
-                
-                {/* Message 1: The Status Question */}
-                <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 font-medium text-slate-900">
-                      <MessageCircle className="size-3.5 text-slate-400" />
-                      <span>WhatsApp message</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 font-mono">11:42 PM</span>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    &ldquo;Hey, any updates on the design? When will staging be ready? Need to show the team tomorrow morning.&rdquo;
-                  </p>
+                <div className="text-4xl sm:text-5xl font-extralight tracking-tight text-white font-sans">
+                  11:42
                 </div>
-
-                {/* Message 2: The Lost Invoice */}
-                <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 font-medium text-slate-900">
-                      <FileText className="size-3.5 text-slate-400" />
-                      <span>Email thread</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 font-mono">3 days later</span>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    &ldquo;Can you re-send invoice #2? Our finance team couldn&apos;t find the PDF attachment in our email thread.&rdquo;
-                  </p>
-                </div>
-
-                {/* Message 3: The Contract Sign-off */}
-                <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2 font-medium text-slate-900">
-                      <Smartphone className="size-3.5 text-slate-400" />
-                      <span>Slack DM</span>
-                    </div>
-                    <span className="text-[11px] text-slate-400 font-mono">Friday</span>
-                  </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    &ldquo;Which version of the contract are we signing? Was it the Google Doc or the PDF?&rdquo;
-                  </p>
-                </div>
-
-              </div>
-
-              {/* Takeaway bullet */}
-              <div className="pt-2">
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Every project creates 20+ scattered links, lost PDF attachments, and late-night interruptions.
+                <p className="text-xs text-slate-400 font-normal">
+                  Tuesday, September 21
                 </p>
+              </div>
+
+              {/* Notifications */}
+              <div className="space-y-2.5">
+                
+                {/* WhatsApp Notification */}
+                <div className="rounded-2xl bg-[#161822] border border-white/[0.06] p-3.5 space-y-1.5 shadow-lg">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <div className="size-4 rounded-md bg-[#25D366] flex items-center justify-center text-white">
+                        <MessageSquare className="size-2.5 fill-white" />
+                      </div>
+                      <span className="font-medium text-slate-200 text-[11px] tracking-wide">WhatsApp</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono">now</span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-white">David (Acme)</p>
+                    <p className="text-xs text-slate-300 leading-relaxed mt-0.5">
+                      &ldquo;Hey, sorry to text so late — any update on staging? Have to show the team at 9 AM tomorrow.&rdquo;
+                    </p>
+                  </div>
+                </div>
+
+                {/* Email Notification */}
+                <div className="rounded-2xl bg-[#161822] border border-white/[0.06] p-3.5 space-y-1.5 shadow-lg">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <div className="size-4 rounded-md bg-[#007AFF] flex items-center justify-center text-white">
+                        <Mail className="size-2.5" />
+                      </div>
+                      <span className="font-medium text-slate-200 text-[11px] tracking-wide">Mail</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono">1h ago</span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-white">Finance @ Acme Corp</p>
+                    <p className="text-xs text-slate-300 leading-relaxed mt-0.5">
+                      &ldquo;Re: Invoice #2 PDF — finance couldn&apos;t find the file in the thread. Could you re-send?&rdquo;
+                    </p>
+                  </div>
+                </div>
+
+                {/* Slack Notification */}
+                <div className="rounded-2xl bg-[#161822] border border-white/[0.06] p-3.5 space-y-1.5 shadow-lg">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5">
+                      <div className="size-4 rounded-md bg-[#611f69] flex items-center justify-center text-white">
+                        <Hash className="size-2.5" />
+                      </div>
+                      <span className="font-medium text-slate-200 text-[11px] tracking-wide">Slack</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400 font-mono">3h ago</span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-white">David in #redesign</p>
+                    <p className="text-xs text-slate-300 leading-relaxed mt-0.5">
+                      &ldquo;Which Figma link is the final signed version? Drive or Slack?&rdquo;
+                    </p>
+                  </div>
+                </div>
+
               </div>
 
             </div>
 
-            <div className="mt-8 pt-4 border-t border-slate-200 text-xs text-slate-500 font-medium">
-              Result: You spend hours managing communication instead of doing client work.
+            {/* Bottom Footnote */}
+            <div className="mt-6 pt-4 border-t border-white/[0.08] flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span>3 apps. 2 lost files.</span>
+              <span className="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/20 font-medium">
+                1 interrupted evening
+              </span>
             </div>
           </div>
 
-          {/* ── RIGHT: The Frevio Link ── */}
-          <div className="rounded-2xl border border-indigo-200/80 bg-white p-6 sm:p-8 flex flex-col justify-between shadow-sm ring-1 ring-indigo-950/5">
+          {/* ── Right: The Frevio Client View (After) ── */}
+          <div className="rounded-3xl bg-[#0e1017] text-slate-100 p-6 sm:p-7 flex flex-col justify-between border border-emerald-500/20 shadow-2xl relative overflow-hidden ring-1 ring-emerald-500/10">
             <div className="space-y-6">
-              
-              {/* Header */}
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <span className="size-2 rounded-full bg-emerald-500" />
-                  <span className="text-xs font-semibold uppercase tracking-wider text-indigo-950 font-mono">
-                    One Passcode Link
-                  </span>
+
+              {/* Portal Header matching Left Screen */}
+              <div className="text-center space-y-1 pt-1 pb-2">
+                <div className="inline-flex items-center justify-center size-5 mx-auto rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-xs">
+                  <Lock className="size-2.5" />
                 </div>
-                <span className="text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full font-medium">
-                  Always Live
-                </span>
-              </div>
-
-              {/* Realistic Passcode Portal View */}
-              <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 space-y-3.5">
-                
-                {/* Portal Title */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="size-6 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
-                      <Lock className="size-3" />
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-semibold text-slate-900">Website Redesign Portal</h4>
-                      <p className="text-[10px] text-slate-500">frevio.app/p/acme · 4-digit passcode</p>
-                    </div>
-                  </div>
-                  <span className="text-[11px] font-mono text-slate-700 font-medium bg-white px-2 py-0.5 rounded border border-slate-200">
-                    75% done
-                  </span>
+                <div className="text-xl sm:text-2xl font-light tracking-tight text-white font-mono flex items-center justify-center gap-2">
+                  <span>frevio.cloud/p/acme</span>
                 </div>
-
-                {/* Live Progress Indicator */}
-                <div className="rounded-lg bg-white p-3 border border-slate-200/80 space-y-1.5 shadow-2xs">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-800">Current Milestone: Stripe Checkout</span>
-                    <span className="text-[11px] text-slate-400">Milestone 3 of 4</span>
-                  </div>
-                  <div className="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
-                    <div className="h-full w-[75%] bg-emerald-500 rounded-full" />
-                  </div>
-                </div>
-
-                {/* 1-Click Approval */}
-                <div className="rounded-lg bg-white p-3 border border-slate-200/80 flex items-center justify-between gap-3 shadow-2xs">
-                  <div>
-                    <span className="block text-xs font-medium text-slate-900">Design Deliverable v2</span>
-                    <span className="block text-[10px] text-slate-500">Signed off on mobile</span>
-                  </div>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
-                    <Check className="size-3" /> Approved
-                  </span>
-                </div>
-
-                {/* Stripe Pay In 1 Click */}
-                <div className="rounded-lg bg-white p-3 border border-slate-200/80 flex items-center justify-between gap-3 shadow-2xs">
-                  <div>
-                    <span className="block text-xs font-medium text-slate-900">Milestone 2 Invoice</span>
-                    <span className="block text-[10px] text-slate-500 font-mono">$3,200.00 USD</span>
-                  </div>
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-900 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
-                    <DollarSign className="size-3 text-emerald-600" /> Paid via Stripe
-                  </span>
-                </div>
-
-              </div>
-
-              {/* Takeaway bullet */}
-              <div className="pt-2">
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Your client bookmarks one link. No passwords to remember. They see the status, approve deliverables, and pay invoices.
+                <p className="text-xs text-slate-400 font-normal">
+                  Acme Brand Redesign · Passcode PIN: 4812
                 </p>
+              </div>
+
+              {/* Visual Status Cards (Clean, UI-first, zero text bloat) */}
+              <div className="space-y-2.5">
+
+                {/* 1. Staging & Milestone Progress */}
+                <div className="rounded-2xl bg-[#161822] border border-white/[0.06] p-3.5 space-y-2 shadow-lg">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-1.5 font-medium text-white">
+                      <Radio className="size-3.5 text-indigo-400" />
+                      <span>Milestone 3: Checkout Flow</span>
+                    </div>
+                    <span className="text-[11px] font-mono text-emerald-400 font-medium">75%</span>
+                  </div>
+                  <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full w-[75%] bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full" />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                    <span className="flex items-center gap-1 text-emerald-400">
+                      <span className="size-1.5 rounded-full bg-emerald-400" />
+                      Staging preview live
+                    </span>
+                    <span className="font-mono text-slate-500">ETA: Thu 2 PM</span>
+                  </div>
+                </div>
+
+                {/* 2. Paid Invoice */}
+                <div className="rounded-2xl bg-[#161822] border border-white/[0.06] p-3.5 flex items-center justify-between shadow-lg">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5 font-medium text-white text-xs">
+                      <Receipt className="size-3.5 text-emerald-400" />
+                      <span>Milestone 2 Invoice</span>
+                    </div>
+                    <p className="text-[11px] font-mono text-slate-400">$3,200.00 USD · Sep 18</p>
+                  </div>
+                  <span className="text-[11px] font-medium text-emerald-300 bg-emerald-500/15 border border-emerald-500/25 px-2.5 py-1 rounded-full shrink-0">
+                    Paid via Stripe ✓
+                  </span>
+                </div>
+
+                {/* 3. Deliverable Sign-Off */}
+                <div className="rounded-2xl bg-[#161822] border border-white/[0.06] p-3.5 flex items-center justify-between shadow-lg">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5 font-medium text-white text-xs">
+                      <FileCheck className="size-3.5 text-purple-400" />
+                      <span>Brand Guidelines v2.4</span>
+                    </div>
+                    <p className="text-[11px] text-slate-400">Signed off by David via mobile</p>
+                  </div>
+                  <span className="text-[11px] font-medium text-emerald-300 bg-emerald-500/15 border border-emerald-500/25 px-2.5 py-1 rounded-full shrink-0">
+                    Approved ✓
+                  </span>
+                </div>
+
               </div>
 
             </div>
 
-            <div className="mt-8 pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <span className="text-xs text-slate-600 font-medium">No client accounts. No 11 PM texts.</span>
+            {/* Bottom Footnote */}
+            <div className="mt-6 pt-4 border-t border-white/[0.08] flex items-center justify-between text-xs text-slate-400 font-mono">
+              <span>1 link. 0 accounts needed.</span>
               <Link
                 href={signupHref}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-950 hover:text-indigo-600 transition-colors"
+                className="inline-flex items-center gap-1 text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
               >
-                <span>Create a client link</span>
+                <span>Create client link</span>
                 <ArrowRight className="size-3" />
               </Link>
             </div>

@@ -4,6 +4,11 @@
   "description": "Automatic coding activity & real-time presence sync for freelancers and clients on Frevio.",
   "version": "0.1.0",
   "publisher": "frevio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jaysisharma/ClentPulse.git"
+  },
+  "license": "MIT",
   "engines": {
     "vscode": "^1.85.0"
   },

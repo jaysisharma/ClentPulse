@@ -5,7 +5,6 @@ const mockGetUser = vi.fn()
 let mockProjectData: any = null
 let mockResourcesData: any = []
 let mockInsertResult: any = { data: null, error: null }
-let mockDeleteResult: any = { error: null }
 
 const mockFrom = vi.fn((table: string) => {
   if (table === 'projects') {
