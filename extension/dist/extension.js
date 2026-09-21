@@ -170,7 +170,12 @@ function getWorkspaceFolder() {
 }
 function getApiBaseUrl() {
     const config = vscode.workspace.getConfiguration('frevio');
-    return config.get('apiBaseUrl', 'https://app.frevio.cloud').replace(/\/+$/, '');
+    let url = config.get('apiBaseUrl', 'https://www.frevio.cloud').trim().replace(/\/+$/, '');
+    // Gracefully migrate legacy/misconfigured app.frevio.cloud subdomain
+    if (url === 'https://app.frevio.cloud' || url === 'http://app.frevio.cloud') {
+        url = 'https://www.frevio.cloud';
+    }
+    return url;
 }
 function getHeartbeatIntervalSeconds() {
     const config = vscode.workspace.getConfiguration('frevio');

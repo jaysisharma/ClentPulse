@@ -47,7 +47,7 @@
       "properties": {
         "frevio.apiBaseUrl": {
           "type": "string",
-          "default": "https://app.frevio.cloud",
+          "default": "https://www.frevio.cloud",
           "description": "Base URL for the Frevio web application (e.g. http://localhost:3000 for local development)."
         },
         "frevio.heartbeatIntervalSeconds": {

@@ -171,7 +171,12 @@ function getWorkspaceFolder(): vscode.WorkspaceFolder | undefined {
 
 function getApiBaseUrl(): string {
   const config = vscode.workspace.getConfiguration('frevio')
-  return config.get<string>('apiBaseUrl', 'https://app.frevio.cloud').replace(/\/+$/, '')
+  let url = config.get<string>('apiBaseUrl', 'https://www.frevio.cloud').trim().replace(/\/+$/, '')
+  // Gracefully migrate legacy/misconfigured app.frevio.cloud subdomain
+  if (url === 'https://app.frevio.cloud' || url === 'http://app.frevio.cloud') {
+    url = 'https://www.frevio.cloud'
+  }
+  return url
 }
 
 function getHeartbeatIntervalSeconds(): number {

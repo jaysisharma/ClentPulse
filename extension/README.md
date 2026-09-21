@@ -2,7 +2,7 @@
 
 > **Automatic coding activity & real-time presence sync for freelancers and clients.**
 
-Connect your code editor directly with [Frevio](https://app.frevio.cloud). When you open and code in a client project, Frevio automatically logs your time and broadcasts a subtle, reassuring presence badge on your client's private status page (`/p/[slug]`).
+Connect your code editor directly with [Frevio](https://frevio.cloud). When you open and code in a client project, Frevio automatically logs your time and broadcasts a subtle, reassuring presence badge on your client's private status page (`/p/[slug]`).
 
 ---
 
@@ -59,7 +59,7 @@ You can customize the extension via VS Code Settings (`settings.json`):
 
 ```json
 {
-  "frevio.apiBaseUrl": "https://app.frevio.cloud",
+  "frevio.apiBaseUrl": "https://www.frevio.cloud",
   "frevio.heartbeatIntervalSeconds": 120,
   "frevio.idleTimeoutMinutes": 5
 }
