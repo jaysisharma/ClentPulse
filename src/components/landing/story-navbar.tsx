@@ -134,11 +134,11 @@ export function StoryNavbar({ isLoggedIn, signupHref }: Props) {
           ))}
           <div className="pt-3 border-t border-white/[0.08]">
             <Link
-              href={signupHref}
+              href={isLoggedIn ? '/dashboard' : signupHref}
               className="block w-full text-center py-3 rounded-full text-xs font-semibold bg-white text-slate-950"
               onClick={() => setMobileOpen(false)}
             >
-              Start Free — 2 Min Setup
+              {isLoggedIn ? 'Console' : 'Start Free — 2 Min Setup'}
             </Link>
           </div>
         </div>

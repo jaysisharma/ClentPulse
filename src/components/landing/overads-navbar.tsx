@@ -157,20 +157,32 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
 
         {/* Far Right: Sign In & CTA Button */}
         <div className="hidden md:flex items-center gap-3 pointer-events-auto z-10">
-          <Link
-            href={isLoggedIn ? '/dashboard' : '/auth/login'}
-            className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-slate-700 hover:text-slate-950 hover:bg-white/80 transition-colors"
-          >
-            {isLoggedIn ? 'Dashboard' : 'Sign in'}
-          </Link>
+          {isLoggedIn ? (
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-slate-950 font-medium text-white hover:bg-slate-800 h-9 px-4 text-sm transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
+            >
+              <span>Dashboard</span>
+              <ArrowUpRight className="size-3.5" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/auth/login"
+                className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-slate-700 hover:text-slate-950 hover:bg-white/80 transition-colors"
+              >
+                Sign in
+              </Link>
 
-          <Link
-            href={signupHref}
-            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-slate-950 font-medium text-white hover:bg-slate-800 h-9 px-4 text-sm transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
-          >
-            <span>Start free</span>
-            <ArrowUpRight className="size-3.5" />
-          </Link>
+              <Link
+                href={signupHref}
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-slate-950 font-medium text-white hover:bg-slate-800 h-9 px-4 text-sm transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
+              >
+                <span>Start free</span>
+                <ArrowUpRight className="size-3.5" />
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Header Bar */}
@@ -182,10 +194,10 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
 
           <div className="flex items-center gap-2">
             <Link
-              href={signupHref}
+              href={isLoggedIn ? '/dashboard' : signupHref}
               className="inline-flex items-center gap-1 rounded-full bg-slate-950 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
             >
-              <span>Start free</span>
+              <span>{isLoggedIn ? 'Dashboard' : 'Start free'}</span>
               <ArrowUpRight className="size-3" />
             </Link>
             <button
@@ -213,18 +225,32 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
             <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100">FAQ</a>
           </nav>
           <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
-            <Link
-              href={isLoggedIn ? '/dashboard' : '/auth/login'}
-              className="text-center py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-100"
-            >
-              {isLoggedIn ? 'Go to Dashboard' : 'Sign in'}
-            </Link>
-            <Link
-              href={signupHref}
-              className="text-center py-2.5 rounded-xl text-xs font-semibold bg-slate-950 text-white"
-            >
-              Start free
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-center py-2.5 rounded-xl text-xs font-semibold bg-slate-950 text-white"
+              >
+                Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-100"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href={signupHref}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-center py-2.5 rounded-xl text-xs font-semibold bg-slate-950 text-white"
+                >
+                  Start free
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
