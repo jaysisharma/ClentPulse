@@ -7,7 +7,7 @@ import {
   ExternalLink, FileText, AlertTriangle,
   CreditCard, ArrowRight, Mail, Users, Building2,
   ThumbsUp, ThumbsDown, Target, Link as LinkIcon,
-  Sparkles, CheckCircle2
+  Sparkles, CheckCircle2, BarChart3
 } from 'lucide-react'
 import Link from 'next/link'
 import { fmtCurrency } from '@/lib/currencies'
@@ -17,6 +17,8 @@ import { ClientChecklist } from './client-checklist'
 import { UpdateCommentForm } from './update-comment-form'
 import { PortalResources } from '@/components/integrations/portal-resources'
 import { FeedbackWidget } from './feedback-widget'
+import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
+import { VideoEmbed } from '@/components/ui/video-embed'
 
 interface ClientPortalViewProps {
   project: any
@@ -70,8 +72,8 @@ export function ClientPortalView({
   const pendingApprovals = (approvals ?? []).filter(a => a.status === 'pending')
   const hasActionBlocker = isDepositPending || Boolean(project.waiting_on_client) || pendingApprovals.length > 0
 
-  // Feed tabs: updates vs milestones vs all deliverables
-  type FeedTab = 'updates' | 'milestones' | 'invoices'
+  // Feed tabs: updates vs milestones vs all deliverables vs embedded reports
+  type FeedTab = 'updates' | 'milestones' | 'invoices' | 'reports'
   const [activeTab, setActiveTab] = useState<FeedTab>('updates')
 
   const unpaidInvoices = projectInvoices.filter(i => i.status !== 'paid')
@@ -85,6 +87,11 @@ export function ClientPortalView({
           Clean chronological progress, broadcasts & deliverable reviews
       ══════════════════════════════════════════════════════════════ */}
       <div className="lg:col-span-8 space-y-6">
+
+        {/* ── KPI Snapshot Strip (Campaign Metrics) ── */}
+        {project.kpis && Array.isArray(project.kpis) && project.kpis.length > 0 && (
+          <KpiSnapshotStrip kpis={project.kpis} accentColor={accentColor} />
+        )}
 
         {/* ── Action Required Alert Banner (Shown only when attention needed) ── */}
         {hasActionBlocker && (
@@ -228,6 +235,23 @@ export function ClientPortalView({
                 )}
               </button>
             )}
+
+            {project.report_embed_url && (
+              <button
+                onClick={() => setActiveTab('reports')}
+                className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+                  activeTab === 'reports'
+                    ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
+                    : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
+              >
+                <BarChart3 className="w-3.5 h-3.5" />
+                <span>{project.report_embed_title || 'Reports'}</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-mono font-medium">
+                  Live
+                </span>
+              </button>
+            )}
           </div>
 
           <span className="text-[11px] text-slate-400 font-light hidden sm:inline">
@@ -278,6 +302,11 @@ export function ClientPortalView({
                       )}
                     </div>
                     <div className="p-5">
+                      {update.video_url && (
+                        <div className="mb-4">
+                          <VideoEmbed url={update.video_url} accentColor={accentColor} />
+                        </div>
+                      )}
                       <ul className="space-y-2.5">
                         {(update.bullets ?? []).filter(Boolean).map((bullet: string, j: number) => (
                           <li key={j} className="flex items-start gap-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
@@ -413,6 +442,42 @@ export function ClientPortalView({
                   </div>
                 )
               })}
+            </div>
+          </div>
+        )}
+
+        {/* ── TAB 4: Live Analytics & Reporting Embed ── */}
+        {activeTab === 'reports' && project.report_embed_url && (
+          <div className="space-y-4 animate-fade-in">
+            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 overflow-hidden shadow-xs dark:shadow-none">
+              <div className="px-5 py-3.5 border-b border-slate-100 dark:border-white/5 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <BarChart3 className="w-4 h-4 text-indigo-500 flex-shrink-0" />
+                  <span className="font-semibold text-sm text-slate-900 dark:text-white truncate">
+                    {project.report_embed_title || 'Live Performance & Campaign Report'}
+                  </span>
+                </div>
+
+                <a
+                  href={project.report_embed_url.startsWith('http') ? project.report_embed_url : `https://${project.report_embed_url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-2xs flex-shrink-0"
+                >
+                  <span>Open Fullscreen</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              <div className="relative w-full h-[650px] bg-slate-100 dark:bg-[#08090a]">
+                <iframe
+                  src={project.report_embed_url}
+                  title={project.report_embed_title || 'Report Dashboard'}
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                  sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                />
+              </div>
             </div>
           </div>
         )}

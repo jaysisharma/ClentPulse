@@ -8,7 +8,9 @@ import Link from 'next/link'
 import {
   ArrowLeft, Plus, Link2, Check, Send,
   Clock, AlertTriangle, FileSignature, CheckCircle2, ChevronRight,
+  BarChart3,
 } from 'lucide-react'
+import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
 import { CopyLinkButton } from './copy-link-button'
 import { StatusToggle } from './status-toggle'
 import { UpdateActions } from './update-actions'
@@ -257,6 +259,13 @@ export default async function ProjectPage({
                 </Link>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Marketing KPI Snapshot Strip */}
+        {project.kpis && Array.isArray(project.kpis) && project.kpis.length > 0 && (
+          <div className="mb-8">
+            <KpiSnapshotStrip kpis={project.kpis} accentColor={project.color} />
           </div>
         )}
 

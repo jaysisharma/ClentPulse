@@ -174,6 +174,23 @@
 | 21 | **Status feedback email alert** — alerts freelancer on 👍/👎/messages from client status page | ✅ Done | `/api/feedback` + `notifyFreelancerOfFeedback` via Resend |
 | 22 | **Approval response email alert** — immediate notification when client approves or requests changes | ✅ Done | `/api/approvals/[id]` + `notifyFreelancerOfApproval` via Resend |
 
+### Batch 11 — Digital Marketing Freelancer Suite
+| # | Feature | Status | Notes |
+|---|---|---|---|
+| 23 | **Custom KPI Snapshot Strip** — 1-4 custom performance pills (ROAS, CPA, Spend, Leads) on client portal & dashboard | ✅ Done | `projects.kpis` + `KpiSnapshotStrip` component + settings editor |
+| 24 | **Live Embedded Reports** — interactive Looker Studio / Sheets / BI dashboard tab on client portal | ✅ Done | `projects.report_embed_url` + Reports tab in `/p/[slug]` with fullscreen mode |
+| 25 | **Loom & Video Walkthrough Embeds** — playable video briefings in weekly client broadcasts | ✅ Done | `updates.video_url` + `VideoEmbed` component + `/project/[id]/update` input + email CTA |
+| 26 | **Marketing Deliverable Types** — ad creatives, copy decks, and analytics reports in approvals | ✅ Done | Expanded `preview_type` with custom icons, actions, and preview cards |
+| 27 | **Marketing Blocker Presets** — instant tags for Meta/Google access, declined ad cards, pixel tracking | ✅ Done | Added to `ClientBlockerCard` presets for 1-click client nudges |
+
+### Batch 12 — Role-Based Persona Onboarding & Workspace Modules
+| # | Feature | Status | Notes |
+|---|---|---|---|
+| 28 | **1-Click Craft Persona Onboarding** — 5 specialized disciplines (Developer, Marketer, Designer, Consultant, General) | ✅ Done | Step 2 in `/onboarding` sets user craft and seeds default module flags |
+| 29 | **Granular Workspace Feature Flags** — modular toggle matrix with database persistence | ✅ Done | `users.enabled_modules` JSONB + `users.craft` + `/api/users/modules` endpoint |
+| 30 | **Settings Modules Control Center** — dedicated management hub with quick presets & live toggles | ✅ Done | `/settings` Workspace Modules card with instant sync |
+| 31 | **Adaptive Contextual UI** — conditionally display/hide developer telemetry & marketing analytics | ✅ Done | Hides VS Code token card when dev module disabled; hides Marketing tab when marketing module disabled |
+
 ---
 
 ## 📋 Icebox (future ideas)
@@ -185,4 +202,4 @@
 
 ---
 
-_Last updated: 2026-09-08_
+_Last updated: 2026-09-23_

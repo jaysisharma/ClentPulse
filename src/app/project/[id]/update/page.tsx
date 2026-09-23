@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { AppLayout } from '@/components/layout/app-layout'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Send, Copy, Check, Mail, Eye, Plus, Trash2, Clock, Sparkles, Loader2 } from 'lucide-react'
+import { ArrowLeft, Send, Copy, Check, Mail, Eye, Plus, Trash2, Clock, Sparkles, Loader2, Video } from 'lucide-react'
 import { getWeekOf } from '@/lib/utils'
 
 import { DarkShell } from '@/components/layout/dark-shell'
@@ -19,6 +19,7 @@ export default function UpdatePage({ params }: { params: Promise<{ id: string }>
   const router = useRouter()
   const [bullets, setBullets] = useState(['', '', ''])
   const [note, setNote] = useState('')
+  const [videoUrl, setVideoUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
   const [error, setError] = useState('')
@@ -60,6 +61,7 @@ export default function UpdatePage({ params }: { params: Promise<{ id: string }>
         if (data) {
           setBullets(data.bullets ?? ['', '', ''])
           setNote(data.note ?? '')
+          setVideoUrl(data.video_url ?? '')
         }
       })
     }
@@ -100,6 +102,8 @@ export default function UpdatePage({ params }: { params: Promise<{ id: string }>
       ? activeBullets.map(b => `• ${b}`).join('\n')
       : '• [No accomplishments listed]'
 
+    const videoSnippet = videoUrl.trim() ? `\n\nVideo Walkthrough: ${videoUrl.trim()}` : ''
+
     return `Subject: ${project.project_name} — ${week}
 
 Hi ${project.client_name},
@@ -107,7 +111,7 @@ Hi ${project.client_name},
 Here's your weekly update on ${project.project_name}:
 
 ${bulletsText}
-${note ? `\nNote: ${note}` : ''}
+${note ? `\nNote: ${note}` : ''}${videoSnippet}
 
 View full status page: ${typeof window !== 'undefined' ? window.location.origin : ''}/p/${project?.slug}
 
@@ -141,6 +145,7 @@ Best,`
         .update({
           bullets: filteredBullets,
           note: note || null,
+          video_url: videoUrl.trim() || null,
           review_status: reviewStatus,
           ...(isSend ? { sent_at: new Date().toISOString() } : {}),
         })
@@ -174,6 +179,7 @@ Best,`
           project_id: id,
           bullets: filteredBullets,
           note: note || null,
+          video_url: videoUrl.trim() || null,
           sent_at: isSend ? new Date().toISOString() : null,
           review_status: reviewStatus,
           author_id: user.id,
@@ -332,6 +338,27 @@ Best,`
                   rows={4}
                   className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors leading-relaxed"
                 />
+              </div>
+
+              <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-white/5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                    <Video className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Video Walkthrough URL</span>
+                    <span className="font-normal normal-case text-slate-400">(Loom, YouTube, Vimeo)</span>
+                  </label>
+                  <span className="text-[10px] font-mono text-slate-400">Optional</span>
+                </div>
+                <input
+                  type="url"
+                  placeholder="https://www.loom.com/share/... or https://youtu.be/..."
+                  value={videoUrl}
+                  onChange={e => setVideoUrl(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors font-mono"
+                />
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-light">
+                  Embeds an interactive video player directly at the top of the client&apos;s status broadcast.
+                </p>
               </div>
 
               {error && (

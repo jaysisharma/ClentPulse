@@ -7,8 +7,11 @@ import { useRouter } from 'next/navigation'
 import {
   Sparkles, User, Building2, FolderPlus, Send, Eye,
   Check, Copy, ArrowRight, ArrowLeft, Lock, Mail, Plus,
-  Trash2, ShieldCheck, Globe, Palette, Upload, Loader2, ExternalLink
+  Trash2, ShieldCheck, Globe, Palette, Upload, Loader2, ExternalLink,
+  Code2, TrendingUp, Briefcase
 } from 'lucide-react'
+import type { UserCraft } from '@/types'
+import { CRAFT_PRESETS } from '@/lib/modules'
 
 const COLORS = [
   '#6366F1', '#8B5CF6', '#EC4899', '#22C55E', '#3B82F6', '#F97316'
@@ -25,6 +28,52 @@ type OnboardingStep =
 
 type Persona = 'freelancer' | 'agency'
 
+const CRAFT_OPTIONS: Array<{
+  id: UserCraft
+  title: string
+  subtitle: string
+  icon: React.ElementType
+  badge?: string
+  color: string
+}> = [
+  {
+    id: 'developer',
+    title: 'Developer',
+    subtitle: 'VS Code telemetry, code sync & technical portals',
+    icon: Code2,
+    color: 'text-indigo-400',
+  },
+  {
+    id: 'marketer',
+    title: 'Digital Marketer',
+    subtitle: 'Campaign KPI strips, Looker/Sheets embeds & ad decks',
+    icon: TrendingUp,
+    badge: 'Popular',
+    color: 'text-emerald-400',
+  },
+  {
+    id: 'designer',
+    title: 'Designer',
+    subtitle: 'Visual approvals, Figma embeds & revision flows',
+    icon: Palette,
+    color: 'text-pink-400',
+  },
+  {
+    id: 'consultant',
+    title: 'Consultant',
+    subtitle: 'Milestone invoicing, contracts & advisory briefs',
+    icon: Briefcase,
+    color: 'text-amber-400',
+  },
+  {
+    id: 'general',
+    title: 'General Freelancer',
+    subtitle: 'All modules enabled: telemetry, KPIs, billing & portals',
+    icon: Sparkles,
+    color: 'text-blue-400',
+  },
+]
+
 export default function OnboardingPage() {
   const router = useRouter()
   const [initLoading, setInitLoading] = useState(true)
@@ -32,6 +81,7 @@ export default function OnboardingPage() {
   const [userEmail, setUserEmail] = useState('')
   const [step, setStep] = useState<OnboardingStep>('welcome')
   const [persona, setPersona] = useState<Persona>('freelancer')
+  const [craft, setCraft] = useState<UserCraft>('general')
 
   // Step 1: Welcome & Studio Identity
   const [name, setName] = useState('')
@@ -102,6 +152,7 @@ export default function OnboardingPage() {
           if (data.profile.accent_color) setAccentColor(data.profile.accent_color)
           if (data.profile.logo_url) setLogoUrl(data.profile.logo_url)
           if (data.profile.onboarding_persona) setPersona(data.profile.onboarding_persona)
+          if (data.profile.craft) setCraft(data.profile.craft)
           if (data.profile.onboarding_step && data.profile.onboarding_step !== 'complete') {
             setStep(data.profile.onboarding_step)
           }
@@ -136,6 +187,7 @@ export default function OnboardingPage() {
         body: JSON.stringify({
           onboarding_step: nextStep,
           onboarding_persona: persona,
+          craft,
           ...extraUpdates,
         }),
       })
@@ -197,14 +249,15 @@ export default function OnboardingPage() {
     }
   }
 
-  // ── Step 2: Persona Choice ────────────────────────────────────────────────
-  async function handleSelectPersona(selected: Persona) {
-    setPersona(selected)
+  // ── Step 2: Persona & Craft Choice ────────────────────────────────────────
+  async function handleConfirmPersonaAndCraft(selectedPersona: Persona = persona, selectedCraft: UserCraft = craft) {
+    setPersona(selectedPersona)
+    setCraft(selectedCraft)
     setLoading(true)
     setError('')
 
     let createdOrgId = orgId
-    if (selected === 'agency' && !createdOrgId) {
+    if (selectedPersona === 'agency' && !createdOrgId) {
       try {
         const res = await fetch('/api/organizations', {
           method: 'POST',
@@ -224,11 +277,19 @@ export default function OnboardingPage() {
       }
     }
 
+    const presetModules = CRAFT_PRESETS[selectedCraft] || CRAFT_PRESETS.general
+
     await persistStep('project', {
-      onboarding_persona: selected,
+      onboarding_persona: selectedPersona,
       onboarding_org_id: createdOrgId,
+      craft: selectedCraft,
+      enabled_modules: presetModules,
     })
     setLoading(false)
+  }
+
+  async function handleSelectPersona(selected: Persona) {
+    return handleConfirmPersonaAndCraft(selected, craft)
   }
 
   // ── Step 3: First Project ─────────────────────────────────────────────────
@@ -626,7 +687,7 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* ── STEP 2: Persona Choice ───────────────────────────────────────── */}
+        {/* ── STEP 2: Persona & Craft Choice ──────────────────────────────── */}
         {step === 'persona' && (
           <div className="bg-[#0c0d12]/95 rounded-3xl border border-white/10 p-7 sm:p-9 shadow-2xl backdrop-blur-xl space-y-6">
             <button
@@ -639,57 +700,128 @@ export default function OnboardingPage() {
 
             <div>
               <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">
-                <span>Work Style</span>
+                <span>Personalization</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white">
-                How do you work?
+                Tailor your Frevio experience.
               </h1>
-              <p className="text-xs sm:text-sm text-slate-400 font-light mt-1.5">
-                We&apos;ll tailor your initial workspace and client tools accordingly.
+              <p className="text-xs sm:text-sm text-slate-400 font-light mt-1.5 leading-relaxed">
+                Choose your craft and structure so we activate the exact modules you need (and hide what you don&apos;t).
               </p>
             </div>
 
-            <div className="space-y-4">
-              <button
-                type="button"
-                onClick={() => handleSelectPersona('freelancer')}
-                className={`w-full text-left p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
-                  persona === 'freelancer'
-                    ? 'border-indigo-500/50 bg-indigo-500/10 text-white shadow-lg'
-                    : 'border-white/10 bg-white/[0.02] hover:border-white/20 text-slate-300'
-                }`}
-              >
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-indigo-400 mt-0.5">
-                  <User className="w-5 h-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold text-sm text-white">I&apos;m a freelancer</div>
-                  <div className="text-xs text-slate-400 font-light mt-1 leading-relaxed">
-                    I work with clients on my own. Keep things simple, direct, and fast.
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-slate-400 self-center" />
-              </button>
+            {/* Section A: Craft Selection */}
+            <div className="space-y-2.5">
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-300">
+                1. What is your primary craft?
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {CRAFT_OPTIONS.map(opt => {
+                  const Icon = opt.icon
+                  const selected = craft === opt.id
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setCraft(opt.id)}
+                      className={`text-left p-3.5 rounded-2xl border transition-all cursor-pointer relative flex items-start gap-3 ${
+                        selected
+                          ? 'border-indigo-400 bg-indigo-500/10 text-white shadow-lg ring-1 ring-indigo-400/30'
+                          : 'border-white/10 bg-white/[0.02] hover:border-white/20 text-slate-300'
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 mt-0.5 ${opt.color}`}>
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0 pr-4">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-xs sm:text-sm text-white">{opt.title}</span>
+                          {opt.badge && (
+                            <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+                              {opt.badge}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-slate-400 font-light mt-0.5 leading-snug">
+                          {opt.subtitle}
+                        </div>
+                      </div>
+                      {selected && (
+                        <div className="absolute top-3 right-3 w-4 h-4 rounded-full bg-indigo-500 flex items-center justify-center text-white">
+                          <Check className="w-2.5 h-2.5 stroke-[3]" />
+                        </div>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
 
+            {/* Section B: Operating Model */}
+            <div className="space-y-2.5 pt-2 border-t border-white/5">
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-300">
+                2. How do you work?
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setPersona('freelancer')}
+                  className={`text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
+                    persona === 'freelancer'
+                      ? 'border-indigo-400 bg-indigo-500/10 text-white shadow-lg ring-1 ring-indigo-400/30'
+                      : 'border-white/10 bg-white/[0.02] hover:border-white/20 text-slate-300'
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-indigo-400 mt-0.5">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-xs sm:text-sm text-white">Solo Freelancer</div>
+                    <div className="text-[11px] text-slate-400 font-light mt-0.5 leading-snug">
+                      Direct with clients. Lean, fast, and simple.
+                    </div>
+                  </div>
+                  {persona === 'freelancer' && (
+                    <Check className="w-3.5 h-3.5 text-indigo-400 self-center flex-shrink-0" />
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPersona('agency')}
+                  className={`text-left p-3.5 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
+                    persona === 'agency'
+                      ? 'border-indigo-400 bg-indigo-500/10 text-white shadow-lg ring-1 ring-indigo-400/30'
+                      : 'border-white/10 bg-white/[0.02] hover:border-white/20 text-slate-300'
+                  }`}
+                >
+                  <div className="w-8 h-8 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-emerald-400 mt-0.5">
+                    <Building2 className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-xs sm:text-sm text-white">Studio or Agency</div>
+                    <div className="text-[11px] text-slate-400 font-light mt-0.5 leading-snug">
+                      Team invites, PM roles, multi-project workflows.
+                    </div>
+                  </div>
+                  {persona === 'agency' && (
+                    <Check className="w-3.5 h-3.5 text-indigo-400 self-center flex-shrink-0" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Action button */}
+            <div className="pt-2">
               <button
                 type="button"
-                onClick={() => handleSelectPersona('agency')}
-                className={`w-full text-left p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 ${
-                  persona === 'agency'
-                    ? 'border-indigo-500/50 bg-indigo-500/10 text-white shadow-lg'
-                    : 'border-white/10 bg-white/[0.02] hover:border-white/20 text-slate-300'
-                }`}
+                onClick={() => handleConfirmPersonaAndCraft(persona, craft)}
+                disabled={loading}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-white text-slate-950 hover:bg-slate-100 font-semibold py-3 px-6 text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer disabled:opacity-50"
               >
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-emerald-400 mt-0.5">
-                  <Building2 className="w-5 h-5" />
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold text-sm text-white">I run a studio or agency</div>
-                  <div className="text-xs text-slate-400 font-light mt-1 leading-relaxed">
-                    I work with a team, project managers, and multiple concurrent client projects.
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-slate-400 self-center" />
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                <span>Continue with {CRAFT_OPTIONS.find(c => c.id === craft)?.title || 'Setup'}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>

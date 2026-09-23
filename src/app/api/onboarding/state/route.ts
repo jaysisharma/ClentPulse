@@ -11,7 +11,7 @@ export async function GET() {
     // Fetch user profile with onboarding fields
     const { data: profile, error } = await supabase
       .from('users')
-      .select('id, email, name, studio_name, accent_color, logo_url, onboarding_step, onboarding_persona, onboarding_project_id, onboarding_org_id, onboarded, plan')
+      .select('id, email, name, studio_name, accent_color, logo_url, onboarding_step, onboarding_persona, onboarding_project_id, onboarding_org_id, onboarded, plan, craft, enabled_modules')
       .eq('id', user.id)
       .single()
 
@@ -29,6 +29,8 @@ export async function GET() {
           studio_name: null,
           onboarding_step: 'welcome',
           onboarding_persona: 'freelancer',
+          craft: 'general',
+          enabled_modules: null,
           onboarding_project_id: null,
           onboarding_org_id: null,
         } : null,
@@ -83,6 +85,8 @@ export async function POST(request: Request) {
     if (body.logo_url !== undefined) updates.logo_url = body.logo_url
     if (body.onboarding_step !== undefined) updates.onboarding_step = body.onboarding_step
     if (body.onboarding_persona !== undefined) updates.onboarding_persona = body.onboarding_persona
+    if (body.craft !== undefined) updates.craft = body.craft
+    if (body.enabled_modules !== undefined) updates.enabled_modules = body.enabled_modules
     if (body.onboarding_project_id !== undefined) updates.onboarding_project_id = body.onboarding_project_id
     if (body.onboarding_org_id !== undefined) updates.onboarding_org_id = body.onboarding_org_id
     if (body.onboarded !== undefined) updates.onboarded = Boolean(body.onboarded)

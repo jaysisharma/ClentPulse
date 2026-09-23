@@ -96,6 +96,11 @@ export async function POST(request: Request) {
     <p style="color:#475569;font-size:15px;">Here's your weekly progress update:</p>
     ${(update.bullets ?? []).filter(Boolean).map((b: string) => `<div class="bullet"><div class="dot"></div><div class="bullet-text">${esc(b)}</div></div>`).join('\n    ')}
     ${update.note ? `<div class="note">${esc(update.note)}</div>` : ''}
+    ${update.video_url ? `
+    <div style="margin-top:20px;padding:14px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;text-align:center;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:600;color:#1e293b;">🎥 Video Walkthrough Available</p>
+      <a href="${esc(update.video_url)}" style="color:${accentColor};font-size:13px;font-weight:600;text-decoration:underline;">Watch Walkthrough Video &rarr;</a>
+    </div>` : ''}
     <div class="cta">
       <a href="${esc(statusUrl)}">View full status page →</a>
     </div>

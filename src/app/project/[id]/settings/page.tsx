@@ -9,9 +9,13 @@ import {
   ArrowLeft, Check, Trash2, ShieldAlert, Copy, Loader2,
   Key, ShieldCheck, Globe, Zap, Clock, CheckSquare,
   ListChecks, Users, Lock, Settings, LayoutDashboard,
+  BarChart3, Target, Plus, ExternalLink,
 } from 'lucide-react'
 
 import { DarkShell } from '@/components/layout/dark-shell'
+import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
+import { resolveModules, DEFAULT_MODULES } from '@/lib/modules'
+import type { WorkspaceModules } from '@/types'
 
 const COLORS = [
   { hex: '#6366F1', name: 'Indigo' },
@@ -26,10 +30,11 @@ const COLORS = [
 ]
 
 const TABS = [
-  { id: 'general',    label: 'General',    icon: Settings },
-  { id: 'client',     label: 'Client',     icon: Users },
-  { id: 'visibility', label: 'Visibility', icon: Globe },
-  { id: 'danger',     label: 'Danger zone',icon: ShieldAlert },
+  { id: 'general',    label: 'General',             icon: Settings },
+  { id: 'marketing',  label: 'Marketing & KPIs',    icon: BarChart3 },
+  { id: 'client',     label: 'Client',              icon: Users },
+  { id: 'visibility', label: 'Visibility',          icon: Globe },
+  { id: 'danger',     label: 'Danger zone',         icon: ShieldAlert },
 ] as const
 
 type Tab = typeof TABS[number]['id']
@@ -111,6 +116,9 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [showLivePresence, setShowLivePresence] = useState(true)
   const [showTimeLogged, setShowTimeLogged] = useState(false)
   const [color, setColor] = useState(COLORS[0].hex)
+  const [kpis, setKpis] = useState<Array<{ label: string; value: string; trend?: string }>>([])
+  const [reportEmbedUrl, setReportEmbedUrl] = useState('')
+  const [reportEmbedTitle, setReportEmbedTitle] = useState('Live Performance Report')
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -125,6 +133,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [portalShare, setPortalShare] = useState<{ email: string; password: string; updated: boolean } | null>(null)
   const [copied, setCopied] = useState<'url' | 'email' | 'password' | null>(null)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const [modules, setModules] = useState<WorkspaceModules>(DEFAULT_MODULES)
 
   useEffect(() => () => {
     if (savedTimerRef.current) clearTimeout(savedTimerRef.current)
@@ -148,8 +158,28 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       setShowLivePresence(data.show_live_presence ?? true)
       setShowTimeLogged(data.show_time_logged ?? false)
       setPasscode(data.passcode ?? '')
+      if (Array.isArray(data.kpis)) setKpis(data.kpis)
+      setReportEmbedUrl(data.report_embed_url ?? '')
+      setReportEmbedTitle(data.report_embed_title ?? 'Live Performance Report')
     })
-  }, [id])
+
+    supabase.auth.getUser().then(async ({ data }: { data: any }) => {
+      if (data?.user) {
+        const { data: userProfile } = await supabase
+          .from('users')
+          .select('enabled_modules')
+          .eq('id', data.user.id)
+          .single()
+        if (userProfile?.enabled_modules) {
+          const resolved = resolveModules(userProfile.enabled_modules)
+          setModules(resolved)
+          if (resolved.marketing === false && tab === 'marketing') {
+            setTab('general')
+          }
+        }
+      }
+    })
+  }, [id, tab])
 
   function flash() {
     setSaved(true)
@@ -170,6 +200,9 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       hide_kickoff: hideKickoff, hide_approvals: hideApprovals,
       show_live_presence: showLivePresence, show_time_logged: showTimeLogged,
       passcode: passcode || null,
+      kpis,
+      report_embed_url: reportEmbedUrl.trim() || null,
+      report_embed_title: reportEmbedTitle.trim() || null,
     }).eq('id', id)
     setLoading(false)
     if (err) { setError(err.message); return }
@@ -266,7 +299,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
 
             {/* ── Left nav ── */}
             <nav className="w-full md:w-48 flex-shrink-0 flex md:flex-col gap-1 overflow-x-auto pb-2 md:pb-0">
-              {TABS.map(t => {
+              {TABS.filter(t => {
+                if (t.id === 'marketing' && modules.marketing === false) return false
+                return true
+              }).map(t => {
                 const Icon = t.icon
                 const active = tab === t.id
                 const isDanger = t.id === 'danger'
@@ -366,6 +402,183 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       </p>
                     )}
                   </div>
+                  <div className="px-6 py-4 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+                    <SaveButton loading={loading} saved={saved} />
+                  </div>
+                </form>
+              )}
+
+              {/* ─── Marketing & KPIs ─── */}
+              {tab === 'marketing' && (
+                <form onSubmit={handleSave} className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                  <div className="px-6 py-4 border-b border-slate-100 dark:border-white/5">
+                    <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Marketing & Performance Analytics</h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Configure custom campaign KPI metrics and live embedded reports for your client portal.</p>
+                  </div>
+
+                  <div className="p-6 space-y-6">
+                    {/* Section 1: KPI Snapshot Strip */}
+                    <div className="space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                            Campaign KPI Cards <span className="font-normal normal-case text-slate-400">({kpis.length}/4)</span>
+                          </label>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                            Showcase business impact (ROAS, CPA, Leads, Spend) at the top of the client portal.
+                          </p>
+                        </div>
+
+                        {kpis.length < 4 && (
+                          <button
+                            type="button"
+                            onClick={() => setKpis([...kpis, { label: '', value: '', trend: '' }])}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-2xs self-start cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Add KPI Card</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Quick presets */}
+                      {kpis.length === 0 && (
+                        <div className="p-4 rounded-xl border border-dashed border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] text-center space-y-2">
+                          <p className="text-xs text-slate-500 dark:text-slate-400">No KPIs configured yet. Click to add a preset:</p>
+                          <div className="flex flex-wrap justify-center gap-2">
+                            {[
+                              { label: 'Blended ROAS', value: '3.8x', trend: '+14%' },
+                              { label: 'Monthly Ad Spend', value: '$8,500', trend: 'On track' },
+                              { label: 'Cost Per Lead (CPA)', value: '$18.40', trend: '-8%' },
+                              { label: 'Conversions', value: '248', trend: '+22%' },
+                            ].map((preset, idx) => (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() => setKpis(prev => prev.length < 4 ? [...prev, preset] : prev)}
+                                className="px-2.5 py-1 text-xs rounded-full border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors cursor-pointer"
+                              >
+                                + {preset.label}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* KPI cards list */}
+                      {kpis.length > 0 && (
+                        <div className="space-y-3">
+                          {kpis.map((kpi, idx) => (
+                            <div key={idx} className="p-3.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] flex flex-col sm:flex-row items-center gap-3">
+                              <div className="w-full sm:flex-1">
+                                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Metric Name</label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. Blended ROAS"
+                                  value={kpi.label}
+                                  onChange={e => {
+                                    const next = [...kpis]
+                                    next[idx] = { ...next[idx], label: e.target.value }
+                                    setKpis(next)
+                                  }}
+                                  className="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                                />
+                              </div>
+
+                              <div className="w-full sm:w-36">
+                                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Current Value</label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. 3.8x"
+                                  value={kpi.value}
+                                  onChange={e => {
+                                    const next = [...kpis]
+                                    next[idx] = { ...next[idx], value: e.target.value }
+                                    setKpis(next)
+                                  }}
+                                  className="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-3 py-1.5 text-xs font-mono font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                                />
+                              </div>
+
+                              <div className="w-full sm:w-36">
+                                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Trend / Comparison</label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. +14%"
+                                  value={kpi.trend ?? ''}
+                                  onChange={e => {
+                                    const next = [...kpis]
+                                    next[idx] = { ...next[idx], trend: e.target.value }
+                                    setKpis(next)
+                                  }}
+                                  className="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-3 py-1.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                                />
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => setKpis(kpis.filter((_, i) => i !== idx))}
+                                className="p-2 text-slate-400 hover:text-rose-500 transition-colors self-end sm:self-center mt-2 sm:mt-4 cursor-pointer"
+                                title="Remove KPI"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+
+                          {/* Live preview */}
+                          <div className="pt-2">
+                            <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2">Live Portal Preview</span>
+                            <KpiSnapshotStrip kpis={kpis} accentColor={color} />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Section 2: Live Embedded Performance Report */}
+                    <div className="space-y-4 pt-6 border-t border-slate-100 dark:border-white/5">
+                      <div>
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                          Live Embedded Report <span className="font-normal normal-case text-slate-400">(Looker Studio / Sheets / BI)</span>
+                        </label>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                          Adds an interactive &quot;Reports&quot; tab on your client portal embedding your external performance dashboard.
+                        </p>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                            Report Tab Title
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Q3 Performance Dashboard"
+                            value={reportEmbedTitle}
+                            onChange={e => setReportEmbedTitle(e.target.value)}
+                            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                            Embed URL (Looker Studio / Google Sheets / Metabase)
+                          </label>
+                          <input
+                            type="url"
+                            placeholder="https://lookerstudio.google.com/embed/reporting/..."
+                            value={reportEmbedUrl}
+                            onChange={e => setReportEmbedUrl(e.target.value)}
+                            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                          />
+                          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
+                            In Looker Studio: click <strong>File &rarr; Embed report &rarr; Enable embedding &rarr; Embed URL</strong> and paste the link here.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="px-6 py-4 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
                     <SaveButton loading={loading} saved={saved} />
                   </div>
@@ -546,8 +759,17 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       </div>
                     </div>
                     <div className="px-6">
-                      <ToggleRow icon={Zap} label="Live coding presence" description="Show an active indicator when you are coding in your editor." checked={showLivePresence} onChange={setShowLivePresence} />
-                      <ToggleRow icon={Clock} label="Hours worked" description="Display total tracked time so clients can see ongoing effort." checked={showTimeLogged} onChange={setShowTimeLogged} />
+                      {modules.developer && (
+                        <ToggleRow icon={Zap} label="Live coding presence" description="Show an active indicator when you are coding in your editor." checked={showLivePresence} onChange={setShowLivePresence} />
+                      )}
+                      {modules.time_tracking && (
+                        <ToggleRow icon={Clock} label="Hours worked" description="Display total tracked time so clients can see ongoing effort." checked={showTimeLogged} onChange={setShowTimeLogged} />
+                      )}
+                      {!modules.developer && !modules.time_tracking && (
+                        <div className="py-4 text-xs text-slate-400 font-light italic">
+                          No developer telemetry or time tracking modules are active for this project.
+                        </div>
+                      )}
                     </div>
                   </div>
 

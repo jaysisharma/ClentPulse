@@ -8,13 +8,21 @@ import { DarkShell } from '@/components/layout/dark-shell'
 import {
   Check, Upload, Sun, Moon, Copy, Code2, Key, Trash2,
   ArrowUpRight, Sparkles, ExternalLink, Gift, Zap, Shield,
-  Crown
+  Crown, TrendingUp, Palette, Briefcase, Sliders, Layers,
+  Clock, FileText, BarChart3, Loader2
 } from 'lucide-react'
 import { PLAN_BLURB, FREE_FEATURES, PRO_FEATURES, AGENCY_FEATURES, normalizePlan, type PlanTier } from '@/lib/plans'
 import { buildReferralUrl } from '@/lib/referrals'
 import { useTheme } from '@/components/theme-provider'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import {
+  MODULE_CATALOG,
+  DEFAULT_MODULES,
+  CRAFT_PRESETS,
+  resolveModules
+} from '@/lib/modules'
+import type { UserCraft, WorkspaceModules } from '@/types'
 
 const ACCENT_COLORS = [
   '#6366F1', '#8B5CF6', '#EC4899', '#EF4444',
@@ -62,6 +70,22 @@ const PLAN_META: Record<PlanTier, {
     features: AGENCY_FEATURES,
   },
 }
+
+const MODULE_ICONS: Record<keyof WorkspaceModules, React.ElementType> = {
+  developer: Code2,
+  marketing: BarChart3,
+  design: Palette,
+  time_tracking: Clock,
+  contracts_billing: FileText,
+}
+
+const CRAFT_PRESET_ITEMS: Array<{ id: UserCraft; label: string; icon: React.ElementType }> = [
+  { id: 'developer', label: 'Developer', icon: Code2 },
+  { id: 'marketer', label: 'Marketer', icon: TrendingUp },
+  { id: 'designer', label: 'Designer', icon: Palette },
+  { id: 'consultant', label: 'Consultant', icon: Briefcase },
+  { id: 'general', label: 'General / All', icon: Sparkles },
+]
 
 function SectionCard({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
@@ -112,6 +136,12 @@ export default function SettingsPage() {
   const [justUpgraded, setJustUpgraded] = useState(false)
   const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Workspace Modules & Craft
+  const [craft, setCraft] = useState<UserCraft>('general')
+  const [modules, setModules] = useState<WorkspaceModules>(DEFAULT_MODULES)
+  const [togglingModule, setTogglingModule] = useState<string | null>(null)
+  const [applyingPreset, setApplyingPreset] = useState<string | null>(null)
+
   const [tokens, setTokens] = useState<{ id: string; token_preview: string; name: string; last_used_at: string | null; created_at: string }[]>([])
   const [generatedToken, setGeneratedToken] = useState<string | null>(null)
   const [tokenCopied, setTokenCopied] = useState(false)
@@ -130,7 +160,7 @@ export default function SettingsPage() {
       const user = data?.user
       if (!user) return
       setUserId(user.id)
-      supabase.from('users').select('name, username, accent_color, plan, logo_url').eq('id', user.id).single()
+      supabase.from('users').select('name, username, accent_color, plan, logo_url, craft, enabled_modules').eq('id', user.id).single()
         .then(({ data }: { data: any }) => {
           if (data) {
             setName(data.name ?? '')
@@ -138,6 +168,8 @@ export default function SettingsPage() {
             setAccentColor(data.accent_color ?? '#6366F1')
             setPlan(data.plan ?? 'free')
             setLogoUrl(data.logo_url ?? null)
+            if (data.craft) setCraft(data.craft)
+            if (data.enabled_modules) setModules(resolveModules(data.enabled_modules))
           }
         })
     })
@@ -149,6 +181,44 @@ export default function SettingsPage() {
       .then(data => { if (data.tokens) setTokens(data.tokens) })
       .catch(() => {})
   }, [])
+
+  async function handleToggleModule(moduleKey: keyof WorkspaceModules) {
+    const currentVal = Boolean(modules[moduleKey])
+    const nextVal = !currentVal
+    const updated = { ...modules, [moduleKey]: nextVal }
+    setModules(updated)
+    setTogglingModule(moduleKey)
+    try {
+      await fetch('/api/users/modules', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [moduleKey]: nextVal }),
+      })
+    } catch (err) {
+      console.error('Failed to update module flag:', err)
+      setModules(modules)
+    } finally {
+      setTogglingModule(null)
+    }
+  }
+
+  async function handleApplyCraftPreset(newCraft: UserCraft) {
+    setCraft(newCraft)
+    const preset = CRAFT_PRESETS[newCraft]
+    setModules(preset)
+    setApplyingPreset(newCraft)
+    try {
+      await fetch('/api/users/modules', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ craft: newCraft, ...preset }),
+      })
+    } catch (err) {
+      console.error('Failed to apply craft preset:', err)
+    } finally {
+      setApplyingPreset(null)
+    }
+  }
 
   function handleCopyReferral() {
     const link = buildReferralUrl(username || userId || 'creator')
@@ -547,101 +617,222 @@ export default function SettingsPage() {
             <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-500 transition-colors flex-shrink-0" />
           </Link>
 
-          {/* ── Code Editor Extension ─────────────────────────────────── */}
+          {/* ── Workspace Modules ─────────────────────────────────────── */}
           <SectionCard className="p-5">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
-                <Code2 className="w-4 h-4" />
+            <SectionHeader
+              title="Workspace Modules"
+              description="Enable or disable functional suites to customize your dashboard, project settings, and client portals."
+              badge={
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
+                  {Object.values(modules).filter(Boolean).length} / {MODULE_CATALOG.length} Active
+                </span>
+              }
+            />
+
+            {/* Quick Craft Presets */}
+            <div className="mb-5 pb-4 border-b border-slate-100 dark:border-white/5 space-y-2">
+              <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Craft Presets
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {CRAFT_PRESET_ITEMS.map(p => {
+                  const Icon = p.icon
+                  const isCurrent = craft === p.id
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => handleApplyCraftPreset(p.id)}
+                      disabled={applyingPreset !== null}
+                      className={cn(
+                        'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer border',
+                        isCurrent
+                          ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-slate-900 dark:border-white shadow-xs font-semibold'
+                          : 'bg-slate-50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
+                      )}
+                    >
+                      {applyingPreset === p.id ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Icon className="w-3 h-3" />
+                      )}
+                      <span>{p.label}</span>
+                    </button>
+                  )
+                })}
               </div>
-              <div>
-                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Code Editor Extension</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light">VS Code · Cursor · Antigravity live sync</p>
-              </div>
-              <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full">
-                Live Sync
-              </span>
             </div>
 
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed mb-4">
-              Sync active coding intervals and live status to your client portals automatically. Only tracks workspace timestamps and duration — never raw code or filenames.
-            </p>
+            {/* Individual Module Toggles */}
+            <div className="space-y-3">
+              {MODULE_CATALOG.map(item => {
+                const Icon = MODULE_ICONS[item.id] || Sparkles
+                const isEnabled = Boolean(modules[item.id])
+                const isUpdating = togglingModule === item.id
 
-            {generatedToken && (
-              <div className="p-4 mb-4 rounded-xl border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/20 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
-                    Generated Token
-                  </span>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400/80">Copy now — won&apos;t show again</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <code className="flex-1 bg-white dark:bg-black/60 px-3 py-2 rounded-lg border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono text-slate-800 dark:text-emerald-200 overflow-x-auto select-all">
-                    {generatedToken}
-                  </code>
-                  <button
-                    onClick={() => copyToken(generatedToken)}
-                    className="rounded-full border border-emerald-300 dark:border-emerald-500/30 bg-white dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 px-3 py-1.5 text-xs transition-all flex items-center gap-1.5 cursor-pointer flex-shrink-0"
+                return (
+                  <div
+                    key={item.id}
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/[0.04] transition-colors"
                   >
-                    {tokenCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                    {tokenCopied ? 'Copied' : 'Copy'}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {tokens.length > 0 && (
-              <div className="space-y-2 mb-4">
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
-                  Active Keys ({tokens.length})
-                </label>
-                <div className="space-y-2">
-                  {tokens.map(t => (
-                    <div
-                      key={t.id}
-                      className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02]"
-                    >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <Key className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" />
-                        <div className="min-w-0">
-                          <div className="text-xs font-medium text-slate-900 dark:text-white">{t.name}</div>
-                          <div className="text-[11px] text-slate-400 font-mono truncate">{t.token_preview}</div>
-                        </div>
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className={cn(
+                        'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 border',
+                        isEnabled
+                          ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20'
+                          : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-white/10'
+                      )}>
+                        <Icon className="w-4 h-4" />
                       </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        {t.last_used_at && (
-                          <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
-                            Synced {new Date(t.last_used_at).toLocaleDateString()}
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                            {item.name}
                           </span>
-                        )}
-                        <button
-                          onClick={() => handleRevokeToken(t.id)}
-                          className="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400/70 dark:hover:text-rose-300 flex items-center gap-1 cursor-pointer transition-colors"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                          {item.badge && (
+                            <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-500 dark:text-indigo-400">
+                              {item.badge}
+                            </span>
+                          )}
+                          <span className={cn(
+                            'text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full',
+                            isEnabled
+                              ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10'
+                              : 'text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-white/5'
+                          )}>
+                            {isEnabled ? 'Enabled' : 'Disabled'}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-0.5 leading-snug">
+                          {item.shortDescription}
+                        </p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
-            <button
-              onClick={handleGenerateToken}
-              disabled={generatingToken}
-              className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
-            >
-              <Key className="w-3.5 h-3.5" />
-              {generatingToken ? 'Generating…' : tokens.length > 0 ? 'Generate New Key' : 'Generate Extension Key'}
-            </button>
-
-            <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 space-y-1 text-[11px] text-slate-500 dark:text-slate-400 font-light">
-              <p className="font-semibold text-slate-700 dark:text-slate-300 text-xs mb-1.5">Setup in 60 seconds:</p>
-              <p>1. Open Command Palette <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono text-slate-600 dark:text-slate-300">Cmd+Shift+P</kbd></p>
-              <p>2. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Set API Token</code> and paste your key.</p>
-              <p>3. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Link Workspace to Project</code> to start sync.</p>
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={isEnabled}
+                      disabled={isUpdating}
+                      onClick={() => handleToggleModule(item.id)}
+                      className={cn(
+                        'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-none p-0.5 self-end sm:self-center',
+                        isEnabled ? 'bg-indigo-600 dark:bg-indigo-500' : 'bg-slate-300 dark:bg-white/20',
+                        isUpdating && 'opacity-60 cursor-wait'
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition duration-200 ease-in-out flex items-center justify-center',
+                          isEnabled ? 'translate-x-5' : 'translate-x-0'
+                        )}
+                      >
+                        {isUpdating && <Loader2 className="w-2.5 h-2.5 animate-spin text-slate-600" />}
+                      </span>
+                    </button>
+                  </div>
+                )
+              })}
             </div>
           </SectionCard>
+
+          {/* ── Code Editor Extension ─────────────────────────────────── */}
+          {modules.developer && (
+            <SectionCard className="p-5">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
+                  <Code2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Code Editor Extension</h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-light">VS Code · Cursor · Antigravity live sync</p>
+                </div>
+                <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full">
+                  Live Sync
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed mb-4">
+                Sync active coding intervals and live status to your client portals automatically. Only tracks workspace timestamps and duration — never raw code or filenames.
+              </p>
+
+              {generatedToken && (
+                <div className="p-4 mb-4 rounded-xl border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/20 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                      Generated Token
+                    </span>
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400/80">Copy now — won&apos;t show again</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 bg-white dark:bg-black/60 px-3 py-2 rounded-lg border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono text-slate-800 dark:text-emerald-200 overflow-x-auto select-all">
+                      {generatedToken}
+                    </code>
+                    <button
+                      onClick={() => copyToken(generatedToken)}
+                      className="rounded-full border border-emerald-300 dark:border-emerald-500/30 bg-white dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 px-3 py-1.5 text-xs transition-all flex items-center gap-1.5 cursor-pointer flex-shrink-0"
+                    >
+                      {tokenCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                      {tokenCopied ? 'Copied' : 'Copy'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {tokens.length > 0 && (
+                <div className="space-y-2 mb-4">
+                  <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                    Active Keys ({tokens.length})
+                  </label>
+                  <div className="space-y-2">
+                    {tokens.map(t => (
+                      <div
+                        key={t.id}
+                        className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02]"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <Key className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" />
+                          <div className="min-w-0">
+                            <div className="text-xs font-medium text-slate-900 dark:text-white">{t.name}</div>
+                            <div className="text-[11px] text-slate-400 font-mono truncate">{t.token_preview}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 flex-shrink-0">
+                          {t.last_used_at && (
+                            <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
+                              Synced {new Date(t.last_used_at).toLocaleDateString()}
+                            </span>
+                          )}
+                          <button
+                            onClick={() => handleRevokeToken(t.id)}
+                            className="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400/70 dark:hover:text-rose-300 flex items-center gap-1 cursor-pointer transition-colors"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={handleGenerateToken}
+                disabled={generatingToken}
+                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                <Key className="w-3.5 h-3.5" />
+                {generatingToken ? 'Generating…' : tokens.length > 0 ? 'Generate New Key' : 'Generate Extension Key'}
+              </button>
+
+              <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 space-y-1 text-[11px] text-slate-500 dark:text-slate-400 font-light">
+                <p className="font-semibold text-slate-700 dark:text-slate-300 text-xs mb-1.5">Setup in 60 seconds:</p>
+                <p>1. Open Command Palette <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono text-slate-600 dark:text-slate-300">Cmd+Shift+P</kbd></p>
+                <p>2. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Set API Token</code> and paste your key.</p>
+                <p>3. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Link Workspace to Project</code> to start sync.</p>
+              </div>
+            </SectionCard>
+          )}
 
           {/* ── Referral ──────────────────────────────────────────────── */}
           <SectionCard className="p-5">

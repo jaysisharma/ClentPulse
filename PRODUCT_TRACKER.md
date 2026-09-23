@@ -176,10 +176,64 @@
 
 ---
 
+### 14. Digital Marketing Freelancer Suite (Shipped)
+- [x] **Custom KPI Snapshot Strip**:
+  - Up to 4 metric pills (*Monthly Ad Spend*, *Blended ROAS*, *CPA*, *Leads*) featured at the top of `/p/[slug]` and `/project/[id]`.
+  - Customizable labels, monospace metrics, and trend indicators (+/-, green/red).
+  - Configurable in Project Settings (`/project/[id]/settings`) with 1-click marketing presets and live preview.
+- [x] **Interactive Analytics & Reporting Embed**:
+  - Dedicated "Reports" tab on the client status portal embedding Looker Studio, Google Sheets, or custom BI dashboards.
+  - Full-screen mode and direct external link controls.
+- [x] **Loom & Video Walkthrough Embeds**:
+  - Video input on weekly update creation page supporting Loom (`loom.com/share`), YouTube, and Vimeo.
+  - Responsive 16:9 iframe video player embedded directly in client broadcasts and studio feed.
+  - Video walkthrough link and CTA included in Resend email templates.
+- [x] **Marketing Deliverables & Approvals**:
+  - Added marketing preview types: `ad_creative`, `copy_deck`, `analytics_report`, `landing_page`.
+  - Rich icons and custom approval actions (*Review Ad Creative*, *Inspect Copy Deck*, *Open Analytics Report*, *Preview Landing Page*).
+- [x] **Marketing Blocker Presets**:
+  - Pre-configured bottleneck tags: *Waiting for Ad Account Access (Meta / Google)*, *Ad Account Payment Issue / Card Declined*, *Waiting for Creative Assets & Photography*, *Tracking Pixel / GTM Installation Needed*, *Awaiting Ad Copy Sign-off*.
+  - 1-click client reminder email nudge via Resend.
+- [x] **Testing & Verification**:
+  - 174/174 unit and integration tests passing in Vitest across 33 test suites.
+  - Clean Next.js build and TypeScript check with zero errors.
+
+---
+
+### 15. Workspace Modules & Role-Based Persona Onboarding (Shipped)
+- [x] **1-Click Craft Persona Onboarding**:
+  - Step 2 in `/onboarding` features craft selection across 5 disciplines:
+    - 💻 **Developer**: VS Code telemetry, code sync & technical portals.
+    - 📈 **Digital Marketer**: Campaign KPI strips, Looker/Sheets embeds & ad decks.
+    - 🎨 **Designer**: Visual approvals, Figma embeds & revision flows.
+    - 💼 **Consultant**: Milestone invoicing, contracts & advisory briefs.
+    - ⚡ **General Freelancer**: Full-stack suite with all modules enabled.
+  - Automatically seeds sensible default module flags (`enabled_modules`) based on the chosen craft.
+- [x] **Modular Feature Flag System**:
+  - `WorkspaceModules` interface (`marketing`, `developer`, `design`, `time_tracking`, `contracts_billing`).
+  - `resolveModules()` resolver guaranteeing 100% backward compatibility (defaults omitted flags to `true`).
+  - `/api/users/modules` endpoint with `GET` and `PATCH` support.
+  - Migration script: [`deploy/persona-modules-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/persona-modules-migration.sql).
+- [x] **Workspace Modules Settings Control Center**:
+  - Dedicated `/settings` control panel with active counter badge.
+  - Quick Craft Presets switcher to apply preset modules in 1 click.
+  - Granular switch toggles for each functional suite with real-time feedback.
+- [x] **Adaptive Contextual UI**:
+  - Conditionally hides the VS Code extension token card in `/settings` when `developer` module is disabled.
+  - Conditionally hides the **Marketing & KPIs** tab in `/project/[id]/settings` when `marketing` module is disabled.
+  - Conditionally hides live coding presence in public portal visibility settings when `developer` module is disabled.
+- [x] **Comprehensive Testing & Build**:
+  - 181/181 unit & integration tests passing in Vitest across 35 test suites.
+  - Clean Next.js Turbopack production build with 74 static and dynamic routes.
+
+---
+
 ## 📌 Supabase Deployment Instructions
-Apply the complete agency suite migrations in your Supabase SQL Editor:
+Apply the complete suite migrations in your Supabase SQL Editor:
 1. [`deploy/agency-organizations-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/agency-organizations-migration.sql) — Multi-tenant schema
 2. [`deploy/agency-team-pods-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/agency-team-pods-migration.sql) — Staffed pods & RBAC
 3. [`deploy/agency-whitelabel-domains-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/agency-whitelabel-domains-migration.sql) — White-labeling & CNAME routing
 4. [`deploy/agency-collaboration-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/agency-collaboration-migration.sql) — Internal notes & draft review
 5. [`deploy/agency-executive-radar-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/agency-executive-radar-migration.sql) — Executive radar indexes & agency billing
+6. [`deploy/marketing-freelancer-suite-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/marketing-freelancer-suite-migration.sql) — Digital marketing freelancer suite schema
+7. [`deploy/persona-modules-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/persona-modules-migration.sql) — Persona craft & workspace modules feature flags

@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import {
   CheckCircle2, XCircle, Clock, ExternalLink,
-  Globe, Palette, GitPullRequest, FileText, Archive
+  Globe, Palette, GitPullRequest, FileText, Archive,
+  Megaphone, FileEdit, BarChart3, AppWindow
 } from 'lucide-react'
 import { ensureExternalProtocol } from '@/lib/utils'
 
@@ -17,6 +18,10 @@ interface Approval {
 }
 
 const PREVIEW_CONFIG: Record<string, { label: string; action: string; icon: typeof Globe }> = {
+  ad_creative: { label: 'Ad Creative', action: 'Inspect Ad Creative & Assets', icon: Megaphone },
+  copy_deck: { label: 'Copy Deck', action: 'Review Ad & Campaign Copy', icon: FileEdit },
+  analytics_report: { label: 'Analytics Report', action: 'Open Performance Dashboard', icon: BarChart3 },
+  landing_page: { label: 'Landing Page', action: 'Preview Landing Page & Funnel', icon: AppWindow },
   staging: { label: 'Live Staging', action: 'Open Staging Environment', icon: Globe },
   figma: { label: 'Figma Prototype', action: 'Inspect Figma Prototype', icon: Palette },
   code_pr: { label: 'Code Review', action: 'Review Pull Request', icon: GitPullRequest },

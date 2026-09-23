@@ -11,7 +11,11 @@ import { fmtCurrency } from '@/lib/currencies'
 import Link from 'next/link'
 
 const PRESET_REASONS = [
-  'Awaiting brand assets & final copy',
+  'Waiting for Ad Account Access (Meta / Google)',
+  'Ad Account Payment Issue / Card Declined',
+  'Awaiting brand assets & creative photography',
+  'Tracking Pixel / GTM Installation Needed',
+  'Awaiting Ad Copy Sign-off for Launch',
   'Waiting on Stripe / API credentials',
   'Awaiting DNS / server access',
   'Pending feedback on latest milestone',

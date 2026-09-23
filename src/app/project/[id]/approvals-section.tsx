@@ -5,7 +5,8 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import {
   Plus, CheckCircle2, XCircle, Clock, ExternalLink, Trash2,
-  Globe, Palette, GitPullRequest, FileText, Archive
+  Globe, Palette, GitPullRequest, FileText, Archive,
+  Megaphone, FileEdit, BarChart3, AppWindow
 } from 'lucide-react'
 import { CollapsibleSection } from './collapsible-section'
 import { ensureExternalProtocol } from '@/lib/utils'
@@ -21,11 +22,15 @@ interface Approval {
 }
 
 const PREVIEW_TYPES = [
+  { id: 'ad_creative', label: 'Ad Creative', icon: Megaphone },
+  { id: 'copy_deck', label: 'Copy Deck', icon: FileEdit },
+  { id: 'analytics_report', label: 'Analytics Report', icon: BarChart3 },
+  { id: 'landing_page', label: 'Landing Page', icon: AppWindow },
   { id: 'staging', label: 'Live Staging', icon: Globe },
   { id: 'figma', label: 'Figma Mockup', icon: Palette },
-  { id: 'code_pr', label: 'Code PR', icon: GitPullRequest },
   { id: 'document', label: 'Spec Doc', icon: FileText },
   { id: 'asset_zip', label: 'Assets ZIP', icon: Archive },
+  { id: 'code_pr', label: 'Code PR', icon: GitPullRequest },
 ] as const
 
 const STATUS_UI = {
@@ -111,7 +116,7 @@ export function ApprovalsSection({
 
           <div>
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Deliverable Type</label>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
               {PREVIEW_TYPES.map(t => {
                 const Icon = t.icon
                 const selected = previewType === t.id

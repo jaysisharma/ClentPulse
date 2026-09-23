@@ -5,6 +5,7 @@ import { Check, ShieldCheck, Clock, CheckCircle } from 'lucide-react'
 import { formatDate, getWeekOf } from '@/lib/utils'
 import { UpdateActions } from './update-actions'
 import { UpdateCommentForm } from '@/app/p/[slug]/update-comment-form'
+import { VideoEmbed } from '@/components/ui/video-embed'
 
 interface Update {
   id: string
@@ -12,6 +13,7 @@ interface Update {
   sent_at: string | null
   bullets: string[]
   note: string | null
+  video_url?: string | null
   review_status?: 'draft' | 'review_ready' | 'approved' | 'published'
   author_id?: string | null
   approved_by?: string | null
@@ -98,6 +100,13 @@ export function UpdatesList({
               <UpdateActions updateId={update.id} projectId={projectId} />
             </div>
           </div>
+
+          {update.video_url && (
+            <div className="mb-4">
+              <VideoEmbed url={update.video_url} accentColor={projectColor} />
+            </div>
+          )}
+
           <ul className="space-y-2.5">
             {(update.bullets ?? []).filter(Boolean).map((b: string, i: number) => (
               <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-sans">

@@ -1,3 +1,13 @@
+export type UserCraft = 'developer' | 'marketer' | 'designer' | 'consultant' | 'general'
+
+export interface WorkspaceModules {
+  marketing?: boolean
+  developer?: boolean
+  design?: boolean
+  time_tracking?: boolean
+  contracts_billing?: boolean
+}
+
 export interface User {
   id: string
   email: string
@@ -7,7 +17,15 @@ export interface User {
   accent_color: string
   stripe_customer_id: string | null
   plan: 'free' | 'pro'
+  craft?: UserCraft | null
+  enabled_modules?: WorkspaceModules | null
   created_at: string
+}
+
+export interface ProjectKpi {
+  label: string
+  value: string
+  trend?: string
 }
 
 export interface Project {
@@ -26,6 +44,9 @@ export interface Project {
   waiting_reason?: string | null
   deposit_required?: number | null
   deposit_paid?: boolean | null
+  kpis?: ProjectKpi[] | null
+  report_embed_url?: string | null
+  report_embed_title?: string | null
   created_at: string
 }
 
@@ -51,7 +72,16 @@ export interface Approval {
   project_id: string
   title: string
   url: string | null
-  preview_type?: 'staging' | 'figma' | 'code_pr' | 'document' | 'asset_zip'
+  preview_type?:
+    | 'staging'
+    | 'figma'
+    | 'code_pr'
+    | 'document'
+    | 'asset_zip'
+    | 'ad_creative'
+    | 'copy_deck'
+    | 'analytics_report'
+    | 'landing_page'
   status: 'pending' | 'approved' | 'changes_requested'
   feedback: string | null
   created_at: string
@@ -62,6 +92,7 @@ export interface Update {
   project_id: string
   bullets: string[]
   note: string | null
+  video_url?: string | null
   sent_at: string | null
   created_at: string
   author_id?: string | null
