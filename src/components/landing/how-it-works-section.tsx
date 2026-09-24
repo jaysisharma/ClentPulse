@@ -1,10 +1,21 @@
 'use client'
 
-import { useState } from 'react'
-import { Copy, Check, CheckCircle2, Lock, ShieldCheck, ArrowRight, Zap, ExternalLink } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { Copy, Check, CheckCircle2, Lock, ArrowRight, Zap } from 'lucide-react'
 import { StripeIcon } from '@/components/ui/brand-icons'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 export function HowItWorksSection() {
+  const containerRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<HTMLDivElement>(null)
+  const progressBarRef = useRef<HTMLDivElement>(null)
+
   const [copied, setCopied] = useState(false)
   const [approved, setApproved] = useState(true)
 
@@ -14,12 +25,82 @@ export function HowItWorksSection() {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      // 1. Header entrance
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.12,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+
+      // 2. 3 Cards Stagger
+      if (cardsRef.current) {
+        gsap.fromTo(
+          cardsRef.current.children,
+          { y: 45, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.16,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+
+      // 3. Smooth fill of the progress bar in Card 2
+      if (progressBarRef.current) {
+        gsap.fromTo(
+          progressBarRef.current,
+          { width: '0%' },
+          {
+            width: '75%',
+            duration: 1.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: progressBarRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="how-it-works" className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] border-t border-slate-200/80 text-slate-900 overflow-hidden">
+    <section
+      ref={containerRef}
+      id="how-it-works"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] border-t border-slate-200/80 text-slate-900 overflow-hidden"
+    >
       <div className="max-w-6xl mx-auto space-y-16 lg:space-y-20">
         
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
+        <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/60 text-indigo-600 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
             <span>See How It Works</span>
           </div>
@@ -35,17 +116,17 @@ export function HowItWorksSection() {
         </div>
 
         {/* 3 Steps Workflow Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch relative">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch relative">
           
           {/* ────────────────────────────────────────────── */}
           {/* STEP 1: You send a link */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_32px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold group-hover:bg-indigo-600 transition-colors">
                   1
                 </span>
                 <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 01</span>
@@ -81,12 +162,12 @@ export function HowItWorksSection() {
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-medium text-slate-600 hover:text-slate-950 bg-slate-100 hover:bg-slate-200/80 transition-all flex-shrink-0"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-600 hover:text-slate-950 bg-slate-100 hover:bg-slate-200/80 transition-all flex-shrink-0 active:scale-95"
                   >
                     {copied ? (
                       <>
-                        <Check className="w-3 h-3 text-emerald-600" />
-                        <span className="text-emerald-700">Copied</span>
+                        <Check className="w-3 h-3 text-emerald-600 animate-scale-in" />
+                        <span className="text-emerald-700 font-semibold">Copied!</span>
                       </>
                     ) : (
                       <>
@@ -122,12 +203,12 @@ export function HowItWorksSection() {
           {/* ────────────────────────────────────────────── */}
           {/* STEP 2: Client views project */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_32px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold group-hover:bg-emerald-600 transition-colors">
                   2
                 </span>
                 <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 02</span>
@@ -154,10 +235,18 @@ export function HowItWorksSection() {
                       Brand Guidelines v2.4
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-100/90 px-2.5 py-1 rounded-full border border-emerald-200/70 shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => setApproved(!approved)}
+                    className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-all duration-200 shadow-sm active:scale-95 ${
+                      approved
+                        ? 'text-emerald-700 bg-emerald-100/90 border-emerald-200/70'
+                        : 'text-amber-700 bg-amber-100/90 border-amber-200/70'
+                    }`}
+                  >
                     <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                    <span>Approved</span>
-                  </span>
+                    <span>{approved ? 'Approved' : 'In Review'}</span>
+                  </button>
                 </div>
 
                 {/* Authentic Client Feedback Quote */}
@@ -185,7 +274,10 @@ export function HowItWorksSection() {
                     <span className="font-semibold text-slate-700">75% Complete</span>
                   </div>
                   <div className="w-full bg-slate-200/80 h-1.5 rounded-full overflow-hidden">
-                    <div className="bg-emerald-500 h-full w-[75%] rounded-full transition-all duration-500" />
+                    <div
+                      ref={progressBarRef}
+                      className="bg-emerald-500 h-full w-[75%] rounded-full transition-all duration-500"
+                    />
                   </div>
                 </div>
 
@@ -197,12 +289,12 @@ export function HowItWorksSection() {
           {/* ────────────────────────────────────────────── */}
           {/* STEP 3: Get paid faster */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_12px_32px_-4px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold group-hover:bg-[#635BFF] transition-colors">
                   3
                 </span>
                 <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 03</span>
@@ -245,15 +337,15 @@ export function HowItWorksSection() {
                 {/* 1-Click Pay with Stripe Button */}
                 <button
                   type="button"
-                  className="w-full py-2.5 px-3 rounded-xl bg-[#635BFF] hover:bg-[#5349e0] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow transition-all active:scale-[0.99]"
+                  className="w-full py-2.5 px-3 rounded-xl bg-[#635BFF] hover:bg-[#5349e0] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-md transition-all active:scale-[0.98] group/btn"
                 >
-                  <StripeIcon className="w-3.5 h-3.5" />
+                  <StripeIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
                   <span>Pay with Stripe</span>
                 </button>
 
                 {/* Payout reassurance */}
                 <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 font-mono">
-                  <Zap className="w-3 h-3 text-amber-500" />
+                  <Zap className="w-3 h-3 text-amber-500 animate-bounce" />
                   <span>Instant deposit to your bank account</span>
                 </div>
 

@@ -1,20 +1,59 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { ArrowRight, CheckCircle2 } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface Props {
   signupHref: string
 }
 
 export function BottomCtaSection({ signupHref }: Props) {
-  return (
-    <section className="py-24 lg:py-32 px-5 sm:px-8 bg-[#090A0F] text-white border-t border-white/[0.08] relative overflow-hidden">
-      
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
+  const containerRef = useRef<HTMLElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
-      <div className="max-w-4xl mx-auto text-center relative z-10 space-y-8">
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      if (contentRef.current) {
+        gsap.fromTo(
+          contentRef.current.children,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.12,
+            duration: 0.85,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: contentRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  return (
+    <section
+      ref={containerRef}
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#090A0F] text-white border-t border-white/[0.08] relative overflow-hidden"
+    >
+      {/* Background ambient lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none animate-pulse duration-[7000ms]" />
+
+      <div ref={contentRef} className="max-w-4xl mx-auto text-center relative z-10 space-y-8">
         
         {/* Eyebrow */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-indigo-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
@@ -36,10 +75,10 @@ export function BottomCtaSection({ signupHref }: Props) {
         <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href={signupHref}
-            className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-white hover:bg-slate-100 text-slate-950 font-medium text-sm transition-all shadow-xl hover:shadow-2xl active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2.5 px-8 py-4 rounded-full bg-white hover:bg-slate-100 text-slate-950 font-medium text-sm transition-all shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 group"
           >
             <span>Start free</span>
-            <ArrowRight className="w-4 h-4 text-slate-900" />
+            <ArrowRight className="w-4 h-4 text-slate-900 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 

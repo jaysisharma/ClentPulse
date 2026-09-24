@@ -1,8 +1,68 @@
 'use client'
 
-import { Star, Quote } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import { Star } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 export function TestimonialsSection() {
+  const containerRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      // 1. Header entrance
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.12,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+
+      // 2. 3 Testimonial Cards Stagger
+      if (cardsRef.current) {
+        gsap.fromTo(
+          cardsRef.current.children,
+          { y: 45, opacity: 0, scale: 0.95 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            stagger: 0.14,
+            duration: 0.8,
+            ease: 'back.out(1.2)',
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
   const testimonials = [
     {
       quote:
@@ -31,11 +91,15 @@ export function TestimonialsSection() {
   ]
 
   return (
-    <section id="testimonials" className="py-24 lg:py-32 px-5 sm:px-8 bg-white border-t border-slate-200/80 text-slate-900 overflow-hidden">
+    <section
+      ref={containerRef}
+      id="testimonials"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-white border-t border-slate-200/80 text-slate-900 overflow-hidden"
+    >
       <div className="max-w-6xl mx-auto space-y-16">
         
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
+        <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-slate-700 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
             <span>Testimonials</span>
           </div>
@@ -51,11 +115,11 @@ export function TestimonialsSection() {
         </div>
 
         {/* 3 Testimonials Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="p-7 rounded-3xl bg-[#FAFAFC] border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-6 hover:shadow-md transition-shadow relative"
+              className="p-7 rounded-3xl bg-[#FAFAFC] border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-6 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative group"
             >
               {/* Star Rating */}
               <div className="space-y-4">
@@ -72,11 +136,11 @@ export function TestimonialsSection() {
 
               {/* Author */}
               <div className="flex items-center gap-3 pt-4 border-t border-slate-200/60">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${t.badgeColor}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${t.badgeColor} group-hover:scale-110 transition-transform`}>
                   {t.initials}
                 </div>
                 <div>
-                  <div className="font-semibold text-slate-900 text-sm">{t.name}</div>
+                  <div className="font-semibold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">{t.name}</div>
                   <div className="text-xs text-slate-400 font-light">{t.role}</div>
                 </div>
               </div>

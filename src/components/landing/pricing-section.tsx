@@ -1,13 +1,73 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Check, Sparkles } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface Props {
   signupHref: string
 }
 
 export function PricingSection({ signupHref }: Props) {
+  const containerRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      // 1. Header entrance
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.12,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+
+      // 2. 4 Cards Stagger
+      if (cardsRef.current) {
+        gsap.fromTo(
+          cardsRef.current.children,
+          { y: 40, opacity: 0, scale: 0.96 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            stagger: 0.1,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
   const plans = [
     {
       name: 'Free',
@@ -79,11 +139,15 @@ export function PricingSection({ signupHref }: Props) {
   ]
 
   return (
-    <section id="pricing" className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] border-t border-slate-200/80 text-slate-900 overflow-hidden">
+    <section
+      ref={containerRef}
+      id="pricing"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] border-t border-slate-200/80 text-slate-900 overflow-hidden"
+    >
       <div className="max-w-6xl mx-auto space-y-16">
         
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
+        <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/60 text-indigo-600 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
             <span>Pricing</span>
           </div>
@@ -99,20 +163,20 @@ export function PricingSection({ signupHref }: Props) {
         </div>
 
         {/* 4 Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-200 relative ${
+              className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 relative ${
                 plan.popular
-                  ? 'bg-white border-2 border-slate-900 shadow-xl lg:-translate-y-2 ring-1 ring-slate-950/10'
-                  : 'bg-white border border-slate-200/80 shadow-sm hover:shadow-md hover:border-slate-300'
+                  ? 'bg-white border-2 border-slate-900 shadow-xl lg:-translate-y-2 ring-1 ring-slate-950/10 hover:shadow-2xl'
+                  : 'bg-white border border-slate-200/80 shadow-sm hover:shadow-lg hover:-translate-y-1 hover:border-slate-300'
               }`}
             >
               {/* Popular Badge */}
               {plan.popular && (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-slate-950 text-white text-[10px] font-mono font-semibold uppercase tracking-wider flex items-center gap-1 shadow-md">
-                  <Sparkles className="w-2.5 h-2.5 text-amber-400" />
+                  <Sparkles className="w-2.5 h-2.5 text-amber-400 animate-pulse" />
                   <span>Most popular</span>
                 </div>
               )}
@@ -145,9 +209,9 @@ export function PricingSection({ signupHref }: Props) {
               <div className="pt-8">
                 <Link
                   href={plan.ctaHref}
-                  className={`w-full py-3 rounded-full text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center ${
+                  className={`w-full py-3 rounded-full text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center active:scale-[0.98] ${
                     plan.popular
-                      ? 'bg-slate-950 hover:bg-slate-800 text-white shadow-md active:scale-[0.98]'
+                      ? 'bg-slate-950 hover:bg-slate-800 text-white shadow-md hover:shadow-lg'
                       : 'bg-slate-100 hover:bg-slate-200/80 text-slate-800'
                   }`}
                 >

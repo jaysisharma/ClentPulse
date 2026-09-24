@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import {
   GitHubIcon,
   FigmaIcon,
@@ -8,8 +9,67 @@ import {
   GoogleCalendarIcon,
   VSCodeIcon,
 } from '@/components/ui/brand-icons'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 export function IntegrationsSection() {
+  const containerRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      // 1. Header entrance
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.12,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+
+      // 2. Grid cards stagger
+      if (gridRef.current) {
+        gsap.fromTo(
+          gridRef.current.children,
+          { y: 35, opacity: 0, scale: 0.96 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            stagger: 0.08,
+            duration: 0.7,
+            ease: 'back.out(1.3)',
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [])
+
   const tools = [
     {
       name: 'GitHub',
@@ -56,11 +116,15 @@ export function IntegrationsSection() {
   ]
 
   return (
-    <section id="integrations" className="py-24 lg:py-32 px-5 sm:px-8 bg-white border-t border-slate-200/80 text-slate-900 overflow-hidden">
+    <section
+      ref={containerRef}
+      id="integrations"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-white border-t border-slate-200/80 text-slate-900 overflow-hidden"
+    >
       <div className="max-w-6xl mx-auto space-y-16">
         
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-4">
+        <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-slate-700 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
             <span>Integrations</span>
           </div>
@@ -76,21 +140,21 @@ export function IntegrationsSection() {
         </div>
 
         {/* Interconnected Tools Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {tools.map((tool) => {
             const Icon = tool.icon
             return (
               <div
                 key={tool.name}
-                className="p-6 rounded-2xl bg-[#FAFAFC] border border-slate-200/80 hover:border-slate-300 hover:shadow-md transition-all flex flex-col justify-between space-y-4 group"
+                className="p-6 rounded-2xl bg-[#FAFAFC] border border-slate-200/80 hover:border-slate-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4 group cursor-default"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center p-2.5 ${tool.accent} border group-hover:scale-105 transition-transform`}>
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center p-2.5 ${tool.accent} border group-hover:scale-110 transition-transform duration-300`}>
                       <Icon className="w-full h-full object-contain" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-900 text-sm">{tool.name}</h3>
+                      <h3 className="font-semibold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">{tool.name}</h3>
                       <div className="text-[11px] font-mono text-slate-400">{tool.role}</div>
                     </div>
                   </div>
