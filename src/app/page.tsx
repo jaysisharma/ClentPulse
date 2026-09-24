@@ -11,7 +11,7 @@ import { OveradsTestimonials } from '@/components/landing/overads-testimonials'
 import { LandingPricing } from '@/components/landing/landing-pricing'
 import { LandingFaq } from '@/components/landing/landing-faq'
 import { OveradsCta } from '@/components/landing/overads-cta'
-import { Logo } from '@/components/ui/logo'
+import { OveradsFooter } from '@/components/landing/overads-footer'
 
 export default async function LandingPage() {
   const supabase = await createClient()
@@ -95,34 +95,8 @@ export default async function LandingPage() {
 
       </main>
 
-      {/* ── Footer: Ultra-Clean Studio Footer ── */}
-      <footer className="border-t border-slate-200 bg-slate-50 py-16 px-6 text-xs text-slate-600">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-2.5">
-            <Logo className="w-5 h-5 text-slate-950" />
-            <span className="font-bold text-slate-950 text-sm tracking-tight font-mono">Frevio</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-500 font-light">The client operating system for modern studios</span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-6 text-slate-600 font-mono text-[11px]">
-            <a href="#workflows" className="hover:text-slate-950 transition-colors">Workflows</a>
-            <a href="#screens" className="hover:text-slate-950 transition-colors">Inside</a>
-            <a href="#comparison" className="hover:text-slate-950 transition-colors">Comparison</a>
-            <a href="#pricing" className="hover:text-slate-950 transition-colors">Pricing</a>
-            <a href="#faq" className="hover:text-slate-950 transition-colors">FAQ</a>
-            <Link href="/terms" className="hover:text-slate-950 transition-colors">Terms</Link>
-            <Link href="/privacy" className="hover:text-slate-950 transition-colors">Privacy</Link>
-          </div>
-
-          <div className="flex items-center gap-2 text-slate-500 font-mono text-[11px]">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>All systems operational</span>
-            <span className="text-slate-300">·</span>
-            <span>© {new Date().getFullYear()} Frevio Inc.</span>
-          </div>
-        </div>
-      </footer>
+      {/* ── Footer: Professional Studio Operating System Footer ── */}
+      <OveradsFooter />
 
     </div>
   )
