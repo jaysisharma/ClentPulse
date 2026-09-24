@@ -153,38 +153,38 @@ export function OveradsHero({ signupHref }: HeroProps) {
           </div>
         </div>
 
-        {/* ── 3. DASHBOARD WORKSPACE SHOWCASE (The Real Frevio Dashboard) ── */}
+        {/* ── 3. DASHBOARD WORKSPACE SHOWCASE (The Real Frevio Dark Dashboard) ── */}
         <div
           ref={mockupRef}
-          className="relative z-10 mt-14 w-full max-w-6xl xl:max-w-7xl mx-auto rounded-3xl border border-white/15 bg-white shadow-[0_0_120px_-20px_rgba(99,102,241,0.22),0_40px_100px_-25px_rgba(0,0,0,0.85)] ring-1 ring-white/10 overflow-hidden text-left"
+          className="relative z-10 mt-14 w-full max-w-6xl xl:max-w-7xl mx-auto rounded-3xl border border-white/10 bg-[#08090d] shadow-[0_0_120px_-20px_rgba(99,102,241,0.25),0_40px_100px_-25px_rgba(0,0,0,0.95)] ring-1 ring-white/10 overflow-hidden text-left"
         >
           {/* Top Window Title Bar */}
-          <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/90 px-6 py-3.5 select-none">
+          <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#0c0d12]/95 px-6 py-3.5 select-none">
             <div className="flex items-center gap-2">
               <div className="size-3 rounded-full bg-[#ff5f56]" />
               <div className="size-3 rounded-full bg-[#ffbd2e]" />
               <div className="size-3 rounded-full bg-[#27c93f]" />
             </div>
 
-            <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-1 text-xs text-slate-700 font-mono shadow-2xs">
-              <Lock className="w-3 h-3 text-emerald-600" />
+            <div className="flex items-center gap-2 rounded-lg border border-white/10 bg-white/[0.04] px-3.5 py-1 text-xs text-slate-300 font-mono shadow-xs">
+              <Lock className="w-3 h-3 text-emerald-400" />
               <span>frevio.cloud/dashboard</span>
-              <span className="text-emerald-700 font-sans text-[11px] bg-emerald-50 px-1.5 py-0.2 rounded font-medium">
+              <span className="text-emerald-400 font-sans text-[11px] bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.2 rounded font-medium">
                 Live
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-slate-600">
+            <div className="flex items-center gap-2 text-xs text-slate-400">
               <span className="hidden sm:inline font-medium">Creative Studio</span>
-              <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="size-2 rounded-full bg-emerald-400 animate-pulse" />
             </div>
           </div>
 
           {/* Full App Workspace Layout: Sidebar + Main Dashboard */}
-          <div className="flex bg-slate-50/50">
+          <div className="flex bg-[#08090d]">
             
             {/* Left App Sidebar (Desktop only) */}
-            <div className="hidden md:flex w-60 bg-white border-r border-slate-200/80 p-5 flex-col justify-between select-none flex-shrink-0">
+            <div className="hidden md:flex w-60 bg-[#0a0b10] border-r border-white/[0.08] p-5 flex-col justify-between select-none flex-shrink-0">
               <div className="space-y-6">
                 {/* Logo and Workspace Label */}
                 <div className="flex items-center gap-3 px-2">
@@ -192,49 +192,49 @@ export function OveradsHero({ signupHref }: HeroProps) {
                     <Sparkles className="size-4" />
                   </div>
                   <div className="min-w-0">
-                    <span className="block font-bold text-sm text-slate-900 truncate">Frevio Studio</span>
-                    <span className="block text-[11px] text-slate-400 font-mono">Pro Plan</span>
+                    <span className="block font-bold text-sm text-white truncate">Frevio Studio</span>
+                    <span className="block text-[11px] text-slate-500 font-mono">Pro Plan</span>
                   </div>
                 </div>
 
                 {/* Sidebar Navigation */}
-                <div className="space-y-1.5 text-xs font-medium text-slate-600">
-                  <div className="flex items-center gap-3 px-3 py-2.5 bg-indigo-50/80 text-indigo-900 rounded-xl font-semibold border border-indigo-100/60 shadow-2xs">
-                    <LayoutDashboard className="size-4 text-indigo-600" />
+                <div className="space-y-1.5 text-xs font-medium text-slate-400">
+                  <div className="flex items-center gap-3 px-3 py-2.5 bg-indigo-500/15 text-indigo-300 rounded-xl font-semibold border border-indigo-500/30 shadow-xs">
+                    <LayoutDashboard className="size-4 text-indigo-400" />
                     <span>Dashboard</span>
-                    <span className="ml-auto size-1.5 rounded-full bg-indigo-600" />
+                    <span className="ml-auto size-1.5 rounded-full bg-indigo-400" />
                   </div>
-                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
-                    <FolderOpen className="size-4 text-slate-400" />
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.05] hover:text-white rounded-xl transition-colors cursor-pointer">
+                    <FolderOpen className="size-4 text-slate-500" />
                     <span>Projects</span>
                   </div>
-                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
-                    <Users className="size-4 text-slate-400" />
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.05] hover:text-white rounded-xl transition-colors cursor-pointer">
+                    <Users className="size-4 text-slate-500" />
                     <span>Clients</span>
                   </div>
-                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
-                    <FileText className="size-4 text-slate-400" />
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.05] hover:text-white rounded-xl transition-colors cursor-pointer">
+                    <FileText className="size-4 text-slate-500" />
                     <span>Invoices</span>
                   </div>
-                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
-                    <Timer className="size-4 text-slate-400" />
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.05] hover:text-white rounded-xl transition-colors cursor-pointer">
+                    <Timer className="size-4 text-slate-500" />
                     <span>Time Log</span>
                   </div>
-                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-slate-100/70 hover:text-slate-900 rounded-xl transition-colors cursor-pointer">
-                    <TrendingUp className="size-4 text-slate-400" />
+                  <div className="flex items-center gap-3 px-3 py-2.5 hover:bg-white/[0.05] hover:text-white rounded-xl transition-colors cursor-pointer">
+                    <TrendingUp className="size-4 text-slate-500" />
                     <span>Earnings</span>
                   </div>
                 </div>
               </div>
 
               {/* VS Code Extension Live Sync Badge */}
-              <div className="space-y-3.5 pt-5 border-t border-slate-100">
-                <div className="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-3.5 space-y-1.5 shadow-2xs">
-                  <div className="flex items-center gap-2 text-[11px] font-semibold text-emerald-800">
-                    <span className="size-2 rounded-full bg-emerald-500 animate-ping" />
+              <div className="space-y-3.5 pt-5 border-t border-white/[0.08]">
+                <div className="rounded-2xl border border-emerald-500/25 bg-emerald-950/30 p-3.5 space-y-1.5 shadow-2xs">
+                  <div className="flex items-center gap-2 text-[11px] font-semibold text-emerald-400">
+                    <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
                     <span>VS Code Live Pulse</span>
                   </div>
-                  <p className="text-[11px] text-emerald-700 font-mono leading-tight truncate">
+                  <p className="text-[11px] text-emerald-300 font-mono leading-tight truncate">
                     auth-middleware.ts
                   </p>
                 </div>
@@ -244,7 +244,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
                     JS
                   </div>
                   <div className="min-w-0">
-                    <div className="text-xs font-semibold text-slate-900 truncate">Jay Sharma</div>
+                    <div className="text-xs font-semibold text-white truncate">Jay Sharma</div>
                     <div className="text-[11px] text-slate-400 truncate">Senior Engineer</div>
                   </div>
                 </div>
@@ -252,27 +252,27 @@ export function OveradsHero({ signupHref }: HeroProps) {
             </div>
 
             {/* Main Dashboard Area */}
-            <div className="flex-1 p-6 sm:p-8 lg:p-9 space-y-6 overflow-hidden">
+            <div className="flex-1 p-6 sm:p-8 lg:p-9 space-y-6 overflow-hidden bg-[#08090d]">
               
               {/* Dashboard Greeting Header */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-light uppercase tracking-tight text-slate-900">
+                  <h3 className="text-2xl sm:text-3xl font-light uppercase tracking-tight text-white">
                     Good Morning, Jay
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-500 mt-1 flex items-center gap-2">
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1 flex items-center gap-2">
                     <span>3 active projects</span>
-                    <span className="text-slate-300">·</span>
-                    <span className="text-amber-600 font-medium">2 need attention</span>
+                    <span className="text-slate-600">·</span>
+                    <span className="text-amber-400 font-medium">2 need attention</span>
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2.5 select-none">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-medium text-slate-700 shadow-2xs">
-                    <Timer className="w-3.5 h-3.5 text-slate-500" />
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-medium text-slate-300 hover:bg-white/10 hover:text-white shadow-2xs transition-colors cursor-pointer">
+                    <Timer className="w-3.5 h-3.5 text-slate-400" />
                     <span>Log time</span>
                   </div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-slate-950 text-white px-4 py-2 text-xs font-semibold shadow-xs hover:bg-slate-800 transition-colors">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white text-slate-950 px-4 py-2 text-xs font-semibold shadow-sm hover:bg-slate-100 transition-colors cursor-pointer">
                     <Plus className="w-3.5 h-3.5" />
                     <span>New project</span>
                   </div>
@@ -282,55 +282,55 @@ export function OveradsHero({ signupHref }: HeroProps) {
               {/* 4 Overads KPI Stat Cards */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* KPI 1: Outstanding */}
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-1.5">
+                <div className="rounded-2xl border border-white/[0.08] bg-[#0e1017] p-4 sm:p-5 shadow-2xs space-y-1.5 hover:border-white/15 transition-colors">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Outstanding</span>
-                    <div className="size-7 rounded-lg bg-rose-50 flex items-center justify-center text-rose-600">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Outstanding</span>
+                    <div className="size-7 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
                       <DollarSign className="size-3.5" />
                     </div>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-light font-mono text-rose-600 tabular-nums">$4,850</div>
-                  <div className="text-xs text-slate-500 truncate">1 overdue invoice</div>
+                  <div className="text-2xl sm:text-3xl font-light font-mono text-rose-400 tabular-nums">$4,850</div>
+                  <div className="text-xs text-slate-400 truncate">1 overdue invoice</div>
                 </div>
 
                 {/* KPI 2: This Month */}
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-1.5">
+                <div className="rounded-2xl border border-white/[0.08] bg-[#0e1017] p-4 sm:p-5 shadow-2xs space-y-1.5 hover:border-white/15 transition-colors">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">This Month</span>
-                    <div className="size-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">This Month</span>
+                    <div className="size-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
                       <Wallet className="size-3.5" />
                     </div>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-light font-mono text-slate-950 tabular-nums">$12,300</div>
-                  <div className="text-xs text-emerald-600 font-semibold flex items-center gap-0.5">
+                  <div className="text-2xl sm:text-3xl font-light font-mono text-white tabular-nums">$12,300</div>
+                  <div className="text-xs text-emerald-400 font-semibold flex items-center gap-0.5">
                     <span>↑ $2,400</span> <span className="text-slate-500 font-normal">vs last month</span>
                   </div>
                 </div>
 
                 {/* KPI 3: Hours This Week */}
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-1.5">
+                <div className="rounded-2xl border border-white/[0.08] bg-[#0e1017] p-4 sm:p-5 shadow-2xs space-y-1.5 hover:border-white/15 transition-colors">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Hours / Wk</span>
-                    <div className="size-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Hours / Wk</span>
+                    <div className="size-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                       <Timer className="size-3.5" />
                     </div>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-light font-mono text-slate-950 tabular-nums">24h 10m</div>
-                  <div className="text-xs text-emerald-600 font-semibold flex items-center gap-0.5">
+                  <div className="text-2xl sm:text-3xl font-light font-mono text-white tabular-nums">24h 10m</div>
+                  <div className="text-xs text-emerald-400 font-semibold flex items-center gap-0.5">
                     <span>↑ 4h 15m</span> <span className="text-slate-500 font-normal">more</span>
                   </div>
                 </div>
 
                 {/* KPI 4: Active Projects */}
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs space-y-1.5">
+                <div className="rounded-2xl border border-white/[0.08] bg-[#0e1017] p-4 sm:p-5 shadow-2xs space-y-1.5 hover:border-white/15 transition-colors">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Active</span>
-                    <div className="size-7 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Active</span>
+                    <div className="size-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
                       <FolderOpen className="size-3.5" />
                     </div>
                   </div>
-                  <div className="text-2xl sm:text-3xl font-light font-mono text-slate-950 tabular-nums">3</div>
-                  <div className="text-xs text-slate-500 truncate">of 4 total</div>
+                  <div className="text-2xl sm:text-3xl font-light font-mono text-white tabular-nums">3</div>
+                  <div className="text-xs text-slate-400 truncate">of 4 total</div>
                 </div>
               </div>
 
@@ -340,7 +340,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
                 {/* Left (7 Cols): Needs Attention Checklist */}
                 <div className="lg:col-span-7 space-y-3">
                   <div className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1.5 font-semibold text-amber-600 uppercase tracking-wider text-[11px]">
+                    <div className="flex items-center gap-1.5 font-semibold text-amber-400 uppercase tracking-wider text-[11px]">
                       <AlertCircle className="size-3.5" />
                       <span>Needs Attention</span>
                     </div>
@@ -348,31 +348,31 @@ export function OveradsHero({ signupHref }: HeroProps) {
                   </div>
 
                   {/* Attention Item 1 */}
-                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-amber-200/80 bg-amber-50/40 p-4 hover:border-amber-300 transition-colors shadow-2xs">
+                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/[0.06] p-4 hover:border-amber-500/40 transition-colors shadow-2xs">
                     <div className="flex items-center gap-3.5 min-w-0">
-                      <div className="size-9 rounded-xl bg-amber-100/80 border border-amber-200 flex items-center justify-center text-amber-700 flex-shrink-0">
+                      <div className="size-9 rounded-xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400 flex-shrink-0">
                         <Send className="size-4" />
                       </div>
                       <div className="min-w-0">
-                        <h5 className="text-sm font-semibold text-slate-900 truncate">Acme Website Redesign</h5>
-                        <p className="text-xs text-slate-500 truncate">No update sent in 7+ days · Acme Corp</p>
+                        <h5 className="text-sm font-semibold text-white truncate">Acme Website Redesign</h5>
+                        <p className="text-xs text-slate-400 truncate">No update sent in 7+ days · Acme Corp</p>
                       </div>
                     </div>
-                    <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-950 text-white text-xs font-medium shadow-xs flex-shrink-0 cursor-pointer hover:bg-slate-800 transition-colors">
+                    <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-slate-950 text-xs font-semibold shadow-xs flex-shrink-0 cursor-pointer hover:bg-slate-100 transition-colors">
                       <span>Send update</span>
                       <ChevronRight className="size-3.5" />
                     </div>
                   </div>
 
                   {/* Attention Item 2: Interactive 1-Click Client Sign-off */}
-                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-indigo-200/80 bg-indigo-50/40 p-4 hover:border-indigo-300 transition-colors shadow-2xs">
+                  <div className="flex items-center justify-between gap-3 rounded-2xl border border-indigo-500/25 bg-indigo-500/[0.06] p-4 hover:border-indigo-500/40 transition-colors shadow-2xs">
                     <div className="flex items-center gap-3.5 min-w-0">
-                      <div className="size-9 rounded-xl bg-indigo-100/80 border border-indigo-200 flex items-center justify-center text-indigo-700 flex-shrink-0">
+                      <div className="size-9 rounded-xl bg-indigo-500/15 border border-indigo-500/25 flex items-center justify-center text-indigo-400 flex-shrink-0">
                         <CheckCircle2 className="size-4" />
                       </div>
                       <div className="min-w-0">
-                        <h5 className="text-sm font-semibold text-slate-900 truncate">Brand Identity Mockup Draft</h5>
-                        <p className="text-xs text-indigo-900/70 truncate">Waiting on client approval · Northstar</p>
+                        <h5 className="text-sm font-semibold text-white truncate">Brand Identity Mockup Draft</h5>
+                        <p className="text-xs text-indigo-300/80 truncate">Waiting on client approval · Northstar</p>
                       </div>
                     </div>
                     <button
@@ -380,8 +380,8 @@ export function OveradsHero({ signupHref }: HeroProps) {
                       onClick={() => setApprovedState(!approvedState)}
                       className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer flex-shrink-0 ${
                         approvedState
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-xs'
+                          ? 'bg-emerald-500 text-white'
+                          : 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-xs'
                       }`}
                     >
                       {approvedState ? (
@@ -402,63 +402,63 @@ export function OveradsHero({ signupHref }: HeroProps) {
                 {/* Right (5 Cols): Live Projects Mini List */}
                 <div className="lg:col-span-5 space-y-3">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold uppercase tracking-wider text-slate-500 text-[11px]">Active Projects</span>
-                    <span className="text-xs text-indigo-600 font-medium hover:underline cursor-pointer">View all →</span>
+                    <span className="font-semibold uppercase tracking-wider text-slate-400 text-[11px]">Active Projects</span>
+                    <span className="text-xs text-indigo-400 font-medium hover:underline cursor-pointer">View all →</span>
                   </div>
 
-                  <div className="rounded-2xl border border-slate-200 bg-white divide-y divide-slate-100 shadow-2xs overflow-hidden">
+                  <div className="rounded-2xl border border-white/[0.08] bg-[#0e1017] divide-y divide-white/[0.06] shadow-2xs overflow-hidden">
                     {/* Project Row 1 */}
-                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-slate-50/80 transition-colors">
+                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-white/[0.03] transition-colors">
                       <div className="min-w-0 flex items-center gap-3">
-                        <span className="size-2 rounded-full bg-indigo-600 flex-shrink-0" />
+                        <span className="size-2 rounded-full bg-indigo-500 flex-shrink-0" />
                         <div className="min-w-0">
-                          <span className="block text-xs font-semibold text-slate-900 truncate">Acme Redesign</span>
+                          <span className="block text-xs font-semibold text-white truncate">Acme Redesign</span>
                           <span className="block text-[11px] text-slate-400 truncate">Acme Corp</span>
                         </div>
                       </div>
-                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 flex-shrink-0">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex-shrink-0">
                         On track
                       </span>
                     </div>
 
                     {/* Project Row 2 */}
-                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-slate-50/80 transition-colors">
+                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-white/[0.03] transition-colors">
                       <div className="min-w-0 flex items-center gap-3">
-                        <span className="size-2 rounded-full bg-emerald-500 flex-shrink-0" />
+                        <span className="size-2 rounded-full bg-emerald-400 flex-shrink-0" />
                         <div className="min-w-0">
-                          <span className="block text-xs font-semibold text-slate-900 truncate">Stripe Billing API</span>
+                          <span className="block text-xs font-semibold text-white truncate">Stripe Billing API</span>
                           <span className="block text-[11px] text-slate-400 truncate">Voxel Labs</span>
                         </div>
                       </div>
-                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono flex-shrink-0">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 font-mono flex-shrink-0">
                         $3,200 Paid
                       </span>
                     </div>
 
                     {/* Project Row 3 */}
-                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-slate-50/80 transition-colors">
+                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-white/[0.03] transition-colors">
                       <div className="min-w-0 flex items-center gap-3">
-                        <span className="size-2 rounded-full bg-amber-500 flex-shrink-0" />
+                        <span className="size-2 rounded-full bg-amber-400 flex-shrink-0" />
                         <div className="min-w-0">
-                          <span className="block text-xs font-semibold text-slate-900 truncate">Northstar Brand</span>
+                          <span className="block text-xs font-semibold text-white truncate">Northstar Brand</span>
                           <span className="block text-[11px] text-slate-400 truncate">Northstar Co</span>
                         </div>
                       </div>
-                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200 flex-shrink-0">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/15 text-amber-400 border border-amber-500/30 flex-shrink-0">
                         Update due
                       </span>
                     </div>
 
                     {/* Project Row 4 */}
-                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-slate-50/80 transition-colors">
+                    <div className="flex items-center justify-between gap-2 p-3.5 hover:bg-white/[0.03] transition-colors">
                       <div className="min-w-0 flex items-center gap-3">
-                        <span className="size-2 rounded-full bg-violet-500 flex-shrink-0" />
+                        <span className="size-2 rounded-full bg-violet-400 flex-shrink-0" />
                         <div className="min-w-0">
-                          <span className="block text-xs font-semibold text-slate-900 truncate">SaaS Client Portal</span>
+                          <span className="block text-xs font-semibold text-white truncate">SaaS Client Portal</span>
                           <span className="block text-[11px] text-slate-400 truncate">Acme Ventures</span>
                         </div>
                       </div>
-                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-violet-50 text-violet-700 border border-violet-200 flex-shrink-0">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-violet-500/15 text-violet-300 border border-violet-500/30 flex-shrink-0">
                         Milestone 3
                       </span>
                     </div>
@@ -468,21 +468,21 @@ export function OveradsHero({ signupHref }: HeroProps) {
               </div>
 
               {/* Bottom Quick Strip: Recent Cash Flow / Paid Invoices Bar */}
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="rounded-2xl border border-white/[0.08] bg-[#0e1017] p-4.5 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-3">
-                  <div className="size-8 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 flex-shrink-0">
+                  <div className="size-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 flex-shrink-0">
                     <CheckCircle2 className="size-4" />
                   </div>
                   <div>
-                    <span className="font-semibold text-slate-900">Weekly Revenue Velocity: </span>
-                    <span className="text-slate-500">3 invoices settled via Stripe this week</span>
+                    <span className="font-semibold text-white">Weekly Revenue Velocity: </span>
+                    <span className="text-slate-400">3 invoices settled via Stripe this week</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 self-end sm:self-auto font-mono">
-                  <span className="text-emerald-600 font-semibold bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/60">
+                  <span className="text-emerald-400 font-semibold bg-emerald-500/15 px-2.5 py-1 rounded-lg border border-emerald-500/30">
                     +$5,600.00 MTD
                   </span>
-                  <span className="text-[11px] text-indigo-600 font-sans hover:underline cursor-pointer">
+                  <span className="text-[11px] text-indigo-400 font-sans hover:underline cursor-pointer">
                     View Invoices →
                   </span>
                 </div>
