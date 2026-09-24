@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import {
   ArrowUpRight, Check, CheckCircle2, Lock, DollarSign, TrendingUp,
@@ -74,36 +73,48 @@ export function OveradsHero({ signupHref }: HeroProps) {
       <section
         id="hero-pin"
         ref={sectionRef}
-        className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-5 pt-28 pb-16 sm:px-8 md:pt-32 bg-[#08090d]"
+        className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-5 pt-28 pb-16 sm:px-8 md:pt-32 bg-[#090A0F]"
       >
-        {/* ── 1. BACKGROUND HERO LUXURY DARK ARTWORK ── */}
-        <div aria-hidden="true" className="pointer-events-none absolute -inset-16 z-0 overflow-hidden">
-          <Image
-            src="/hero-dark.jpg"
-            alt="Hero background"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-center select-none opacity-90 scale-105"
-          />
-        </div>
-
-        {/* Ambient Dark Mode Radial Glow & Contrast Mask */}
+        {/* ── 1. BACKGROUND: LINEAR / VERCEL STYLE ENGINEERED DARK CANVAS ── */}
+        
+        {/* Subtle Engineered Geometric Grid */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_100%_75%_at_50%_35%,rgba(8,9,13,0.15)_0%,rgba(8,9,13,0.55)_55%,rgba(9,10,15,0.92)_100%)]"
+          className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_55%_at_50%_25%,#000_50%,transparent_100%)]"
         />
 
-        {/* Top subtle indigo glow */}
+        {/* Precision Micro Dot Matrix Texture */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[280px] bg-indigo-500/15 blur-[140px] rounded-full z-0"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_25%,#000_35%,transparent_100%)]"
         />
 
-        {/* Bottom Seamless Fade into Dark Section */}
+        {/* Top Primary Indigo / Violet Ambient Spotlight */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-48 bg-gradient-to-b from-transparent via-[#090A0F]/60 to-[#090A0F]"
+          className="pointer-events-none absolute -top-44 left-1/2 -translate-x-1/2 h-[550px] w-[1000px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.22)_0%,rgba(139,92,246,0.1)_35%,rgba(9,10,15,0)_70%)] blur-[90px] z-0"
+        />
+
+        {/* Mid-Canvas Ambient Accent Aura (behind showcase) */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[40%] left-1/2 -translate-x-1/2 h-[420px] w-[900px] -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.08)_0%,rgba(99,102,241,0.07)_40%,transparent_70%)] blur-[100px] z-0"
+        />
+
+        {/* Top Glowing Horizon Beam */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent z-0"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-80 h-1 bg-gradient-to-r from-transparent via-indigo-400/60 to-transparent blur-xs z-0"
+        />
+
+        {/* Bottom Seamless Cascade into Next Dark Section */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-40 bg-gradient-to-b from-transparent to-[#090A0F]"
         />
 
         {/* ── 2. FOREGROUND HERO CONTENT ── */}
@@ -145,7 +156,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
         {/* ── 3. DASHBOARD WORKSPACE SHOWCASE (The Real Frevio Dashboard) ── */}
         <div
           ref={mockupRef}
-          className="relative z-10 mt-14 w-full max-w-6xl xl:max-w-7xl mx-auto rounded-3xl border border-slate-200/90 bg-white shadow-[0_35px_120px_-20px_rgba(0,0,0,0.24)] ring-1 ring-slate-900/5 overflow-hidden text-left"
+          className="relative z-10 mt-14 w-full max-w-6xl xl:max-w-7xl mx-auto rounded-3xl border border-white/15 bg-white shadow-[0_0_120px_-20px_rgba(99,102,241,0.22),0_40px_100px_-25px_rgba(0,0,0,0.85)] ring-1 ring-white/10 overflow-hidden text-left"
         >
           {/* Top Window Title Bar */}
           <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50/90 px-6 py-3.5 select-none">
