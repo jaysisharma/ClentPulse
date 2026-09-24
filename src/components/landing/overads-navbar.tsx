@@ -25,14 +25,14 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
         {/* Far Left: Logo */}
         <div className="pointer-events-auto flex items-center z-10">
           <Link href="/" className="inline-flex items-center transition-opacity hover:opacity-85">
-            <Logo className="w-6 h-6 text-slate-950" />
-            <span className="ml-2.5 font-bold text-base tracking-tight text-slate-950 font-mono">Frevio</span>
+            <Logo className="w-6 h-6" />
+            <span className="ml-2.5 font-bold text-base tracking-tight text-white font-mono">Frevio</span>
           </Link>
         </div>
 
         {/* Center: Navigation Links Pill (Dead Center via Absolute Positioning) */}
-        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 rounded-full bg-white/90 py-1.5 px-3.5 shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-slate-200/80 backdrop-blur-xl pointer-events-auto z-10">
-          <nav className="flex items-center gap-0.5 text-sm text-slate-600">
+        <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-1 rounded-full bg-[#0e1017]/80 py-1.5 px-3.5 shadow-[0_8px_32px_rgba(0,0,0,0.36)] border border-white/10 backdrop-blur-xl pointer-events-auto z-10">
+          <nav className="flex items-center gap-0.5 text-sm text-slate-300">
             {/* Features Dropdown */}
             <div
               className="relative"
@@ -42,7 +42,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
               <button
                 type="button"
                 onClick={() => setProductMenuOpen(!productMenuOpen)}
-                className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-slate-700 hover:text-slate-950 hover:bg-slate-100/70 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               >
                 <span>Features</span>
                 <ChevronDown className={`size-3 text-slate-400 transition-transform duration-200 ${productMenuOpen ? 'rotate-180' : ''}`} />
@@ -50,60 +50,60 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
 
               {productMenuOpen && (
                 <div className="absolute -left-6 top-full pt-2 z-50 w-[420px] animate-in fade-in slide-in-from-top-1 duration-150">
-                  <div className="rounded-2xl border border-slate-200 bg-white/98 backdrop-blur-2xl p-3 shadow-2xl ring-1 ring-slate-900/5 grid grid-cols-2 gap-2">
+                  <div className="rounded-2xl border border-white/10 bg-[#0e1017]/98 backdrop-blur-2xl p-3 shadow-2xl ring-1 ring-white/5 grid grid-cols-2 gap-2 text-slate-200">
                     <Link
                       href="#presence"
                       onClick={() => setProductMenuOpen(false)}
-                      className="p-2.5 rounded-xl hover:bg-slate-50 transition-colors group flex items-start gap-2.5"
+                      className="p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-2.5"
                     >
-                      <div className="w-7 h-7 rounded-lg bg-emerald-50 border border-emerald-200/80 flex items-center justify-center flex-shrink-0 text-emerald-600">
+                      <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 text-emerald-400">
                         <Radio className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-slate-900 group-hover:text-emerald-600 transition-colors">Live Presence</div>
-                        <div className="text-[11px] text-slate-500 leading-tight mt-0.5">Real-time VS Code pulse</div>
+                        <div className="text-xs font-semibold text-slate-200 group-hover:text-emerald-400 transition-colors">Live Presence</div>
+                        <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Real-time VS Code pulse</div>
                       </div>
                     </Link>
 
                     <Link
                       href="#screens"
                       onClick={() => setProductMenuOpen(false)}
-                      className="p-2.5 rounded-xl hover:bg-slate-50 transition-colors group flex items-start gap-2.5"
+                      className="p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-2.5"
                     >
-                      <div className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-200/80 flex items-center justify-center flex-shrink-0 text-indigo-600">
+                      <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-400">
                         <SlidersHorizontal className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors">Client Portal</div>
-                        <div className="text-[11px] text-slate-500 leading-tight mt-0.5">Passcode status pages</div>
+                        <div className="text-xs font-semibold text-slate-200 group-hover:text-indigo-400 transition-colors">Client Portal</div>
+                        <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Passcode status pages</div>
                       </div>
                     </Link>
 
                     <Link
                       href="#bento"
                       onClick={() => setProductMenuOpen(false)}
-                      className="p-2.5 rounded-xl hover:bg-slate-50 transition-colors group flex items-start gap-2.5"
+                      className="p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-2.5"
                     >
-                      <div className="w-7 h-7 rounded-lg bg-amber-50 border border-amber-200/80 flex items-center justify-center flex-shrink-0 text-amber-600">
+                      <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0 text-amber-400">
                         <Sparkles className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-slate-900 group-hover:text-amber-600 transition-colors">Stripe Invoicing</div>
-                        <div className="text-[11px] text-slate-500 leading-tight mt-0.5">Instant online payment</div>
+                        <div className="text-xs font-semibold text-slate-200 group-hover:text-amber-400 transition-colors">Stripe Invoicing</div>
+                        <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Instant online payment</div>
                       </div>
                     </Link>
 
                     <Link
                       href="#integrations"
                       onClick={() => setProductMenuOpen(false)}
-                      className="p-2.5 rounded-xl hover:bg-slate-50 transition-colors group flex items-start gap-2.5"
+                      className="p-2.5 rounded-xl hover:bg-white/5 transition-colors group flex items-start gap-2.5"
                     >
-                      <div className="w-7 h-7 rounded-lg bg-violet-50 border border-violet-200/80 flex items-center justify-center flex-shrink-0 text-violet-600">
+                      <div className="w-7 h-7 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0 text-violet-400">
                         <Eye className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <div className="text-xs font-semibold text-slate-900 group-hover:text-violet-600 transition-colors">Approvals & Sign</div>
-                        <div className="text-[11px] text-slate-500 leading-tight mt-0.5">Deliverable sign-offs</div>
+                        <div className="text-xs font-semibold text-slate-200 group-hover:text-violet-400 transition-colors">Approvals & Sign</div>
+                        <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Deliverable sign-offs</div>
                       </div>
                     </Link>
                   </div>
@@ -113,42 +113,42 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
 
             <a
               href="#workflows"
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100/70 transition-colors"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
             >
               Workflows
             </a>
 
             <a
               href="#screens"
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100/70 transition-colors"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
             >
               Inside
             </a>
 
             <a
               href="#comparison"
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100/70 transition-colors"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
             >
               Comparison
             </a>
 
             <a
               href="#testimonials"
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100/70 transition-colors"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
             >
               Testimonials
             </a>
 
             <a
               href="#pricing"
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100/70 transition-colors"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
             >
               Pricing
             </a>
 
             <a
               href="#faq"
-              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100/70 transition-colors"
+              className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
             >
               FAQ
             </a>
@@ -160,7 +160,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
           {isLoggedIn ? (
             <Link
               href="/dashboard"
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-slate-950 font-medium text-white hover:bg-slate-800 h-9 px-4 text-sm transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-white font-medium text-slate-950 hover:bg-white/90 h-9 px-4 text-sm transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
             >
               <span>Dashboard</span>
               <ArrowUpRight className="size-3.5" />
@@ -169,14 +169,14 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
             <>
               <Link
                 href="/auth/login"
-                className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-slate-700 hover:text-slate-950 hover:bg-white/80 transition-colors"
+                className="inline-flex h-9 items-center rounded-full px-3 text-sm font-medium text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
               >
                 Sign in
               </Link>
 
               <Link
                 href={signupHref}
-                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-slate-950 font-medium text-white hover:bg-slate-800 h-9 px-4 text-sm transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center gap-1.5 rounded-full bg-white font-medium text-slate-950 hover:bg-white/90 h-9 px-4 text-sm transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
               >
                 <span>Start free</span>
                 <ArrowUpRight className="size-3.5" />
@@ -186,16 +186,16 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
         </div>
 
         {/* Mobile Header Bar */}
-        <div className="flex w-full items-center justify-between md:hidden pointer-events-auto rounded-full border border-slate-200/80 bg-white/95 backdrop-blur-xl px-4 py-2 shadow-lg">
+        <div className="flex w-full items-center justify-between md:hidden pointer-events-auto rounded-full border border-white/10 bg-[#0e1017]/90 backdrop-blur-xl px-4 py-2 shadow-lg">
           <Link href="/" className="inline-flex items-center gap-2">
-            <Logo className="w-5 h-5 text-slate-950" />
-            <span className="font-bold text-sm text-slate-950 font-mono">Frevio</span>
+            <Logo className="w-5 h-5" />
+            <span className="font-bold text-sm text-white font-mono">Frevio</span>
           </Link>
 
           <div className="flex items-center gap-2">
             <Link
               href={isLoggedIn ? '/dashboard' : signupHref}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-950 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+              className="inline-flex items-center gap-1 rounded-full bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-950 hover:bg-white/90"
             >
               <span>{isLoggedIn ? 'Dashboard' : 'Start free'}</span>
               <ArrowUpRight className="size-3" />
@@ -203,7 +203,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer"
+              className="inline-flex size-9 items-center justify-center rounded-full bg-white/10 text-slate-200 hover:bg-white/20 cursor-pointer"
               aria-label="Open menu"
             >
               {mobileMenuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
@@ -215,21 +215,21 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden mx-4 mt-2 rounded-2xl border border-slate-200 bg-white/98 backdrop-blur-2xl p-4 shadow-2xl space-y-3 pointer-events-auto animate-in fade-in duration-150">
-          <nav className="flex flex-col space-y-1 text-sm text-slate-700">
-            <a href="#workflows" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100">Workflows</a>
-            <a href="#screens" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100">Inside</a>
-            <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100">Comparison</a>
-            <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100">Testimonials</a>
-            <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100">Pricing</a>
-            <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100">FAQ</a>
+        <div className="md:hidden mx-4 mt-2 rounded-2xl border border-white/10 bg-[#0e1017]/98 backdrop-blur-2xl p-4 shadow-2xl space-y-3 pointer-events-auto animate-in fade-in duration-150">
+          <nav className="flex flex-col space-y-1 text-sm text-slate-300">
+            <a href="#workflows" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-white/5 hover:text-white">Workflows</a>
+            <a href="#screens" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-white/5 hover:text-white">Inside</a>
+            <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-white/5 hover:text-white">Comparison</a>
+            <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-white/5 hover:text-white">Testimonials</a>
+            <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-white/5 hover:text-white">Pricing</a>
+            <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-white/5 hover:text-white">FAQ</a>
           </nav>
-          <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+          <div className="pt-2 border-t border-white/10 flex flex-col gap-2">
             {isLoggedIn ? (
               <Link
                 href="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-center py-2.5 rounded-xl text-xs font-semibold bg-slate-950 text-white"
+                className="text-center py-2.5 rounded-xl text-xs font-semibold bg-white text-slate-950"
               >
                 Go to Dashboard
               </Link>
@@ -238,14 +238,14 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
                 <Link
                   href="/auth/login"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-center py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-100"
+                  className="text-center py-2 rounded-xl text-xs font-medium text-slate-300 hover:bg-white/5 hover:text-white"
                 >
                   Sign in
                 </Link>
                 <Link
                   href={signupHref}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-center py-2.5 rounded-xl text-xs font-semibold bg-slate-950 text-white"
+                  className="text-center py-2.5 rounded-xl text-xs font-semibold bg-white text-slate-950"
                 >
                   Start free
                 </Link>
