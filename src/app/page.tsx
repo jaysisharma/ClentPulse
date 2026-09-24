@@ -18,7 +18,7 @@ export default async function LandingPage() {
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
   return (
-    <div className="min-h-screen bg-[#07080D] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen bg-white dark:bg-[#07080D] font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-indigo-500/20 dark:selection:bg-indigo-500/30 selection:text-indigo-900 dark:selection:text-indigo-200 transition-colors duration-300">
 
       {/* ── 0. Floating Glass Navbar ── */}
       <OveradsNavbar

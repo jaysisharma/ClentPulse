@@ -142,25 +142,25 @@ export function PricingSection({ signupHref }: Props) {
     <section
       ref={containerRef}
       id="pricing"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#090A0F] border-t border-white/[0.08] text-white relative overflow-hidden"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] dark:bg-[#090A0F] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
     >
       {/* Background ambient lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-600/[0.04] rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-600/[0.02] dark:bg-indigo-600/[0.04] rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto space-y-16 relative z-10">
         
         {/* Header */}
         <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
             <span>Pricing</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-white leading-[1.08]">
+          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-slate-950 dark:text-white leading-[1.08]">
             Simple, transparent <br className="hidden sm:inline" />
-            <span className="font-semibold text-slate-200">pricing</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-200">pricing</span>
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-400 font-light leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-light leading-relaxed">
             Start free and upgrade as you grow. No hidden platform charges or surprise fees.
           </p>
         </div>
@@ -172,37 +172,37 @@ export function PricingSection({ signupHref }: Props) {
               key={plan.name}
               className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 relative ${
                 plan.popular
-                  ? 'bg-gradient-to-b from-[#151928] to-[#0e1017] border-2 border-indigo-500/60 shadow-[0_0_50px_-10px_rgba(99,102,241,0.25)] lg:-translate-y-2'
-                  : 'bg-[#0e1017] border border-white/10 shadow-xl hover:border-white/20 hover:-translate-y-1'
+                  ? 'bg-white dark:bg-gradient-to-b dark:from-[#151928] dark:to-[#0e1017] border-2 border-slate-950 dark:border-indigo-500/60 shadow-xl dark:shadow-[0_0_50px_-10px_rgba(99,102,241,0.25)] lg:-translate-y-2 ring-1 ring-slate-950/10 dark:ring-0'
+                  : 'bg-white dark:bg-[#0e1017] border border-slate-200/80 dark:border-white/10 shadow-sm dark:shadow-xl hover:shadow-lg dark:hover:border-white/20 hover:-translate-y-1'
               }`}
             >
               {/* Popular Badge */}
               {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-indigo-600 text-white text-[10px] font-mono font-semibold uppercase tracking-wider flex items-center gap-1 shadow-lg">
-                  <Sparkles className="w-2.5 h-2.5 text-amber-300 animate-pulse" />
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-slate-950 dark:bg-indigo-600 text-white text-[10px] font-mono font-semibold uppercase tracking-wider flex items-center gap-1 shadow-md dark:shadow-lg">
+                  <Sparkles className="w-2.5 h-2.5 text-amber-400 dark:text-amber-300 animate-pulse" />
                   <span>Most popular</span>
                 </div>
               )}
 
               <div className="space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
-                  <p className="text-xs text-slate-400 font-light mt-1 min-h-[32px] leading-relaxed">
+                  <h3 className="text-lg font-semibold text-slate-950 dark:text-white">{plan.name}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1 min-h-[32px] leading-relaxed">
                     {plan.tagline}
                   </p>
                   
                   <div className="flex items-baseline gap-1 mt-4">
-                    <span className="text-4xl font-bold tracking-tight text-white">{plan.price}</span>
+                    <span className="text-4xl font-bold tracking-tight text-slate-950 dark:text-white">{plan.price}</span>
                     <span className="text-xs font-mono text-slate-400">{plan.period}</span>
                   </div>
                 </div>
 
-                <div className="w-full h-px bg-white/[0.08]" />
+                <div className="w-full h-px bg-slate-100 dark:bg-white/[0.08]" />
 
-                <ul className="space-y-2.5 text-xs text-slate-300 font-light">
+                <ul className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300 font-light">
                   {plan.features.map((feat) => (
                     <li key={feat} className="flex items-start gap-2.5">
-                      <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${plan.popular ? 'text-indigo-400' : 'text-slate-500'}`} />
+                      <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${plan.popular ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`} />
                       <span className="leading-snug">{feat}</span>
                     </li>
                   ))}
@@ -214,8 +214,8 @@ export function PricingSection({ signupHref }: Props) {
                   href={plan.ctaHref}
                   className={`w-full py-3 rounded-full text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center active:scale-[0.98] ${
                     plan.popular
-                      ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30'
-                      : 'bg-white/10 hover:bg-white/15 text-white border border-white/10'
+                      ? 'bg-slate-950 hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-500 shadow-md hover:shadow-lg dark:shadow-indigo-600/30'
+                      : 'bg-slate-100 hover:bg-slate-200/80 text-slate-800 dark:bg-white/10 dark:hover:bg-white/15 dark:text-white'
                   }`}
                 >
                   {plan.ctaText}
