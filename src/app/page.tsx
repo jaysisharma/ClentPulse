@@ -18,7 +18,7 @@ export default async function LandingPage() {
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-900 antialiased selection:bg-indigo-500/20 selection:text-indigo-900">
+    <div className="min-h-screen bg-[#07080D] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
 
       {/* ── 0. Floating Glass Navbar ── */}
       <OveradsNavbar
@@ -29,7 +29,7 @@ export default async function LandingPage() {
 
       <main className="flex-1">
 
-        {/* ── 1. Hero: Dark Frevio Dashboard Replica (Preserved) ── */}
+        {/* ── 1. Hero: Dark Frevio Dashboard Replica ── */}
         <OveradsHero signupHref={signupHref} />
 
         {/* ── 2. The Problem: "Your work isn't the problem. Client communication is." ── */}

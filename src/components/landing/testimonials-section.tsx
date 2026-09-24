@@ -94,22 +94,25 @@ export function TestimonialsSection() {
     <section
       ref={containerRef}
       id="testimonials"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-white border-t border-slate-200/80 text-slate-900 overflow-hidden"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#07080D] border-t border-white/[0.08] text-white relative overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto space-y-16">
+      {/* Background ambient lighting */}
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[500px] h-[350px] bg-rose-500/[0.02] rounded-full blur-[140px] pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto space-y-16 relative z-10">
         
         {/* Header */}
         <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-slate-700 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.06] border border-white/10 text-slate-300 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
             <span>Testimonials</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-slate-950 leading-[1.08]">
+          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-white leading-[1.08]">
             Built for freelancers, <br className="hidden sm:inline" />
-            <span className="font-semibold text-slate-900">by freelancers</span>
+            <span className="font-semibold text-slate-200">by freelancers</span>
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-600 font-light leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-400 font-light leading-relaxed">
             Real feedback from independent developers, designers and small studios around the world.
           </p>
         </div>
@@ -119,7 +122,7 @@ export function TestimonialsSection() {
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="p-7 rounded-3xl bg-[#FAFAFC] border border-slate-200/80 shadow-sm flex flex-col justify-between space-y-6 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 relative group"
+              className="p-7 rounded-3xl bg-[#0e1017] border border-white/10 shadow-2xl flex flex-col justify-between space-y-6 hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 relative group"
             >
               {/* Star Rating */}
               <div className="space-y-4">
@@ -129,18 +132,18 @@ export function TestimonialsSection() {
                   ))}
                 </div>
 
-                <p className="text-sm text-slate-600 font-light leading-relaxed">
+                <p className="text-sm text-slate-300 font-light leading-relaxed">
                   &ldquo;{t.quote}&rdquo;
                 </p>
               </div>
 
               {/* Author */}
-              <div className="flex items-center gap-3 pt-4 border-t border-slate-200/60">
+              <div className="flex items-center gap-3 pt-4 border-t border-white/[0.08]">
                 <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-xs ${t.badgeColor} group-hover:scale-110 transition-transform`}>
                   {t.initials}
                 </div>
                 <div>
-                  <div className="font-semibold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">{t.name}</div>
+                  <div className="font-semibold text-white text-sm group-hover:text-indigo-400 transition-colors">{t.name}</div>
                   <div className="text-xs text-slate-400 font-light">{t.role}</div>
                 </div>
               </div>

@@ -119,24 +119,27 @@ export function ProblemSection() {
     <section
       ref={containerRef}
       id="problem"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] border-t border-slate-200/80 text-slate-900 overflow-hidden"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#090A0F] border-t border-white/[0.08] text-white relative overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto">
+      {/* Background ambient lighting */}
+      <div className="absolute top-1/3 left-0 w-[450px] h-[350px] bg-rose-500/[0.03] rounded-full blur-[130px] pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
           {/* Left Column: Problem Copy & Scattered App Badges */}
           <div ref={leftColRef} className="lg:col-span-7 space-y-6 sm:space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200/60 text-rose-600 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
               <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
               <span>The Problem</span>
             </div>
 
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-[-0.03em] text-slate-950 leading-[1.08]">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-[-0.03em] text-white leading-[1.08]">
               Your work isn&apos;t the problem. <br className="hidden sm:inline" />
-              <span className="font-semibold text-slate-900">Client communication is.</span>
+              <span className="font-semibold text-slate-200">Client communication is.</span>
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-600 font-light leading-relaxed max-w-xl">
+            <p className="text-base sm:text-lg text-slate-400 font-light leading-relaxed max-w-xl">
               Project updates, files, feedback, and invoices are scattered everywhere — WhatsApp, email, Drive, Figma, spreadsheets. You spend half your day answering &ldquo;any updates?&rdquo; instead of actually doing the work.
             </p>
 
@@ -147,37 +150,37 @@ export function ProblemSection() {
               </div>
               <div ref={badgesRef} className="flex flex-wrap items-center gap-2.5">
                 {/* WhatsApp */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#131622] border border-white/10 shadow-sm text-xs font-medium text-slate-200 hover:border-white/20 hover:bg-[#181c2b] transition-colors">
                   <WhatsAppIcon className="w-4 h-4 flex-shrink-0" />
                   <span>WhatsApp</span>
                 </div>
 
                 {/* Gmail */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#131622] border border-white/10 shadow-sm text-xs font-medium text-slate-200 hover:border-white/20 hover:bg-[#181c2b] transition-colors">
                   <GmailIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Gmail</span>
                 </div>
 
                 {/* Google Drive */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#131622] border border-white/10 shadow-sm text-xs font-medium text-slate-200 hover:border-white/20 hover:bg-[#181c2b] transition-colors">
                   <GoogleDriveIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Google Drive</span>
                 </div>
 
                 {/* Figma */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#131622] border border-white/10 shadow-sm text-xs font-medium text-slate-200 hover:border-white/20 hover:bg-[#181c2b] transition-colors">
                   <FigmaIcon className="w-3.5 h-4 flex-shrink-0" />
                   <span>Figma</span>
                 </div>
 
                 {/* Notion */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
-                  <NotionIcon className="w-4 h-4 flex-shrink-0 text-slate-900" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#131622] border border-white/10 shadow-sm text-xs font-medium text-slate-200 hover:border-white/20 hover:bg-[#181c2b] transition-colors">
+                  <NotionIcon className="w-4 h-4 flex-shrink-0 text-white" />
                   <span>Notion</span>
                 </div>
 
                 {/* Spreadsheets */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-[#131622] border border-white/10 shadow-sm text-xs font-medium text-slate-200 hover:border-white/20 hover:bg-[#181c2b] transition-colors">
                   <GoogleSheetsIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Spreadsheets</span>
                 </div>
@@ -190,7 +193,7 @@ export function ProblemSection() {
           <div className="lg:col-span-5 flex justify-center">
             <div
               ref={phoneRef}
-              className="w-full max-w-[340px] sm:max-w-[360px] bg-slate-950 p-3 sm:p-3.5 rounded-[44px] shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] border-4 border-slate-800/80 ring-1 ring-white/10 relative"
+              className="w-full max-w-[340px] sm:max-w-[360px] bg-slate-950 p-3 sm:p-3.5 rounded-[44px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-4 border-slate-800/80 ring-1 ring-white/15 relative"
             >
               
               {/* iPhone Dynamic Island */}
