@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Copy, Check, CheckCircle2, CreditCard, Lock, Sparkles, ArrowRight } from 'lucide-react'
+import { Copy, Check, CheckCircle2, Lock } from 'lucide-react'
+import { StripeIcon } from '@/components/ui/brand-icons'
 
 export function HowItWorksSection() {
   const [copied, setCopied] = useState(false)
@@ -168,9 +169,9 @@ export function HowItWorksSection() {
 
               <button
                 type="button"
-                className="w-full py-2 px-3 rounded-xl bg-[#635BFF] hover:bg-[#5349e0] text-white text-xs font-medium flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+                className="w-full py-2.5 px-3 rounded-xl bg-[#635BFF] hover:bg-[#5349e0] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition-colors"
               >
-                <CreditCard className="w-3.5 h-3.5" />
+                <StripeIcon className="w-3.5 h-3.5" />
                 <span>Pay with Stripe</span>
               </button>
             </div>

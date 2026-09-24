@@ -1,6 +1,14 @@
 'use client'
 
-import { MessageSquare, Paperclip, Send, CheckCheck } from 'lucide-react'
+import { Paperclip, Send, CheckCheck } from 'lucide-react'
+import {
+  WhatsAppIcon,
+  GmailIcon,
+  GoogleDriveIcon,
+  FigmaIcon,
+  NotionIcon,
+  GoogleSheetsIcon,
+} from '@/components/ui/brand-icons'
 
 export function ProblemSection() {
   return (
@@ -25,45 +33,45 @@ export function ProblemSection() {
               Project updates, files, feedback, and invoices are scattered everywhere — WhatsApp, email, Drive, Figma, spreadsheets. You spend half your day answering &ldquo;any updates?&rdquo; instead of actually doing the work.
             </p>
 
-            {/* Scattered Tools List */}
+            {/* Scattered Tools List with Real Brand Logos */}
             <div className="pt-2">
               <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400 font-medium mb-3">
                 Scattered across 6+ different channels
               </div>
               <div className="flex flex-wrap items-center gap-2.5">
                 {/* WhatsApp */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-700">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#25D366]" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                  <WhatsAppIcon className="w-4 h-4 flex-shrink-0" />
                   <span>WhatsApp</span>
                 </div>
 
                 {/* Gmail */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-700">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#EA4335]" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                  <GmailIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Gmail</span>
                 </div>
 
                 {/* Google Drive */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-700">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#4285F4]" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                  <GoogleDriveIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Google Drive</span>
                 </div>
 
                 {/* Figma */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-700">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#F24E1E]" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                  <FigmaIcon className="w-3.5 h-4 flex-shrink-0" />
                   <span>Figma</span>
                 </div>
 
                 {/* Notion */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-700">
-                  <span className="w-2.5 h-2.5 rounded-full bg-slate-900" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                  <NotionIcon className="w-4 h-4 flex-shrink-0 text-slate-900" />
                   <span>Notion</span>
                 </div>
 
                 {/* Spreadsheets */}
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-700">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#0F9D58]" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 transition-colors">
+                  <GoogleSheetsIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Spreadsheets</span>
                 </div>
               </div>
