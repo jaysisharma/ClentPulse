@@ -191,10 +191,10 @@ export function ProblemSection() {
           </div>
 
           {/* Right Column: Cascading Notification Cards & "Sounds familiar?" Annotation */}
-          <div className="lg:col-span-5 flex justify-center items-center relative py-6">
+          <div className="lg:col-span-5 flex justify-center lg:justify-end items-center relative py-6 lg:pl-4">
             
             {/* Abstract Smoky Dark Background Aura matching user design */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center lg:justify-end pointer-events-none lg:translate-x-6">
               <div className="w-[310px] sm:w-[370px] lg:w-[410px] h-[430px] sm:h-[470px] bg-gradient-to-br from-black/90 via-slate-950/80 to-slate-900/65 rounded-[52px] shadow-[0_30px_70px_-20px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col items-center pt-3.5">
                 {/* Top subtle device bezel pill */}
                 <div className="w-16 h-1 bg-white/25 rounded-full mb-2" />
@@ -205,12 +205,12 @@ export function ProblemSection() {
             </div>
 
             {/* Relative Container for the Cards and Annotation */}
-            <div className="relative w-full max-w-[360px] sm:max-w-[420px] px-2 py-8 z-10">
+            <div className="relative w-full max-w-[370px] sm:max-w-[450px] px-2 py-8 z-10 lg:translate-x-6">
 
               {/* Handwritten "Sounds familiar?" Annotation & Curved Arrow */}
               <div
                 ref={annotationRef}
-                className="absolute -left-3 sm:-left-10 lg:-left-14 top-1/2 -translate-y-10 flex flex-col items-center z-30 select-none pointer-events-none"
+                className="absolute -left-3 sm:-left-6 lg:-left-10 top-1/2 -translate-y-12 flex flex-col items-center z-30 select-none pointer-events-none"
               >
                 <span
                   style={{ fontFamily: 'var(--font-caveat), cursive' }}
@@ -246,7 +246,7 @@ export function ProblemSection() {
               <div ref={cardsStackRef} className="space-y-3.5 sm:space-y-4">
                 
                 {/* Card 1: WhatsApp */}
-                <div className="notification-card ml-0 mr-auto w-[250px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-2 sm:ml-6 lg:ml-10 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
                     <WhatsAppSquircleIcon className="w-8 h-8 rounded-xl shadow-sm" />
                   </div>
@@ -262,7 +262,7 @@ export function ProblemSection() {
                 </div>
 
                 {/* Card 2: Gmail */}
-                <div className="notification-card ml-6 sm:ml-10 w-[250px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-8 sm:ml-16 lg:ml-22 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
                     <GmailIcon className="w-5 h-5 object-contain" />
                   </div>
@@ -278,7 +278,7 @@ export function ProblemSection() {
                 </div>
 
                 {/* Card 3: Google Drive */}
-                <div className="notification-card ml-12 sm:ml-18 w-[250px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-14 sm:ml-26 lg:ml-34 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
                     <GoogleDriveIcon className="w-5 h-5 object-contain" />
                   </div>
@@ -294,7 +294,7 @@ export function ProblemSection() {
                 </div>
 
                 {/* Card 4: Figma */}
-                <div className="notification-card ml-16 sm:ml-24 w-[250px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-20 sm:ml-34 lg:ml-44 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
                     <FigmaIcon className="w-4 h-5 object-contain" />
                   </div>
