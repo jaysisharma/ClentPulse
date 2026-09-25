@@ -74,32 +74,32 @@ export function OveradsHero({ signupHref }: HeroProps) {
       <section
         id="hero-pin"
         ref={sectionRef}
-        className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-5 pt-28 pb-16 sm:px-8 md:pt-32 bg-[#090A0F]"
+        className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-5 pt-28 pb-16 sm:px-8 md:pt-32 bg-[#FAFAFC] dark:bg-[#090A0F] transition-colors duration-300"
       >
         {/* ── 1. BACKGROUND: LINEAR / VERCEL STYLE ENGINEERED DARK CANVAS ── */}
         
         {/* Subtle Engineered Geometric Grid */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_55%_at_50%_25%,#000_50%,transparent_100%)]"
+          className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.035)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.035)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_70%_55%_at_50%_25%,#000_50%,transparent_100%)]"
         />
 
         {/* Precision Micro Dot Matrix Texture */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_25%,#000_35%,transparent_100%)]"
+          className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(rgba(0,0,0,0.05)_1px,transparent_1px)] dark:bg-[radial-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_25%,#000_35%,transparent_100%)]"
         />
 
         {/* Top Primary Indigo / Violet Ambient Spotlight */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute -top-44 left-1/2 -translate-x-1/2 h-[550px] w-[1000px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.22)_0%,rgba(139,92,246,0.1)_35%,rgba(9,10,15,0)_70%)] blur-[90px] z-0"
+          className="pointer-events-none absolute -top-44 left-1/2 -translate-x-1/2 h-[550px] w-[1000px] rounded-full bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.14)_0%,rgba(139,92,246,0.06)_35%,rgba(250,250,252,0)_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.22)_0%,rgba(139,92,246,0.1)_35%,rgba(9,10,15,0)_70%)] blur-[90px] z-0"
         />
 
         {/* Mid-Canvas Ambient Accent Aura (behind showcase) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute top-[40%] left-1/2 -translate-x-1/2 h-[420px] w-[900px] -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.08)_0%,rgba(99,102,241,0.07)_40%,transparent_70%)] blur-[100px] z-0"
+          className="pointer-events-none absolute top-[40%] left-1/2 -translate-x-1/2 h-[420px] w-[900px] -translate-y-1/2 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.06)_0%,rgba(99,102,241,0.05)_40%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(56,189,248,0.08)_0%,rgba(99,102,241,0.07)_40%,transparent_70%)] blur-[100px] z-0"
         />
 
         {/* Top Glowing Horizon Beam */}
@@ -122,10 +122,10 @@ export function OveradsHero({ signupHref }: HeroProps) {
         <div className="relative z-10 flex w-full max-w-4xl flex-col items-center text-center">
           <h1
             ref={titleRef}
-            className="text-4xl sm:text-6xl md:text-7xl font-light tracking-[-0.025em] leading-[1.15] max-w-4xl text-balance text-white"
+            className="text-4xl sm:text-6xl md:text-7xl font-light tracking-[-0.025em] leading-[1.15] max-w-4xl text-balance text-slate-950 dark:text-white"
           >
             Stop answering{' '}
-            <span className="font-serif italic font-normal text-amber-300">
+            <span className="font-serif italic font-normal text-amber-600 dark:text-amber-300">
               &ldquo;Any updates?&rdquo;
             </span>{' '}
             texts at 11 PM.
@@ -133,7 +133,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
 
           <p
             ref={subtitleRef}
-            className="mt-6 max-w-4xl text-sm font-light leading-relaxed text-white/85 sm:text-base md:text-lg"
+            className="mt-6 max-w-4xl text-sm font-light leading-relaxed text-slate-600 dark:text-white/85 sm:text-base md:text-lg"
           >
             <span className="md:whitespace-nowrap block">
               Frevio gives your clients a single, passcode-locked dashboard to track project milestones, sign agreements,
@@ -146,10 +146,10 @@ export function OveradsHero({ signupHref }: HeroProps) {
           <div ref={ctaRef} className="mt-8 flex items-center justify-center">
             <Link
               href={signupHref}
-              className="inline-flex items-center justify-center gap-2 rounded-full bg-white font-medium text-slate-950 hover:bg-white/90 h-11 px-7 text-sm transition-all hover:scale-[1.02] shadow-xl cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-slate-950 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-white/90 h-11 px-7 text-sm transition-all hover:scale-[1.02] shadow-xl cursor-pointer"
             >
               <span>Start free</span>
-              <ArrowUpRight className="size-4 text-slate-900" />
+              <ArrowUpRight className="size-4 text-white dark:text-slate-900" />
             </Link>
           </div>
         </div>
