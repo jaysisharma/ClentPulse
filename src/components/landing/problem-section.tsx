@@ -210,7 +210,7 @@ export function ProblemSection() {
               {/* Handwritten "Sounds familiar?" Annotation & Curved Arrow */}
               <div
                 ref={annotationRef}
-                className="absolute -left-5 sm:-left-16 lg:-left-28 top-6 sm:top-8 lg:top-10 flex flex-col items-center z-30 select-none pointer-events-none"
+                className="absolute -left-8 sm:-left-20 lg:-left-36 top-16 sm:top-20 lg:top-24 flex flex-col items-center z-30 select-none pointer-events-none"
               >
                 <span
                   style={{ fontFamily: 'var(--font-caveat), cursive' }}
