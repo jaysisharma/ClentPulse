@@ -172,7 +172,7 @@ export function PricingSection({ signupHref }: Props) {
               key={plan.name}
               className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 relative ${
                 plan.popular
-                  ? 'bg-gradient-to-b from-indigo-50/80 via-white to-indigo-50/40 dark:from-[#151928] dark:to-[#0e1017] border-2 border-indigo-600 dark:border-indigo-500/60 shadow-[0_12px_40px_-10px_rgba(99,102,241,0.2)] dark:shadow-[0_0_50px_-10px_rgba(99,102,241,0.25)] lg:-translate-y-2'
+                  ? 'bg-gradient-to-b from-indigo-50/90 via-white to-indigo-50/50 dark:from-[#181d33] dark:via-[#121524] dark:to-[#0c0e18] border-2 border-indigo-600 dark:border-indigo-500/70 shadow-[0_12px_40px_-10px_rgba(99,102,241,0.2)] dark:shadow-[0_0_50px_-10px_rgba(99,102,241,0.35)] lg:-translate-y-2'
                   : 'bg-white dark:bg-[#0e1017] border border-slate-200/90 dark:border-white/10 shadow-xs dark:shadow-xl hover:border-slate-300 dark:hover:border-white/20 hover:-translate-y-1'
               }`}
             >
