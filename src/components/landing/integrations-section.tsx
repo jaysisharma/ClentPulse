@@ -119,7 +119,7 @@ export function IntegrationsSection() {
     <section
       ref={containerRef}
       id="integrations"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-white border-t border-slate-200/80 text-slate-900 relative overflow-hidden"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-white dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[500px] h-[350px] bg-indigo-500/[0.02] rounded-full blur-[140px] pointer-events-none" />
@@ -128,16 +128,16 @@ export function IntegrationsSection() {
         
         {/* Header */}
         <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200/80 text-slate-700 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-white/[0.06] border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-300 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
             <span>Integrations</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-slate-950 leading-[1.08]">
+          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-slate-950 dark:text-white leading-[1.08]">
             Works with the tools <br className="hidden sm:inline" />
-            <span className="font-semibold text-slate-900">you already use</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-200">you already use</span>
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-600 font-light leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-light leading-relaxed">
             Bring everything together. Connect your workflow and let Frevio keep your client updated automatically.
           </p>
         </div>
@@ -149,7 +149,7 @@ export function IntegrationsSection() {
             return (
               <div
                 key={tool.name}
-                className="p-6 rounded-2xl bg-[#FAFAFC] border border-slate-200/80 hover:border-slate-300 hover:shadow-xl hover:bg-white hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4 group cursor-default"
+                className="p-6 rounded-2xl bg-[#FAFAFC] dark:bg-[#0e1017] border border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-xl dark:hover:shadow-2xl hover:bg-white dark:hover:bg-[#121520] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4 group cursor-default"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -157,16 +157,16 @@ export function IntegrationsSection() {
                       <Icon className="w-full h-full object-contain" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">{tool.name}</h3>
-                      <div className="text-[11px] font-mono text-slate-400">{tool.role}</div>
+                      <h3 className="font-semibold text-slate-900 dark:text-white text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{tool.name}</h3>
+                      <div className="text-[11px] font-mono text-slate-400 dark:text-slate-400">{tool.role}</div>
                     </div>
                   </div>
-                  <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60 font-semibold">
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-500/20 font-semibold">
                     Connected
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-500 font-light leading-relaxed">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
                   {tool.desc}
                 </p>
               </div>

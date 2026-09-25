@@ -120,7 +120,7 @@ export function ProblemSection() {
     <section
       ref={containerRef}
       id="problem"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] border-t border-slate-200/80 text-slate-900 relative overflow-hidden"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-white dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/3 left-0 w-[450px] h-[350px] bg-rose-500/[0.04] rounded-full blur-[130px] pointer-events-none" />
@@ -130,58 +130,58 @@ export function ProblemSection() {
           
           {/* Left Column: Problem Copy & Scattered App Badges */}
           <div ref={leftColRef} className="lg:col-span-7 space-y-6 sm:space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200/60 text-rose-600 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
               <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
               <span>The Problem</span>
             </div>
 
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-[-0.03em] text-slate-950 leading-[1.08]">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-[-0.03em] text-slate-950 dark:text-white leading-[1.08]">
               Your work isn&apos;t the problem. <br className="hidden sm:inline" />
-              <span className="font-semibold text-slate-900">Client communication is.</span>
+              <span className="font-semibold text-slate-900 dark:text-slate-200">Client communication is.</span>
             </h2>
 
-            <p className="text-base sm:text-lg text-slate-600 font-light leading-relaxed max-w-xl">
+            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-light leading-relaxed max-w-xl">
               Project updates, files, feedback, and invoices are scattered everywhere — WhatsApp, email, Drive, Figma, spreadsheets. You spend half your day answering &ldquo;any updates?&rdquo; instead of actually doing the work.
             </p>
 
             {/* Scattered Tools List with Real Brand Logos */}
             <div className="pt-2">
-              <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400 font-medium mb-3">
+              <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500 font-medium mb-3">
                 Scattered across 6+ different channels
               </div>
               <div ref={badgesRef} className="flex flex-wrap items-center gap-2.5">
                 {/* WhatsApp */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 hover:shadow-md transition-all">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
                   <WhatsAppIcon className="w-4 h-4 flex-shrink-0" />
                   <span>WhatsApp</span>
                 </div>
 
                 {/* Gmail */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 hover:shadow-md transition-all">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
                   <GmailIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Gmail</span>
                 </div>
 
                 {/* Google Drive */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 hover:shadow-md transition-all">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
                   <GoogleDriveIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Google Drive</span>
                 </div>
 
                 {/* Figma */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 hover:shadow-md transition-all">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
                   <FigmaIcon className="w-3.5 h-4 flex-shrink-0" />
                   <span>Figma</span>
                 </div>
 
                 {/* Notion */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 hover:shadow-md transition-all">
-                  <NotionIcon className="w-4 h-4 flex-shrink-0 text-slate-900" />
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
+                  <NotionIcon className="w-4 h-4 flex-shrink-0 text-slate-900 dark:text-white" />
                   <span>Notion</span>
                 </div>
 
                 {/* Spreadsheets */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white border border-slate-200/80 shadow-sm text-xs font-medium text-slate-800 hover:border-slate-300 hover:shadow-md transition-all">
+                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
                   <GoogleSheetsIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Spreadsheets</span>
                 </div>
@@ -214,14 +214,14 @@ export function ProblemSection() {
               >
                 <span
                   style={{ fontFamily: 'var(--font-caveat), cursive' }}
-                  className="text-2xl sm:text-3xl text-[#1a4036] font-bold tracking-wide -rotate-6 whitespace-nowrap drop-shadow-sm"
+                  className="text-2xl sm:text-3xl text-[#1a4036] dark:text-emerald-400 font-bold tracking-wide -rotate-6 whitespace-nowrap drop-shadow-sm"
                 >
                   Sounds familiar?
                 </span>
                 
                 {/* Hand-drawn curved arrow looping downwards & pointing right */}
                 <svg
-                  className="w-10 h-14 sm:w-12 sm:h-16 text-[#1a4036] mt-0.5 -rotate-3 overflow-visible"
+                  className="w-10 h-14 sm:w-12 sm:h-16 text-[#1a4036] dark:text-emerald-400 mt-0.5 -rotate-3 overflow-visible"
                   viewBox="0 0 46 62"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -246,64 +246,64 @@ export function ProblemSection() {
               <div ref={cardsStackRef} className="space-y-3.5 sm:space-y-4">
                 
                 {/* Card 1: WhatsApp */}
-                <div className="notification-card ml-2 sm:ml-6 lg:ml-10 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-2 sm:ml-6 lg:ml-10 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
                     <WhatsAppSquircleIcon className="w-8 h-8 rounded-xl shadow-sm" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 tracking-tight">Client</span>
+                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white tracking-tight">Client</span>
                       <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">10:24 PM</span>
                     </div>
-                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 tracking-tight leading-snug mt-0.5 truncate">
+                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 tracking-tight leading-snug mt-0.5 truncate">
                       Hey! Any updates? 👀
                     </p>
                   </div>
                 </div>
 
                 {/* Card 2: Gmail */}
-                <div className="notification-card ml-8 sm:ml-16 lg:ml-22 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
+                <div className="notification-card ml-8 sm:ml-16 lg:ml-22 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
                     <GmailIcon className="w-5 h-5 object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 tracking-tight">Client</span>
+                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white tracking-tight">Client</span>
                       <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">Yesterday</span>
                     </div>
-                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 tracking-tight leading-snug mt-0.5 truncate">
+                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 tracking-tight leading-snug mt-0.5 truncate">
                       Can you share the latest design?
                     </p>
                   </div>
                 </div>
 
                 {/* Card 3: Google Drive */}
-                <div className="notification-card ml-14 sm:ml-26 lg:ml-34 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
+                <div className="notification-card ml-14 sm:ml-26 lg:ml-34 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
                     <GoogleDriveIcon className="w-5 h-5 object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 tracking-tight">Client</span>
+                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white tracking-tight">Client</span>
                       <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">2 days ago</span>
                     </div>
-                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 tracking-tight leading-snug mt-0.5 truncate">
+                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 tracking-tight leading-snug mt-0.5 truncate">
                       Where&apos;s the final file?
                     </p>
                   </div>
                 </div>
 
                 {/* Card 4: Figma */}
-                <div className="notification-card ml-20 sm:ml-34 lg:ml-44 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
+                <div className="notification-card ml-20 sm:ml-34 lg:ml-44 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
                     <FigmaIcon className="w-4 h-5 object-contain" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 tracking-tight">Client</span>
+                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white tracking-tight">Client</span>
                       <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">3 days ago</span>
                     </div>
-                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 tracking-tight leading-snug mt-0.5 truncate">
+                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 tracking-tight leading-snug mt-0.5 truncate">
                       Can I see the revisions?
                     </p>
                   </div>

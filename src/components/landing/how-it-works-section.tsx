@@ -95,7 +95,7 @@ export function HowItWorksSection() {
     <section
       ref={containerRef}
       id="how-it-works"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] border-t border-slate-200/80 text-slate-900 relative overflow-hidden"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-white dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[350px] bg-indigo-600/[0.03] rounded-full blur-[140px] pointer-events-none" />
@@ -104,16 +104,16 @@ export function HowItWorksSection() {
         
         {/* Section Header */}
         <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/60 text-indigo-600 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
             <span>See How It Works</span>
           </div>
 
-          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-slate-950 leading-[1.08]">
+          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-slate-950 dark:text-white leading-[1.08]">
             A simple experience <br className="hidden sm:inline" />
-            <span className="font-semibold text-slate-900">for both sides</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-200">for both sides</span>
           </h2>
 
-          <p className="text-base sm:text-lg text-slate-600 font-light leading-relaxed">
+          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-light leading-relaxed">
             Zero client training. Zero software for them to install. Just one living link where everything lives from kickoff to final payout.
           </p>
         </div>
@@ -124,30 +124,30 @@ export function HowItWorksSection() {
           {/* ────────────────────────────────────────────── */}
           {/* STEP 1: You send a link */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-[#FAFAFC] dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold group-hover:bg-indigo-600 transition-colors">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-mono text-xs font-semibold group-hover:bg-indigo-600 transition-colors">
                   1
                 </span>
                 <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 01</span>
               </div>
-              <h3 className="text-xl font-semibold text-slate-950 tracking-tight">
+              <h3 className="text-xl font-semibold text-slate-950 dark:text-white tracking-tight">
                 You send a link
               </h3>
-              <p className="text-xs text-slate-500 font-light leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
                 Create a project and share a passcode-protected link with your client.
               </p>
             </div>
 
             {/* Real Product Slice: Share & Passcode Window */}
             <div className="p-5 pt-0">
-              <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-3.5 shadow-inner">
+              <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#131622] p-4 space-y-3.5 shadow-xs dark:shadow-inner">
                 
                 {/* Browser-style address pill */}
-                <div className="flex items-center gap-1.5 pb-1 border-b border-slate-200/60">
+                <div className="flex items-center gap-1.5 pb-1 border-b border-slate-200/60 dark:border-white/10">
                   <div className="w-2 h-2 rounded-full bg-rose-400/80" />
                   <div className="w-2 h-2 rounded-full bg-amber-400/80" />
                   <div className="w-2 h-2 rounded-full bg-emerald-400/80" />
@@ -155,22 +155,22 @@ export function HowItWorksSection() {
                 </div>
 
                 {/* URL Bar with Copy Button */}
-                <div className="flex items-center justify-between bg-white px-3 py-2.5 rounded-xl border border-slate-200 shadow-sm text-xs">
+                <div className="flex items-center justify-between bg-slate-50 dark:bg-[#1a1e2e] px-3 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 shadow-xs text-xs">
                   <div className="flex items-center gap-2 truncate mr-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 animate-pulse" />
-                    <span className="font-mono text-slate-800 text-[11px] truncate">
+                    <span className="font-mono text-slate-800 dark:text-slate-200 text-[11px] truncate">
                       frevio.cloud/p/acme
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-600 hover:text-slate-950 bg-slate-100 hover:bg-slate-200/80 transition-all flex-shrink-0 active:scale-95"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white bg-slate-200/70 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 transition-all flex-shrink-0 active:scale-95"
                   >
                     {copied ? (
                       <>
                         <Check className="w-3 h-3 text-emerald-600 animate-scale-in" />
-                        <span className="text-emerald-700 font-semibold">Copied!</span>
+                        <span className="text-emerald-700 dark:text-emerald-400 font-semibold">Copied!</span>
                       </>
                     ) : (
                       <>
@@ -183,19 +183,19 @@ export function HowItWorksSection() {
 
                 {/* Security Passcode & Status */}
                 <div className="flex items-center justify-between px-1 text-[11px]">
-                  <div className="flex items-center gap-1.5 text-slate-500 font-mono text-[10px]">
+                  <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-mono text-[10px]">
                     <Lock className="w-3 h-3 text-indigo-500" />
-                    <span>Passcode: <strong className="text-slate-700 font-mono">4892</strong></span>
+                    <span>Passcode: <strong className="text-slate-700 dark:text-slate-300 font-mono">4892</strong></span>
                   </div>
-                  <span className="text-[10px] font-medium text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <span className="text-[10px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-100/80 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/20">
                     PIN Protected
                   </span>
                 </div>
 
                 {/* Recipient status */}
-                <div className="pt-1 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-400">
+                <div className="pt-1 border-t border-slate-200/60 dark:border-white/10 flex items-center justify-between text-[10px] text-slate-400">
                   <span>Client access</span>
-                  <span className="text-slate-600 font-medium">No account required</span>
+                  <span className="text-slate-600 dark:text-slate-300 font-medium">No account required</span>
                 </div>
 
               </div>
@@ -206,27 +206,27 @@ export function HowItWorksSection() {
           {/* ────────────────────────────────────────────── */}
           {/* STEP 2: Client views project */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-[#FAFAFC] dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold group-hover:bg-emerald-600 transition-colors">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-mono text-xs font-semibold group-hover:bg-emerald-600 transition-colors">
                   2
                 </span>
                 <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 02</span>
               </div>
-              <h3 className="text-xl font-semibold text-slate-950 tracking-tight">
+              <h3 className="text-xl font-semibold text-slate-950 dark:text-white tracking-tight">
                 Client views project
               </h3>
-              <p className="text-xs text-slate-500 font-light leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
                 They can see progress, deliverables, give feedback and approve work.
               </p>
             </div>
 
             {/* Real Product Slice: Client Portal Milestone & Sign-off */}
             <div className="p-5 pt-0">
-              <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-3.5 shadow-inner">
+              <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#131622] p-4 space-y-3.5 shadow-xs dark:shadow-inner">
                 
                 {/* Milestone Title + Sign-off Pill */}
                 <div className="flex items-center justify-between">
@@ -234,17 +234,17 @@ export function HowItWorksSection() {
                     <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">
                       Deliverable #02
                     </div>
-                    <div className="text-xs font-semibold text-slate-900">
+                    <div className="text-xs font-semibold text-slate-900 dark:text-white">
                       Brand Guidelines v2.4
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => setApproved(!approved)}
-                    className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-all duration-200 shadow-sm active:scale-95 ${
+                    className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-all duration-200 shadow-xs active:scale-95 ${
                       approved
-                        ? 'text-emerald-700 bg-emerald-100/90 border-emerald-200/70'
-                        : 'text-amber-700 bg-amber-100/90 border-amber-200/70'
+                        ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-100/90 dark:bg-emerald-500/10 border-emerald-200/70 dark:border-emerald-500/20'
+                        : 'text-amber-700 dark:text-amber-400 bg-amber-100/90 dark:bg-amber-500/10 border-amber-200/70 dark:border-amber-500/20'
                     }`}
                   >
                     <CheckCircle2 className="w-3 h-3 text-emerald-600" />
@@ -253,30 +253,30 @@ export function HowItWorksSection() {
                 </div>
 
                 {/* Authentic Client Feedback Quote */}
-                <div className="bg-white p-3 rounded-xl border border-slate-200/90 shadow-sm space-y-2 text-xs">
+                <div className="bg-slate-50 dark:bg-[#1a1e2e] p-3 rounded-xl border border-slate-200/90 dark:border-white/10 shadow-xs space-y-2 text-xs">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white text-[10px] font-bold flex items-center justify-center">
                         S
                       </div>
-                      <div className="text-[11px] font-medium text-slate-800">
+                      <div className="text-[11px] font-medium text-slate-800 dark:text-slate-200">
                         Sarah · <span className="text-slate-400 font-normal">Client PM</span>
                       </div>
                     </div>
                     <span className="text-[9px] font-mono text-slate-400">Just now</span>
                   </div>
-                  <p className="text-[11px] text-slate-600 leading-snug pl-1">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug pl-1">
                     &ldquo;This looks great! Approved to move forward. 👍&rdquo;
                   </p>
                 </div>
 
                 {/* Live Progress Bar */}
                 <div className="space-y-1 pt-0.5">
-                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-500">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
                     <span>Sprint Progress</span>
-                    <span className="font-semibold text-slate-700">75% Complete</span>
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">75% Complete</span>
                   </div>
-                  <div className="w-full bg-slate-200/80 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-200/80 dark:bg-white/10 h-1.5 rounded-full overflow-hidden">
                     <div
                       ref={progressBarRef}
                       className="bg-emerald-500 h-full w-[75%] rounded-full transition-all duration-500"
@@ -292,46 +292,46 @@ export function HowItWorksSection() {
           {/* ────────────────────────────────────────────── */}
           {/* STEP 3: Get paid faster */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-white rounded-[28px] border border-slate-200/90 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-[#FAFAFC] dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white font-mono text-xs font-semibold group-hover:bg-[#635BFF] transition-colors">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-mono text-xs font-semibold group-hover:bg-[#635BFF] transition-colors">
                   3
                 </span>
                 <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 03</span>
               </div>
-              <h3 className="text-xl font-semibold text-slate-950 tracking-tight">
+              <h3 className="text-xl font-semibold text-slate-950 dark:text-white tracking-tight">
                 Get paid faster
               </h3>
-              <p className="text-xs text-slate-500 font-light leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
                 Create an invoice and your client can pay securely via Stripe.
               </p>
             </div>
 
             {/* Real Product Slice: Stripe Invoice Card */}
             <div className="p-5 pt-0">
-              <div className="rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 space-y-3.5 shadow-inner">
+              <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#131622] p-4 space-y-3.5 shadow-xs dark:shadow-inner">
                 
                 {/* Invoice ID & Due Tag */}
                 <div className="flex items-center justify-between text-xs">
-                  <div className="font-mono text-[11px] text-slate-600 font-medium">
+                  <div className="font-mono text-[11px] text-slate-600 dark:text-slate-400 font-medium">
                     #INV-0012
                   </div>
-                  <span className="text-[10px] font-mono font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full border border-indigo-200/60">
+                  <span className="text-[10px] font-mono font-semibold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-200/60 dark:border-indigo-500/20">
                     Milestone 2
                   </span>
                 </div>
 
                 {/* Amount Due Card */}
-                <div className="bg-white p-3 rounded-xl border border-slate-200/90 shadow-sm flex items-center justify-between">
+                <div className="bg-slate-50 dark:bg-[#1a1e2e] p-3 rounded-xl border border-slate-200/90 dark:border-white/10 shadow-xs flex items-center justify-between">
                   <div>
                     <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">Total Due</div>
-                    <div className="text-lg font-bold text-slate-950 tracking-tight">$3,200.00</div>
+                    <div className="text-lg font-bold text-slate-950 dark:text-white tracking-tight">$3,200.00</div>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200/60 font-semibold">
+                    <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-500/20 font-semibold">
                       Due on sign-off
                     </span>
                   </div>
@@ -340,7 +340,7 @@ export function HowItWorksSection() {
                 {/* 1-Click Pay with Stripe Button */}
                 <button
                   type="button"
-                  className="w-full py-2.5 px-3 rounded-xl bg-[#635BFF] hover:bg-[#5349e0] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-lg hover:shadow-indigo-500/20 transition-all active:scale-[0.98] group/btn"
+                  className="w-full py-2.5 px-3 rounded-xl bg-[#635BFF] hover:bg-[#5349e0] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs hover:shadow-lg hover:shadow-indigo-500/20 transition-all active:scale-[0.98] group/btn cursor-pointer"
                 >
                   <StripeIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
                   <span>Pay with Stripe</span>
