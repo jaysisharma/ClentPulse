@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Caveat } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PageLoading } from "@/components/page-loading";
@@ -7,6 +7,7 @@ import { AnalyticsTracker } from "@/components/analytics-tracker";
 import { AuthHashHandler } from "@/components/auth-hash-handler";
 
 const inter = Inter({ subsets: ["latin"] });
+const caveat = Caveat({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-caveat" });
 
 export const metadata: Metadata = {
   title: {
@@ -148,7 +149,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={`${inter.className} min-h-full antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors`}>
+      <body className={`${inter.className} ${caveat.variable} min-h-full antialiased bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors`}>
         <PageLoading />
         <ThemeProvider>
           <AnalyticsTracker />

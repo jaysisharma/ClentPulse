@@ -1,9 +1,9 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Paperclip, Send, CheckCheck } from 'lucide-react'
 import {
   WhatsAppIcon,
+  WhatsAppSquircleIcon,
   GmailIcon,
   GoogleDriveIcon,
   FigmaIcon,
@@ -20,8 +20,8 @@ if (typeof window !== 'undefined') {
 export function ProblemSection() {
   const containerRef = useRef<HTMLElement>(null)
   const leftColRef = useRef<HTMLDivElement>(null)
-  const phoneRef = useRef<HTMLDivElement>(null)
-  const chatMessagesRef = useRef<HTMLDivElement>(null)
+  const cardsStackRef = useRef<HTMLDivElement>(null)
+  const annotationRef = useRef<HTMLDivElement>(null)
   const badgesRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -69,19 +69,21 @@ export function ProblemSection() {
         )
       }
 
-      // 3. Phone entrance
-      if (phoneRef.current) {
+      // 3. Cascading notification cards entrance
+      if (cardsStackRef.current) {
+        const cards = cardsStackRef.current.querySelectorAll('.notification-card')
         gsap.fromTo(
-          phoneRef.current,
-          { y: 50, opacity: 0, rotateY: -3 },
+          cards,
+          { y: 40, opacity: 0, scale: 0.94 },
           {
             y: 0,
             opacity: 1,
-            rotateY: 0,
-            duration: 0.9,
+            scale: 1,
+            stagger: 0.15,
+            duration: 0.8,
             ease: 'power3.out',
             scrollTrigger: {
-              trigger: phoneRef.current,
+              trigger: cardsStackRef.current,
               start: 'top 85%',
               once: true,
             },
@@ -89,22 +91,21 @@ export function ProblemSection() {
         )
       }
 
-      // 4. Chat messages sequential arrival
-      if (chatMessagesRef.current) {
-        const bubbles = chatMessagesRef.current.querySelectorAll('.chat-bubble')
+      // 4. "Sounds familiar?" annotation & arrow
+      if (annotationRef.current) {
         gsap.fromTo(
-          bubbles,
-          { y: 20, opacity: 0, scale: 0.95 },
+          annotationRef.current,
+          { opacity: 0, scale: 0.8, rotate: -15 },
           {
-            y: 0,
             opacity: 1,
             scale: 1,
-            stagger: 0.28,
-            duration: 0.6,
-            ease: 'back.out(1.2)',
+            rotate: -6,
+            duration: 0.7,
+            delay: 0.4,
+            ease: 'back.out(1.5)',
             scrollTrigger: {
-              trigger: chatMessagesRef.current,
-              start: 'top 80%',
+              trigger: cardsStackRef.current,
+              start: 'top 85%',
               once: true,
             },
           }
@@ -189,94 +190,122 @@ export function ProblemSection() {
 
           </div>
 
-          {/* Right Column: Realistic iPhone Chat Thread Mockup */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div
-              ref={phoneRef}
-              className="w-full max-w-[340px] sm:max-w-[360px] bg-slate-950 p-3 sm:p-3.5 rounded-[44px] shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-4 border-slate-800/80 ring-1 ring-white/10 relative"
-            >
-              
-              {/* iPhone Dynamic Island */}
-              <div className="absolute top-5 left-1/2 -translate-x-1/2 w-24 h-5 bg-black rounded-full z-20 flex items-center justify-center">
-                <div className="w-2.5 h-2.5 rounded-full bg-[#111] mr-3" />
-                <div className="w-2 h-2 rounded-full bg-[#052e16]/80" />
+          {/* Right Column: Cascading Notification Cards & "Sounds familiar?" Annotation */}
+          <div className="lg:col-span-5 flex justify-center items-center relative py-6">
+            
+            {/* Abstract Smoky Dark Background Aura matching user design */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="w-[310px] sm:w-[370px] lg:w-[410px] h-[430px] sm:h-[470px] bg-gradient-to-br from-black/90 via-slate-950/80 to-slate-900/65 rounded-[52px] shadow-[0_30px_70px_-20px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col items-center pt-3.5">
+                {/* Top subtle device bezel pill */}
+                <div className="w-16 h-1 bg-white/25 rounded-full mb-2" />
+                {/* Soft ambient inner glows */}
+                <div className="absolute -top-10 -right-10 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+              </div>
+            </div>
+
+            {/* Relative Container for the Cards and Annotation */}
+            <div className="relative w-full max-w-[360px] sm:max-w-[420px] px-2 py-8 z-10">
+
+              {/* Handwritten "Sounds familiar?" Annotation & Curved Arrow */}
+              <div
+                ref={annotationRef}
+                className="absolute -left-3 sm:-left-10 lg:-left-14 top-1/2 -translate-y-10 flex flex-col items-center z-30 select-none pointer-events-none"
+              >
+                <span
+                  style={{ fontFamily: 'var(--font-caveat), cursive' }}
+                  className="text-2xl sm:text-3xl text-[#1a4036] font-bold tracking-wide -rotate-6 whitespace-nowrap drop-shadow-sm"
+                >
+                  Sounds familiar?
+                </span>
+                
+                {/* Hand-drawn curved arrow looping downwards & pointing right */}
+                <svg
+                  className="w-10 h-14 sm:w-12 sm:h-16 text-[#1a4036] mt-0.5 -rotate-3 overflow-visible"
+                  viewBox="0 0 46 62"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M14 4 C 10 20, 11 38, 36 50"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M26 49 L 36 50 L 33 40"
+                    stroke="currentColor"
+                    strokeWidth="2.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </div>
 
-              {/* Screen Content */}
-              <div className="bg-[#121b22] text-slate-100 rounded-[34px] overflow-hidden pt-7 pb-4 px-3 sm:px-4 flex flex-col justify-between min-h-[500px]">
+              {/* Cascading Notifications Stack */}
+              <div ref={cardsStackRef} className="space-y-3.5 sm:space-y-4">
                 
-                {/* Chat Top Bar */}
-                <div className="pt-2 pb-3 border-b border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="relative">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center font-bold text-white text-xs">
-                        MK
-                      </div>
-                      <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#121b22]" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-white">Mark · Client</div>
-                      <div className="text-[10px] text-slate-400">Active 2m ago</div>
-                    </div>
+                {/* Card 1: WhatsApp */}
+                <div className="notification-card ml-0 mr-auto w-[250px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <WhatsAppSquircleIcon className="w-8 h-8 rounded-xl shadow-sm" />
                   </div>
-                  <div className="text-[10px] font-mono text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded-full border border-rose-500/20">
-                    11:42 PM
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 tracking-tight">Client</span>
+                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">10:24 PM</span>
+                    </div>
+                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 tracking-tight leading-snug mt-0.5 truncate">
+                      Hey! Any updates? 👀
+                    </p>
                   </div>
                 </div>
 
-                {/* Chat Messages Bubble Stream */}
-                <div ref={chatMessagesRef} className="py-4 space-y-3 flex-1 flex flex-col justify-end">
-                  
-                  {/* Timestamp separator */}
-                  <div className="text-center my-1">
-                    <span className="bg-[#1f2c34] text-[10px] text-slate-400 px-2.5 py-0.5 rounded-md font-mono">
-                      TODAY · 11:42 PM
-                    </span>
+                {/* Card 2: Gmail */}
+                <div className="notification-card ml-6 sm:ml-10 w-[250px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
+                    <GmailIcon className="w-5 h-5 object-contain" />
                   </div>
-
-                  {/* Message 1 */}
-                  <div className="chat-bubble bg-[#202c33] text-slate-100 p-3 rounded-2xl rounded-tl-sm text-xs max-w-[88%] shadow-sm space-y-1">
-                    <p className="leading-snug">Hey! Any updates on the website redesign?</p>
-                    <div className="text-[9px] text-slate-400 text-right">11:42 PM</div>
-                  </div>
-
-                  {/* Message 2 */}
-                  <div className="chat-bubble bg-[#202c33] text-slate-100 p-3 rounded-2xl rounded-tl-sm text-xs max-w-[92%] shadow-sm space-y-1">
-                    <p className="leading-snug">Also, can you share the latest Figma link? Can&apos;t find it in email thread.</p>
-                    <div className="text-[9px] text-slate-400 text-right">11:43 PM</div>
-                  </div>
-
-                  {/* Message 3 */}
-                  <div className="chat-bubble bg-[#202c33] text-slate-100 p-3 rounded-2xl rounded-tl-sm text-xs max-w-[85%] shadow-sm space-y-1">
-                    <p className="leading-snug">When do you think the next milestone will be ready?</p>
-                    <div className="text-[9px] text-slate-400 text-right">11:44 PM</div>
-                  </div>
-
-                  {/* Message 4 */}
-                  <div className="chat-bubble bg-[#202c33] text-slate-100 p-3 rounded-2xl rounded-tl-sm text-xs max-w-[80%] shadow-sm space-y-1 border border-amber-500/20">
-                    <p className="leading-snug font-medium text-amber-200">And where should we pay the invoice?</p>
-                    <div className="text-[9px] text-slate-400 text-right">11:45 PM</div>
-                  </div>
-
-                  {/* Freelancer Stressed Reply Preview */}
-                  <div className="chat-bubble bg-[#005c4b] text-white p-2.5 rounded-2xl rounded-tr-sm text-xs max-w-[80%] self-end shadow-sm space-y-1 mt-1">
-                    <p className="leading-snug text-[11px]">Pulling together links and invoice now...</p>
-                    <div className="flex items-center justify-end gap-1 text-[9px] text-emerald-200">
-                      <span>11:46 PM</span>
-                      <CheckCheck className="w-3 h-3 text-emerald-300" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 tracking-tight">Client</span>
+                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">Yesterday</span>
                     </div>
+                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 tracking-tight leading-snug mt-0.5 truncate">
+                      Can you share the latest design?
+                    </p>
                   </div>
-
                 </div>
 
-                {/* Input Bar */}
-                <div className="pt-2 border-t border-white/10 flex items-center gap-2">
-                  <div className="flex-1 bg-[#2a3942] rounded-full px-3 py-1.5 text-[11px] text-slate-400 flex items-center justify-between">
-                    <span>Type a message...</span>
-                    <Paperclip className="w-3.5 h-3.5 text-slate-400" />
+                {/* Card 3: Google Drive */}
+                <div className="notification-card ml-12 sm:ml-18 w-[250px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
+                    <GoogleDriveIcon className="w-5 h-5 object-contain" />
                   </div>
-                  <div className="w-7 h-7 rounded-full bg-[#00a884] flex items-center justify-center text-white">
-                    <Send className="w-3 h-3" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 tracking-tight">Client</span>
+                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">2 days ago</span>
+                    </div>
+                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 tracking-tight leading-snug mt-0.5 truncate">
+                      Where&apos;s the final file?
+                    </p>
+                  </div>
+                </div>
+
+                {/* Card 4: Figma */}
+                <div className="notification-card ml-16 sm:ml-24 w-[250px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-100/90 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white p-1 flex items-center justify-center shadow-sm border border-slate-100 group-hover:scale-105 transition-transform">
+                    <FigmaIcon className="w-4 h-5 object-contain" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 tracking-tight">Client</span>
+                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">3 days ago</span>
+                    </div>
+                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 tracking-tight leading-snug mt-0.5 truncate">
+                      Can I see the revisions?
+                    </p>
                   </div>
                 </div>
 
