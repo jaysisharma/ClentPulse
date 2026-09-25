@@ -94,7 +94,7 @@ export function TestimonialsSection() {
     <section
       ref={containerRef}
       id="testimonials"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-white dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[500px] h-[350px] bg-rose-500/[0.02] rounded-full blur-[140px] pointer-events-none" />
@@ -122,7 +122,7 @@ export function TestimonialsSection() {
           {testimonials.map((t) => (
             <div
               key={t.name}
-              className="p-7 rounded-3xl bg-[#FAFAFC] dark:bg-[#0e1017] border border-slate-200/80 dark:border-white/10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-none flex flex-col justify-between space-y-6 hover:shadow-xl dark:hover:shadow-2xl hover:border-slate-300 dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 relative group"
+              className="p-7 rounded-3xl bg-white dark:bg-[#0e1017] border border-slate-200/80 dark:border-white/10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] dark:shadow-none flex flex-col justify-between space-y-6 hover:shadow-xl dark:hover:shadow-2xl hover:border-slate-300 dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 relative group"
             >
               {/* Star Rating */}
               <div className="space-y-4">

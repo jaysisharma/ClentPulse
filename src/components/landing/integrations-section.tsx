@@ -119,7 +119,7 @@ export function IntegrationsSection() {
     <section
       ref={containerRef}
       id="integrations"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-white dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[500px] h-[350px] bg-indigo-500/[0.02] rounded-full blur-[140px] pointer-events-none" />
@@ -149,7 +149,7 @@ export function IntegrationsSection() {
             return (
               <div
                 key={tool.name}
-                className="p-6 rounded-2xl bg-[#FAFAFC] dark:bg-[#0e1017] border border-slate-200/80 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-xl dark:hover:shadow-2xl hover:bg-white dark:hover:bg-[#121520] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4 group cursor-default"
+                className="p-6 rounded-2xl bg-white dark:bg-[#0e1017] border border-slate-200/80 dark:border-white/10 shadow-xs dark:shadow-none hover:border-slate-300 dark:hover:border-white/20 hover:shadow-xl dark:hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between space-y-4 group cursor-default"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">

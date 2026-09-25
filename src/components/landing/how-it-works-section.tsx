@@ -95,7 +95,7 @@ export function HowItWorksSection() {
     <section
       ref={containerRef}
       id="how-it-works"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-white dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[350px] bg-indigo-600/[0.03] rounded-full blur-[140px] pointer-events-none" />
@@ -124,7 +124,7 @@ export function HowItWorksSection() {
           {/* ────────────────────────────────────────────── */}
           {/* STEP 1: You send a link */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-[#FAFAFC] dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-white dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">
@@ -206,7 +206,7 @@ export function HowItWorksSection() {
           {/* ────────────────────────────────────────────── */}
           {/* STEP 2: Client views project */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-[#FAFAFC] dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-white dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">
@@ -292,7 +292,7 @@ export function HowItWorksSection() {
           {/* ────────────────────────────────────────────── */}
           {/* STEP 3: Get paid faster */}
           {/* ────────────────────────────────────────────── */}
-          <div className="bg-[#FAFAFC] dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+          <div className="bg-white dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
             
             {/* Step Meta Header */}
             <div className="p-7 pb-5 space-y-2.5">

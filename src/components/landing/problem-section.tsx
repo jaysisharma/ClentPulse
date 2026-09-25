@@ -120,7 +120,7 @@ export function ProblemSection() {
     <section
       ref={containerRef}
       id="problem"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-white dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
+      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/3 left-0 w-[450px] h-[350px] bg-rose-500/[0.04] rounded-full blur-[130px] pointer-events-none" />
