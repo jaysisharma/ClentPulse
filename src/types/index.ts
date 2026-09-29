@@ -48,6 +48,8 @@ export interface Project {
   kpis?: ProjectKpi[] | null
   report_embed_url?: string | null
   report_embed_title?: string | null
+  canvas_embed_url?: string | null
+  canvas_embed_title?: string | null
   live_url?: string | null
   priority?: string | null
   created_at: string

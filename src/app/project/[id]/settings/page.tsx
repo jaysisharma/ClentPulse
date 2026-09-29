@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, use, useRef } from 'react'
+import { useState, useEffect, use, useRef, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { AppLayout } from '@/components/layout/app-layout'
 import { useRouter } from 'next/navigation'
@@ -9,12 +9,13 @@ import {
   ArrowLeft, Check, Trash2, ShieldAlert, Copy, Loader2,
   Key, ShieldCheck, Globe, Zap, Clock, CheckSquare,
   ListChecks, Users, Lock, Settings, LayoutDashboard,
-  BarChart3, Target, Plus, ExternalLink,
+  BarChart3, Target, Plus, ExternalLink, Sparkles, Layout,
 } from 'lucide-react'
 
 import { DarkShell } from '@/components/layout/dark-shell'
 import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
 import { resolveModules, DEFAULT_MODULES } from '@/lib/modules'
+import { parseCanvasEmbedUrl } from '@/lib/canvas-embed'
 import type { WorkspaceModules } from '@/types'
 
 const COLORS = [
@@ -119,8 +120,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [kpis, setKpis] = useState<Array<{ label: string; value: string; trend?: string }>>([])
   const [reportEmbedUrl, setReportEmbedUrl] = useState('')
   const [reportEmbedTitle, setReportEmbedTitle] = useState('Live Performance Report')
+  const [canvasEmbedUrl, setCanvasEmbedUrl] = useState('')
+  const [canvasEmbedTitle, setCanvasEmbedTitle] = useState('Strategy & Canvas')
   const [liveUrl, setLiveUrl] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const parsedCanvas = useMemo(() => parseCanvasEmbedUrl(canvasEmbedUrl), [canvasEmbedUrl])
   const [saved, setSaved] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [duplicating, setDuplicating] = useState(false)
@@ -162,6 +167,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       if (Array.isArray(data.kpis)) setKpis(data.kpis)
       setReportEmbedUrl(data.report_embed_url ?? '')
       setReportEmbedTitle(data.report_embed_title ?? 'Live Performance Report')
+      setCanvasEmbedUrl(data.canvas_embed_url ?? '')
+      setCanvasEmbedTitle(data.canvas_embed_title ?? 'Strategy & Canvas')
       setLiveUrl(data.live_url ?? '')
     })
 
@@ -205,11 +212,13 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       kpis,
       report_embed_url: reportEmbedUrl.trim() || null,
       report_embed_title: reportEmbedTitle.trim() || null,
+      canvas_embed_url: canvasEmbedUrl.trim() || null,
+      canvas_embed_title: canvasEmbedTitle.trim() || null,
       live_url: liveUrl.trim() || null,
     }).eq('id', id)
 
-    // Fallback if live_url column is not yet migrated in Supabase
-    if (err && err.message?.includes('live_url')) {
+    // Fallback if live_url or canvas_embed columns have issues
+    if (err && (err.message?.includes('live_url') || err.message?.includes('canvas_embed'))) {
       const retry = await supabase.from('projects').update({
         project_name: projectName, client_name: clientName,
         client_email: clientEmail || null, color,
@@ -620,6 +629,85 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                             In Looker Studio: click <strong>File &rarr; Embed report &rarr; Enable embedding &rarr; Embed URL</strong> and paste the link here.
                           </p>
                         </div>
+                      </div>
+                    </div>
+
+                    {/* Section 3: Visual Strategy Board & Presentation Canvas */}
+                    <div className="space-y-4 pt-6 border-t border-slate-100 dark:border-white/5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                            <span>Visual Strategy Board & Canvas</span>
+                            {parsedCanvas && (
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 font-semibold">
+                                {parsedCanvas.platformName}
+                              </span>
+                            )}
+                          </label>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                            Embed live boards, content research, or wireframes from <strong>Figma, FigJam, Miro, Excalidraw, Loom, Canva, or Google Slides</strong> directly into your client portal.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div>
+                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                            Canvas Tab Title
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. Strategy & Wireframes"
+                            value={canvasEmbedTitle}
+                            onChange={e => setCanvasEmbedTitle(e.target.value)}
+                            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                            Whiteboard / Board URL
+                          </label>
+                          <input
+                            type="url"
+                            placeholder="Paste Figma, Miro, Excalidraw, Loom, or Google Slides link…"
+                            value={canvasEmbedUrl}
+                            onChange={e => setCanvasEmbedUrl(e.target.value)}
+                            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                          />
+                          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
+                            Supports Figma file/board links, Miro board links, Excalidraw rooms, Loom videos, Canva decks, or Google Slides. We automatically convert them into interactive embed frames.
+                          </p>
+                        </div>
+
+                        {parsedCanvas && (
+                          <div className="mt-3 p-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02] space-y-2">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                                Live Embed Preview ({parsedCanvas.platformName})
+                              </span>
+                              <a
+                                href={parsedCanvas.originalUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[11px] text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
+                              >
+                                <span>Open Source</span>
+                                <ExternalLink className="w-2.5 h-2.5" />
+                              </a>
+                            </div>
+                            <div className="w-full h-64 rounded-lg overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-black/40">
+                              <iframe
+                                src={parsedCanvas.embedUrl}
+                                title={canvasEmbedTitle || 'Canvas Preview'}
+                                className="w-full h-full border-0"
+                                allowFullScreen
+                                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
