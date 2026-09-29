@@ -17,13 +17,19 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   const { data: invoice } = await supabase.from('invoices').select('*').eq('id', id).eq('user_id', user.id).single()
   if (!invoice) notFound()
 
-  const { data: owner } = await supabase.from('users').select('name, logo_url, accent_color').eq('id', user.id).single()
+  const { data: owner } = await supabase.from('users').select('name, logo_url, accent_color, email').eq('id', user.id).single()
+
+  let projectName: string | null = null
+  if (invoice.project_id) {
+    const { data: proj } = await supabase.from('projects').select('project_name').eq('id', invoice.project_id).single()
+    projectName = proj?.project_name ?? null
+  }
 
   return (
     <AppLayout>
       <DarkShell>
-        <div className="max-w-3xl animate-fade-in relative z-10 pb-12">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="max-w-3xl mx-auto animate-fade-in relative z-10 pb-12 print:max-w-none print:w-full print:p-0 print:m-0 print:pb-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 print:hidden">
             <Link 
               href="/invoices" 
               className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
@@ -33,7 +39,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
             <InvoiceActions invoice={{ id: invoice.id, status: invoice.status, client_email: invoice.client_email }} />
           </div>
 
-          <InvoicePrint invoice={invoice} owner={owner} />
+          <InvoicePrint invoice={invoice} owner={owner} projectName={projectName} />
         </div>
       </DarkShell>
     </AppLayout>

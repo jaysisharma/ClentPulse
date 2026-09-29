@@ -18,7 +18,7 @@ export default async function ProjectsPage() {
 
   let query = supabase
     .from('projects')
-    .select(`id, project_name, client_name, color, status, budget, created_at,
+    .select(`id, project_name, client_name, color, status, budget, created_at, live_url, priority,
              updates(id, sent_at), approvals(id, status), contracts(id, signed_at),
              milestones(id, done), invoices(items)`)
     .order('created_at', { ascending: false })
@@ -110,7 +110,7 @@ export default async function ProjectsPage() {
               </Link>
             </div>
           ) : (
-            <ProjectsList projects={allProjects} />
+            <ProjectsList projects={allProjects} workspaceId={activeWorkspaceId} />
           )}
         </div>
       </DarkShell>

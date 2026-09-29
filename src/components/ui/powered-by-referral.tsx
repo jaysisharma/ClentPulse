@@ -25,10 +25,11 @@ export function PoweredByReferral({
         href={targetUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors uppercase tracking-wider font-medium cursor-pointer"
+        className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white/60 dark:bg-white/[0.03] text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 hover:border-indigo-300 dark:hover:border-indigo-500/30 transition-all font-medium cursor-pointer shadow-2xs group"
       >
-        <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-        <span>Powered by Frevio</span>
+        <Sparkles className="w-3.5 h-3.5 text-indigo-500 group-hover:scale-110 transition-transform flex-shrink-0" />
+        <span>Powered by <strong>Frevio</strong> · Create your client portal</span>
+        <span className="text-slate-400 dark:text-slate-500 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all">→</span>
       </Link>
     </div>
   )

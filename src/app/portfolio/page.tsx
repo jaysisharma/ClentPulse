@@ -7,16 +7,24 @@ import { DarkShell } from '@/components/layout/dark-shell'
 import {
   Check, Copy, ExternalLink, Star, Briefcase,
   Eye, EyeOff, Globe, Plus, Pencil, Trash2,
-  Code2, Play, Image as ImageIcon,
+  Code2, Play, Image as ImageIcon, Database,
+  Sparkles, Wand2, X
 } from 'lucide-react'
 import Link from 'next/link'
+import {
+  PORTFOLIO_MIGRATION_SQL,
+  getLocalPortfolioItems,
+  deleteLocalPortfolioItem,
+  updateProjectLiveUrl
+} from '@/lib/portfolio-autofill'
 
 interface Testimonial { id: string; client_name: string; rating: number; content: string; approved: boolean; projects: { project_name: string } | null }
-interface Project     { id: string; project_name: string; color: string; status: string }
+interface Project     { id: string; project_name: string; color: string; status: string; live_url?: string | null }
 interface PortfolioItem {
   id: string; title: string; description: string | null
   live_url: string | null; github_url: string | null; video_url: string | null
   screenshots: string[]; tags: string[]
+  _is_local?: boolean
 }
 
 export default function PortfolioPage() {
@@ -30,10 +38,20 @@ export default function PortfolioPage() {
   const [projects, setProjects]         = useState<Project[]>([])
   const [items, setItems]               = useState<PortfolioItem[]>([])
 
-  const [saving, setSaving]   = useState(false)
-  const [saved, setSaved]     = useState(false)
-  const [copied, setCopied]   = useState(false)
+  const [saving, setSaving]     = useState(false)
+  const [saved, setSaved]       = useState(false)
+  const [copied, setCopied]     = useState(false)
   const [bioError, setBioError] = useState('')
+
+  // Database schema migration notice
+  const [missingTable, setMissingTable] = useState(false)
+  const [sqlCopied, setSqlCopied]       = useState(false)
+
+  // Project link modal state
+  const [linkModalProject, setLinkModalProject] = useState<Project | null>(null)
+  const [modalUrl, setModalUrl]                 = useState('')
+  const [savingLink, setSavingLink]             = useState(false)
+
   const savedTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
   const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -52,9 +70,9 @@ export default function PortfolioPage() {
       Promise.all([
         supabase.from('users').select('name, logo_url, accent_color, portfolio_bio').eq('id', user.id).single(),
         supabase.from('testimonials').select('*, projects(project_name)').eq('user_id', user.id).eq('approved', true).order('created_at', { ascending: false }),
-        supabase.from('projects').select('id, project_name, color, status').eq('user_id', user.id).eq('status', 'completed').order('created_at', { ascending: false }),
+        supabase.from('projects').select('id, project_name, color, status, live_url').eq('user_id', user.id).eq('status', 'completed').order('created_at', { ascending: false }),
         supabase.from('portfolio_items').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
-      ]).then(([{ data: u }, { data: t }, { data: p }, { data: itms }]: any[]) => {
+      ]).then(([{ data: u }, { data: t }, { data: p }, { data: itms, error: itmsErr }]: any[]) => {
         if (u) {
           setName(u.name ?? '')
           setBio(u.portfolio_bio ?? '')
@@ -63,7 +81,32 @@ export default function PortfolioPage() {
         }
         setTestimonials(t ?? [])
         setProjects(p ?? [])
-        setItems(itms ?? [])
+
+        // Check if portfolio_items table is missing
+        const isTableMissing =
+          itmsErr && (
+            itmsErr.code === 'PGRST205' ||
+            itmsErr.code === '42P01' ||
+            itmsErr.message?.toLowerCase().includes('schema cache') ||
+            itmsErr.message?.toLowerCase().includes('portfolio_items')
+          )
+
+        if (isTableMissing) {
+          setMissingTable(true)
+        }
+
+        // Merge remote items with any local fallback items
+        const localItems = getLocalPortfolioItems(user.id)
+        const remoteItems = itms || []
+        const combined = [...remoteItems]
+
+        localItems.forEach((local: any) => {
+          if (!combined.some(c => c.id === local.id)) {
+            combined.push(local)
+          }
+        })
+
+        setItems(combined)
       })
     })
   }, [])
@@ -95,11 +138,32 @@ export default function PortfolioPage() {
     copiedTimerRef.current = setTimeout(() => setCopied(false), 2000)
   }
 
+  async function copySql() {
+    await navigator.clipboard.writeText(PORTFOLIO_MIGRATION_SQL)
+    setSqlCopied(true)
+    setTimeout(() => setSqlCopied(false), 3000)
+  }
+
   async function deleteItem(id: string) {
     if (!confirm('Remove this work item from your portfolio?')) return
     const supabase = createClient()
     await supabase.from('portfolio_items').delete().eq('id', id)
+    deleteLocalPortfolioItem(userId, id)
     setItems(prev => prev.filter(i => i.id !== id))
+  }
+
+  async function handleSaveProjectLink(openShowcase: boolean) {
+    if (!linkModalProject) return
+    setSavingLink(true)
+    const supabase = createClient()
+    await updateProjectLiveUrl(supabase, linkModalProject.id, modalUrl.trim())
+    setProjects(prev => prev.map(p => p.id === linkModalProject.id ? { ...p, live_url: modalUrl.trim() || null } : p))
+    setSavingLink(false)
+    const projId = linkModalProject.id
+    setLinkModalProject(null)
+    if (openShowcase) {
+      window.location.href = `/portfolio/item/new?projectId=${projId}`
+    }
   }
 
   const avgRating = testimonials.length
@@ -127,17 +191,63 @@ export default function PortfolioPage() {
                 Your public engineering & design showroom — share directly with prospective clients.
               </p>
             </div>
-            <a
-              href={`/portfolio/${userId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 w-fit shadow-xs flex-shrink-0"
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span>Preview profile</span>
-              <ExternalLink className="w-3 h-3 opacity-60" />
-            </a>
+            <div className="flex items-center gap-2.5">
+              <Link
+                href="/portfolio/item/new"
+                className="rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add work item</span>
+              </Link>
+              <a
+                href={`/portfolio/${userId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 w-fit shadow-xs flex-shrink-0"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Preview profile</span>
+                <ExternalLink className="w-3 h-3 opacity-60" />
+              </a>
+            </div>
           </div>
+
+          {/* Missing Table Notice */}
+          {missingTable && (
+            <div className="rounded-2xl border border-amber-300 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
+              <Database className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+              <div className="space-y-2.5 flex-1">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200">
+                    Database Setup Notice: `portfolio_items` Table
+                  </h3>
+                  <p className="text-xs text-amber-800/90 dark:text-amber-300/80 mt-0.5 leading-relaxed">
+                    The Supabase table <code className="px-1 py-0.5 rounded bg-amber-200/50 dark:bg-amber-900/50 font-mono text-[11px]">public.portfolio_items</code> has not been created yet.
+                    Run the SQL migration in your Supabase SQL editor to enable persistent cloud sync.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={copySql}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-amber-900 text-white dark:bg-amber-400 dark:text-amber-950 hover:opacity-90 px-3 py-1.5 text-xs font-semibold shadow-xs transition-opacity"
+                  >
+                    {sqlCopied ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
+                    {sqlCopied ? 'Copied migration SQL!' : 'Copy SQL Migration'}
+                  </button>
+                  <a
+                    href="https://supabase.com/dashboard/project/_/sql"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 dark:border-amber-700 bg-white/60 dark:bg-amber-900/20 px-3 py-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:bg-white dark:hover:bg-amber-900/40 transition-colors shadow-xs"
+                  >
+                    <span>Open Supabase SQL Editor</span>
+                    <ExternalLink className="w-3 h-3 opacity-60" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Public URL card */}
           <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
@@ -259,7 +369,7 @@ export default function PortfolioPage() {
               )}
             </div>
 
-            {/* Projects */}
+            {/* Projects & Work Selector */}
             <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -281,9 +391,46 @@ export default function PortfolioPage() {
               ) : (
                 <div className="space-y-2">
                   {projects.slice(0, 6).map(p => (
-                    <div key={p.id} className="flex items-center gap-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 px-3 py-2">
-                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color ?? accent }} />
-                      <span className="text-xs font-medium text-slate-900 dark:text-white truncate">{p.project_name}</span>
+                    <div key={p.id} className="flex items-center justify-between gap-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 px-3 py-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color ?? accent }} />
+                        <span className="text-xs font-medium text-slate-900 dark:text-white truncate">{p.project_name}</span>
+                        {p.live_url && (
+                          <a
+                            href={p.live_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[10px] text-indigo-600 dark:text-indigo-400 hover:underline flex-shrink-0 font-mono"
+                            title={`Open live link: ${p.live_url}`}
+                          >
+                            <Globe className="w-3 h-3" />
+                            <span>Live</span>
+                            <ExternalLink className="w-2.5 h-2.5 opacity-60" />
+                          </a>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLinkModalProject(p)
+                            setModalUrl(p.live_url || '')
+                          }}
+                          className="text-[10px] text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center gap-1 px-2 py-1 rounded-md border border-slate-200/80 dark:border-white/10 bg-white/60 dark:bg-white/5 transition-colors"
+                          title={p.live_url ? 'Edit live website / app link' : 'Add live website or app link'}
+                        >
+                          <Globe className="w-3 h-3 text-slate-400" />
+                          <span>{p.live_url ? 'Edit' : '+ Link'}</span>
+                        </button>
+                        <Link
+                          href={`/portfolio/item/new?projectId=${p.id}`}
+                          className="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 px-2 py-1 rounded-md bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 transition-colors"
+                          title="Auto-fill showcase item from this project"
+                        >
+                          <Wand2 className="w-3 h-3" />
+                          <span>Showcase</span>
+                        </Link>
+                      </div>
                     </div>
                   ))}
                   {projects.length > 6 && (
@@ -320,8 +467,8 @@ export default function PortfolioPage() {
                 <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 font-light">No showcase items uploaded yet.</p>
                 <Link href="/portfolio/item/new">
                   <button className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all inline-flex items-center gap-1.5 shadow-xs">
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Add your first showcase item</span>
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Auto-create from your work</span>
                   </button>
                 </Link>
               </div>
@@ -338,7 +485,14 @@ export default function PortfolioPage() {
                     </div>
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-slate-900 dark:text-white text-xs sm:text-sm truncate">{item.title}</div>
+                      <div className="font-medium text-slate-900 dark:text-white text-xs sm:text-sm truncate flex items-center gap-2">
+                        <span>{item.title}</span>
+                        {item._is_local && (
+                          <span className="text-[9px] font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 px-1.5 py-0.2 rounded border border-amber-200 dark:border-amber-700">
+                            Local Preview
+                          </span>
+                        )}
+                      </div>
                       {item.description && (
                         <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5 line-clamp-1">{item.description}</p>
                       )}
@@ -408,6 +562,72 @@ export default function PortfolioPage() {
               </div>
             </div>
           </div>
+
+          {/* Quick Link Modal */}
+          {linkModalProject && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+              <div className="bg-white dark:bg-[#0e1017] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+                      <Globe className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                        {linkModalProject.live_url ? 'Edit Live Link' : 'Add Live Website or App Link'}
+                      </h3>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[240px]">
+                        {linkModalProject.project_name}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setLinkModalProject(null)}
+                    className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                    Website, Web App, or App Store URL
+                  </label>
+                  <input
+                    type="url"
+                    value={modalUrl}
+                    onChange={e => setModalUrl(e.target.value)}
+                    placeholder="https://example.com or App Store link"
+                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none transition-colors font-mono"
+                    autoFocus
+                  />
+                  <p className="text-[11px] text-slate-400 font-light mt-1.5 leading-relaxed">
+                    Saves to the project settings and will be automatically extracted when creating your portfolio case study.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-2 pt-2">
+                  <button
+                    type="button"
+                    disabled={savingLink}
+                    onClick={() => handleSaveProjectLink(true)}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 text-xs transition-colors shadow-xs disabled:opacity-50"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Save & Showcase on Portfolio</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={savingLink}
+                    onClick={() => handleSaveProjectLink(false)}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 font-semibold py-2 text-xs transition-colors shadow-xs disabled:opacity-50"
+                  >
+                    <span>Save Link Only</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
         </div>
       </DarkShell>

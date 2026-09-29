@@ -217,7 +217,7 @@ export function Sidebar({
   }
 
   return (
-    <aside className="w-60 min-h-screen bg-white dark:bg-[#07080a] border-r border-slate-200 dark:border-white/10 flex flex-col fixed left-0 top-0 bottom-0 z-40 shadow-sm dark:shadow-2xl transition-colors">
+    <aside className="w-60 min-h-screen bg-white dark:bg-[#07080a] border-r border-slate-200 dark:border-white/10 flex flex-col fixed left-0 top-0 bottom-0 z-40 shadow-sm dark:shadow-2xl transition-colors print:hidden">
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <div className="px-4 h-14 flex items-center justify-between flex-shrink-0 border-b border-slate-200 dark:border-white/10">

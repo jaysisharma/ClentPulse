@@ -119,6 +119,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [kpis, setKpis] = useState<Array<{ label: string; value: string; trend?: string }>>([])
   const [reportEmbedUrl, setReportEmbedUrl] = useState('')
   const [reportEmbedTitle, setReportEmbedTitle] = useState('Live Performance Report')
+  const [liveUrl, setLiveUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -161,6 +162,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       if (Array.isArray(data.kpis)) setKpis(data.kpis)
       setReportEmbedUrl(data.report_embed_url ?? '')
       setReportEmbedTitle(data.report_embed_title ?? 'Live Performance Report')
+      setLiveUrl(data.live_url ?? '')
     })
 
     supabase.auth.getUser().then(async ({ data }: { data: any }) => {
@@ -191,7 +193,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
     e?.preventDefault()
     setLoading(true); setError('')
     const supabase = createClient()
-    const { error: err } = await supabase.from('projects').update({
+    let { error: err } = await supabase.from('projects').update({
       project_name: projectName, client_name: clientName,
       client_email: clientEmail || null, color,
       budget: budget ? parseFloat(budget) : null,
@@ -203,7 +205,27 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       kpis,
       report_embed_url: reportEmbedUrl.trim() || null,
       report_embed_title: reportEmbedTitle.trim() || null,
+      live_url: liveUrl.trim() || null,
     }).eq('id', id)
+
+    // Fallback if live_url column is not yet migrated in Supabase
+    if (err && err.message?.includes('live_url')) {
+      const retry = await supabase.from('projects').update({
+        project_name: projectName, client_name: clientName,
+        client_email: clientEmail || null, color,
+        budget: budget ? parseFloat(budget) : null,
+        hourly_rate: hourlyRate ? parseFloat(hourlyRate) : null,
+        hide_milestones: hideMilestones, hide_client_access: hideClientAccess,
+        hide_kickoff: hideKickoff, hide_approvals: hideApprovals,
+        show_live_presence: showLivePresence, show_time_logged: showTimeLogged,
+        passcode: passcode || null,
+        kpis,
+        report_embed_url: reportEmbedUrl.trim() || null,
+        report_embed_title: reportEmbedTitle.trim() || null,
+      }).eq('id', id)
+      err = retry.error
+    }
+
     setLoading(false)
     if (err) { setError(err.message); return }
     flash()
@@ -348,6 +370,29 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                         onChange={e => setProjectName(e.target.value)} 
                         required 
                       />
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                          Live Website / App URL
+                        </label>
+                        <span className="text-[10px] text-slate-400 font-light">
+                          Website, Web App, or App Store Link
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                        <input
+                          type="url"
+                          className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                          value={liveUrl}
+                          onChange={e => setLiveUrl(e.target.value)}
+                          placeholder="https://example.com or https://apps.apple.com/app/..."
+                        />
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">
+                        Visible on the client portal and automatically linked when showcasing this project in your public portfolio.
+                      </p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>

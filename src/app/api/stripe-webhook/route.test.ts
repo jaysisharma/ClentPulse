@@ -62,8 +62,8 @@ function makeRequest(): Request {
   })
 }
 
-function makeEvent(type: string, data: object) {
-  return { type, data: { object: data } }
+function makeEvent(type: string, data: object, created?: number) {
+  return { id: 'evt_test_123', type, created: created ?? 1700000000, data: { object: data } }
 }
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
@@ -118,6 +118,21 @@ describe('POST /api/stripe-webhook', () => {
     expect(mockSupabaseUpdate).toHaveBeenCalledWith(expect.objectContaining({ plan: 'pro' }))
   })
 
+  it('ignores stale checkout.session.completed when event.created is older than user state', async () => {
+    mockSupabaseMaybeSingle.mockResolvedValueOnce({
+      data: { id: 'user_123', stripe_event_created_at: 1700000500 },
+    })
+    mockConstructEvent.mockReturnValue(
+      makeEvent('checkout.session.completed', { customer: 'cus_123', metadata: {} }, 1700000100)
+    )
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json).toEqual({ received: true, stale: true })
+    expect(mockSupabaseUpdate).not.toHaveBeenCalled()
+  })
+
   it('marks invoice paid on checkout.session.completed for invoice_payment', async () => {
     mockConstructEvent.mockReturnValue(
       makeEvent('checkout.session.completed', {
@@ -138,7 +153,22 @@ describe('POST /api/stripe-webhook', () => {
     )
     const { POST } = await import('./route')
     await POST(makeRequest())
-    expect(mockSupabaseUpdate).toHaveBeenCalledWith({ plan: 'free' })
+    expect(mockSupabaseUpdate).toHaveBeenCalledWith(expect.objectContaining({ plan: 'free' }))
+  })
+
+  it('ignores stale customer.subscription.deleted when event.created is older than last event', async () => {
+    mockSupabaseMaybeSingle.mockResolvedValueOnce({
+      data: { id: 'user_123', stripe_event_created_at: 1700000900 },
+    })
+    mockConstructEvent.mockReturnValue(
+      makeEvent('customer.subscription.deleted', { customer: 'cus_123' }, 1700000100)
+    )
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json).toEqual({ received: true, stale: true })
+    expect(mockSupabaseUpdate).not.toHaveBeenCalled()
   })
 
   it('keeps Pro on subscription.updated with active status', async () => {
@@ -148,6 +178,43 @@ describe('POST /api/stripe-webhook', () => {
     const { POST } = await import('./route')
     await POST(makeRequest())
     expect(mockSupabaseUpdate).toHaveBeenCalledWith(expect.objectContaining({ plan: 'pro' }))
+  })
+
+  it('ignores stale subscription.updated when event.created is older than last event', async () => {
+    mockSupabaseMaybeSingle.mockResolvedValueOnce({
+      data: { id: 'user_123', plan: 'pro', stripe_event_created_at: 1700000800 },
+    })
+    mockConstructEvent.mockReturnValue(
+      makeEvent('customer.subscription.updated', { customer: 'cus_123', status: 'active' }, 1700000200)
+    )
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json).toEqual({ received: true, stale: true })
+    expect(mockSupabaseUpdate).not.toHaveBeenCalled()
+  })
+
+  it('ignores subscription.updated when price is unrecognized and prices are configured', async () => {
+    const originalProPrice = process.env.STRIPE_PRO_PRICE_ID
+    process.env.STRIPE_PRO_PRICE_ID = 'price_known_pro_123'
+    try {
+      mockConstructEvent.mockReturnValue(
+        makeEvent('customer.subscription.updated', {
+          customer: 'cus_123',
+          status: 'active',
+          items: { data: [{ price: { id: 'price_unknown_unrelated_sku' } }] },
+        })
+      )
+      const { POST } = await import('./route')
+      const res = await POST(makeRequest())
+      expect(res.status).toBe(200)
+      const json = await res.json()
+      expect(json).toEqual({ received: true, ignored: 'unrecognized_price' })
+      expect(mockSupabaseUpdate).not.toHaveBeenCalled()
+    } finally {
+      process.env.STRIPE_PRO_PRICE_ID = originalProPrice
+    }
   })
 
   it('keeps Pro on subscription.updated with trialing status', async () => {
@@ -174,12 +241,12 @@ describe('POST /api/stripe-webhook', () => {
     )
     const { POST } = await import('./route')
     await POST(makeRequest())
-    expect(mockSupabaseUpdate).toHaveBeenCalledWith({ plan: 'free' })
+    expect(mockSupabaseUpdate).toHaveBeenCalledWith(expect.objectContaining({ plan: 'free' }))
   })
 
   it('sends recovery email on invoice.payment_failed', async () => {
     mockConstructEvent.mockReturnValue(
-      makeEvent('invoice.payment_failed', { customer: 'cus_123' })
+      makeEvent('invoice.payment_failed', { customer: 'cus_123', attempt_count: 1 })
     )
     const { POST } = await import('./route')
     await POST(makeRequest())
@@ -191,10 +258,57 @@ describe('POST /api/stripe-webhook', () => {
     )
   })
 
+  it('skips dunning email on invoice.payment_failed for initial subscription_create', async () => {
+    mockConstructEvent.mockReturnValue(
+      makeEvent('invoice.payment_failed', { customer: 'cus_123', billing_reason: 'subscription_create' })
+    )
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json).toEqual({ received: true, dunning_skipped: 'subscription_create' })
+    expect(mockResendSend).not.toHaveBeenCalled()
+  })
+
+  it('skips dunning email on intermediate retries (attempt_count > 1 and next_payment_attempt set)', async () => {
+    mockConstructEvent.mockReturnValue(
+      makeEvent('invoice.payment_failed', {
+        customer: 'cus_123',
+        attempt_count: 2,
+        next_payment_attempt: 1700500000,
+      })
+    )
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json).toEqual({ received: true, dunning_skipped: 'intermediate_retry' })
+    expect(mockResendSend).not.toHaveBeenCalled()
+  })
+
+  it('sends dunning email on final failed retry (next_payment_attempt is null)', async () => {
+    mockConstructEvent.mockReturnValue(
+      makeEvent('invoice.payment_failed', {
+        customer: 'cus_123',
+        attempt_count: 4,
+        next_payment_attempt: null,
+      })
+    )
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(200)
+    expect(mockResendSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        to: ['test@example.com'],
+        subject: expect.stringContaining('payment method'),
+      })
+    )
+  })
+
   it('skips the email (no crash) when no user maps to the customer on payment_failed', async () => {
     mockSupabaseMaybeSingle.mockResolvedValueOnce({ data: null })
     mockConstructEvent.mockReturnValue(
-      makeEvent('invoice.payment_failed', { customer: 'cus_orphan' })
+      makeEvent('invoice.payment_failed', { customer: 'cus_orphan', attempt_count: 1 })
     )
     const { POST } = await import('./route')
     const res = await POST(makeRequest())
@@ -205,7 +319,7 @@ describe('POST /api/stripe-webhook', () => {
   it('still returns 200 if Resend fails on invoice.payment_failed', async () => {
     mockResendSend.mockResolvedValueOnce({ error: new Error('Resend down') })
     mockConstructEvent.mockReturnValue(
-      makeEvent('invoice.payment_failed', { customer: 'cus_123' })
+      makeEvent('invoice.payment_failed', { customer: 'cus_123', attempt_count: 1 })
     )
     const { POST } = await import('./route')
     const res = await POST(makeRequest())

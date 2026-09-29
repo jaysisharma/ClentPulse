@@ -36,15 +36,12 @@ Eyebrow labels `text-xs font-bold uppercase tracking-wider`.
 The dashboard ([`src/app/dashboard/page.tsx`](src/app/dashboard/page.tsx)) is the
 reference implementation of all of the above.
 
-## Known intentional split
-- **Marketing (`/`)** is deliberately richer than the app: larger radii
-  (`rounded-2xl/3xl`), gradients, glassmorphism, **and full dark mode**.
-- **The app is light-only.** Dark mode is *not* yet wired through app components
-  (they still use `bg-white` / `text-slate-900` directly). This is a known gap,
-  not an oversight — migrating the app to dark is a dedicated effort. The CSS
-  `dark` variant scaffolding already exists in `globals.css` for when we do.
+## Theme & Canvas Architecture
+- **Marketing (`/`)**: GSAP scroll-triggered luxury dark/light mode with alternating sections and ambient spotlight glow.
+- **In-App Studio (`/dashboard`, `/project`, `/settings`)**: Full dark/light parity using `<DarkShell>` and `<AppLayout>`. In dark mode, uses deep obsidian `#08090a` canvas, `#0c0d12` surface cards, hairline glass borders (`border-white/10`), and monospace metrics. In light mode, uses crisp slate `#f8fafc` canvas, `#ffffff` cards, and `border-slate-200`.
+- **Client Portal (`/p/[slug]` & `/demo`)**: Dual-mode rendering honoring user/agency preference and white-labeling accent colors.
 
-## Migration note
-Some pages still use raw `indigo-*` literals. Since `accent === indigo-600`,
-they render identically — migrate them to tokens opportunistically; nothing
-breaks in the meantime.
+## Semantic Tokens
+All pages use semantic tokens and adaptive classes:
+`bg-white dark:bg-[#0c0d12] border-slate-200 dark:border-white/10 text-slate-900 dark:text-white`
+

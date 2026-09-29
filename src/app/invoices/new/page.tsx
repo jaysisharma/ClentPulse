@@ -9,7 +9,8 @@ import { ArrowLeft, Plus, Trash2, Clock } from 'lucide-react'
 
 import { DarkShell } from '@/components/layout/dark-shell'
 
-import { fmtCurrency, SUPPORTED_CURRENCIES } from '@/lib/currencies'
+import { fmtCurrency } from '@/lib/currencies'
+import { CurrencySelector } from '@/components/ui/currency-selector'
 
 interface LineItem { description: string; quantity: number; rate: number; amount: number }
 interface Project { id: string; project_name: string; client_name: string; client_email: string | null; budget: string | null; hourly_rate: number | null }
@@ -280,15 +281,10 @@ export default function NewInvoicePage() {
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                     Currency
                   </label>
-                  <select
+                  <CurrencySelector
                     value={currency}
-                    onChange={e => setCurrency(e.target.value)}
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-[#0c0d12] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
-                  >
-                    {Object.values(SUPPORTED_CURRENCIES).map(c => (
-                      <option key={c.code} value={c.code}>{c.label}</option>
-                    ))}
-                  </select>
+                    onChange={setCurrency}
+                  />
                 </div>
               </div>
 

@@ -8,7 +8,7 @@ import Link from 'next/link'
 import {
   ArrowLeft, Plus, Link2, Check, Send,
   Clock, AlertTriangle, FileSignature, CheckCircle2, ChevronRight,
-  BarChart3,
+  BarChart3, Globe, Sparkles, ExternalLink,
 } from 'lucide-react'
 import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
 import { CopyLinkButton } from './copy-link-button'
@@ -192,7 +192,24 @@ export default async function ProjectPage({
             <div className="min-w-0">
               <div className="flex items-center gap-3 flex-wrap">
                 <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-tight text-slate-900 dark:text-white truncate">{project.project_name}</h1>
-                <StatusToggle projectId={project.id} current={project.status as 'active' | 'paused' | 'completed'} />
+                <StatusToggle
+                  projectId={project.id}
+                  current={project.status as 'active' | 'paused' | 'completed'}
+                  initialLiveUrl={project.live_url || ''}
+                />
+                {project.live_url && (
+                  <a
+                    href={project.live_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border border-indigo-200/80 dark:border-indigo-500/20 bg-indigo-50/70 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors shadow-2xs"
+                    title={`Open live site or app: ${project.live_url}`}
+                  >
+                    <Globe className="w-3.5 h-3.5" />
+                    <span>Live Website / App</span>
+                    <ExternalLink className="w-3 h-3 opacity-60" />
+                  </a>
+                )}
                 <PresenceBadge
                   projectId={project.id}
                   initialHeartbeatAt={project.last_heartbeat_at ?? null}
@@ -334,18 +351,40 @@ export default async function ProjectPage({
               <ClientFeedbackList feedback={clientFeedback ?? []} />
             </CollapsibleSection>
 
-            {/* Testimonial — completed only */}
+            {/* Completed Project: Showcase on Portfolio & Testimonial */}
             {project.status === 'completed' && (
-              <div className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5 rounded-2xl p-6 flex items-center justify-between backdrop-blur-md">
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white">Request a testimonial</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Collect a review from {project.client_name}.</p>
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-indigo-50/50 via-white to-purple-50/40 dark:from-indigo-950/20 dark:via-[#0c0d12]/90 dark:to-purple-950/20 border border-indigo-200/80 dark:border-indigo-500/20 shadow-xs ring-1 ring-indigo-500/10 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-md">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                        Work Finished & Shipped
+                      </span>
+                    </div>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                      Showcase this work on your public portfolio
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light">
+                      {project.live_url
+                        ? `Live link: ${project.live_url}`
+                        : 'Auto-generate showcase artwork, extract deliverables, and link your live website or app.'}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Link href={`/portfolio/item/new?projectId=${project.id}`}>
+                      <button className="rounded-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Add to Portfolio</span>
+                      </button>
+                    </Link>
+                    <Link href={`/testimonial/${project.id}`} target="_blank" rel="noopener noreferrer">
+                      <button className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-2 text-xs font-medium transition-colors shadow-xs">
+                        Request review
+                      </button>
+                    </Link>
+                  </div>
                 </div>
-                <Link href={`/testimonial/${project.id}`} target="_blank" rel="noopener noreferrer">
-                  <button className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-medium transition-colors shadow-xs">
-                    Open form
-                  </button>
-                </Link>
               </div>
             )}
           </div>

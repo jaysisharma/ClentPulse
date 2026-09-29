@@ -84,13 +84,42 @@ export async function POST(request: Request) {
       const rawTier = session.metadata?.plan_tier || 'pro'
       const planTier = normalizePlan(rawTier)
       const orgId = session.metadata?.org_id
+      const eventCreated = event.created
+
+      // Event ordering guard: verify this event is newer than the last processed event
+      let existingUser: { id: string; stripe_event_created_at?: number | null } | null = null
+      if (userId) {
+        const { data } = await supabase
+          .from('users')
+          .select('id, stripe_event_created_at')
+          .eq('id', userId)
+          .maybeSingle()
+        existingUser = data
+      } else if (customerId) {
+        const { data } = await supabase
+          .from('users')
+          .select('id, stripe_event_created_at')
+          .eq('stripe_customer_id', customerId)
+          .maybeSingle()
+        existingUser = data
+      }
+
+      if (existingUser?.stripe_event_created_at && eventCreated && eventCreated < existingUser.stripe_event_created_at) {
+        console.warn(`Stripe event ${event.id} is stale on checkout completion (${eventCreated} < ${existingUser.stripe_event_created_at})`)
+        return NextResponse.json({ received: true, stale: true })
+      }
 
       let userUpdated = false
       if (userId) {
-        // If we have user ID, update their plan, clear promo_pro, and backfill customer ID
+        // If we have user ID, update their plan, clear promo_pro, backfill customer ID, and track timestamp
         const { data, error } = await supabase
           .from('users')
-          .update({ plan: planTier, promo_pro: false, stripe_customer_id: customerId })
+          .update({
+            plan: planTier,
+            promo_pro: false,
+            stripe_customer_id: customerId,
+            ...(eventCreated ? { stripe_event_created_at: eventCreated } : {}),
+          })
           .eq('id', userId)
           .select()
         if (!error && (data ?? []).length > 0) {
@@ -102,7 +131,11 @@ export async function POST(request: Request) {
         // Fallback: match by stripe_customer_id
         const { error } = await supabase
           .from('users')
-          .update({ plan: planTier, promo_pro: false })
+          .update({
+            plan: planTier,
+            promo_pro: false,
+            ...(eventCreated ? { stripe_event_created_at: eventCreated } : {}),
+          })
           .eq('stripe_customer_id', customerId)
         if (error) {
           console.error('Failed to update user plan on checkout:', error)
@@ -124,10 +157,26 @@ export async function POST(request: Request) {
   if (event.type === 'customer.subscription.deleted') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
+    const eventCreated = event.created
+
+    // Ordering guard
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id, stripe_event_created_at')
+      .eq('stripe_customer_id', customerId)
+      .maybeSingle()
+
+    if (existingUser?.stripe_event_created_at && eventCreated && eventCreated < existingUser.stripe_event_created_at) {
+      console.warn(`Stripe event ${event.id} is stale on subscription delete (${eventCreated} < ${existingUser.stripe_event_created_at})`)
+      return NextResponse.json({ received: true, stale: true })
+    }
 
     const { error } = await supabase
       .from('users')
-      .update({ plan: 'free' })
+      .update({
+        plan: 'free',
+        ...(eventCreated ? { stripe_event_created_at: eventCreated } : {}),
+      })
       .eq('stripe_customer_id', customerId)
     if (error) {
       console.error('Failed to update user plan on subscription delete:', error)
@@ -144,6 +193,43 @@ export async function POST(request: Request) {
   if (event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
+    const eventCreated = event.created
+
+    // Ordering guard
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id, plan, stripe_event_created_at')
+      .eq('stripe_customer_id', customerId)
+      .maybeSingle()
+
+    if (existingUser?.stripe_event_created_at && eventCreated && eventCreated < existingUser.stripe_event_created_at) {
+      console.warn(`Stripe event ${event.id} is stale on subscription update (${eventCreated} < ${existingUser.stripe_event_created_at})`)
+      return NextResponse.json({ received: true, stale: true })
+    }
+
+    // Entitlement verification: check price against known Frevio plan prices if configured
+    const knownPrices = [
+      process.env.STRIPE_PRO_PRICE_ID,
+      process.env.STRIPE_PRO_MONTHLY_PRICE_ID,
+      process.env.STRIPE_PRO_ANNUAL_PRICE_ID,
+      process.env.STRIPE_AGENCY_PRICE_ID,
+      process.env.STRIPE_AGENCY_MONTHLY_PRICE_ID,
+      process.env.STRIPE_AGENCY_ANNUAL_PRICE_ID,
+      process.env.STRIPE_AGENCY_STARTER_PRICE_ID,
+      process.env.STRIPE_AGENCY_STARTER_ANNUAL_PRICE_ID,
+      process.env.STRIPE_SCALE_PRICE_ID,
+      process.env.STRIPE_SCALE_MONTHLY_PRICE_ID,
+      process.env.STRIPE_SCALE_ANNUAL_PRICE_ID,
+      process.env.STRIPE_AGENCY_SCALE_PRICE_ID,
+      process.env.STRIPE_AGENCY_SCALE_ANNUAL_PRICE_ID,
+    ].filter(Boolean) as string[]
+
+    const subPriceId = subscription.items?.data?.[0]?.price?.id
+    if (knownPrices.length > 0 && subPriceId && !knownPrices.includes(subPriceId)) {
+      console.warn(`subscription.updated: price ${subPriceId} does not match any recognized plan price`)
+      return NextResponse.json({ received: true, ignored: 'unrecognized_price' })
+    }
+
     // Entitlement statuses: a paying customer keeps their plan while active, in trial, or
     // in the card-retry grace window (past_due). Only customer.subscription.deleted
     // (or a terminal status) revokes — flipping to free on a transient past_due would
@@ -154,7 +240,10 @@ export async function POST(request: Request) {
     if (!isEntitled) {
       const { error } = await supabase
         .from('users')
-        .update({ plan: 'free' })
+        .update({
+          plan: 'free',
+          ...(eventCreated ? { stripe_event_created_at: eventCreated } : {}),
+        })
         .eq('stripe_customer_id', customerId)
       if (error) {
         console.error('Failed to demote user plan on subscription update:', error)
@@ -172,21 +261,17 @@ export async function POST(request: Request) {
       let resolvedPlan: string = 'pro'
       if (rawTier) {
         resolvedPlan = normalizePlan(rawTier)
-      } else {
-        // Check existing user plan to avoid downgrading an existing agency subscription
-        const { data: existingUser } = await supabase
-          .from('users')
-          .select('plan')
-          .eq('stripe_customer_id', customerId)
-          .maybeSingle()
-        if (existingUser?.plan && existingUser.plan !== 'free') {
-          resolvedPlan = existingUser.plan
-        }
+      } else if (existingUser?.plan && existingUser.plan !== 'free') {
+        resolvedPlan = existingUser.plan
       }
 
       const { error } = await supabase
         .from('users')
-        .update({ plan: resolvedPlan, promo_pro: false })
+        .update({
+          plan: resolvedPlan,
+          promo_pro: false,
+          ...(eventCreated ? { stripe_event_created_at: eventCreated } : {}),
+        })
         .eq('stripe_customer_id', customerId)
       if (error) {
         console.error('Failed to update user plan on subscription update:', error)
@@ -206,6 +291,19 @@ export async function POST(request: Request) {
   if (event.type === 'invoice.payment_failed') {
     const invoice = event.data.object as Stripe.Invoice
     const customerId = invoice.customer as string
+
+    // 1. Skip dunning email for initial signup payment attempt (handled in Checkout UI)
+    if (invoice.billing_reason === 'subscription_create') {
+      return NextResponse.json({ received: true, dunning_skipped: 'subscription_create' })
+    }
+
+    // 2. Dedup dunning emails across retries: only notify on first failure or final failure
+    const attemptCount = typeof invoice.attempt_count === 'number' ? invoice.attempt_count : 1
+    const isFirstAttempt = attemptCount === 1
+    const isFinalAttempt = invoice.next_payment_attempt === null
+    if (!isFirstAttempt && !isFinalAttempt) {
+      return NextResponse.json({ received: true, dunning_skipped: 'intermediate_retry' })
+    }
 
     const { data: userData } = await supabase
       .from('users')

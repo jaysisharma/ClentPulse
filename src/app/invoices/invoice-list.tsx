@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { Search, FileText, ArrowRight, AlertCircle, X, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { fmtCurrency } from '@/lib/currencies'
 
 interface LineItem { amount: number }
 interface Invoice {
@@ -12,6 +13,7 @@ interface Invoice {
   client_name: string
   status: string
   due_date: string | null
+  currency?: string | null
   items: LineItem[]
 }
 
@@ -34,8 +36,8 @@ function total(inv: Invoice) {
   return (inv.items ?? []).reduce((s, i) => s + (i.amount ?? 0), 0)
 }
 
-function fmt(n: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
+function fmt(n: number, currency = 'USD') {
+  return fmtCurrency(n, currency)
 }
 
 export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
@@ -181,7 +183,7 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
 
                   {/* Amount */}
                   <div className="text-sm font-light font-mono text-slate-900 dark:text-white text-right">
-                    {fmt(amount)}
+                    {fmt(amount, inv.currency || 'USD')}
                   </div>
 
                   {/* Action */}

@@ -8,6 +8,9 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Plus, Trash2, Loader2 } from 'lucide-react'
 
+import { fmtCurrency } from '@/lib/currencies'
+import { CurrencySelector } from '@/components/ui/currency-selector'
+
 interface LineItem {
   description: string
   quantity: number
@@ -26,8 +29,8 @@ function emptyItem(): LineItem {
   return { description: '', quantity: 1, rate: 0, amount: 0 }
 }
 
-function fmt$(n: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
+function fmt$(n: number, currency = 'USD') {
+  return fmtCurrency(n, currency)
 }
 
 export default function EditInvoicePage() {
@@ -38,6 +41,7 @@ export default function EditInvoicePage() {
   const [clientName, setClientName] = useState('')
   const [clientEmail, setClientEmail] = useState('')
   const [invoiceNumber, setInvoiceNumber] = useState('')
+  const [currency, setCurrency] = useState('USD')
   const [dueDate, setDueDate] = useState('')
   const [items, setItems] = useState<LineItem[]>([emptyItem()])
   const [notes, setNotes] = useState('')
@@ -86,6 +90,7 @@ export default function EditInvoicePage() {
           setClientName(inv.client_name ?? '')
           setClientEmail(inv.client_email ?? '')
           setInvoiceNumber(inv.invoice_number ?? '')
+          setCurrency(inv.currency || 'USD')
           setDueDate(inv.due_date ? inv.due_date.slice(0, 10) : '')
           setItems(inv.items?.length ? inv.items : [emptyItem()])
           setNotes(inv.notes ?? '')
@@ -122,7 +127,7 @@ export default function EditInvoicePage() {
   async function handleSave() {
     if (overBudget) {
       setError(
-        `This invoice exceeds the project budget. Only ${fmt$(Math.max(remaining!, 0))} of the ${fmt$(budget!)} budget remains. Raise the project budget or lower the invoice amount.`
+        `This invoice exceeds the project budget. Only ${fmt$(Math.max(remaining!, 0), currency)} of the ${fmt$(budget!, currency)} budget remains. Raise the project budget or lower the invoice amount.`
       )
       return
     }
@@ -134,6 +139,7 @@ export default function EditInvoicePage() {
       .update({
         project_id: projectId || null,
         invoice_number: invoiceNumber,
+        currency,
         client_name: clientName,
         client_email: clientEmail || null,
         due_date: dueDate || null,
@@ -206,7 +212,7 @@ export default function EditInvoicePage() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                     Invoice number
@@ -227,6 +233,15 @@ export default function EditInvoicePage() {
                     className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                     value={dueDate}
                     onChange={e => setDueDate(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                    Currency
+                  </label>
+                  <CurrencySelector
+                    value={currency}
+                    onChange={setCurrency}
                   />
                 </div>
               </div>
@@ -375,19 +390,19 @@ export default function EditInvoicePage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="uppercase tracking-wider font-semibold text-[10px]">Project Budget Cap</span>
-                    <span className="font-mono font-medium">{fmt$(budget)}</span>
+                    <span className="font-mono font-medium">{fmt$(budget, currency)}</span>
                   </div>
                   <div className="flex items-center justify-between mt-1.5">
                     <span className="uppercase tracking-wider text-[10px]">Already Billed (Excl. this)</span>
-                    <span className="font-mono font-medium">{fmt$(invoicedSoFar)}</span>
+                    <span className="font-mono font-medium">{fmt$(invoicedSoFar, currency)}</span>
                   </div>
                   <div className="flex items-center justify-between mt-1.5">
                     <span className="uppercase tracking-wider text-[10px]">Available Balance</span>
-                    <span className="font-mono font-medium">{fmt$(Math.max(remaining ?? 0, 0))}</span>
+                    <span className="font-mono font-medium">{fmt$(Math.max(remaining ?? 0, 0), currency)}</span>
                   </div>
                   {overBudget && (
                     <div className="mt-2.5 font-medium border-t border-rose-200 dark:border-rose-900/40 pt-2">
-                      Notice: This invoice is {fmt$(total - (remaining ?? 0))} over the remaining project budget.
+                      Notice: This invoice is {fmt$(total - (remaining ?? 0), currency)} over the remaining project budget.
                     </div>
                   )}
                 </div>

@@ -19,6 +19,7 @@ export interface User {
   plan: 'free' | 'pro'
   craft?: UserCraft | null
   enabled_modules?: WorkspaceModules | null
+  portfolio_bio?: string | null
   created_at: string
 }
 
@@ -47,6 +48,8 @@ export interface Project {
   kpis?: ProjectKpi[] | null
   report_embed_url?: string | null
   report_embed_title?: string | null
+  live_url?: string | null
+  priority?: string | null
   created_at: string
 }
 
@@ -261,6 +264,21 @@ export interface ProjectResource {
   created_at: string
   updated_at: string
   integration_connections?: Pick<IntegrationConnection, 'status' | 'provider_account_email'> | null
+}
+
+export interface PortfolioItem {
+  id: string
+  user_id: string
+  project_id?: string | null
+  title: string
+  description?: string | null
+  live_url?: string | null
+  github_url?: string | null
+  video_url?: string | null
+  screenshots: string[]
+  tags: string[]
+  created_at: string
+  updated_at: string
 }
 
 

@@ -5,11 +5,11 @@ import { cn } from '@/lib/utils'
 // In light mode: crisp, polished studio slate palette (#f8fafc / slate-50).
 export function DarkShell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('-mx-6 lg:-mx-8 -mt-20 lg:-mt-8 -mb-6 lg:-mb-8 min-h-screen px-5 lg:px-10 pt-20 lg:pt-8 pb-12 animate-fade-in relative overflow-hidden bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 transition-colors duration-200', className)}>
+    <div className={cn('-mx-6 lg:-mx-8 -mt-20 lg:-mt-8 -mb-6 lg:-mb-8 min-h-screen px-5 lg:px-10 pt-20 lg:pt-8 pb-12 animate-fade-in relative overflow-hidden bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 transition-colors duration-200 print:m-0 print:p-0 print:bg-white print:text-slate-900 print:min-h-0 print:overflow-visible', className)}>
       {/* Dark mode ambient soft glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 hidden dark:block"
+        className="pointer-events-none absolute inset-0 -z-10 hidden dark:block print:hidden"
         style={{
           background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(99, 102, 241, 0.08), transparent 70%), #08090a',
         }}
@@ -17,7 +17,7 @@ export function DarkShell({ children, className }: { children: React.ReactNode; 
       {/* Light mode ambient soft glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 block dark:hidden"
+        className="pointer-events-none absolute inset-0 -z-10 block dark:hidden print:hidden"
         style={{
           background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(99, 102, 241, 0.04), transparent 70%), #f8fafc',
         }}

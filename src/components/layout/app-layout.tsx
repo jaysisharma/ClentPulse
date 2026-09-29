@@ -165,7 +165,7 @@ export function AppLayout({
       </div>
 
       {/* Floating Message Button for Desktop */}
-      <div className="hidden lg:block fixed top-6 right-8 z-30">
+      <div className="hidden lg:block fixed top-6 right-8 z-30 print:hidden">
         <button
           onClick={() => setDrawerOpen(true)}
           className="relative p-2.5 rounded-full border shadow-md dark:shadow-xl transition-all hover:scale-105 flex items-center justify-center cursor-pointer bg-white dark:bg-[#0c0d12] border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"

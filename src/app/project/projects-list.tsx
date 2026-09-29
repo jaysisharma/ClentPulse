@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
-import { Search, Send, ChevronRight, Plus, FolderPlus } from 'lucide-react'
+import { Search, Send, ChevronRight, Plus, FolderPlus, ListFilter, Target } from 'lucide-react'
+import { PriorityCanvas } from '@/components/project/priority-canvas'
 
 interface Update { id: string; sent_at: string | null }
 interface Approval { id: string; status: string }
@@ -23,6 +24,8 @@ export interface Project {
   contracts: Contract[]
   milestones: Milestone[]
   invoices: Invoice[]
+  live_url?: string | null
+  priority?: string | null
 }
 
 function fmt$(n: number) {
@@ -49,7 +52,35 @@ const HEALTH_STYLE: Record<Health['tone'], string> = {
 const STATUSES = ['all', 'active', 'paused', 'completed'] as const
 type StatusKey = (typeof STATUSES)[number]
 
-export function ProjectsList({ projects }: { projects: Project[] }) {
+export function ProjectsList({
+  projects,
+  workspaceId = 'personal',
+}: {
+  projects: Project[]
+  workspaceId?: string
+}) {
+  const [viewMode, setViewMode] = useState<'list' | 'canvas'>('list')
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('frevio_projects_view_mode')
+      if (saved === 'list' || saved === 'canvas') {
+        setViewMode(saved)
+      }
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  const handleSetViewMode = (mode: 'list' | 'canvas') => {
+    setViewMode(mode)
+    try {
+      localStorage.setItem('frevio_projects_view_mode', mode)
+    } catch {
+      // ignore
+    }
+  }
+
   const cutoff7d = useMemo(() => { const d = new Date(); d.setDate(d.getDate() - 7); return d }, [])
 
   const enriched = useMemo(() => projects.map(p => {
@@ -95,45 +126,84 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
 
   return (
     <div className="space-y-4">
-      {/* Controls */}
+      {/* Controls & View Switcher */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
-        {/* Status segmented pill */}
-        <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full w-fit ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm">
-          {STATUSES.map(s => (
+        <div className="flex flex-wrap items-center gap-2">
+          {/* View Mode Switcher */}
+          <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm">
             <button
-              key={s}
-              onClick={() => setStatus(s)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer ${
-                status === s
+              type="button"
+              onClick={() => handleSetViewMode('list')}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                viewMode === 'list'
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
               }`}
             >
-              {s}
-              {counts[s] > 0 && (
-                <span className={`ml-1.5 text-[10px] font-mono ${status === s ? 'text-slate-200 dark:text-slate-900' : 'text-slate-400 dark:text-slate-500'}`}>
-                  {counts[s]}
-                </span>
-              )}
+              <ListFilter className="w-3.5 h-3.5" />
+              <span>List View</span>
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={() => handleSetViewMode('canvas')}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                viewMode === 'canvas'
+                  ? 'bg-indigo-600 text-white dark:bg-indigo-500 shadow-xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+              }`}
+            >
+              <Target className="w-3.5 h-3.5 text-indigo-400 dark:text-indigo-200" />
+              <span>Priority Canvas</span>
+              <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-200 ml-0.5">
+                🎯
+              </span>
+            </button>
+          </div>
+
+          {/* Status segmented pill (in list mode) */}
+          {viewMode === 'list' && (
+            <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm">
+              {STATUSES.map(s => (
+                <button
+                  key={s}
+                  onClick={() => setStatus(s)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer ${
+                    status === s
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+                  }`}
+                >
+                  {s}
+                  {counts[s] > 0 && (
+                    <span className={`ml-1.5 text-[10px] font-mono ${status === s ? 'text-slate-200 dark:text-slate-900' : 'text-slate-400 dark:text-slate-500'}`}>
+                      {counts[s]}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Search input */}
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 dark:text-slate-500 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Search projects or clients…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all ring-1 ring-slate-950/5 dark:ring-white/5 font-light"
-          />
-        </div>
+        {/* Search input (in list mode) */}
+        {viewMode === 'list' && (
+          <div className="relative w-full sm:max-w-xs">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search projects or clients…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all ring-1 ring-slate-950/5 dark:ring-white/5 font-light"
+            />
+          </div>
+        )}
       </div>
 
-      {/* Projects Table */}
-      {projects.length === 0 ? (
+      {/* Main Content: Priority Canvas vs Table */}
+      {viewMode === 'canvas' ? (
+        <PriorityCanvas projects={projects} workspaceId={workspaceId} />
+      ) : projects.length === 0 ? (
         <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-14 px-6 text-center shadow-xs dark:shadow-sm">
           <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
             <FolderPlus className="w-6 h-6" />
@@ -175,7 +245,14 @@ export function ProjectsList({ projects }: { projects: Project[] }) {
                 <Link href={`/project/${p.id}`} className="flex items-center gap-3 min-w-0 group">
                   <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">{p.project_name}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">{p.project_name}</p>
+                      {p.priority && (
+                        <span className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 shrink-0">
+                          {p.priority.toUpperCase()}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{p.client_name}</p>
                   </div>
                 </Link>

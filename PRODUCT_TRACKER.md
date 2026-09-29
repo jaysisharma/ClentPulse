@@ -1,6 +1,6 @@
 # Frevio — Product Tracker & Roadmap
 
-> **Current Version:** v0.3.0 (Agency & Studio Multi-Tenancy Complete!)  
+> **Current Version:** v0.3.6 (Earnings Page Real-Time Settlement & Invoicing Data Fix Shipped!)  
 > **Next Milestone:** v0.4.0 (Enterprise Client Portal & Client Direct Messaging)  
 > **Last Updated:** September 2026
 
@@ -11,7 +11,7 @@
 | Track | Status | Progress |
 | :--- | :--- | :--- |
 | **Solo Freelancer Core Engine** | ✅ **Complete** | 100% Shipped |
-| **Invoicing, Multi-Currency & Deposits** | ✅ **Complete** | 100% Shipped |
+| **Invoicing, Multi-Currency & Financial Earnings Engine** | ✅ **Complete** | 100% Shipped (Real-Time Settlement) |
 | **Client Status Portal & Approvals** | ✅ **Complete** | 100% Shipped |
 | **Developer Telemetry (VS Code)** | ✅ **Complete** | 100% Shipped |
 | **Overads Design System & GSAP Landing Page** | ✅ **Complete** | 100% Shipped |
@@ -223,8 +223,38 @@
   - Conditionally hides the **Marketing & KPIs** tab in `/project/[id]/settings` when `marketing` module is disabled.
   - Conditionally hides live coding presence in public portal visibility settings when `developer` module is disabled.
 - [x] **Comprehensive Testing & Build**:
-  - 181/181 unit & integration tests passing in Vitest across 35 test suites.
-  - Clean Next.js Turbopack production build with 74 static and dynamic routes.
+  - 188/188 unit & integration tests passing in Vitest across 35 test suites.
+  - Clean TypeScript compilation with zero errors.
+
+---
+
+### 16. Interactive Public Showcase (`/demo`) & Pre-Launch Polish (Shipped)
+- [x] **One-Click Public Interactive Demo (`/demo`)**:
+  - Pre-seeded, high-fidelity client status portal (`DemoPortalClient`) available to anyone without signup.
+  - Live developer presence pulse (*"Alex is currently working on this · Focus: Payment Gateway"*).
+  - Campaign KPI snapshot strip (*Blended ROAS: 4.8x*, *Active Beta Users: 1,420*, *P95 Latency: 42ms*).
+  - Rich interactive approvals for Figma prototypes, live staging URLs, code PRs, and copy decks.
+  - Client blocker alert banner with simulated client reminder nudge.
+  - Loom video walkthrough embed and milestone timeline.
+  - Top interactive banner with quick heartbeat ping simulator and direct conversion CTA.
+- [x] **Landing Page Integration**:
+  - Added "Explore Live Demo" secondary CTA pill with pulsing green indicator in `OveradsHero`.
+  - Added "Live Demo" links to `OveradsNavbar` (both desktop pill navigation and mobile drawer).
+- [x] **Approvals API Sandbox Support**:
+  - `/api/approvals/[id]` supports `changes_requested` status and handles `demo-*` test actions gracefully.
+- [x] **In-App Dark Theme Parity**:
+  - Complete dark/light theme cohesion across marketing, studio dashboard (`DarkShell`), and client portals.
+  - Updated `DESIGN.md` reflecting unified semantic token architecture.
+
+### 17. Distribution, GTM Launch Kit & Viral Acquisition Loop (Phase 3 Shipped)
+- [x] **Viral Client Portal Referral Hook**:
+  - Upgraded [`PoweredByReferral`](file:///Users/jaysisharma/Desktop/clientpulse/src/components/ui/powered-by-referral.tsx) with actionable viral copy: *"Powered by Frevio · Create your client portal →"*.
+  - Automatic 30-day attribution tracking cookie (`frevio_ref`) via Next.js Edge middleware.
+- [x] **Go-To-Market & Viral Acquisition Playbook**:
+  - Comprehensive launch guide: [`LAUNCH_PLAYBOOK.md`](file:///Users/jaysisharma/Desktop/clientpulse/LAUNCH_PLAYBOOK.md).
+  - 45-second split-screen demo video storyboard and script (VS Code telemetry + deposit gate).
+  - Ready-to-post launch copy for X (Twitter thread), Reddit (`r/webdev`, `r/freelance`), and Hacker News (Show HN).
+  - 1-on-1 boutique agency cold outreach email and DM templates.
 
 ---
 
@@ -237,3 +267,5 @@ Apply the complete suite migrations in your Supabase SQL Editor:
 5. [`deploy/agency-executive-radar-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/agency-executive-radar-migration.sql) — Executive radar indexes & agency billing
 6. [`deploy/marketing-freelancer-suite-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/marketing-freelancer-suite-migration.sql) — Digital marketing freelancer suite schema
 7. [`deploy/persona-modules-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/persona-modules-migration.sql) — Persona craft & workspace modules feature flags
+8. [`deploy/stripe-hardening-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/stripe-hardening-migration.sql) — Webhook idempotency and event ordering timestamps
+

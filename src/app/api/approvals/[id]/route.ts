@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { notifyFreelancerOfApproval } from '@/lib/notifications'
 
-const ALLOWED_STATUSES = ['approved', 'declined']
+const ALLOWED_STATUSES = ['approved', 'declined', 'changes_requested']
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -10,10 +10,15 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   // Validate the response — never write an arbitrary status.
   if (!ALLOWED_STATUSES.includes(status)) {
-    return NextResponse.json({ error: 'Invalid status. Must be "approved" or "declined".' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid status. Must be "approved", "declined", or "changes_requested".' }, { status: 400 })
   }
   if (feedback != null && (typeof feedback !== 'string' || feedback.length > 2000)) {
     return NextResponse.json({ error: 'Feedback must be text under 2000 characters.' }, { status: 400 })
+  }
+
+  // Handle demo mode preview smoothly
+  if (id.startsWith('demo-')) {
+    return NextResponse.json({ success: true, isDemo: true })
   }
 
   const supabase = await createClient()

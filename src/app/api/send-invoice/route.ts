@@ -2,10 +2,12 @@ import { createClient } from '@/lib/supabase/server'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 
+import { fmtCurrency } from '@/lib/currencies'
+
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-function fmt(n: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
+function fmt(n: number, currency = 'USD') {
+  return fmtCurrency(n, currency)
 }
 
 export async function POST(request: Request) {
@@ -40,8 +42,8 @@ export async function POST(request: Request) {
       <tr style="border-bottom:1px solid #f1f5f9">
         <td style="padding:10px 0;font-size:14px;color:#334155">${item.description}</td>
         <td style="padding:10px 0;font-size:14px;color:#64748b;text-align:right">${item.quantity}</td>
-        <td style="padding:10px 0;font-size:14px;color:#64748b;text-align:right">${fmt(item.rate)}</td>
-        <td style="padding:10px 0;font-size:14px;font-weight:600;color:#0f172a;text-align:right">${fmt(item.amount)}</td>
+        <td style="padding:10px 0;font-size:14px;color:#64748b;text-align:right">${fmt(item.rate, invoice.currency || 'USD')}</td>
+        <td style="padding:10px 0;font-size:14px;font-weight:600;color:#0f172a;text-align:right">${fmt(item.amount, invoice.currency || 'USD')}</td>
       </tr>`)
     .join('')
 
@@ -76,7 +78,7 @@ export async function POST(request: Request) {
 
     <div style="margin-top:16px;padding-top:16px;border-top:2px solid #1e293b;display:flex;justify-content:space-between;align-items:center">
       <span style="font-weight:700;font-size:15px;color:#0f172a">Total due</span>
-      <span style="font-weight:700;font-size:20px;color:#0f172a">${fmt(total)}</span>
+      <span style="font-weight:700;font-size:20px;color:#0f172a">${fmt(total, invoice.currency || 'USD')}</span>
     </div>
 
     ${invoice.due_date ? `<p style="font-size:13px;color:#64748b;margin-top:12px">Due by <strong>${new Date(invoice.due_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</strong></p>` : ''}
