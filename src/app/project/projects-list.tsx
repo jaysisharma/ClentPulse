@@ -1,10 +1,13 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { formatDate } from '@/lib/utils'
-import { Search, Send, ChevronRight, Plus, FolderPlus, ListFilter, Target } from 'lucide-react'
-import { PriorityCanvas } from '@/components/project/priority-canvas'
+import {
+  Search, Send, ChevronRight, Plus, FolderPlus,
+  ListFilter, Target, LayoutGrid, Columns3, Wand2, X
+} from 'lucide-react'
+import { PriorityCanvas, type PriorityCanvasRef } from '@/components/project/priority-canvas'
 
 interface Update { id: string; sent_at: string | null }
 interface Approval { id: string; status: string }
@@ -60,12 +63,18 @@ export function ProjectsList({
   workspaceId?: string
 }) {
   const [viewMode, setViewMode] = useState<'list' | 'canvas'>('list')
+  const [canvasLayout, setCanvasLayout] = useState<'matrix' | 'columns'>('matrix')
+  const priorityCanvasRef = useRef<PriorityCanvasRef>(null)
 
   useEffect(() => {
     try {
       const saved = localStorage.getItem('frevio_projects_view_mode')
       if (saved === 'list' || saved === 'canvas') {
         setViewMode(saved)
+      }
+      const savedLayout = localStorage.getItem('frevio_canvas_layout')
+      if (savedLayout === 'matrix' || savedLayout === 'columns') {
+        setCanvasLayout(savedLayout)
       }
     } catch {
       // ignore
@@ -76,6 +85,15 @@ export function ProjectsList({
     setViewMode(mode)
     try {
       localStorage.setItem('frevio_projects_view_mode', mode)
+    } catch {
+      // ignore
+    }
+  }
+
+  const handleSetCanvasLayout = (layout: 'matrix' | 'columns') => {
+    setCanvasLayout(layout)
+    try {
+      localStorage.setItem('frevio_canvas_layout', layout)
     } catch {
       // ignore
     }
@@ -126,51 +144,49 @@ export function ProjectsList({
 
   return (
     <div className="space-y-4">
-      {/* Controls & View Switcher */}
-      <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
+      {/* ── Clean Single-Line Control Bar ── */}
+      <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between pb-1">
+        {/* Left: View Mode Toggle & Mode-Specific Tools */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* View Mode Switcher */}
-          <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm">
+          {/* Main View Mode Switcher */}
+          <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-2xs">
             <button
               type="button"
               onClick={() => handleSetViewMode('list')}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                 viewMode === 'list'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs font-semibold'
+                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
               }`}
             >
               <ListFilter className="w-3.5 h-3.5" />
-              <span>List View</span>
+              <span>List</span>
             </button>
             <button
               type="button"
               onClick={() => handleSetViewMode('canvas')}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                 viewMode === 'canvas'
-                  ? 'bg-indigo-600 text-white dark:bg-indigo-500 shadow-xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+                  ? 'bg-indigo-600 text-white dark:bg-indigo-500 shadow-2xs font-semibold'
+                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
               }`}
             >
-              <Target className="w-3.5 h-3.5 text-indigo-400 dark:text-indigo-200" />
+              <Target className="w-3.5 h-3.5" />
               <span>Priority Canvas</span>
-              <span className="text-[10px] uppercase font-mono px-1.5 py-0.2 rounded-full bg-indigo-500/20 text-indigo-200 ml-0.5">
-                🎯
-              </span>
             </button>
           </div>
 
-          {/* Status segmented pill (in list mode) */}
+          {/* List Mode Status Filters */}
           {viewMode === 'list' && (
-            <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm">
+            <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-2xs">
               {STATUSES.map(s => (
                 <button
                   key={s}
                   onClick={() => setStatus(s)}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer ${
                     status === s
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs font-semibold'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
                   }`}
                 >
                   {s}
@@ -183,26 +199,83 @@ export function ProjectsList({
               ))}
             </div>
           )}
+
+          {/* Canvas Mode Layout & Smart Sort Controls */}
+          {viewMode === 'canvas' && (
+            <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-0.5 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-2xs">
+                <button
+                  type="button"
+                  onClick={() => handleSetCanvasLayout('matrix')}
+                  className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                    canvasLayout === 'matrix'
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+                  }`}
+                  title="2x2 Quadrant Matrix View"
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <span className="hidden md:inline">Matrix</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSetCanvasLayout('columns')}
+                  className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                    canvasLayout === 'columns'
+                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold'
+                      : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+                  }`}
+                  title="4-Column Board View"
+                >
+                  <Columns3 className="w-3.5 h-3.5" />
+                  <span className="hidden md:inline">Board</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => priorityCanvasRef.current?.triggerAutoPrioritize()}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] hover:bg-slate-50 dark:hover:bg-white/5 text-xs font-medium text-slate-700 dark:text-slate-300 transition-all shadow-2xs cursor-pointer"
+                title="Sort projects by active blockers, deadlines and check-ins"
+              >
+                <Wand2 className="w-3.5 h-3.5 text-indigo-500" />
+                <span className="hidden sm:inline">Smart Sort</span>
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Search input (in list mode) */}
-        {viewMode === 'list' && (
-          <div className="relative w-full sm:max-w-xs">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 dark:text-slate-500 pointer-events-none" />
-            <input
-              type="text"
-              placeholder="Search projects or clients…"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all ring-1 ring-slate-950/5 dark:ring-white/5 font-light"
-            />
-          </div>
-        )}
+        {/* Right: Unified Search Input */}
+        <div className="relative w-full sm:max-w-xs">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 dark:text-slate-500 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search projects or clients…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full pl-9 pr-8 py-2 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all ring-1 ring-slate-950/5 dark:ring-white/5 font-light"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer p-0.5"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Main Content: Priority Canvas vs Table */}
+      {/* ── Main View: Priority Canvas vs Table ── */}
       {viewMode === 'canvas' ? (
-        <PriorityCanvas projects={projects} workspaceId={workspaceId} />
+        <PriorityCanvas
+          ref={priorityCanvasRef}
+          projects={projects}
+          workspaceId={workspaceId}
+          layoutMode={canvasLayout}
+          searchQuery={search}
+        />
       ) : projects.length === 0 ? (
         <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-14 px-6 text-center shadow-xs dark:shadow-sm">
           <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
@@ -227,8 +300,9 @@ export function ProjectsList({
       ) : (
         <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm overflow-hidden">
           {/* Column headers (desktop only) */}
-          <div className="hidden md:grid grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-100 dark:border-white/5 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
+          <div className="hidden md:grid grid-cols-[minmax(0,2fr)_1fr_1.2fr_1.4fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-100 dark:border-white/5 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
             <span>Project</span>
+            <span>Priority</span>
             <span>Health</span>
             <span>Budget</span>
             <span>Last Activity</span>
@@ -239,23 +313,33 @@ export function ProjectsList({
             {filtered.map(p => (
               <div
                 key={p.id}
-                className="md:grid md:grid-cols-[minmax(0,2.2fr)_1.3fr_1.6fr_1fr_auto] md:items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors flex flex-col"
+                className="md:grid md:grid-cols-[minmax(0,2fr)_1fr_1.2fr_1.4fr_1fr_auto] md:items-center gap-4 px-5 py-4 hover:bg-slate-50/70 dark:hover:bg-white/[0.02] transition-colors flex flex-col"
               >
                 {/* Project */}
                 <Link href={`/project/${p.id}`} className="flex items-center gap-3 min-w-0 group">
                   <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">{p.project_name}</p>
-                      {p.priority && (
-                        <span className="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 shrink-0">
-                          {p.priority.toUpperCase()}
-                        </span>
-                      )}
-                    </div>
+                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      {p.project_name}
+                    </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{p.client_name}</p>
                   </div>
                 </Link>
+
+                {/* Priority */}
+                <div>
+                  <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold border ${
+                    p.priority === 'p0'
+                      ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/30'
+                      : p.priority === 'p2'
+                      ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-500/30'
+                      : p.priority === 'p3'
+                      ? 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10'
+                      : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30'
+                  }`}>
+                    {(p.priority || 'P1').toUpperCase()}
+                  </span>
+                </div>
 
                 {/* Health */}
                 <div className="mt-2 md:mt-0">

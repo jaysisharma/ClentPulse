@@ -9,7 +9,7 @@ import {
   Check, Upload, Sun, Moon, Copy, Code2, Key, Trash2,
   ArrowUpRight, Sparkles, ExternalLink, Gift, Zap, Shield,
   Crown, TrendingUp, Palette, Briefcase, Sliders, Layers,
-  Clock, FileText, BarChart3, Loader2
+  Clock, FileText, BarChart3, Loader2, Lock, Eye, EyeOff
 } from 'lucide-react'
 import { PLAN_BLURB, FREE_FEATURES, PRO_FEATURES, AGENCY_FEATURES, normalizePlan, type PlanTier } from '@/lib/plans'
 import { buildReferralUrl } from '@/lib/referrals'
@@ -147,6 +147,15 @@ export default function SettingsPage() {
   const [tokenCopied, setTokenCopied] = useState(false)
   const [generatingToken, setGeneratingToken] = useState(false)
 
+  // Security & Password
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [passwordLoading, setPasswordLoading] = useState(false)
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordSuccess, setPasswordSuccess] = useState(false)
+
   useEffect(() => () => { if (savedTimerRef.current) clearTimeout(savedTimerRef.current) }, [])
 
   useEffect(() => {
@@ -258,6 +267,45 @@ export default function SettingsPage() {
     await navigator.clipboard.writeText(text)
     setTokenCopied(true)
     setTimeout(() => setTokenCopied(false), 2000)
+  }
+
+  async function handleChangePassword(e: React.FormEvent) {
+    e.preventDefault()
+    setPasswordError('')
+    setPasswordSuccess(false)
+
+    if (newPassword.length < 6) {
+      setPasswordError('Password must be at least 6 characters.')
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Passwords do not match.')
+      return
+    }
+
+    setPasswordLoading(true)
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      })
+
+      if (error) {
+        setPasswordError(error.message || 'Failed to update password.')
+        setPasswordLoading(false)
+        return
+      }
+
+      setPasswordSuccess(true)
+      setNewPassword('')
+      setConfirmPassword('')
+      setTimeout(() => setPasswordSuccess(false), 4000)
+    } catch (err: any) {
+      setPasswordError(err?.message || 'An error occurred while updating your password.')
+    } finally {
+      setPasswordLoading(false)
+    }
   }
 
   async function handleSave(e: { preventDefault(): void }) {
@@ -471,6 +519,96 @@ export default function SettingsPage() {
                 className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
               >
                 {loading ? 'Saving…' : saved ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Saved</> : 'Save Changes'}
+              </button>
+            </form>
+          </SectionCard>
+
+          {/* ── Security & Password ──────────────────────────────────── */}
+          <SectionCard className="p-5">
+            <SectionHeader
+              title="Security & Password"
+              description="Update your account password to keep your studio and client workspaces secure."
+              badge={<Lock className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0 mt-0.5" />}
+            />
+
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label htmlFor="new-password" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                  New Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="new-password"
+                    type={showNewPassword ? 'text' : 'password'}
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                    placeholder="At least 6 characters"
+                    className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 pr-10 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                    aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="confirm-password" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                  Confirm New Password
+                </label>
+                <div className="relative">
+                  <input
+                    id="confirm-password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    placeholder="Re-enter your new password"
+                    className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 pr-10 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {passwordError && (
+                <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">{passwordError}</p>
+              )}
+
+              {passwordSuccess && (
+                <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-medium bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl p-3">
+                  <Check className="w-4 h-4 flex-shrink-0" />
+                  <span>Password updated successfully.</span>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={passwordLoading || !newPassword}
+                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+              >
+                {passwordLoading ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Updating password…</span>
+                  </>
+                ) : passwordSuccess ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>Updated</span>
+                  </>
+                ) : (
+                  'Update Password'
+                )}
               </button>
             </form>
           </SectionCard>
