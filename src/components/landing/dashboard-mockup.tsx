@@ -103,7 +103,7 @@ export function DashboardMockup() {
             <div className="space-y-6">
               {/* Logo and Workspace */}
               <div className="flex items-center gap-2 px-2">
-                <img src="/logo.svg" alt="Frevio" className="w-5 h-5" />
+                <img src="/logo.png" alt="Frevio" className="w-5 h-5 object-contain" />
                 <span className="font-bold text-xs text-slate-200">Creative Studio</span>
               </div>
 

@@ -371,9 +371,7 @@ export default function LoginPage() {
 
         {/* logo */}
         <Link href="/" className="relative inline-flex items-center gap-3 w-fit group">
-          <div className="w-10 h-10 rounded-2xl bg-white text-slate-950 flex items-center justify-center font-bold text-lg shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 mr-0.5 animate-pulse" />
-          </div>
+          <img src="/logo.png" alt="Frevio" className="w-10 h-10 object-contain" />
           <span className="text-2xl font-light tracking-tight text-white group-hover:opacity-80 transition-opacity">
             Frevio
           </span>
@@ -423,9 +421,7 @@ export default function LoginPage() {
         {/* mobile logo */}
         <div className="mb-8 lg:hidden">
           <Link href="/" className="inline-flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center font-bold text-sm">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-0.5 animate-pulse" />
-            </div>
+            <img src="/logo.png" alt="Frevio" className="w-8 h-8 object-contain" />
             <span className="text-xl font-semibold tracking-tight text-slate-900 dark:text-white">Frevio</span>
           </Link>
         </div>

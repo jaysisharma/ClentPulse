@@ -147,7 +147,7 @@ export function AppLayout({
           {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
         <Link href="/dashboard" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Frevio" className="w-6 h-6" />
+          <img src="/logo.png" alt="Frevio" className="w-6 h-6 object-contain" />
           <span className="font-semibold text-sm text-slate-900 dark:text-white">Frevio</span>
         </Link>
         <button

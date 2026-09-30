@@ -191,9 +191,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
                 {/* 1. Header: Logo & Status */}
                 <div className="flex items-center justify-between px-1 pt-1 pb-2">
                   <div className="flex items-center gap-2">
-                    <div className="size-6 rounded-lg bg-gradient-to-tr from-indigo-600 via-indigo-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold font-mono">
-                      F
-                    </div>
+                    <img src="/logo.png" alt="Frevio" className="size-6 object-contain" />
                     <span className="font-bold text-sm text-white tracking-tight font-mono">Frevio</span>
                     <span className="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-semibold px-1 rounded bg-white/[0.04] border border-white/[0.06]">
                       Studio
