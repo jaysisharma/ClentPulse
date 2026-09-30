@@ -115,17 +115,6 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
               )}
             </div>
 
-            <Link
-              href="/demo"
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50/80 dark:hover:bg-white/10 transition-colors"
-            >
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-              </span>
-              <span>Live Demo</span>
-            </Link>
-
             <a
               href="#problem"
               className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-950 hover:bg-slate-100/80 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/10 transition-colors"
@@ -230,10 +219,6 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
       {mobileMenuOpen && (
         <div className="md:hidden mx-4 mt-2 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/98 dark:bg-[#0e1017]/98 backdrop-blur-2xl p-4 shadow-2xl space-y-3 pointer-events-auto animate-in fade-in duration-150">
           <nav className="flex flex-col space-y-1 text-sm text-slate-700 dark:text-slate-300">
-            <Link href="/demo" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-semibold flex items-center justify-between">
-              <span>⚡ Live Demo Portal</span>
-              <ArrowUpRight className="size-3.5" />
-            </Link>
             <a href="#problem" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-950 dark:hover:text-white">The Problem</a>
             <a href="#solution" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-950 dark:hover:text-white">The Solution</a>
             <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-950 dark:hover:text-white">How it Works</a>
