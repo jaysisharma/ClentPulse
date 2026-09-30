@@ -151,17 +151,6 @@ export function OveradsHero({ signupHref }: HeroProps) {
               <span>Start free</span>
               <ArrowUpRight className="size-4 text-white dark:text-slate-900" />
             </Link>
-
-            <Link
-              href="/demo"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 dark:border-white/15 bg-white/80 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-900 dark:text-white h-11 px-6 text-sm font-medium transition-all hover:scale-[1.02] shadow-xs backdrop-blur-md cursor-pointer group"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span>Explore Live Demo</span>
-            </Link>
           </div>
         </div>
 
