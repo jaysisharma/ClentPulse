@@ -17,14 +17,26 @@ export default async function LandingPage() {
   const isLoggedIn = !!user
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
+  // Fetch live launch promo data
+  const { data: promoData } = await supabase
+    .from('launch_promo')
+    .select('claimed, cap')
+    .eq('id', 1)
+    .maybeSingle()
+
+  const promoCap = promoData?.cap ?? 50
+  const promoClaimed = promoData?.claimed ?? 8
+  const promoRemaining = Math.max(0, promoCap - promoClaimed)
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#07080D] font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-indigo-500/20 dark:selection:bg-indigo-500/30 selection:text-indigo-900 dark:selection:text-indigo-200 transition-colors duration-300">
 
-      {/* ── 0. Floating Glass Navbar ── */}
+      {/* ── 0. Floating Glass Navbar with Announcement Strip ── */}
       <OveradsNavbar
         isLoggedIn={isLoggedIn}
         signupHref={signupHref}
-        promoRemaining={17}
+        promoRemaining={promoRemaining}
+        promoCap={promoCap}
       />
 
       <main className="flex-1">

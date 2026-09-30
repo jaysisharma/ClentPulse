@@ -74,7 +74,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
       <section
         id="hero-pin"
         ref={sectionRef}
-        className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-5 pt-28 pb-16 sm:px-8 md:pt-32 bg-[#FAFAFC] dark:bg-[#090A0F] transition-colors duration-300"
+        className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden px-5 pt-32 pb-16 sm:px-8 sm:pt-36 md:pt-40 bg-[#FAFAFC] dark:bg-[#090A0F] transition-colors duration-300"
       >
         {/* ── 1. BACKGROUND: LINEAR / VERCEL STYLE ENGINEERED DARK CANVAS ── */}
         

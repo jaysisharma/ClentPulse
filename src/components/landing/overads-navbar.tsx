@@ -5,22 +5,68 @@ import Link from 'next/link'
 import { Logo } from '@/components/ui/logo'
 import { ThemeToggle } from '@/components/landing/theme-toggle'
 import {
-  ArrowUpRight, ChevronDown, Menu, X, Sparkles, SlidersHorizontal,
+  ArrowUpRight, ArrowRight, ChevronDown, Menu, X, Sparkles, SlidersHorizontal,
   Radio, Eye
 } from 'lucide-react'
 
 interface Props {
   isLoggedIn: boolean
   signupHref: string
-  promoRemaining: number | null
+  promoRemaining?: number | null
+  promoCap?: number | null
 }
 
-export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
+export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, promoCap = 50 }: Props) {
   const [productMenuOpen, setProductMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [bannerDismissed, setBannerDismissed] = useState(false)
+  const remaining = promoRemaining ?? 42
+
+  const handleDismiss = () => {
+    setBannerDismissed(true)
+    try {
+      sessionStorage.setItem('frevio_launch_promo_dismissed', 'true')
+    } catch {}
+  }
 
   return (
     <header className="fixed inset-x-0 top-0 z-40 w-full pt-[env(safe-area-inset-top)] pointer-events-none">
+      {/* ── Top Announcement Strip: 50 Free Pro Signups ── */}
+      {!bannerDismissed && remaining > 0 && (
+        <div className="pointer-events-auto w-full bg-gradient-to-r from-slate-950 via-indigo-950 to-purple-950 border-b border-indigo-500/20 text-white shadow-md backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 py-2 sm:py-2.5 flex items-center justify-between gap-3 text-xs sm:text-sm">
+            <div className="flex-1 flex items-center justify-center gap-2 sm:gap-3 flex-wrap text-center">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-[11px] font-semibold uppercase tracking-wider">
+                <Sparkles className="size-3 text-indigo-300" />
+                Launch Special
+              </span>
+              <span className="text-slate-200">
+                First <strong className="text-white font-semibold">{promoCap ?? 50} signups</strong> get Free Pro
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-semibold tabular-nums text-xs">
+                <span className="size-1.5 rounded-full bg-amber-400 animate-pulse" />
+                Only {remaining} spot{remaining === 1 ? '' : 's'} left
+              </span>
+              <Link
+                href={signupHref}
+                className="inline-flex items-center gap-1 text-indigo-300 hover:text-white font-semibold underline underline-offset-4 transition-colors ml-1 group"
+              >
+                <span>Claim your spot</span>
+                <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            </div>
+            <button
+              type="button"
+              onClick={handleDismiss}
+              className="p-1 text-slate-400 hover:text-white transition-colors rounded-md cursor-pointer flex-shrink-0"
+              aria-label="Dismiss banner"
+            >
+              <X className="size-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="relative flex h-20 w-full items-center justify-between px-6 sm:px-10 lg:px-12">
         
         {/* Far Left: Logo */}
