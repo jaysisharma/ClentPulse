@@ -30,7 +30,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, promoCap
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 w-full pt-[env(safe-area-inset-top)] pointer-events-none">
+    <header className="relative z-40 w-full pt-[env(safe-area-inset-top)] pointer-events-none">
       {/* ── Top Announcement Strip: 50 Free Pro Signups ── */}
       {!bannerDismissed && remaining > 0 && (
         <div className="pointer-events-auto w-full bg-gradient-to-r from-slate-950 via-indigo-950 to-purple-950 border-b border-indigo-500/20 text-white shadow-md backdrop-blur-md">
