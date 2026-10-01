@@ -64,9 +64,19 @@ export default async function PublicInvoicePage({
 
   const { data: owner } = await supabase
     .from('users')
-    .select('id, name, username, plan, logo_url, accent_color')
+    .select('id, name, username, plan, logo_url, accent_color, email')
     .eq('id', invoice.user_id)
     .single()
+
+  let projectName: string | null = null
+  if (invoice.project_id) {
+    const { data: proj } = await supabase
+      .from('projects')
+      .select('project_name')
+      .eq('id', invoice.project_id)
+      .maybeSingle()
+    projectName = proj?.project_name ?? null
+  }
 
   const accent = owner?.accent_color ?? '#6366F1'
   const subtotal = (invoice.items ?? []).reduce(
@@ -87,7 +97,7 @@ export default async function PublicInvoicePage({
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-80 bg-indigo-500/5 dark:bg-indigo-500/[0.03] blur-3xl pointer-events-none" />
 
       <div className="max-w-2xl mx-auto relative">
-        <InvoicePrint invoice={invoice} owner={owner} />
+        <InvoicePrint invoice={invoice} owner={owner} projectName={projectName} />
 
         {/* Paid confirmation — shown after returning from Stripe */}
         {paid === '1' || isPaid ? (
