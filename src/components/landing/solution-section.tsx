@@ -1,175 +1,146 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Activity, FolderGit2, CheckCircle2, CreditCard, ArrowRight } from 'lucide-react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
+import {
+  CheckCircle2, Clock, Sparkles, ExternalLink,
+  ShieldCheck, CreditCard, ArrowRight, ArrowUpRight
+} from 'lucide-react'
 
 interface Props {
   signupHref: string
 }
 
 export function SolutionSection({ signupHref }: Props) {
-  const containerRef = useRef<HTMLElement>(null)
-  const leftColRef = useRef<HTMLDivElement>(null)
-  const cardsRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const ctx = gsap.context(() => {
-      // 1. Left column text stagger
-      if (leftColRef.current) {
-        gsap.fromTo(
-          leftColRef.current.children,
-          { y: 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            stagger: 0.12,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: leftColRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-
-      // 2. 2x2 cards stagger in
-      if (cardsRef.current) {
-        gsap.fromTo(
-          cardsRef.current.children,
-          { y: 35, opacity: 0, scale: 0.95 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            stagger: 0.1,
-            duration: 0.7,
-            ease: 'back.out(1.3)',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-    }, containerRef)
-
-    return () => ctx.revert()
-  }, [])
-
   return (
     <section
-      ref={containerRef}
-      id="solution"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#090A0F] border-t border-white/[0.08] text-white relative overflow-hidden"
+      id="solutions"
+      className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
     >
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/2 right-0 w-[500px] h-[350px] bg-emerald-500/[0.04] rounded-full blur-[140px] pointer-events-none" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Header */}
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#9BCDBF] mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#9BCDBF]" />
+            <span>The Frevio Solution</span>
+          </div>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
+            One workspace. <br />
+            <span className="font-normal text-[#A7B8FF]">
+              A better experience for every client.
+            </span>
+          </h2>
+          <p className="mt-4 text-sm sm:text-base text-[#A1A5AD] font-normal leading-relaxed max-w-xl mx-auto">
+            Instead of spreading your projects across email, chat threads, and cloud drives, give each client one dedicated destination that answers their questions before they ask.
+          </p>
+        </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        {/* 3 Clear Capability Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          {/* Left Column: Solution Copy & CTA */}
-          <div ref={leftColRef} className="lg:col-span-6 space-y-6 sm:space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>The Solution</span>
+          {/* Capability A: Keep every project clear */}
+          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors">
+            <div>
+              <div className="text-xs font-mono text-[#9BCDBF] uppercase tracking-wider mb-2">
+                01 · Visibility
+              </div>
+              <h3 className="text-lg font-medium text-[#F5F5F3] mb-2">
+                Keep every project clear
+              </h3>
+              <p className="text-xs sm:text-sm text-[#A1A5AD] leading-relaxed mb-6">
+                Clients see overall project health, active milestones, and what is currently being worked on without having to text you for updates.
+              </p>
             </div>
 
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-[-0.03em] text-white leading-[1.08]">
-              One link. <br />
-              <span className="font-semibold text-slate-200">Everything your client needs.</span>
-            </h2>
-
-            <p className="text-base sm:text-lg text-slate-400 font-light leading-relaxed max-w-xl">
-              Send a simple, secure link. Your client can track progress, view deliverables, give feedback, approve work, and pay invoices — no account, no confusion.
-            </p>
-
-            <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <Link
-                href={signupHref}
-                className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-white hover:bg-slate-100 text-slate-950 font-medium text-sm transition-all shadow-xl hover:shadow-2xl active:scale-[0.98] group"
-              >
-                <span>Start free</span>
-                <ArrowRight className="w-4 h-4 text-slate-900 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <div className="text-xs text-slate-400 font-light">
-                Free for 2 active projects · No credit card
+            {/* Realistic UI Example A */}
+            <div className="rounded-xl border border-[#2A2D33] bg-[#101113] p-4 space-y-3 font-mono text-xs">
+              <div className="flex items-center justify-between text-[#A1A5AD] text-[11px]">
+                <span>Brand Identity & Web</span>
+                <span className="text-[#34D399]">Sprint 2 of 4</span>
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-xs text-[#F5F5F3]">
+                  <span>Discovery & Wireframes</span>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#34D399]" />
+                </div>
+                <div className="flex justify-between text-xs text-[#A7B8FF]">
+                  <span>Visual Design & UI</span>
+                  <span className="text-[10px] bg-[#A7B8FF]/15 px-1.5 py-0.5 rounded text-[#A7B8FF]">Active</span>
+                </div>
+                <div className="flex justify-between text-xs text-[#A1A5AD]">
+                  <span>Frontend Engineering</span>
+                  <Clock className="w-3.5 h-3.5" />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: 2x2 Feature Cards Grid */}
-          <div className="lg:col-span-6">
-            <div ref={cardsRef} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              
-              {/* Card 1: Track progress */}
-              <div className="p-6 rounded-2xl bg-[#0e1017] border border-white/10 hover:border-emerald-500/30 hover:bg-[#12141d] hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all">
-                  <Activity className="w-5 h-5" />
-                </div>
-                <h3 className="text-base font-semibold text-white mb-1.5">
-                  Track progress
-                </h3>
-                <p className="text-sm text-slate-400 font-light leading-relaxed">
-                  Show exactly what&apos;s happening in real-time without writing manual update messages.
-                </p>
+          {/* Capability B: Share work and collect feedback */}
+          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors">
+            <div>
+              <div className="text-xs font-mono text-[#A7B8FF] uppercase tracking-wider mb-2">
+                02 · Approvals
               </div>
+              <h3 className="text-lg font-medium text-[#F5F5F3] mb-2">
+                Share work and collect feedback
+              </h3>
+              <p className="text-xs sm:text-sm text-[#A1A5AD] leading-relaxed mb-6">
+                Deliverables are easy to access, review, and approve with 1 click. Create a crystal-clear paper trail for revisions and sign-offs.
+              </p>
+            </div>
 
-              {/* Card 2: View deliverables */}
-              <div className="p-6 rounded-2xl bg-[#0e1017] border border-white/10 hover:border-emerald-500/30 hover:bg-[#12141d] hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all">
-                  <FolderGit2 className="w-5 h-5" />
-                </div>
-                <h3 className="text-base font-semibold text-white mb-1.5">
-                  View deliverables
-                </h3>
-                <p className="text-sm text-slate-400 font-light leading-relaxed">
-                  Access design files, code repositories, builds, and assets organized by milestone.
-                </p>
+            {/* Realistic UI Example B */}
+            <div className="rounded-xl border border-[#2A2D33] bg-[#101113] p-4 space-y-3 font-mono text-xs">
+              <div className="flex items-center justify-between text-[11px] text-[#A1A5AD]">
+                <span className="text-[#A7B8FF]">Deliverable Sign-off</span>
+                <span>Figma v2.1</span>
               </div>
-
-              {/* Card 3: Approve work */}
-              <div className="p-6 rounded-2xl bg-[#0e1017] border border-white/10 hover:border-emerald-500/30 hover:bg-[#12141d] hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all">
-                  <CheckCircle2 className="w-5 h-5" />
-                </div>
-                <h3 className="text-base font-semibold text-white mb-1.5">
-                  Approve work
-                </h3>
-                <p className="text-sm text-slate-400 font-light leading-relaxed">
-                  Give pinpoint feedback and sign off on completed deliverables with one single click.
-                </p>
+              <div className="text-xs text-[#F5F5F3] font-sans font-medium">
+                Landing Page Prototypes
               </div>
-
-              {/* Card 4: Pay invoices */}
-              <div className="p-6 rounded-2xl bg-[#0e1017] border border-white/10 hover:border-emerald-500/30 hover:bg-[#12141d] hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-4 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all">
-                  <CreditCard className="w-5 h-5" />
-                </div>
-                <h3 className="text-base font-semibold text-white mb-1.5">
-                  Pay invoices
-                </h3>
-                <p className="text-sm text-slate-400 font-light leading-relaxed">
-                  Fast, secure card and bank payments right from the link via official Stripe integration.
-                </p>
+              <div className="pt-2 border-t border-[#2A2D33] flex items-center justify-between">
+                <span className="text-[10px] text-[#A1A5AD]">Awaiting client</span>
+                <span className="inline-flex items-center gap-1 text-[11px] bg-[#34D399]/15 text-[#34D399] border border-[#34D399]/30 px-2 py-0.5 rounded">
+                  <CheckCircle2 className="w-3 h-3" />
+                  1-Click Approve
+                </span>
               </div>
+            </div>
+          </div>
 
+          {/* Capability C: Keep project administration organised */}
+          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors">
+            <div>
+              <div className="text-xs font-mono text-[#9BCDBF] uppercase tracking-wider mb-2">
+                03 · Administration
+              </div>
+              <h3 className="text-lg font-medium text-[#F5F5F3] mb-2">
+                Keep project administration organised
+              </h3>
+              <p className="text-xs sm:text-sm text-[#A1A5AD] leading-relaxed mb-6">
+                Centralize agreements, invoices, kickoff checklists, and scope change orders so payment and paperwork never stall progress.
+              </p>
+            </div>
+
+            {/* Realistic UI Example C */}
+            <div className="rounded-xl border border-[#2A2D33] bg-[#101113] p-4 space-y-3 font-mono text-xs">
+              <div className="flex items-center justify-between text-[11px] text-[#A1A5AD]">
+                <span>Invoicing & Scope</span>
+                <span className="text-[#34D399]">Stripe Enabled</span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-[#F5F5F3]">
+                <span>Milestone 1 Deposit</span>
+                <span className="text-[#34D399]">$3,500 Paid</span>
+              </div>
+              <div className="flex items-center justify-between text-xs text-[#A1A5AD]">
+                <span>Change Order #01</span>
+                <span className="text-[#FBBF24]">Due on approval</span>
+              </div>
             </div>
           </div>
 
         </div>
+
       </div>
     </section>
   )

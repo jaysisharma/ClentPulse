@@ -1,15 +1,41 @@
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { OveradsNavbar } from '@/components/landing/overads-navbar'
 import { OveradsHero } from '@/components/landing/overads-hero'
 import { ProblemSection } from '@/components/landing/problem-section'
 import { SolutionSection } from '@/components/landing/solution-section'
+import { InteractiveWorkspaceDemo } from '@/components/landing/interactive-workspace-demo'
 import { HowItWorksSection } from '@/components/landing/how-it-works-section'
-import { FreelancerDashboardSection } from '@/components/landing/freelancer-dashboard-section'
-import { IntegrationsSection } from '@/components/landing/integrations-section'
+import { UseCasesSection } from '@/components/landing/use-cases-section'
+import { AutomationSection } from '@/components/landing/automation-section'
+import { TrustSection } from '@/components/landing/trust-section'
 import { PricingSection } from '@/components/landing/pricing-section'
-import { TestimonialsSection } from '@/components/landing/testimonials-section'
+import { FaqSection } from '@/components/landing/faq-section'
 import { BottomCtaSection } from '@/components/landing/bottom-cta-section'
 import { OveradsFooter } from '@/components/landing/overads-footer'
+
+export const metadata: Metadata = {
+  title: 'Frevio Cloud — A Better Client Workspace for Freelancers',
+  description:
+    'Give clients one clear place to follow project progress, review deliverables, and manage project updates. Discover a simpler way to work with Frevio.',
+  keywords: [
+    'client portal for freelancers',
+    'freelancer client management',
+    'client workspace for designers',
+    'project approval tools',
+    'client collaboration for freelancers',
+    'freelancer project management',
+    'Frevio Cloud',
+  ],
+  openGraph: {
+    title: 'Frevio Cloud — A Better Client Workspace for Freelancers',
+    description:
+      'Give clients one clear place to follow project progress, review deliverables, and manage project updates. Discover a simpler way to work with Frevio.',
+    url: 'https://www.frevio.cloud',
+    siteName: 'Frevio Cloud',
+    type: 'website',
+  },
+}
 
 export default async function LandingPage() {
   const supabase = await createClient()
@@ -17,60 +43,48 @@ export default async function LandingPage() {
   const isLoggedIn = !!user
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
-  // Fetch live launch promo data
-  const { data: promoData } = await supabase
-    .from('launch_promo')
-    .select('claimed, cap')
-    .eq('id', 1)
-    .maybeSingle()
-
-  const promoCap = promoData?.cap ?? 50
-  const promoClaimed = promoData?.claimed ?? 8
-  const promoRemaining = Math.max(0, promoCap - promoClaimed)
-
   return (
-    <div className="min-h-screen bg-white dark:bg-[#07080D] font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-indigo-500/20 dark:selection:bg-indigo-500/30 selection:text-indigo-900 dark:selection:text-indigo-200 transition-colors duration-300">
-
-      {/* ── 0. Floating Glass Navbar with Announcement Strip ── */}
-      <OveradsNavbar
-        isLoggedIn={isLoggedIn}
-        signupHref={signupHref}
-        promoRemaining={promoRemaining}
-        promoCap={promoCap}
-      />
+    <div className="min-h-screen bg-[#101113] text-[#F5F5F3] font-sans antialiased selection:bg-[#A7B8FF]/20 selection:text-[#F5F5F3]">
+      
+      {/* ── Section 1: Navigation ── */}
+      <OveradsNavbar isLoggedIn={isLoggedIn} signupHref={signupHref} />
 
       <main className="flex-1">
-
-        {/* ── 1. Hero: Dark Frevio Dashboard Replica ── */}
+        {/* ── Section 2: Hero (Client Workspace Interface Preview) ── */}
         <OveradsHero signupHref={signupHref} />
 
-        {/* ── 2. The Problem: "Your work isn't the problem. Client communication is." ── */}
+        {/* ── Section 3: The Problem ── */}
         <ProblemSection />
 
-        {/* ── 3. The Solution: "One link. Everything your client needs." ── */}
+        {/* ── Section 4: The Solution ── */}
         <SolutionSection signupHref={signupHref} />
 
-        {/* ── 4. See How It Works: "A simple experience for both sides" ── */}
+        {/* ── Section 5: Interactive Client Workspace Demonstration ── */}
+        <InteractiveWorkspaceDemo />
+
+        {/* ── Section 6: How It Works ── */}
         <HowItWorksSection />
 
-        {/* ── 5. Freelancer Dashboard: "Everything organized in one place" ── */}
-        <FreelancerDashboardSection signupHref={signupHref} />
+        {/* ── Section 7: Designed for Different Kinds of Work ── */}
+        <UseCasesSection />
 
-        {/* ── 6. Integrations: "Works with the tools you already use" ── */}
-        <IntegrationsSection />
+        {/* ── Section 8: Automation and Productivity ── */}
+        <AutomationSection />
 
-        {/* ── 7. Pricing: "Simple, transparent pricing" ── */}
+        {/* ── Section 9: Trust and Credibility ── */}
+        <TrustSection />
+
+        {/* ── Section 10: Pricing ── */}
         <PricingSection signupHref={signupHref} />
 
-        {/* ── 8. Testimonials: "Built for freelancers, by freelancers" ── */}
-        <TestimonialsSection />
+        {/* ── Section 11: Frequently Asked Questions ── */}
+        <FaqSection />
 
-        {/* ── 9. Bottom CTA: "Give every client a better way to work with you." ── */}
+        {/* ── Section 12: Final CTA ── */}
         <BottomCtaSection signupHref={signupHref} />
-
       </main>
 
-      {/* ── 10. Footer ── */}
+      {/* ── Section 13: Footer ── */}
       <OveradsFooter />
 
     </div>

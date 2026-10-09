@@ -1,226 +1,224 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { Check, Sparkles } from 'lucide-react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { Check, ArrowRight, Sparkles } from 'lucide-react'
+import { PRICING, ANNUAL_MONTHLY_EQUIV, ANNUAL_DISCOUNT_PCT, AGENCY_PRICING } from '@/lib/plans'
 
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
-
-interface Props {
+interface PricingProps {
   signupHref: string
 }
 
-export function PricingSection({ signupHref }: Props) {
-  const containerRef = useRef<HTMLElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
-  const cardsRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const ctx = gsap.context(() => {
-      // 1. Header entrance
-      if (headerRef.current) {
-        gsap.fromTo(
-          headerRef.current.children,
-          { y: 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            stagger: 0.12,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: headerRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-
-      // 2. 4 Cards Stagger
-      if (cardsRef.current) {
-        gsap.fromTo(
-          cardsRef.current.children,
-          { y: 40, opacity: 0, scale: 0.96 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            stagger: 0.1,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-    }, containerRef)
-
-    return () => ctx.revert()
-  }, [])
+export function PricingSection({ signupHref }: PricingProps) {
+  const [isAnnual, setIsAnnual] = useState(true)
 
   const plans = [
     {
       name: 'Free',
+      badge: 'Starter',
       price: '$0',
-      period: '/mo',
-      tagline: 'For individuals getting started',
+      period: 'forever',
+      description: 'For freelancers exploring a better client workflow.',
+      limits: 'Up to 2 active projects',
       features: [
-        '2 active projects',
-        'Passcode-protected client portal',
-        'Basic invoicing & receipt exports',
-        'Standard milestone updates',
-        'Community email support',
+        'Up to 2 active projects',
+        'Client portal & status pages',
+        'Project updates & milestones',
+        'Client kickoff checklist',
+        'Basic deliverable approvals',
+        'Proposals & contracts',
+        'Invoicing with Stripe payments',
       ],
-      ctaText: 'Get started',
+      ctaText: 'Start free',
       ctaHref: signupHref,
-      popular: false,
+      isHighlighted: false,
     },
     {
       name: 'Pro',
-      price: '$15',
-      period: '/mo',
-      tagline: 'For professional freelancers',
+      badge: 'Most Popular',
+      price: isAnnual ? `$${ANNUAL_MONTHLY_EQUIV}` : `$${PRICING.monthly}`,
+      period: isAnnual ? 'per month, billed annually ($190/yr)' : 'per month',
+      description: 'For independent professionals managing multiple clients.',
+      limits: 'Unlimited active projects',
       features: [
-        'Unlimited projects & clients',
-        'Custom branding & studio logo',
-        'Automated milestone broadcasts',
-        'Advanced Stripe checkout invoices',
-        'Client approvals & digital sign-off',
-        'Priority file uploads (up to 500MB)',
+        'Unlimited active projects',
+        'Automated client emails via Resend',
+        'Custom logo & accent color branding',
+        'Remove "Powered by Frevio"',
+        'Project duplication & templates',
+        'Advanced deliverable sign-offs',
+        'Scope Creep Shield & change orders',
+        'Expense & profit analytics',
       ],
-      ctaText: 'Start free',
+      ctaText: 'Start with Pro',
       ctaHref: signupHref,
-      popular: true,
+      isHighlighted: true,
     },
     {
       name: 'Agency',
-      price: '$39',
-      period: '/mo',
-      tagline: 'For small teams and studios',
+      badge: 'Small Studios',
+      price: isAnnual ? `$${Math.round(AGENCY_PRICING.agency.annual / 12)}` : `$${AGENCY_PRICING.agency.monthly}`,
+      period: isAnnual ? 'per month, billed annually ($790/yr)' : 'per month',
+      description: 'For creative and technical studios needing shared workflows.',
+      limits: 'Up to 5 team members',
       features: [
         'Up to 5 team members',
-        'Client relationship management',
-        'Advanced workflow automations',
-        'Custom domain (cname)',
-        'Priority email & chat support',
-        'Multi-currency Stripe billing',
+        'Unlimited active projects',
+        'Shared agency workspace & switcher',
+        'Team roles (Owner, PM, Member)',
+        'Project pods & staff assignments',
+        'Update staging & PM review workflow',
+        'Agency audit & activity logs',
       ],
-      ctaText: 'Start free',
+      ctaText: 'Choose Agency',
       ctaHref: signupHref,
-      popular: false,
+      isHighlighted: false,
     },
     {
       name: 'Agency Scale',
-      price: '$99',
-      period: '/mo',
-      tagline: 'For larger agencies',
+      badge: 'Full White-label',
+      price: isAnnual ? `$${Math.round(AGENCY_PRICING.scale.annual / 12)}` : `$${AGENCY_PRICING.scale.monthly}`,
+      period: isAnnual ? 'per month, billed annually ($1,990/yr)' : 'per month',
+      description: 'For high-volume agency operations requiring custom domains.',
+      limits: 'Up to 25 team members',
       features: [
-        'Unlimited team members',
-        'Everything in Agency',
-        'Advanced revenue reporting',
-        'Full REST API & webhook webhooks',
-        'Dedicated account manager',
-        'Tailored onboarding & SLA',
+        'Up to 25 team members',
+        'Custom CNAME domain (status.youragency.com)',
+        '100% white-label portal & favicon',
+        'Executive Radar & portfolio oversight',
+        'Blocked cashflow & accounts receivable pipeline',
+        'At-risk client account alerts',
+        'Priority onboarding & dedicated support',
       ],
-      ctaText: 'Contact sales',
-      ctaHref: 'mailto:sales@frevio.app',
-      popular: false,
+      ctaText: 'Choose Scale',
+      ctaHref: signupHref,
+      isHighlighted: false,
     },
   ]
 
   return (
     <section
-      ref={containerRef}
       id="pricing"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#090A0F] border-t border-white/[0.08] text-white relative overflow-hidden"
+      className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
     >
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto space-y-16 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header */}
-        <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
-            <span>Pricing</span>
+        {/* Section Header */}
+        <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-4">
+            <span>Transparent Pricing</span>
           </div>
-
-          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-white leading-[1.08]">
-            Simple, transparent <br className="hidden sm:inline" />
-            <span className="font-semibold text-slate-300">pricing</span>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
+            Start simple. <br />
+            <span className="font-normal text-[#A7B8FF]">
+              Grow when you need to.
+            </span>
           </h2>
-
-          <p className="text-base sm:text-lg text-slate-400 font-light leading-relaxed">
-            Start free and upgrade as you grow. No hidden platform charges or surprise fees.
+          <p className="mt-4 text-sm sm:text-base text-[#A1A5AD] font-normal leading-relaxed max-w-xl mx-auto">
+            Transparent plans designed for solo freelancers and expanding studios. No hidden processing surcharges.
           </p>
-        </div>
 
-        {/* 4 Cards Grid */}
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-          {plans.map((plan) => (
-            <div
-              key={plan.name}
-              className={`rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 relative ${
-                plan.popular
-                  ? 'bg-gradient-to-b from-[#181d33] via-[#121524] to-[#0c0e18] border-2 border-indigo-500/70 shadow-[0_0_50px_-10px_rgba(99,102,241,0.35)] lg:-translate-y-2'
-                  : 'bg-[#0e1017] border border-white/10 shadow-xl hover:border-white/20 hover:-translate-y-1'
+          {/* Monthly / Annual Billing Toggle */}
+          <div className="mt-8 inline-flex items-center gap-2 p-1.5 rounded-full bg-[#17191D] border border-[#2A2D33]">
+            <button
+              type="button"
+              onClick={() => setIsAnnual(false)}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+                !isAnnual
+                  ? 'bg-[#A7B8FF] text-[#101113] font-semibold'
+                  : 'text-[#A1A5AD] hover:text-[#F5F5F3]'
               }`}
             >
-              {/* Popular Badge */}
-              {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-indigo-600 text-white text-[10px] font-mono font-semibold uppercase tracking-wider flex items-center gap-1 shadow-lg">
-                  <Sparkles className="w-2.5 h-2.5 text-amber-300 animate-pulse" />
-                  <span>Most popular</span>
+              Monthly billing
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsAnnual(true)}
+              className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+                isAnnual
+                  ? 'bg-[#A7B8FF] text-[#101113] font-semibold'
+                  : 'text-[#A1A5AD] hover:text-[#F5F5F3]'
+              }`}
+            >
+              <span>Annual billing</span>
+              <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#34D399]/20 text-[#34D399] font-bold">
+                Save {ANNUAL_DISCOUNT_PCT}%
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* 4 Pricing Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+          {plans.map((plan, idx) => (
+            <div
+              key={idx}
+              className={`rounded-2xl p-6 sm:p-7 flex flex-col justify-between transition-all relative ${
+                plan.isHighlighted
+                  ? 'bg-[#17191D] border-2 border-[#A7B8FF] shadow-xl shadow-[#A7B8FF]/5 ring-1 ring-[#A7B8FF]/20'
+                  : 'bg-[#17191D] border border-[#2A2D33] hover:border-[#2A2D33]/80'
+              }`}
+            >
+              {plan.isHighlighted && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#A7B8FF] text-[#101113] text-[11px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                  <Sparkles className="w-3 h-3" />
+                  <span>Recommended</span>
                 </div>
               )}
 
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
-                  <p className="text-xs text-slate-400 font-light mt-1 min-h-[32px] leading-relaxed">
-                    {plan.tagline}
-                  </p>
-                  
-                  <div className="flex items-baseline gap-1 mt-4">
-                    <span className="text-4xl font-bold tracking-tight text-white">{plan.price}</span>
-                    <span className="text-xs font-mono text-slate-400">{plan.period}</span>
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-lg font-semibold text-[#F5F5F3]">{plan.name}</h3>
+                  <span className="text-[10px] font-mono text-[#A1A5AD] px-2 py-0.5 rounded bg-[#101113] border border-[#2A2D33]">
+                    {plan.badge}
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#A1A5AD] min-h-[32px] leading-relaxed mb-4">
+                  {plan.description}
+                </p>
+
+                {/* Price Display */}
+                <div className="mb-4 pb-4 border-b border-[#2A2D33]">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-3xl sm:text-4xl font-light text-[#F5F5F3] tracking-tight">
+                      {plan.price}
+                    </span>
+                    <span className="text-xs font-mono text-[#A1A5AD]">/{plan.period.split(',')[0]}</span>
+                  </div>
+                  {isAnnual && plan.period.includes('(') && (
+                    <div className="text-[11px] font-mono text-[#34D399] mt-0.5">
+                      {plan.period.split('(')[1].replace(')', '')}
+                    </div>
+                  )}
+                  <div className="text-[11px] font-mono text-[#A7B8FF] mt-2">
+                    {plan.limits}
                   </div>
                 </div>
 
-                <div className="w-full h-px bg-white/[0.08]" />
-
-                <ul className="space-y-2.5 text-xs text-slate-300 font-light">
-                  {plan.features.map((feat) => (
-                    <li key={feat} className="flex items-start gap-2.5">
-                      <Check className={`w-4 h-4 flex-shrink-0 mt-0.5 ${plan.popular ? 'text-indigo-400' : 'text-slate-500'}`} />
-                      <span className="leading-snug">{feat}</span>
-                    </li>
+                {/* Features List */}
+                <div className="space-y-2.5 mb-6 text-xs">
+                  {plan.features.map((feat, fIdx) => (
+                    <div key={fIdx} className="flex items-start gap-2 text-[#A1A5AD]">
+                      <Check className="w-3.5 h-3.5 text-[#34D399] flex-shrink-0 mt-0.5" />
+                      <span className="leading-snug text-[#F5F5F3]/90">{feat}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
 
-              <div className="pt-8">
-                <Link
-                  href={plan.ctaHref}
-                  className={`w-full py-3 rounded-full text-xs font-semibold uppercase tracking-wider transition-all flex items-center justify-center active:scale-[0.98] ${
-                    plan.popular
-                      ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30'
-                      : 'bg-white/10 hover:bg-white/15 text-white'
-                  }`}
-                >
-                  {plan.ctaText}
-                </Link>
-              </div>
+              {/* Action Button */}
+              <Link
+                href={plan.ctaHref}
+                className={`w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center transition-all inline-flex items-center justify-center gap-1.5 ${
+                  plan.isHighlighted
+                    ? 'bg-[#A7B8FF] text-[#101113] hover:bg-[#b8c6ff] shadow-sm'
+                    : 'bg-[#101113] text-[#F5F5F3] border border-[#2A2D33] hover:bg-[#1E2126]'
+                }`}
+              >
+                <span>{plan.ctaText}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           ))}
         </div>

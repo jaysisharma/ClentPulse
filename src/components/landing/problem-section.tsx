@@ -1,319 +1,102 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
 import {
-  WhatsAppIcon,
-  WhatsAppSquircleIcon,
-  GmailIcon,
-  GoogleDriveIcon,
-  FigmaIcon,
-  NotionIcon,
-  GoogleSheetsIcon,
-} from '@/components/ui/brand-icons'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
+  MessageSquare, FileSearch, CheckSquare, Receipt,
+  Clock, AlertCircle, ArrowRight
+} from 'lucide-react'
 
 export function ProblemSection() {
-  const containerRef = useRef<HTMLElement>(null)
-  const leftColRef = useRef<HTMLDivElement>(null)
-  const cardsStackRef = useRef<HTMLDivElement>(null)
-  const annotationRef = useRef<HTMLDivElement>(null)
-  const badgesRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const ctx = gsap.context(() => {
-      // 1. Left column text stagger
-      if (leftColRef.current) {
-        gsap.fromTo(
-          leftColRef.current.children,
-          { y: 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            stagger: 0.12,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: leftColRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-
-      // 2. Badges pop-in
-      if (badgesRef.current) {
-        gsap.fromTo(
-          badgesRef.current.children,
-          { scale: 0.8, opacity: 0, y: 15 },
-          {
-            scale: 1,
-            opacity: 1,
-            y: 0,
-            stagger: 0.06,
-            duration: 0.5,
-            ease: 'back.out(1.4)',
-            scrollTrigger: {
-              trigger: badgesRef.current,
-              start: 'top 90%',
-              once: true,
-            },
-          }
-        )
-      }
-
-      // 3. Cascading notification cards entrance
-      if (cardsStackRef.current) {
-        const cards = cardsStackRef.current.querySelectorAll('.notification-card')
-        gsap.fromTo(
-          cards,
-          { y: 40, opacity: 0, scale: 0.94 },
-          {
-            y: 0,
-            opacity: 1,
-            scale: 1,
-            stagger: 0.15,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: cardsStackRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-
-      // 4. "Sounds familiar?" annotation & arrow
-      if (annotationRef.current) {
-        gsap.fromTo(
-          annotationRef.current,
-          { opacity: 0, scale: 0.8, rotate: -15 },
-          {
-            opacity: 1,
-            scale: 1,
-            rotate: -6,
-            duration: 0.7,
-            delay: 0.4,
-            ease: 'back.out(1.5)',
-            scrollTrigger: {
-              trigger: cardsStackRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-    }, containerRef)
-
-    return () => ctx.revert()
-  }, [])
+  const problems = [
+    {
+      icon: MessageSquare,
+      title: 'Repeating project updates',
+      description:
+        'Answering "any updates?" across WhatsApp, Slack, iMessage, and email at odd hours, restating progress you already delivered.',
+      tag: 'Scattered messages',
+      sample: '"Hey, just checking in — where are we on the checkout page design?"',
+    },
+    {
+      icon: CheckSquare,
+      title: 'Chasing feedback and approvals',
+      description:
+        'Feedback gets buried in long threads or verbal calls. Without a clear sign-off record, scope creeps and revisions never end.',
+      tag: 'Unclear sign-offs',
+      sample: '"Looks great in general! Just can we also change the entire hero section?"',
+    },
+    {
+      icon: FileSearch,
+      title: 'Searching through scattered files',
+      description:
+        'Figma files in one chat, contracts in another, staging links lost in email chains, and invoices saved in separate tabs.',
+      tag: 'Fragmented links',
+      sample: '"Can you resend the latest Figma link? The one from last Tuesday isn\'t loading."',
+    },
+    {
+      icon: Receipt,
+      title: 'Following up on invoices & tasks',
+      description:
+        'Awkward payment reminders, delayed milestone settlements, and waiting on client assets before you can actually begin.',
+      tag: 'Payment friction',
+      sample: '"Can you send that invoice again as a PDF? Accounts payable is asking for it."',
+    },
+  ]
 
   return (
-    <section
-      ref={containerRef}
-      id="problem"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
-    >
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/3 left-0 w-[450px] h-[350px] bg-rose-500/[0.04] rounded-full blur-[130px] pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          
-          {/* Left Column: Problem Copy & Scattered App Badges */}
-          <div ref={leftColRef} className="lg:col-span-7 space-y-6 sm:space-y-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-500/10 border border-rose-200/60 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
-              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-              <span>The Problem</span>
-            </div>
-
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-normal tracking-[-0.03em] text-slate-950 dark:text-white leading-[1.08]">
-              Your work isn&apos;t the problem. <br className="hidden sm:inline" />
-              <span className="font-semibold text-slate-900 dark:text-slate-200">Client communication is.</span>
-            </h2>
-
-            <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-light leading-relaxed max-w-xl">
-              Project updates, files, feedback, and invoices are scattered everywhere — WhatsApp, email, Drive, Figma, spreadsheets. You spend half your day answering &ldquo;any updates?&rdquo; instead of actually doing the work.
-            </p>
-
-            {/* Scattered Tools List with Real Brand Logos */}
-            <div className="pt-2">
-              <div className="text-xs font-mono uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500 font-medium mb-3">
-                Scattered across 6+ different channels
-              </div>
-              <div ref={badgesRef} className="flex flex-wrap items-center gap-2.5">
-                {/* WhatsApp */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
-                  <WhatsAppIcon className="w-4 h-4 flex-shrink-0" />
-                  <span>WhatsApp</span>
-                </div>
-
-                {/* Gmail */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
-                  <GmailIcon className="w-4 h-4 flex-shrink-0" />
-                  <span>Gmail</span>
-                </div>
-
-                {/* Google Drive */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
-                  <GoogleDriveIcon className="w-4 h-4 flex-shrink-0" />
-                  <span>Google Drive</span>
-                </div>
-
-                {/* Figma */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
-                  <FigmaIcon className="w-3.5 h-4 flex-shrink-0" />
-                  <span>Figma</span>
-                </div>
-
-                {/* Notion */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
-                  <NotionIcon className="w-4 h-4 flex-shrink-0 text-slate-900 dark:text-white" />
-                  <span>Notion</span>
-                </div>
-
-                {/* Spreadsheets */}
-                <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-50 dark:bg-[#131622] border border-slate-200/80 dark:border-white/10 shadow-xs text-xs font-medium text-slate-800 dark:text-slate-200 hover:border-slate-300 dark:hover:border-white/20 hover:shadow-md transition-all">
-                  <GoogleSheetsIcon className="w-4 h-4 flex-shrink-0" />
-                  <span>Spreadsheets</span>
-                </div>
-              </div>
-            </div>
-
+    <section className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Section Header */}
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A1A5AD] mb-4">
+            <span>The Client Problem</span>
           </div>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
+            Your work is organised. <br />
+            <span className="font-normal text-[#A1A5AD]">
+              Why is managing your clients so messy?
+            </span>
+          </h2>
+          <p className="mt-4 text-sm sm:text-base text-[#A1A5AD] font-normal leading-relaxed max-w-xl mx-auto">
+            Project updates live in messages. Feedback gets buried. Invoices need follow-ups. Clients ask questions you&apos;ve already answered.
+          </p>
+        </div>
 
-          {/* Right Column: Cascading Notification Cards & "Sounds familiar?" Annotation */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end items-center relative py-6 lg:pl-4">
-            
-            {/* Abstract Smoky Dark Background Aura matching user design */}
-            <div className="absolute inset-0 flex items-center justify-center lg:justify-end pointer-events-none lg:translate-x-6">
-              <div className="w-[310px] sm:w-[370px] lg:w-[410px] h-[430px] sm:h-[470px] bg-gradient-to-br from-black/90 via-slate-950/80 to-slate-900/65 rounded-[52px] shadow-[0_30px_70px_-20px_rgba(0,0,0,0.5)] relative overflow-hidden flex flex-col items-center pt-3.5">
-                {/* Top subtle device bezel pill */}
-                <div className="w-16 h-1 bg-white/25 rounded-full mb-2" />
-                {/* Soft ambient inner glows */}
-                <div className="absolute -top-10 -right-10 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
-                <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-              </div>
-            </div>
-
-            {/* Relative Container for the Cards and Annotation */}
-            <div className="relative w-full max-w-[370px] sm:max-w-[450px] px-2 py-8 z-10 lg:translate-x-6">
-
-              {/* Handwritten "Sounds familiar?" Annotation & Curved Arrow */}
+        {/* 4 Problem Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {problems.map((prob, idx) => {
+            const Icon = prob.icon
+            return (
               <div
-                ref={annotationRef}
-                className="absolute -left-1 sm:-left-[100px] lg:-left-[164px] -top-10 sm:top-[6px] lg:top-[14px] flex flex-col items-center z-30 select-none pointer-events-none"
+                key={idx}
+                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors"
               >
-                <span
-                  style={{ fontFamily: 'var(--font-caveat), cursive' }}
-                  className="text-xl sm:text-3xl text-[#1a4036] dark:text-emerald-400 font-bold tracking-wide -rotate-6 whitespace-nowrap drop-shadow-sm"
-                >
-                  Sounds familiar?
-                </span>
-                
-                {/* Hand-drawn curved arrow looping downwards & pointing right */}
-                <svg
-                  className="w-8 h-12 sm:w-12 sm:h-16 text-[#1a4036] dark:text-emerald-400 mt-0.5 -rotate-3 overflow-visible"
-                  viewBox="0 0 46 62"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M14 4 C 10 20, 11 38, 36 50"
-                    stroke="currentColor"
-                    strokeWidth="2.4"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M26 49 L 36 50 L 33 40"
-                    stroke="currentColor"
-                    strokeWidth="2.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-2.5 rounded-xl bg-[#1E2126] border border-[#2A2D33] text-[#A7B8FF]">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <span className="text-[11px] font-mono text-[#A1A5AD] px-2.5 py-1 rounded bg-[#101113] border border-[#2A2D33]">
+                      {prob.tag}
+                    </span>
+                  </div>
+
+                  <h3 className="text-base sm:text-lg font-medium text-[#F5F5F3] mb-2">
+                    {prob.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#A1A5AD] leading-relaxed">
+                    {prob.description}
+                  </p>
+                </div>
+
+                {/* Realistic quote snippet */}
+                <div className="mt-6 pt-4 border-t border-[#2A2D33]/60 bg-[#101113]/50 -mx-6 -mb-6 p-4 rounded-b-2xl">
+                  <p className="text-xs font-mono italic text-[#A1A5AD]/90">
+                    {prob.sample}
+                  </p>
+                </div>
               </div>
-
-              {/* Cascading Notifications Stack */}
-              <div ref={cardsStackRef} className="space-y-3 sm:space-y-4">
-                
-                {/* Card 1: WhatsApp */}
-                <div className="notification-card ml-0 sm:ml-6 lg:ml-10 w-[235px] sm:w-[285px] p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <WhatsAppSquircleIcon className="w-8 h-8 rounded-xl shadow-sm" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white tracking-tight">Client</span>
-                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">10:24 PM</span>
-                    </div>
-                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 tracking-tight leading-snug mt-0.5 truncate">
-                      Hey! Any updates? 👀
-                    </p>
-                  </div>
-                </div>
-
-                {/* Card 2: Gmail */}
-                <div className="notification-card ml-3 sm:ml-16 lg:ml-22 w-[235px] sm:w-[285px] p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
-                    <GmailIcon className="w-5 h-5 object-contain" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white tracking-tight">Client</span>
-                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">Yesterday</span>
-                    </div>
-                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 tracking-tight leading-snug mt-0.5 truncate">
-                      Can you share the latest design?
-                    </p>
-                  </div>
-                </div>
-
-                {/* Card 3: Google Drive */}
-                <div className="notification-card ml-6 sm:ml-26 lg:ml-34 w-[235px] sm:w-[285px] p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
-                    <GoogleDriveIcon className="w-5 h-5 object-contain" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white tracking-tight">Client</span>
-                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">2 days ago</span>
-                    </div>
-                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 tracking-tight leading-snug mt-0.5 truncate">
-                      Where&apos;s the final file?
-                    </p>
-                  </div>
-                </div>
-
-                {/* Card 4: Figma */}
-                <div className="notification-card ml-9 sm:ml-34 lg:ml-44 w-[235px] sm:w-[285px] p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
-                  <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
-                    <FigmaIcon className="w-4 h-5 object-contain" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-xs sm:text-[13px] font-semibold text-slate-900 dark:text-white tracking-tight">Client</span>
-                      <span className="text-[10px] sm:text-[11px] text-slate-400 font-normal">3 days ago</span>
-                    </div>
-                    <p className="text-xs sm:text-[13px] font-medium text-slate-800 dark:text-slate-200 tracking-tight leading-snug mt-0.5 truncate">
-                      Can I see the revisions?
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-
-            </div>
-          </div>
-
+            )
+          })}
         </div>
 
       </div>

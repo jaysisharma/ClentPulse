@@ -1,362 +1,91 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
-import { Copy, Check, CheckCircle2, Lock, ArrowRight, Zap } from 'lucide-react'
-import { StripeIcon } from '@/components/ui/brand-icons'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
+import { FolderPlus, Share2, ArrowRightCircle } from 'lucide-react'
 
 export function HowItWorksSection() {
-  const containerRef = useRef<HTMLElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
-  const cardsRef = useRef<HTMLDivElement>(null)
-  const progressBarRef = useRef<HTMLDivElement>(null)
-
-  const [copied, setCopied] = useState(false)
-  const [approved, setApproved] = useState(true)
-
-  const handleCopy = () => {
-    navigator.clipboard?.writeText?.('https://frevio.cloud/p/acme-rebrand')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const ctx = gsap.context(() => {
-      // 1. Header entrance
-      if (headerRef.current) {
-        gsap.fromTo(
-          headerRef.current.children,
-          { y: 30, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            stagger: 0.12,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: headerRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-
-      // 2. 3 Cards Stagger
-      if (cardsRef.current) {
-        gsap.fromTo(
-          cardsRef.current.children,
-          { y: 45, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            stagger: 0.16,
-            duration: 0.8,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-
-      // 3. Smooth fill of the progress bar in Card 2
-      if (progressBarRef.current) {
-        gsap.fromTo(
-          progressBarRef.current,
-          { width: '0%' },
-          {
-            width: '75%',
-            duration: 1.2,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: progressBarRef.current,
-              start: 'top 85%',
-              once: true,
-            },
-          }
-        )
-      }
-    }, containerRef)
-
-    return () => ctx.revert()
-  }, [])
+  const steps = [
+    {
+      number: '01',
+      icon: FolderPlus,
+      title: 'Create a workspace',
+      description:
+        'Set up a project in under two minutes. Define your core milestones, add your kickoff checklist, and attach initial files or contracts.',
+      tag: 'Step 1',
+    },
+    {
+      number: '02',
+      icon: Share2,
+      title: 'Share one link',
+      description:
+        'Give your client a clean, passcode-protected link to their workspace. No passwords to remember or accounts for them to register.',
+      tag: 'Step 2',
+    },
+    {
+      number: '03',
+      icon: ArrowRightCircle,
+      title: 'Keep the work moving',
+      description:
+        'Publish updates, collect 1-click deliverable sign-offs, and receive invoice payments via Stripe without endless email threads.',
+      tag: 'Step 3',
+    },
+  ]
 
   return (
     <section
-      ref={containerRef}
       id="how-it-works"
-      className="py-24 lg:py-32 px-5 sm:px-8 bg-[#FAFAFC] dark:bg-[#07080D] border-t border-slate-200/80 dark:border-white/[0.08] text-slate-900 dark:text-white relative overflow-hidden transition-colors duration-300"
+      className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
     >
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[350px] bg-indigo-600/[0.03] rounded-full blur-[140px] pointer-events-none" />
-
-      <div className="max-w-6xl mx-auto space-y-16 lg:space-y-20 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div ref={headerRef} className="text-center max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-xs font-mono font-semibold uppercase tracking-[0.2em]">
-            <span>See How It Works</span>
+        <div className="max-w-3xl mx-auto text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-4">
+            <span>Simple 3-Step Flow</span>
           </div>
-
-          <h2 className="text-3xl sm:text-5xl font-normal tracking-[-0.03em] text-slate-950 dark:text-white leading-[1.08]">
-            A simple experience <br className="hidden sm:inline" />
-            <span className="font-semibold text-slate-900 dark:text-slate-200">for both sides</span>
+          <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
+            From scattered updates <br />
+            <span className="font-normal text-[#A7B8FF]">
+              to a smoother workflow.
+            </span>
           </h2>
-
-          <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-light leading-relaxed">
-            Zero client training. Zero software for them to install. Just one living link where everything lives from kickoff to final payout.
+          <p className="mt-4 text-sm sm:text-base text-[#A1A5AD] font-normal leading-relaxed max-w-xl mx-auto">
+            You don&apos;t need to change how you do your creative or technical work — only where your clients look to see it happen.
           </p>
         </div>
 
-        {/* 3 Steps Workflow Grid */}
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch relative">
-          
-          {/* ────────────────────────────────────────────── */}
-          {/* STEP 1: You send a link */}
-          {/* ────────────────────────────────────────────── */}
-          <div className="bg-white dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
-            
-            {/* Step Meta Header */}
-            <div className="p-7 pb-5 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-mono text-xs font-semibold group-hover:bg-indigo-600 transition-colors">
-                  1
-                </span>
-                <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 01</span>
-              </div>
-              <h3 className="text-xl font-semibold text-slate-950 dark:text-white tracking-tight">
-                You send a link
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-                Create a project and share a passcode-protected link with your client.
-              </p>
-            </div>
-
-            {/* Real Product Slice: Share & Passcode Window */}
-            <div className="p-5 pt-0">
-              <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#131622] p-4 space-y-3.5 shadow-xs dark:shadow-inner">
-                
-                {/* Browser-style address pill */}
-                <div className="flex items-center gap-1.5 pb-1 border-b border-slate-200/60 dark:border-white/10">
-                  <div className="w-2 h-2 rounded-full bg-rose-400/80" />
-                  <div className="w-2 h-2 rounded-full bg-amber-400/80" />
-                  <div className="w-2 h-2 rounded-full bg-emerald-400/80" />
-                  <span className="text-[10px] font-mono text-slate-400 ml-2 truncate">portal.frevio.cloud</span>
-                </div>
-
-                {/* URL Bar with Copy Button */}
-                <div className="flex items-center justify-between bg-slate-50 dark:bg-[#1a1e2e] px-3 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 shadow-xs text-xs">
-                  <div className="flex items-center gap-2 truncate mr-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 animate-pulse" />
-                    <span className="font-mono text-slate-800 dark:text-slate-200 text-[11px] truncate">
-                      frevio.cloud/p/acme
+        {/* 3 Horizontal Steps on Desktop, Vertical on Mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+          {steps.map((step, idx) => {
+            const Icon = step.icon
+            return (
+              <div
+                key={idx}
+                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="text-xs font-mono font-bold text-[#A7B8FF] px-2.5 py-1 rounded-md bg-[#101113] border border-[#2A2D33]">
+                      {step.tag}
+                    </span>
+                    <span className="text-2xl font-light font-mono text-[#A1A5AD]/40">
+                      {step.number}
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleCopy}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-medium text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white bg-slate-200/70 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 transition-all flex-shrink-0 active:scale-95"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-3 h-3 text-emerald-600 animate-scale-in" />
-                        <span className="text-emerald-700 dark:text-emerald-400 font-semibold">Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3 h-3" />
-                        <span>Copy</span>
-                      </>
-                    )}
-                  </button>
-                </div>
 
-                {/* Security Passcode & Status */}
-                <div className="flex items-center justify-between px-1 text-[11px]">
-                  <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 font-mono text-[10px]">
-                    <Lock className="w-3 h-3 text-indigo-500" />
-                    <span>Passcode: <strong className="text-slate-700 dark:text-slate-300 font-mono">4892</strong></span>
+                  <div className="w-10 h-10 rounded-xl bg-[#1E2126] border border-[#2A2D33] flex items-center justify-center text-[#A7B8FF] mb-4">
+                    <Icon className="w-5 h-5" />
                   </div>
-                  <span className="text-[10px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-100/80 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-500/20">
-                    PIN Protected
-                  </span>
-                </div>
 
-                {/* Recipient status */}
-                <div className="pt-1 border-t border-slate-200/60 dark:border-white/10 flex items-center justify-between text-[10px] text-slate-400">
-                  <span>Client access</span>
-                  <span className="text-slate-600 dark:text-slate-300 font-medium">No account required</span>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
-          {/* ────────────────────────────────────────────── */}
-          {/* STEP 2: Client views project */}
-          {/* ────────────────────────────────────────────── */}
-          <div className="bg-white dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
-            
-            {/* Step Meta Header */}
-            <div className="p-7 pb-5 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-mono text-xs font-semibold group-hover:bg-emerald-600 transition-colors">
-                  2
-                </span>
-                <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 02</span>
-              </div>
-              <h3 className="text-xl font-semibold text-slate-950 dark:text-white tracking-tight">
-                Client views project
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-                They can see progress, deliverables, give feedback and approve work.
-              </p>
-            </div>
-
-            {/* Real Product Slice: Client Portal Milestone & Sign-off */}
-            <div className="p-5 pt-0">
-              <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#131622] p-4 space-y-3.5 shadow-xs dark:shadow-inner">
-                
-                {/* Milestone Title + Sign-off Pill */}
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold">
-                      Deliverable #02
-                    </div>
-                    <div className="text-xs font-semibold text-slate-900 dark:text-white">
-                      Brand Guidelines v2.4
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setApproved(!approved)}
-                    className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2.5 py-1 rounded-full border transition-all duration-200 shadow-xs active:scale-95 ${
-                      approved
-                        ? 'text-emerald-700 dark:text-emerald-400 bg-emerald-100/90 dark:bg-emerald-500/10 border-emerald-200/70 dark:border-emerald-500/20'
-                        : 'text-amber-700 dark:text-amber-400 bg-amber-100/90 dark:bg-amber-500/10 border-amber-200/70 dark:border-amber-500/20'
-                    }`}
-                  >
-                    <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                    <span>{approved ? 'Approved' : 'In Review'}</span>
-                  </button>
-                </div>
-
-                {/* Authentic Client Feedback Quote */}
-                <div className="bg-slate-50 dark:bg-[#1a1e2e] p-3 rounded-xl border border-slate-200/90 dark:border-white/10 shadow-xs space-y-2 text-xs">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 text-white text-[10px] font-bold flex items-center justify-center">
-                        S
-                      </div>
-                      <div className="text-[11px] font-medium text-slate-800 dark:text-slate-200">
-                        Sarah · <span className="text-slate-400 font-normal">Client PM</span>
-                      </div>
-                    </div>
-                    <span className="text-[9px] font-mono text-slate-400">Just now</span>
-                  </div>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-snug pl-1">
-                    &ldquo;This looks great! Approved to move forward. 👍&rdquo;
+                  <h3 className="text-base sm:text-lg font-medium text-[#F5F5F3] mb-2">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-[#A1A5AD] leading-relaxed">
+                    {step.description}
                   </p>
                 </div>
-
-                {/* Live Progress Bar */}
-                <div className="space-y-1 pt-0.5">
-                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                    <span>Sprint Progress</span>
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">75% Complete</span>
-                  </div>
-                  <div className="w-full bg-slate-200/80 dark:bg-white/10 h-1.5 rounded-full overflow-hidden">
-                    <div
-                      ref={progressBarRef}
-                      className="bg-emerald-500 h-full w-[75%] rounded-full transition-all duration-500"
-                    />
-                  </div>
-                </div>
-
               </div>
-            </div>
-
-          </div>
-
-          {/* ────────────────────────────────────────────── */}
-          {/* STEP 3: Get paid faster */}
-          {/* ────────────────────────────────────────────── */}
-          <div className="bg-white dark:bg-[#0e1017] rounded-[28px] border border-slate-200/90 dark:border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] dark:shadow-none hover:shadow-[0_16px_36px_-6px_rgba(0,0,0,0.09)] dark:hover:border-white/20 hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
-            
-            {/* Step Meta Header */}
-            <div className="p-7 pb-5 space-y-2.5">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-950 text-white dark:bg-white dark:text-slate-950 font-mono text-xs font-semibold group-hover:bg-[#635BFF] transition-colors">
-                  3
-                </span>
-                <span className="text-[11px] font-mono text-slate-400 font-medium">STEP 03</span>
-              </div>
-              <h3 className="text-xl font-semibold text-slate-950 dark:text-white tracking-tight">
-                Get paid faster
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-                Create an invoice and your client can pay securely via Stripe.
-              </p>
-            </div>
-
-            {/* Real Product Slice: Stripe Invoice Card */}
-            <div className="p-5 pt-0">
-              <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#131622] p-4 space-y-3.5 shadow-xs dark:shadow-inner">
-                
-                {/* Invoice ID & Due Tag */}
-                <div className="flex items-center justify-between text-xs">
-                  <div className="font-mono text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                    #INV-0012
-                  </div>
-                  <span className="text-[10px] font-mono font-semibold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-200/60 dark:border-indigo-500/20">
-                    Milestone 2
-                  </span>
-                </div>
-
-                {/* Amount Due Card */}
-                <div className="bg-slate-50 dark:bg-[#1a1e2e] p-3 rounded-xl border border-slate-200/90 dark:border-white/10 shadow-xs flex items-center justify-between">
-                  <div>
-                    <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400">Total Due</div>
-                    <div className="text-lg font-bold text-slate-950 dark:text-white tracking-tight">$3,200.00</div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-500/20 font-semibold">
-                      Due on sign-off
-                    </span>
-                  </div>
-                </div>
-
-                {/* 1-Click Pay with Stripe Button */}
-                <button
-                  type="button"
-                  className="w-full py-2.5 px-3 rounded-xl bg-[#635BFF] hover:bg-[#5349e0] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs hover:shadow-lg hover:shadow-indigo-500/20 transition-all active:scale-[0.98] group/btn cursor-pointer"
-                >
-                  <StripeIcon className="w-3.5 h-3.5 group-hover/btn:scale-110 transition-transform" />
-                  <span>Pay with Stripe</span>
-                </button>
-
-                {/* Payout reassurance */}
-                <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 font-mono">
-                  <Zap className="w-3 h-3 text-amber-500 animate-bounce" />
-                  <span>Instant deposit to your bank account</span>
-                </div>
-
-              </div>
-            </div>
-
-          </div>
-
+            )
+          })}
         </div>
 
       </div>
