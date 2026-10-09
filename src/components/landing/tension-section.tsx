@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
-import Image from 'next/image'
-import { MessageSquare, FileSearch, CheckSquare, Receipt } from 'lucide-react'
+import {
+  MessageSquare, FileSearch, CheckSquare, Receipt,
+  AlertCircle, CheckCircle2, ArrowRight, ShieldCheck, Sparkles
+} from 'lucide-react'
 import { SpotlightCard } from '@/components/ui/spotlight-card'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -44,7 +46,7 @@ export function TensionSection() {
       if (visualRef.current) {
         gsap.fromTo(
           visualRef.current,
-          { opacity: 0, y: 40, scale: 0.96 },
+          { opacity: 0, y: 40, scale: 0.97 },
           {
             opacity: 1,
             y: 0,
@@ -117,48 +119,150 @@ export function TensionSection() {
   return (
     <section
       ref={sectionRef}
-      className="py-20 md:py-32 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
+      id="overview"
+      className="py-20 md:py-32 bg-[#08090A] border-t border-white/[0.08] text-[#F3F4F6]"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header (No chips) */}
-        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-14">
-          <div className="text-xs font-mono uppercase tracking-[0.2em] text-[#A1A5AD] mb-3">
+        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-16">
+          <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#8A8F98] mb-3">
             01 / The Problem
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.12]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.035em] text-white leading-[1.12]">
             Your creative work is organised. <br />
-            <span className="font-normal text-[#A1A5AD]">
+            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#8A8F98] via-[#D1D5DB] to-white">
               Why is managing your clients so messy?
             </span>
           </h2>
-          <p className="mt-4 text-sm sm:text-base text-[#A1A5AD] font-normal leading-relaxed max-w-xl mx-auto">
+          <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
             Project updates live in messages. Feedback gets buried. Invoices need repeated follow-ups. Clients ask questions you&apos;ve already answered.
           </p>
         </div>
 
-        {/* Visual Storytelling: Chaos vs Clarity Comparison */}
+        {/* 100% Pure React/CSS Vector UI Comparative Arena (Replacing blurry image) */}
         <div
           ref={visualRef}
-          className="mb-14 rounded-2xl border border-[#2A2D33] bg-[#17191D] shadow-2xl overflow-hidden"
+          className="mb-16 rounded-2xl sm:rounded-3xl border border-white/[0.1] bg-[#0E1013] shadow-[0_20px_70px_rgba(0,0,0,0.7)] overflow-hidden"
         >
-          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-[#0c0d10]">
-            <Image
-              src="/client_chaos_vs_calm.png"
-              alt="Comparison showing client communication chaos on the left versus clarity with Frevio on the right"
-              fill
-              className="object-cover object-center"
-            />
-          </div>
-          <div className="p-4 bg-[#101113] border-t border-[#2A2D33] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#A1A5AD] font-mono">
-            <span className="flex items-center gap-2 text-rose-400">
-              <span className="w-2 h-2 rounded-full bg-rose-500" />
-              Before: 5 apps, missed DMs, endless status meetings
-            </span>
-            <span className="flex items-center gap-2 text-[#34D399]">
-              <span className="w-2 h-2 rounded-full bg-[#34D399]" />
-              With Frevio: 1 shared link, real-time status, 1-click approvals
-            </span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/[0.08]">
+            
+            {/* Left Side: The Scattered Reality (Before) */}
+            <div className="p-6 sm:p-8 bg-[#0B0C0E]/90 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-6">
+                  <div className="flex items-center gap-2 text-xs font-mono text-rose-400">
+                    <AlertCircle className="w-4 h-4" />
+                    <span>Without Frevio · Disconnected Chaos</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-rose-400/80">5 Apps & Endless Threads</span>
+                </div>
+
+                <div className="space-y-3 font-mono text-xs">
+                  {/* Fake Messy Notification 1 */}
+                  <div className="p-3.5 rounded-xl bg-white/[0.03] border border-rose-500/20 text-rose-200 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-[#8A8F98]">
+                      <span>WhatsApp · 11:42 PM</span>
+                      <span className="text-rose-400 font-semibold">Unread</span>
+                    </div>
+                    <p className="text-white font-sans text-xs">
+                      &ldquo;Hey, quick check-in: where are we on the checkout design? Also can we change the whole palette?&rdquo;
+                    </p>
+                  </div>
+
+                  {/* Fake Messy Notification 2 */}
+                  <div className="p-3.5 rounded-xl bg-white/[0.03] border border-amber-500/20 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-[#8A8F98]">
+                      <span>Slack Direct Message</span>
+                      <span className="text-amber-400">File link 404</span>
+                    </div>
+                    <p className="text-white font-sans text-xs">
+                      &ldquo;Can you resend the Figma link from Tuesday? It says access requested.&rdquo;
+                    </p>
+                  </div>
+
+                  {/* Fake Messy Notification 3 */}
+                  <div className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-[#8A8F98]">
+                      <span>Email Thread (14 messages)</span>
+                      <span className="text-rose-400">Overdue</span>
+                    </div>
+                    <p className="text-white font-sans text-xs">
+                      &ldquo;Accounts payable is asking for the invoice PDF again with their updated address.&rdquo;
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-white/[0.08] flex items-center justify-between text-xs font-mono text-rose-400">
+                <span>Result: Unpaid revisions & lost context</span>
+                <span>Hours lost weekly</span>
+              </div>
+            </div>
+
+            {/* Right Side: The Frevio Calm (After) */}
+            <div className="p-6 sm:p-8 bg-[#0E1013] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-6">
+                  <div className="flex items-center gap-2 text-xs font-mono text-[#10B981]">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>With Frevio · 1 Dedicated Client Link</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#38BDF8]">frevio.com/p/acme</span>
+                </div>
+
+                <div className="space-y-3 font-mono text-xs">
+                  {/* Clean Frevio Card 1 */}
+                  <div className="p-3.5 rounded-xl bg-white/[0.04] border border-[#10B981]/30 space-y-1">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-[#38BDF8]">Sprint 3 Deliverable</span>
+                      <span className="text-[#10B981] font-semibold">✓ 1-Click Approved</span>
+                    </div>
+                    <div className="text-white font-sans font-medium text-xs">
+                      Checkout Redesign & Design Token System
+                    </div>
+                    <div className="text-[11px] text-[#8A8F98]">
+                      Client signed Oct 9 · Milestone settlement unlocked
+                    </div>
+                  </div>
+
+                  {/* Clean Frevio Card 2 */}
+                  <div className="p-3.5 rounded-xl bg-white/[0.04] border border-[#5E6AD2]/30 space-y-1">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-[#5E6AD2]">Scope Creep Shield</span>
+                      <span className="text-[#10B981]">+$750.00 Authorized</span>
+                    </div>
+                    <div className="text-white font-sans font-medium text-xs">
+                      Apple Pay Checkout Change Order #02
+                    </div>
+                    <div className="text-[11px] text-[#8A8F98]">
+                      Scope changes turned into paid add-ons automatically
+                    </div>
+                  </div>
+
+                  {/* Clean Frevio Card 3 */}
+                  <div className="p-3.5 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-between">
+                    <div>
+                      <div className="text-white font-sans font-medium text-xs">
+                        Invoice #INV-2026-03 ($4,500.00)
+                      </div>
+                      <div className="text-[11px] text-[#8A8F98]">
+                        Stripe Direct · Paid via Apple Pay
+                      </div>
+                    </div>
+                    <div className="text-[#10B981] font-mono text-xs font-semibold">
+                      ✓ Settled
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6 mt-6 border-t border-white/[0.08] flex items-center justify-between text-xs font-mono text-[#10B981]">
+                <span>Result: Zero status meetings needed</span>
+                <span>Immediate client trust</span>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -173,24 +277,24 @@ export function TensionSection() {
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-2.5 rounded-xl bg-[#1E2126] border border-[#2A2D33] text-indigo-400 group-hover:border-indigo-500/40 transition-colors">
+                    <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[#5E6AD2] group-hover:border-[#5E6AD2]/40 transition-colors">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-mono text-[#A1A5AD]/60">
+                    <span className="text-xs font-mono text-[#8A8F98]/70">
                       {prob.num}
                     </span>
                   </div>
 
-                  <h3 className="text-base sm:text-lg font-medium text-[#F5F5F3] mb-2">
+                  <h3 className="text-base sm:text-lg font-medium text-white mb-2">
                     {prob.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-[#A1A5AD] leading-relaxed">
+                  <p className="text-xs sm:text-sm text-[#8A8F98] leading-relaxed">
                     {prob.desc}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-[#2A2D33]/60 bg-[#101113]/60 -mx-6 -mb-6 p-4 rounded-b-2xl">
-                  <p className="text-xs font-mono italic text-[#A1A5AD]">
+                <div className="mt-6 pt-4 border-t border-white/[0.06] bg-black/40 -mx-6 -mb-6 p-4 rounded-b-2xl">
+                  <p className="text-xs font-mono italic text-[#8A8F98]">
                     {prob.quote}
                   </p>
                 </div>

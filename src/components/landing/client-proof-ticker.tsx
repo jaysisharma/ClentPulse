@@ -21,23 +21,23 @@ const STUDIOS = [
  */
 export function ClientProofTicker() {
   return (
-    <div className="border-y border-[#2A2D33]/60 bg-[#0e0f12] py-6 overflow-hidden select-none">
+    <div className="border-y border-white/[0.08] bg-[#08090A] py-6 overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-4 mb-3 text-center">
-        <p className="text-xs font-mono uppercase tracking-[0.2em] text-[#A1A5AD]/60">
+        <p className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#8A8F98]/70">
           Trusted by independent designers & creative studios globally
         </p>
       </div>
 
       <div className="relative w-full flex overflow-x-hidden">
         {/* Gradient edge fades */}
-        <div className="absolute left-0 inset-y-0 w-24 bg-gradient-to-r from-[#0e0f12] to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 inset-y-0 w-24 bg-gradient-to-l from-[#0e0f12] to-transparent z-10 pointer-events-none" />
+        <div className="absolute left-0 inset-y-0 w-28 bg-gradient-to-r from-[#08090A] to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 inset-y-0 w-28 bg-gradient-to-l from-[#08090A] to-transparent z-10 pointer-events-none" />
 
         <div className="flex shrink-0 animate-marquee gap-12 sm:gap-16 items-center">
           {STUDIOS.concat(STUDIOS).map((studio, idx) => (
             <span
               key={idx}
-              className="text-xs sm:text-sm font-mono tracking-widest text-[#A1A5AD]/40 hover:text-[#F5F5F3] transition-colors whitespace-nowrap"
+              className="text-xs sm:text-sm font-mono tracking-widest text-[#8A8F98]/40 hover:text-white transition-colors whitespace-nowrap"
             >
               {studio}
             </span>

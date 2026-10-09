@@ -25,7 +25,7 @@ export default async function LandingPage() {
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
   return (
-    <div className="min-h-screen bg-[#101113] text-[#F5F5F3] font-sans antialiased selection:bg-indigo-500/30 selection:text-white flex flex-col">
+    <div className="min-h-screen bg-[#08090A] text-[#F3F4F6] font-sans antialiased selection:bg-[#5E6AD2]/30 selection:text-white flex flex-col">
       {/* ── Fixed Blur Glass Header ── */}
       <OveradsNavbar isLoggedIn={isLoggedIn} signupHref={signupHref} />
 

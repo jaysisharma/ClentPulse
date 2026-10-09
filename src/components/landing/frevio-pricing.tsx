@@ -90,34 +90,34 @@ export function FrevioPricing({ signupHref }: PricingProps) {
   return (
     <section
       id="pricing"
-      className="py-20 md:py-32 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
+      className="py-20 md:py-32 bg-[#08090A] border-t border-white/[0.08] text-[#F3F4F6]"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header (No chips) */}
         <div className="max-w-3xl mx-auto text-center mb-14">
-          <div className="text-xs font-mono uppercase tracking-[0.2em] text-indigo-400 mb-3">
+          <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#5E6AD2] mb-3 font-semibold">
             04 / Transparent Plans
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.12]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.035em] text-white leading-[1.12]">
             Start free. <br />
-            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#5E6AD2] via-[#818CF8] to-[#38BDF8]">
               Upgrade when your client roster grows.
             </span>
           </h2>
-          <p className="mt-4 text-sm sm:text-base text-[#A1A5AD] font-normal leading-relaxed max-w-xl mx-auto">
+          <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
             Transparent pricing for solo professionals and expanding boutique teams. No hidden payment surcharges.
           </p>
 
           {/* Toggle */}
-          <div className="mt-8 inline-flex items-center gap-2 p-1.5 rounded-full bg-[#17191D] border border-[#2A2D33]">
+          <div className="mt-8 inline-flex items-center gap-1.5 p-1 rounded-full bg-[#0E1013] border border-white/[0.08]">
             <button
               type="button"
               onClick={() => setIsAnnual(false)}
               className={`px-4 py-1.5 rounded-full text-xs font-mono transition-colors cursor-pointer ${
                 !isAnnual
-                  ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                  : 'text-[#A1A5AD] hover:text-[#F5F5F3]'
+                  ? 'bg-[#5E6AD2] text-white font-semibold shadow-[0_0_12px_rgba(94,106,210,0.4)]'
+                  : 'text-[#8A8F98] hover:text-white'
               }`}
             >
               Monthly billing
@@ -127,12 +127,12 @@ export function FrevioPricing({ signupHref }: PricingProps) {
               onClick={() => setIsAnnual(true)}
               className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-mono transition-colors cursor-pointer ${
                 isAnnual
-                  ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                  : 'text-[#A1A5AD] hover:text-[#F5F5F3]'
+                  ? 'bg-[#5E6AD2] text-white font-semibold shadow-[0_0_12px_rgba(94,106,210,0.4)]'
+                  : 'text-[#8A8F98] hover:text-white'
               }`}
             >
               <span>Annual billing</span>
-              <span className="text-[10px] text-[#34D399]">
+              <span className="text-[10px] text-[#10B981]">
                 (Save {ANNUAL_DISCOUNT_PCT}%)
               </span>
             </button>
@@ -146,65 +146,64 @@ export function FrevioPricing({ signupHref }: PricingProps) {
               key={idx}
               className={`p-6 sm:p-7 flex flex-col justify-between ${
                 plan.isHighlighted
-                  ? 'border-2 border-indigo-500 ring-1 ring-indigo-500/30 shadow-xl shadow-indigo-500/15'
+                  ? 'border-2 border-[#5E6AD2] ring-1 ring-[#5E6AD2]/50 shadow-[0_0_35px_rgba(94,106,210,0.22)]'
                   : ''
               }`}
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-semibold text-[#F5F5F3]">{plan.name}</h3>
+                  <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
                   {plan.isHighlighted && (
-                    <span className="text-xs font-mono text-indigo-400 font-semibold uppercase tracking-wider">
+                    <span className="text-xs font-mono text-[#5E6AD2] font-semibold uppercase tracking-wider">
                       ★ Recommended
                     </span>
                   )}
                 </div>
 
-                <p className="text-xs text-[#A1A5AD] min-h-[32px] leading-relaxed mb-4">
+                <p className="text-xs text-[#8A8F98] min-h-[32px] leading-relaxed mb-4">
                   {plan.desc}
                 </p>
 
                 {/* Price */}
-                <div className="mb-4 pb-4 border-b border-[#2A2D33]">
+                <div className="mb-4 pb-4 border-b border-white/[0.08]">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-3xl sm:text-4xl font-light text-[#F5F5F3] tracking-tight">
+                    <span className="text-3xl sm:text-4xl font-light text-white tracking-tight">
                       {plan.price}
                     </span>
-                    <span className="text-xs font-mono text-[#A1A5AD]">/{plan.period.split(',')[0]}</span>
+                    <span className="text-xs font-mono text-[#8A8F98]">
+                      /{plan.period}
+                    </span>
                   </div>
-                  {isAnnual && plan.period.includes('(') && (
-                    <div className="text-[11px] font-mono text-[#34D399] mt-0.5">
-                      {plan.period.split('(')[1].replace(')', '')}
-                    </div>
-                  )}
-                  <div className="text-[11px] font-mono text-indigo-400 mt-2">
+                  <div className="text-[11px] font-mono text-[#38BDF8] mt-1">
                     {plan.limits}
                   </div>
                 </div>
 
                 {/* Features */}
-                <div className="space-y-2.5 mb-6 text-xs">
+                <ul className="space-y-2.5 text-xs text-[#8A8F98] mb-6">
                   {plan.features.map((feat, fIdx) => (
-                    <div key={fIdx} className="flex items-start gap-2 text-[#A1A5AD]">
-                      <Check className="w-3.5 h-3.5 text-[#34D399] flex-shrink-0 mt-0.5" />
-                      <span className="leading-snug text-[#F5F5F3]/90">{feat}</span>
-                    </div>
+                    <li key={fIdx} className="flex items-start gap-2">
+                      <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                      <span className="text-white/90">{feat}</span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
 
-              {/* Action */}
-              <Link
-                href={plan.ctaHref}
-                className={`w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center transition-all inline-flex items-center justify-center gap-1.5 ${
-                  plan.isHighlighted
-                    ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white shadow-md shadow-indigo-500/25'
-                    : 'bg-[#101113] text-[#F5F5F3] border border-[#2A2D33] hover:bg-[#1E2126]'
-                }`}
-              >
-                <span>{plan.ctaText}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
+              {/* Action Button */}
+              <div className="pt-4 border-t border-white/[0.06]">
+                <Link
+                  href={plan.ctaHref}
+                  className={`w-full inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl text-xs font-semibold font-mono transition-all cursor-pointer ${
+                    plan.isHighlighted
+                      ? 'bg-[#5E6AD2] hover:bg-[#6875E3] text-white shadow-[0_0_16px_rgba(94,106,210,0.35)] hover:scale-[1.02]'
+                      : 'bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/[0.08] hover:border-white/[0.18]'
+                  }`}
+                >
+                  <span>{plan.ctaText}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </SpotlightCard>
           ))}
         </div>
