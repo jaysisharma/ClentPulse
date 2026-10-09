@@ -65,12 +65,29 @@ declare module 'vscode' {
     readonly document: TextDocument
   }
 
+  export enum ConfigurationTarget {
+    Global = 1,
+    Workspace = 2,
+    WorkspaceFolder = 3,
+  }
+
   export interface WorkspaceConfiguration {
     get<T>(section: string): T | undefined
     get<T>(section: string, defaultValue: T): T
+    update(section: string, value: any, target?: ConfigurationTarget | boolean): Promise<void>
   }
 
   export type Event<T> = (listener: (e: T) => any, thisArgs?: any, disposables?: Disposable[]) => Disposable
+
+  export enum ProgressLocation {
+    SourceControl = 1,
+    Window = 10,
+    Notification = 15,
+  }
+
+  export interface Progress<T> {
+    report(value: T): void
+  }
 
   export namespace window {
     export let activeTextEditor: TextEditor | undefined
@@ -81,12 +98,17 @@ declare module 'vscode' {
       password?: boolean
       placeHolder?: string
       value?: string
+      ignoreFocusOut?: boolean
       validateInput?: (value: string) => string | null | undefined
     }): Promise<string | undefined>
     export function showInformationMessage<T extends string>(message: string, ...items: T[]): Promise<T | undefined>
     export function showWarningMessage<T extends string>(message: string, ...items: T[]): Promise<T | undefined>
     export function showErrorMessage<T extends string>(message: string, ...items: T[]): Promise<T | undefined>
     export function showQuickPick<T extends QuickPickItem>(items: T[], options?: { placeHolder?: string }): Promise<T | undefined>
+    export function withProgress<R>(
+      options: { location: ProgressLocation; title?: string; cancellable?: boolean },
+      task: (progress: Progress<{ message?: string; increment?: number }>) => Promise<R>
+    ): Promise<R>
   }
 
   export namespace workspace {
@@ -94,6 +116,7 @@ declare module 'vscode' {
     export function getConfiguration(section?: string): WorkspaceConfiguration
     export const onDidChangeTextDocument: Event<any>
     export const onDidSaveTextDocument: Event<TextDocument>
+    export const onDidChangeWorkspaceFolders: Event<any>
   }
 
   export namespace commands {

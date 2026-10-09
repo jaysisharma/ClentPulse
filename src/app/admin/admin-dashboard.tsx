@@ -913,7 +913,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
       </div>
 
       {/* Overview Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <StatCard label="Total Visits" value={totalVisits} icon={Activity} />
         <StatCard label="Unique Visitors" value={uniqueIPs} icon={Eye} />
         <StatCard label="Total Signups" value={totalSignups} icon={UsersIcon} />

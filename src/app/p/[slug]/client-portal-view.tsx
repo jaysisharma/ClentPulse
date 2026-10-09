@@ -7,19 +7,21 @@ import {
   ExternalLink, FileText, AlertTriangle,
   CreditCard, ArrowRight, Mail, Users, Building2,
   ThumbsUp, ThumbsDown, Target, Link as LinkIcon,
-  Sparkles, CheckCircle2, BarChart3, Layout
+  Sparkles, CheckCircle2, BarChart3, Layout, ShieldAlert
 } from 'lucide-react'
 import Link from 'next/link'
 import { parseCanvasEmbedUrl } from '@/lib/canvas-embed'
 import { fmtCurrency } from '@/lib/currencies'
 import { formatDate, getWeekOf } from '@/lib/utils'
 import { ApprovalCard } from './approval-actions'
+import { ChangeOrderCard } from './change-order-card'
 import { ClientChecklist } from './client-checklist'
 import { UpdateCommentForm } from './update-comment-form'
 import { PortalResources } from '@/components/integrations/portal-resources'
 import { FeedbackWidget } from './feedback-widget'
 import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
 import { VideoEmbed } from '@/components/ui/video-embed'
+import type { ChangeOrder } from '@/types'
 
 interface ClientPortalViewProps {
   project: any
@@ -44,6 +46,7 @@ interface ClientPortalViewProps {
   leadSpecialistName: string
   isDepositPending: boolean
   depositInvoice: any
+  changeOrders?: ChangeOrder[]
 }
 
 export function ClientPortalView({
@@ -69,12 +72,14 @@ export function ClientPortalView({
   leadSpecialistName,
   isDepositPending,
   depositInvoice,
+  changeOrders,
 }: ClientPortalViewProps) {
   const pendingApprovals = (approvals ?? []).filter(a => a.status === 'pending')
-  const hasActionBlocker = isDepositPending || Boolean(project.waiting_on_client) || pendingApprovals.length > 0
+  const pendingChangeOrders = (changeOrders ?? []).filter(c => c.status === 'pending')
+  const hasActionBlocker = isDepositPending || Boolean(project.waiting_on_client) || pendingApprovals.length > 0 || pendingChangeOrders.length > 0
 
-  // Feed tabs: updates vs milestones vs all deliverables vs embedded reports vs strategy canvas
-  type FeedTab = 'updates' | 'milestones' | 'invoices' | 'reports' | 'canvas'
+  // Feed tabs: updates vs milestones vs all deliverables vs embedded reports vs strategy canvas vs scope changes
+  type FeedTab = 'updates' | 'milestones' | 'invoices' | 'reports' | 'canvas' | 'scope'
   const [activeTab, setActiveTab] = useState<FeedTab>('updates')
   const parsedCanvas = parseCanvasEmbedUrl(project.canvas_embed_url)
 
@@ -167,6 +172,25 @@ export function ClientPortalView({
                   </div>
                 </div>
               )}
+
+              {/* Pending Scope Change Orders */}
+              {pendingChangeOrders.length > 0 && (
+                <div className="space-y-2">
+                  <div className="text-xs font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <ShieldAlert className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                    <span>Scope Change Sign-Off Required ({pendingChangeOrders.length})</span>
+                  </div>
+                  <div className="space-y-2">
+                    {pendingChangeOrders.map(co => (
+                      <ChangeOrderCard
+                        key={co.id}
+                        changeOrder={co}
+                        accentColor={accentColor}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -177,11 +201,11 @@ export function ClientPortalView({
         )}
 
         {/* ── Main Feed Tab Switcher ── */}
-        <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-1">
-          <div className="flex items-center gap-1">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-1 max-w-full">
+          <div className="flex items-center gap-1 overflow-x-auto no-scrollbar max-w-full flex-nowrap py-0.5">
             <button
               onClick={() => setActiveTab('updates')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                 activeTab === 'updates'
                   ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
                   : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
@@ -199,7 +223,7 @@ export function ClientPortalView({
             {!project.hide_milestones && (
               <button
                 onClick={() => setActiveTab('milestones')}
-                className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   activeTab === 'milestones'
                     ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
                     : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
@@ -218,7 +242,7 @@ export function ClientPortalView({
             {projectInvoices.length > 0 && (
               <button
                 onClick={() => setActiveTab('invoices')}
-                className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   activeTab === 'invoices'
                     ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
                     : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
@@ -241,7 +265,7 @@ export function ClientPortalView({
             {project.report_embed_url && (
               <button
                 onClick={() => setActiveTab('reports')}
-                className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   activeTab === 'reports'
                     ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
                     : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
@@ -258,7 +282,7 @@ export function ClientPortalView({
             {project.canvas_embed_url && parsedCanvas && (
               <button
                 onClick={() => setActiveTab('canvas')}
-                className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   activeTab === 'canvas'
                     ? 'border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-400'
                     : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
@@ -269,6 +293,29 @@ export function ClientPortalView({
                 <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-mono font-medium">
                   {parsedCanvas.platformName}
                 </span>
+              </button>
+            )}
+
+            {changeOrders && changeOrders.length > 0 && (
+              <button
+                onClick={() => setActiveTab('scope')}
+                className={`flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs font-semibold border-b-2 transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
+                  activeTab === 'scope'
+                    ? 'border-amber-600 dark:border-amber-400 text-amber-600 dark:text-amber-400'
+                    : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
+                }`}
+              >
+                <ShieldAlert className="w-3.5 h-3.5" />
+                <span>Scope Changes</span>
+                {pendingChangeOrders.length > 0 ? (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-300 font-mono font-bold">
+                    {pendingChangeOrders.length}
+                  </span>
+                ) : (
+                  <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-white/5 text-slate-500 font-mono">
+                    {changeOrders.length}
+                  </span>
+                )}
               </button>
             )}
           </div>
@@ -543,6 +590,33 @@ export function ClientPortalView({
                 />
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ── TAB 6: Scope Changes & Change Orders ── */}
+        {activeTab === 'scope' && (
+          <div className="space-y-4 animate-fade-in">
+            {!changeOrders?.length ? (
+              <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-10 text-center shadow-xs dark:shadow-none">
+                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center mx-auto mb-3 text-slate-400">
+                  <ShieldAlert className="w-5 h-5 text-amber-500" />
+                </div>
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">All Work Aligned with Scope</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1 max-w-sm mx-auto">
+                  No additional out-of-scope change orders currently pending. Any additions or revisions beyond base milestones will be itemized here for your review and approval.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {changeOrders.map(co => (
+                  <ChangeOrderCard
+                    key={co.id}
+                    changeOrder={co}
+                    accentColor={accentColor}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 

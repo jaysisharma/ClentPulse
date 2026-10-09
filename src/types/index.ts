@@ -283,4 +283,23 @@ export interface PortfolioItem {
   updated_at: string
 }
 
+export interface ChangeOrder {
+  id: string
+  project_id: string
+  user_id: string
+  title: string
+  description?: string | null
+  source_feedback_id?: string | null
+  amount: number
+  currency?: string | null
+  estimated_hours?: number | null
+  timeline_days?: number | null
+  status: 'draft' | 'pending' | 'approved' | 'declined' | 'paid'
+  requires_payment: boolean
+  client_notes?: string | null
+  approved_at?: string | null
+  paid_at?: string | null
+  created_at: string
+}
+
 

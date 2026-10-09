@@ -95,28 +95,28 @@ function OveradsKpiCard({
   tone?: 'default' | 'danger'
 }) {
   return (
-    <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 hover:border-slate-300 dark:hover:border-white/20 transition-all duration-200 shadow-xs dark:shadow-sm flex flex-col justify-between">
+    <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-4 sm:p-5 ring-1 ring-slate-950/5 dark:ring-white/5 hover:border-slate-300 dark:hover:border-white/20 transition-all duration-200 shadow-xs dark:shadow-sm flex flex-col justify-between min-w-0">
       <div>
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{label}</span>
-          <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 truncate">{label}</span>
+          <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 flex-shrink-0">
             <Icon className="w-3.5 h-3.5" />
           </div>
         </div>
-        <div className={`mt-3 text-2xl sm:text-3xl font-light font-mono tracking-tight tabular-nums ${tone === 'danger' ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
+        <div className={`mt-2.5 sm:mt-3 text-2xl sm:text-3xl font-light font-mono tracking-tight tabular-nums truncate ${tone === 'danger' ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
           {value}
         </div>
       </div>
-      <div className="mt-3 flex items-center gap-2 text-xs">
+      <div className="mt-3 flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
         {trend && (
-          <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[11px] font-semibold font-mono ${
+          <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[11px] font-semibold font-mono flex-shrink-0 ${
             trend.dir === 'up' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20' :
             trend.dir === 'down' ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20' : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400'
           }`}>
             {trend.dir === 'up' ? '↑' : trend.dir === 'down' ? '↓' : '•'} {trend.label}
           </span>
         )}
-        <span className="text-slate-500 dark:text-slate-400 text-[11px] truncate">{caption}</span>
+        <span className="text-slate-500 dark:text-slate-400 text-[11px] min-w-0 truncate">{caption}</span>
       </div>
     </div>
   )
@@ -521,7 +521,7 @@ export default async function DashboardPage({
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <TourTrigger />
               <Link href="/time" data-tour-time-btn="">
                 <button
@@ -546,17 +546,17 @@ export default async function DashboardPage({
 
           {/* ── Editor Extension Live Status Strip (only shown if user has set up tokens) ── */}
           {hasExtensionToken && (
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs dark:shadow-sm ring-1 ring-slate-950/5 dark:ring-white/5">
-              <div className="flex items-center gap-2.5">
-                <span className="relative flex h-2 w-2">
+            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-4 sm:px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs dark:shadow-sm ring-1 ring-slate-950/5 dark:ring-white/5">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <span className="relative flex h-2 w-2 flex-shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
                 <span className="text-slate-900 dark:text-slate-200 font-medium">Editor Extension Sync</span>
                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">·</span>
-                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">Streaming active coding status directly from your editor</span>
+                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline truncate">Streaming active coding status directly from your editor</span>
               </div>
-              <Link href="/settings" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors font-medium flex items-center gap-1 text-[11px] self-start sm:self-auto">
+              <Link href="/settings" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors font-medium flex items-center gap-1 text-[11px] self-start sm:self-auto flex-shrink-0">
                 Extension Tokens <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
@@ -585,7 +585,7 @@ export default async function DashboardPage({
           ) : (
             <>
               {/* ── 4 Overads KPI number boxes ─────────────────────────── */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <OveradsKpiCard
                   label="Outstanding"
                   value={fmt$(owedAmount)}
@@ -633,7 +633,7 @@ export default async function DashboardPage({
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
                 {/* Left column (wider): chart + needs attention */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-6 min-w-0 w-full">
                   {/* ── Cash Flow Chart ────────────────────────────────────── */}
                   <RevenueChart paid={paidPoints} expenses={expensePoints} />
 
@@ -647,15 +647,17 @@ export default async function DashboardPage({
 
                       <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden shadow-xs dark:shadow-sm">
                         {overdueProjects.map(p => (
-                          <div key={`u-${p.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                            <span className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0 text-amber-600 dark:text-amber-400">
-                              <Send className="w-3.5 h-3.5" />
-                            </span>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{p.project_name}</p>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">No update sent in over a week · {p.client_name}</p>
+                          <div key={`u-${p.id}`} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
+                            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                              <span className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0 text-amber-600 dark:text-amber-400">
+                                <Send className="w-3.5 h-3.5" />
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{p.project_name}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">No update sent in over a week · {p.client_name}</p>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0">
+                            <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto pl-11 sm:pl-0">
                               <RemindSelfButton projectId={p.id} />
                               <Link href={`/project/${p.id}/update`}>
                                 <button type="button" className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-medium transition-colors cursor-pointer">
@@ -667,36 +669,44 @@ export default async function DashboardPage({
                         ))}
 
                         {pendingApprovals.map(a => (
-                          <div key={`a-${a.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                            <span className="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0 text-violet-600 dark:text-violet-400">
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                            </span>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{a.title}</p>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Waiting on client approval · {a.projectName}</p>
+                          <div key={`a-${a.id}`} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
+                            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                              <span className="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0 text-violet-600 dark:text-violet-400">
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{a.title}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Waiting on client approval · {a.projectName}</p>
+                              </div>
                             </div>
-                            <Link href={`/project/${a.projectId}`} className="flex-shrink-0">
-                              <button type="button" className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-white/10 transition-colors cursor-pointer">
-                                Follow up
-                              </button>
-                            </Link>
+                            <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto pl-11 sm:pl-0">
+                              <Link href={`/project/${a.projectId}`}>
+                                <button type="button" className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-white/10 transition-colors cursor-pointer">
+                                  Follow up
+                                </button>
+                              </Link>
+                            </div>
                           </div>
                         ))}
 
                         {unsignedContracts.map(c => (
-                          <div key={`c-${c.id}`} className="flex items-center gap-4 p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                            <span className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-indigo-400">
-                              <FileSignature className="w-3.5 h-3.5" />
-                            </span>
-                            <div className="min-w-0 flex-1">
-                              <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{c.title}</p>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Contract not signed yet · {c.projectName}</p>
+                          <div key={`c-${c.id}`} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
+                            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
+                              <span className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-indigo-400">
+                                <FileSignature className="w-3.5 h-3.5" />
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{c.title}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Contract not signed yet · {c.projectName}</p>
+                              </div>
                             </div>
-                            <Link href={`/project/${c.projectId}/contract`} className="flex-shrink-0">
-                              <button type="button" className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-medium transition-colors cursor-pointer">
-                                Review &amp; sign
-                              </button>
-                            </Link>
+                            <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto pl-11 sm:pl-0">
+                              <Link href={`/project/${c.projectId}/contract`}>
+                                <button type="button" className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-medium transition-colors cursor-pointer">
+                                  Review &amp; sign
+                                </button>
+                              </Link>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -705,7 +715,7 @@ export default async function DashboardPage({
                 </div>
 
                 {/* Right column: timer + invoices + projects */}
-                <div className="space-y-6 lg:sticky lg:top-8">
+                <div className="space-y-6 lg:sticky lg:top-8 min-w-0 w-full">
 
                   {/* ── Active timer / Workstation Card ───────────────────── */}
                   {runningTimer ? (

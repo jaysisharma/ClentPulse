@@ -75,7 +75,7 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
         {/* Status segmented pill */}
-        <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full w-fit ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm overflow-x-auto">
+        <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full w-fit max-w-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm overflow-x-auto no-scrollbar">
           {FILTERS.map(f => (
             <button
               key={f}
@@ -146,48 +146,69 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
               return (
                 <div
                   key={inv.id}
-                  className="md:grid md:grid-cols-[minmax(0,2fr)_1.5fr_1.2fr_1fr_auto] md:items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors flex flex-col group"
+                  className="px-4 py-3.5 sm:px-5 sm:py-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors flex flex-col md:grid md:grid-cols-[minmax(0,2fr)_1.5fr_1.2fr_1fr_auto] md:items-center gap-3 md:gap-4 group"
                 >
-                  {/* Invoice # and Client */}
-                  <Link href={`/invoices/${inv.id}`} className="min-w-0">
-                    <p className="text-xs font-mono font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
-                      {inv.invoice_number}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                      {inv.client_name}
-                    </p>
-                  </Link>
-
-                  {/* Status Badge */}
-                  <div>
-                    <span className={cn(
-                      'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-medium border uppercase tracking-wider',
-                      STATUS_STYLES[statusKey] ?? 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10'
-                    )}>
-                      {statusKey === 'paid' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
-                      {statusKey === 'overdue' && <AlertCircle className="w-3 h-3" />}
-                      {statusKey}
-                    </span>
+                  {/* Top row on mobile / Invoice & Client on desktop */}
+                  <div className="flex items-start justify-between gap-3 md:block min-w-0">
+                    <Link href={`/invoices/${inv.id}`} className="min-w-0">
+                      <p className="text-xs font-mono font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
+                        {inv.invoice_number}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                        {inv.client_name}
+                      </p>
+                    </Link>
+                    {/* Mobile-only amount display */}
+                    <div className="md:hidden text-sm font-light font-mono text-slate-900 dark:text-white text-right shrink-0">
+                      {fmt(amount, inv.currency || 'USD')}
+                    </div>
                   </div>
 
-                  {/* Due Date */}
-                  <div className="text-xs text-slate-500 dark:text-slate-400">
-                    {inv.due_date ? (
-                      <span className={overdue ? 'text-rose-600 dark:text-rose-400 font-medium' : ''}>
-                        {new Date(inv.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </span>
-                    ) : (
-                      <span className="text-slate-400 dark:text-slate-500 font-mono">No due date</span>
-                    )}
+                  {/* Status Badge + Due Date row on mobile */}
+                  <div className="flex items-center justify-between md:contents gap-2">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      {/* Status Badge */}
+                      <div>
+                        <span className={cn(
+                          'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-medium border uppercase tracking-wider',
+                          STATUS_STYLES[statusKey] ?? 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10'
+                        )}>
+                          {statusKey === 'paid' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+                          {statusKey === 'overdue' && <AlertCircle className="w-3 h-3" />}
+                          {statusKey}
+                        </span>
+                      </div>
+
+                      {/* Due Date */}
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                        {inv.due_date ? (
+                          <span className={overdue ? 'text-rose-600 dark:text-rose-400 font-medium' : ''}>
+                            {new Date(inv.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 dark:text-slate-500 font-mono">No due date</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Mobile-only action button */}
+                    <div className="md:hidden">
+                      <Link
+                        href={`/invoices/${inv.id}`}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors inline-flex"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
+                    </div>
                   </div>
 
-                  {/* Amount */}
-                  <div className="text-sm font-light font-mono text-slate-900 dark:text-white text-right">
+                  {/* Amount (desktop only) */}
+                  <div className="hidden md:block text-sm font-light font-mono text-slate-900 dark:text-white text-right">
                     {fmt(amount, inv.currency || 'USD')}
                   </div>
 
-                  {/* Action */}
-                  <div className="flex items-center justify-end">
+                  {/* Action (desktop only) */}
+                  <div className="hidden md:flex items-center justify-end">
                     <Link
                       href={`/invoices/${inv.id}`}
                       className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"

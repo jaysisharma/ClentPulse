@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 // In light mode: crisp, polished studio slate palette (#f8fafc / slate-50).
 export function DarkShell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('-mx-6 lg:-mx-8 -mt-20 lg:-mt-8 -mb-6 lg:-mb-8 min-h-screen px-5 lg:px-10 pt-20 lg:pt-8 pb-12 animate-fade-in relative overflow-hidden bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 transition-colors duration-200 print:m-0 print:p-0 print:bg-white print:text-slate-900 print:min-h-0 print:overflow-visible', className)}>
+    <div className={cn('-mx-4 sm:-mx-6 lg:-mx-8 -mt-18 sm:-mt-20 lg:-mt-8 -mb-4 sm:-mb-6 lg:-mb-8 min-h-screen px-3.5 sm:px-6 lg:px-10 pt-18 sm:pt-20 lg:pt-8 pb-12 animate-fade-in relative overflow-hidden max-w-full bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 transition-colors duration-200 print:m-0 print:p-0 print:bg-white print:text-slate-900 print:min-h-0 print:overflow-visible', className)}>
       {/* Dark mode ambient soft glow */}
       <div
         aria-hidden="true"

@@ -67,7 +67,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, promoCap
         </div>
       )}
 
-      <div className="relative flex h-20 w-full items-center justify-between px-6 sm:px-10 lg:px-12">
+      <div className="relative flex h-20 w-full items-center justify-between px-3.5 sm:px-8 lg:px-12">
         
         {/* Far Left: Logo */}
         <div className="pointer-events-auto flex items-center z-10">
@@ -233,17 +233,17 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, promoCap
         </div>
 
         {/* Mobile Header Bar */}
-        <div className="flex w-full items-center justify-between md:hidden pointer-events-auto rounded-full border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#0e1017]/90 backdrop-blur-xl px-4 py-2 shadow-lg">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <Logo className="w-5 h-5 text-indigo-600 dark:text-white" />
-            <span className="font-bold text-sm text-slate-900 dark:text-white font-mono">Frevio</span>
+        <div className="flex w-full items-center justify-between md:hidden pointer-events-auto rounded-full border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#0e1017]/90 backdrop-blur-xl px-3 sm:px-4 py-1.5 sm:py-2 shadow-lg">
+          <Link href="/" className="inline-flex items-center gap-1.5 sm:gap-2">
+            <Logo className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 dark:text-white" />
+            <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white font-mono">Frevio</span>
           </Link>
 
-          <div className="flex items-center gap-2">
-            <ThemeToggle className="rounded-full w-8 h-8 text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white" />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <ThemeToggle className="rounded-full w-7 h-7 sm:w-8 sm:h-8 text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white" />
             <Link
               href={isLoggedIn ? '/dashboard' : signupHref}
-              className="inline-flex items-center gap-1 rounded-full bg-slate-950 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 px-3.5 py-1.5 text-xs font-semibold"
+              className="inline-flex items-center gap-1 rounded-full bg-slate-950 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-950 dark:hover:bg-slate-100 px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-[11px] sm:text-xs font-semibold"
             >
               <span>{isLoggedIn ? 'Dashboard' : 'Start free'}</span>
               <ArrowUpRight className="size-3 text-white dark:text-slate-900" />
@@ -251,10 +251,10 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, promoCap
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="inline-flex size-8 items-center justify-center rounded-full bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/20 cursor-pointer"
+              className="inline-flex size-7 sm:size-8 items-center justify-center rounded-full bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/20 cursor-pointer"
               aria-label="Open menu"
             >
-              {mobileMenuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+              {mobileMenuOpen ? <X className="size-3.5 sm:size-4" /> : <Menu className="size-3.5 sm:size-4" />}
             </button>
           </div>
         </div>

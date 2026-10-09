@@ -41,6 +41,14 @@
       {
         "command": "frevio.openDashboard",
         "title": "Frevio: Open Project in Browser"
+      },
+      {
+        "command": "frevio.sendUpdate",
+        "title": "Frevio: Send Update to Client"
+      },
+      {
+        "command": "frevio.wrapUpSession",
+        "title": "Frevio: Wrap Up Session & Send Update"
       }
     ],
     "configuration": {
@@ -64,6 +72,11 @@
           "minimum": 1,
           "maximum": 30,
           "description": "Minutes of inactivity before pausing tracking and marking status as idle."
+        },
+        "frevio.promptOnSessionWrapUp": {
+          "type": "boolean",
+          "default": true,
+          "description": "Prompt to send a client progress update when pausing tracking or wrapping up a session."
         }
       }
     }

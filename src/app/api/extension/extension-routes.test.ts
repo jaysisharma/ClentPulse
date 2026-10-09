@@ -197,4 +197,118 @@ describe('Extension API Routes', () => {
       expect(data.focusArea).toBe('Frontend / UI')
     })
   })
+
+  describe('POST /api/extension/updates', () => {
+    it('returns 401 when Bearer token is invalid', async () => {
+      const { POST } = await import('./updates/route')
+      const res = await POST(
+        new Request('http://localhost/api/extension/updates', {
+          method: 'POST',
+          body: JSON.stringify({ projectId: 'p1', bullets: ['Built new feature'] }),
+        })
+      )
+      expect(res.status).toBe(401)
+    })
+
+    it('returns 400 when bullets are missing or empty', async () => {
+      adminFromMap['api_tokens'] = () =>
+        createQueryBuilder({
+          singleResult: { data: { id: 'tok_1', user_id: 'u123' }, error: null },
+        })
+
+      const { POST } = await import('./updates/route')
+      const res = await POST(
+        new Request('http://localhost/api/extension/updates', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${validToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            projectId: 'p1',
+            bullets: [],
+          }),
+        })
+      )
+      expect(res.status).toBe(400)
+      const data = await res.json()
+      expect(data.error).toContain('bullet')
+    })
+
+    it('successfully creates and publishes client update', async () => {
+      // 1. Auth check
+      adminFromMap['api_tokens'] = () =>
+        createQueryBuilder({
+          singleResult: { data: { id: 'tok_1', user_id: 'u123' }, error: null },
+        })
+
+      // 2. Project check
+      adminFromMap['projects'] = () =>
+        createQueryBuilder({
+          singleResult: {
+            data: {
+              id: 'p1',
+              user_id: 'u123',
+              project_name: 'Acme Dashboard',
+              client_name: 'Sarah Connor',
+              client_email: 'sarah@acme.test',
+              slug: 'acme-dashboard',
+              color: '#6366f1',
+            },
+            error: null,
+          },
+        })
+
+      // 3. User plan check
+      adminFromMap['users'] = () =>
+        createQueryBuilder({
+          singleResult: {
+            data: {
+              id: 'u123',
+              email: 'dev@frevio.test',
+              plan: 'free',
+            },
+            error: null,
+          },
+        })
+
+      // 4. Updates insert
+      adminFromMap['updates'] = () =>
+        createQueryBuilder({
+          singleResult: {
+            data: {
+              id: 'upd_999',
+              created_at: '2026-10-06T09:00:00Z',
+              sent_at: '2026-10-06T09:00:00Z',
+            },
+            error: null,
+          },
+        })
+
+      const { POST } = await import('./updates/route')
+      const res = await POST(
+        new Request('http://localhost/api/extension/updates', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${validToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            projectId: 'p1',
+            bullets: ['Implemented automated wrap-up trigger', 'Fixed responsive grid for mobile'],
+            note: 'Ready for client staging review.',
+          }),
+        })
+      )
+
+      expect(res.status).toBe(200)
+      const data = await res.json()
+      expect(data.success).toBe(true)
+      expect(data.updateId).toBe('upd_999')
+      expect(data.clientName).toBe('Sarah Connor')
+      expect(data.bulletsCount).toBe(2)
+      expect(data.portalUrl).toContain('/p/acme-dashboard')
+    })
+  })
 })
+

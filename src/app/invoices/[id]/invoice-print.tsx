@@ -172,7 +172,7 @@ export function InvoicePrint({
       `}</style>
 
       {/* ── Outer Invoice Container (Quiet, modern document layout) ─────────── */}
-      <div className="print-invoice-sheet relative bg-white dark:bg-[#0c0d12] rounded-2xl border border-slate-200/90 dark:border-white/10 p-8 sm:p-12 shadow-sm dark:shadow-xl transition-colors duration-200">
+      <div className="print-invoice-sheet relative bg-white dark:bg-[#0c0d12] rounded-2xl border border-slate-200/90 dark:border-white/10 p-5 sm:p-8 md:p-12 shadow-sm dark:shadow-xl transition-colors duration-200">
 
         {/* ── 1. HEADER: ISSUER & INVOICE DETAILS ──────────────────────────── */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-8 border-b border-slate-200 dark:border-white/10 print:border-slate-300">
@@ -281,8 +281,8 @@ export function InvoicePrint({
 
         {/* ── 3. LINE ITEMS TABLE ──────────────────────────────────────────── */}
         <div className="py-8">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto no-scrollbar">
+            <table className="w-full text-left border-collapse min-w-[460px] sm:min-w-full">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-white/10 print:border-slate-300">
                   <th className="pb-3 px-1 text-[10px] font-mono uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500 font-semibold print:text-slate-600">

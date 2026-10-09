@@ -8,7 +8,7 @@ import Link from 'next/link'
 import {
   ArrowLeft, Plus, Link2, Check, Send,
   Clock, AlertTriangle, FileSignature, CheckCircle2, ChevronRight,
-  BarChart3, Globe, Sparkles, ExternalLink, Layout,
+  BarChart3, Globe, Sparkles, ExternalLink, Layout, ShieldAlert,
 } from 'lucide-react'
 import { parseCanvasEmbedUrl } from '@/lib/canvas-embed'
 import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
@@ -16,6 +16,7 @@ import { CopyLinkButton } from './copy-link-button'
 import { StatusToggle } from './status-toggle'
 import { UpdateActions } from './update-actions'
 import { ApprovalsSection } from './approvals-section'
+import { ChangeOrdersSection } from './change-orders-section'
 import { MilestonesWidget } from './milestones-widget'
 import { KickoffChecklist } from './kickoff-checklist'
 import { ProjectActionsMenu } from './project-actions-menu'
@@ -61,6 +62,7 @@ export default async function ProjectPage({
     { data: updateComments },
     { data: clientFeedback },
     { data: teamMembers },
+    { data: changeOrders },
   ] = await Promise.all([
     supabase.from('projects').select('*').eq('id', id).single(),
     supabase.from('updates').select('*').eq('project_id', id).order('created_at', { ascending: false }),
@@ -72,6 +74,7 @@ export default async function ProjectPage({
     supabase.from('update_comments').select('*').eq('project_id', id).order('created_at', { ascending: true }),
     supabase.from('feedback').select('*').eq('project_id', id).order('created_at', { ascending: false }),
     supabase.from('project_team_members').select('id, project_id, user_id, role_title, created_at, user:users(id, name, email, logo_url, last_heartbeat_at, active_focus_area)').eq('project_id', id),
+    supabase.from('change_orders').select('*').eq('project_id', id).order('created_at', { ascending: false }),
   ])
 
   if (!project) notFound()
@@ -144,6 +147,8 @@ export default async function ProjectPage({
   if (isOverdue) attention.push({ label: 'No update sent in over a week', href: `/project/${id}/update`, cta: 'Send update', icon: Send })
   if (unsignedContracts > 0) attention.push({ label: `${unsignedContracts} contract${unsignedContracts > 1 ? 's' : ''} awaiting signature`, href: `/project/${id}/contract`, cta: 'Review', icon: FileSignature })
   if (pendingApprovals > 0) attention.push({ label: `${pendingApprovals} approval${pendingApprovals > 1 ? 's' : ''} pending`, href: `/project/${id}#approvals`, cta: 'View', icon: CheckCircle2 })
+  const pendingChangeOrders = (changeOrders ?? []).filter((c: any) => c.status === 'pending').length
+  if (pendingChangeOrders > 0) attention.push({ label: `${pendingChangeOrders} scope change order${pendingChangeOrders > 1 ? 's' : ''} awaiting client sign-off`, href: '#change-orders', cta: 'Review', icon: ShieldAlert as any })
 
   // Kickoff matters most while the project is young — float it up until it's lived in.
   const isYoung = sentUpdates === 0
@@ -187,12 +192,12 @@ export default async function ProjectPage({
         </div>
 
         {/* Header Title section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 pb-6 border-b border-slate-200 dark:border-white/10">
-          <div className="flex items-center gap-4 min-w-0">
-            <div className="w-1.5 h-12 rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: project.color }} />
-            <div className="min-w-0">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-tight text-slate-900 dark:text-white truncate">{project.project_name}</h1>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6 mb-8 pb-6 border-b border-slate-200 dark:border-white/10">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
+            <div className="w-1.5 self-stretch min-h-[44px] rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: project.color }} />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-light uppercase tracking-tight text-slate-900 dark:text-white truncate">{project.project_name}</h1>
                 <StatusToggle
                   projectId={project.id}
                   current={project.status as 'active' | 'paused' | 'completed'}
@@ -261,9 +266,9 @@ export default async function ProjectPage({
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 flex-shrink-0">
-            <Link href={`/project/${id}/update`}>
-              <button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs">
+          <div className="flex items-center gap-2.5 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-start">
+            <Link href={`/project/${id}/update`} className="flex-1 sm:flex-initial">
+              <button className="w-full sm:w-auto justify-center rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs">
                 <Plus className="w-3.5 h-3.5" />
                 <span>Send update</span>
               </button>
@@ -383,7 +388,7 @@ export default async function ProjectPage({
                         </Link>
                       </div>
                     </div>
-                    <div className="w-full h-[520px] rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-black/40 shadow-xs">
+                    <div className="w-full h-[320px] sm:h-[420px] lg:h-[520px] rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-black/40 shadow-xs">
                       <iframe
                         src={parseCanvasEmbedUrl(project.canvas_embed_url)?.embedUrl || project.canvas_embed_url}
                         title={project.canvas_embed_title || 'Visual Strategy Canvas'}
@@ -403,8 +408,23 @@ export default async function ProjectPage({
               count={clientFeedback?.length ?? 0}
               defaultOpen={hasNewFeedback}
             >
-              <ClientFeedbackList feedback={clientFeedback ?? []} />
+              <ClientFeedbackList
+                feedback={clientFeedback ?? []}
+                projectId={project.id}
+                currency={invoices?.[0]?.currency || 'USD'}
+              />
             </CollapsibleSection>
+
+            {/* Scope Creep Shield & Change Orders */}
+            <div id="change-orders" className="scroll-mt-6">
+              <ChangeOrdersSection
+                projectId={project.id}
+                projectSlug={project.slug}
+                currency={invoices?.[0]?.currency || 'USD'}
+                initialChangeOrders={(changeOrders as any[]) ?? []}
+                canManage={canManageTeam}
+              />
+            </div>
 
             {/* Completed Project: Showcase on Portfolio & Testimonial */}
             {project.status === 'completed' && (

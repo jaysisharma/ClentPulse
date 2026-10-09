@@ -177,7 +177,7 @@ export function FreelancerDashboardSection({ signupHref }: Props) {
               </div>
 
               {/* 3 Metric Stats Row */}
-              <div ref={statCardsRef} className="grid grid-cols-3 gap-3 sm:gap-4">
+              <div ref={statCardsRef} className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 
                 {/* Active Projects */}
                 <div className="p-3.5 sm:p-4 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1 hover:bg-white/[0.06] transition-colors">

@@ -190,7 +190,7 @@ export function AppLayout({
           />
 
           {/* Drawer container */}
-          <aside className="fixed inset-y-0 right-0 z-50 w-[420px] max-w-full bg-white dark:bg-[#0c0d12] shadow-2xl flex flex-col border-l border-slate-200 dark:border-white/10 animate-slide-in">
+          <aside className="fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] max-w-full bg-white dark:bg-[#0c0d12] shadow-2xl flex flex-col border-l border-slate-200 dark:border-white/10 animate-slide-in">
             {/* Header */}
             <div className="px-5 py-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between gap-3 flex-shrink-0">
               <div className="flex items-center gap-2">
@@ -207,7 +207,7 @@ export function AppLayout({
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 min-h-0 flex flex-col p-5">
+            <div className="flex-1 min-h-0 flex flex-col p-4 sm:p-5">
               {projects.length === 0 ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center text-slate-400 p-6">
                   <MessageSquare className="w-10 h-10 mb-3 text-slate-300 dark:text-slate-600" />
@@ -253,7 +253,7 @@ export function AppLayout({
       )}
 
       {/* Main content */}
-      <main className="flex-1 lg:ml-60 p-6 lg:p-8 pt-20 lg:pt-8 print:ml-0 print:p-0">
+      <main className="flex-1 min-w-0 w-full lg:ml-60 p-4 sm:p-6 lg:p-8 pt-18 sm:pt-20 lg:pt-8 print:ml-0 print:p-0">
         {children}
       </main>
 

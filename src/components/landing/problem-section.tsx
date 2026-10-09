@@ -210,18 +210,18 @@ export function ProblemSection() {
               {/* Handwritten "Sounds familiar?" Annotation & Curved Arrow */}
               <div
                 ref={annotationRef}
-                className="absolute -left-[52px] sm:-left-[100px] lg:-left-[164px] top-[-10px] sm:top-[6px] lg:top-[14px] flex flex-col items-center z-30 select-none pointer-events-none"
+                className="absolute -left-1 sm:-left-[100px] lg:-left-[164px] -top-10 sm:top-[6px] lg:top-[14px] flex flex-col items-center z-30 select-none pointer-events-none"
               >
                 <span
                   style={{ fontFamily: 'var(--font-caveat), cursive' }}
-                  className="text-2xl sm:text-3xl text-[#1a4036] dark:text-emerald-400 font-bold tracking-wide -rotate-6 whitespace-nowrap drop-shadow-sm"
+                  className="text-xl sm:text-3xl text-[#1a4036] dark:text-emerald-400 font-bold tracking-wide -rotate-6 whitespace-nowrap drop-shadow-sm"
                 >
                   Sounds familiar?
                 </span>
                 
                 {/* Hand-drawn curved arrow looping downwards & pointing right */}
                 <svg
-                  className="w-10 h-14 sm:w-12 sm:h-16 text-[#1a4036] dark:text-emerald-400 mt-0.5 -rotate-3 overflow-visible"
+                  className="w-8 h-12 sm:w-12 sm:h-16 text-[#1a4036] dark:text-emerald-400 mt-0.5 -rotate-3 overflow-visible"
                   viewBox="0 0 46 62"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -243,10 +243,10 @@ export function ProblemSection() {
               </div>
 
               {/* Cascading Notifications Stack */}
-              <div ref={cardsStackRef} className="space-y-3.5 sm:space-y-4">
+              <div ref={cardsStackRef} className="space-y-3 sm:space-y-4">
                 
                 {/* Card 1: WhatsApp */}
-                <div className="notification-card ml-2 sm:ml-6 lg:ml-10 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-0 sm:ml-6 lg:ml-10 w-[235px] sm:w-[285px] p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
                     <WhatsAppSquircleIcon className="w-8 h-8 rounded-xl shadow-sm" />
                   </div>
@@ -262,7 +262,7 @@ export function ProblemSection() {
                 </div>
 
                 {/* Card 2: Gmail */}
-                <div className="notification-card ml-8 sm:ml-16 lg:ml-22 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-3 sm:ml-16 lg:ml-22 w-[235px] sm:w-[285px] p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
                     <GmailIcon className="w-5 h-5 object-contain" />
                   </div>
@@ -278,7 +278,7 @@ export function ProblemSection() {
                 </div>
 
                 {/* Card 3: Google Drive */}
-                <div className="notification-card ml-14 sm:ml-26 lg:ml-34 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-6 sm:ml-26 lg:ml-34 w-[235px] sm:w-[285px] p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
                     <GoogleDriveIcon className="w-5 h-5 object-contain" />
                   </div>
@@ -294,7 +294,7 @@ export function ProblemSection() {
                 </div>
 
                 {/* Card 4: Figma */}
-                <div className="notification-card ml-20 sm:ml-34 lg:ml-44 w-[245px] sm:w-[285px] p-3 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
+                <div className="notification-card ml-9 sm:ml-34 lg:ml-44 w-[235px] sm:w-[285px] p-2.5 sm:p-3.5 rounded-2xl bg-white dark:bg-[#121520] border border-slate-100/90 dark:border-white/10 shadow-[0_12px_28px_-6px_rgba(0,0,0,0.18),0_4px_10px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_28px_-6px_rgba(0,0,0,0.6)] flex items-center gap-3 hover:-translate-y-1 transition-all duration-300 group cursor-default">
                   <div className="flex-shrink-0 w-8 h-8 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center shadow-sm border border-slate-100 dark:border-white/10 group-hover:scale-105 transition-transform">
                     <FigmaIcon className="w-4 h-5 object-contain" />
                   </div>

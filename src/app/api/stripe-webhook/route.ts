@@ -53,7 +53,27 @@ export async function POST(request: Request) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
 
-    if (session.metadata?.type === 'invoice_payment') {
+    if (session.metadata?.type === 'change_order_payment') {
+      const changeOrderId = session.metadata.change_order_id
+
+      if (changeOrderId) {
+        const { error: coError } = await supabase
+          .from('change_orders')
+          .update({
+            status: 'paid',
+            paid_at: new Date().toISOString(),
+            approved_at: new Date().toISOString(),
+          })
+          .eq('id', changeOrderId)
+
+        if (coError) {
+          console.error('Failed to update change_order status:', coError)
+          return NextResponse.json({ error: coError.message }, { status: 500 })
+        }
+      }
+
+      return NextResponse.json({ received: true })
+    } else if (session.metadata?.type === 'invoice_payment') {
       const invoiceId = session.metadata.invoice_id
       const projectId = session.metadata.project_id
       const isDeposit = session.metadata.is_deposit === 'true'

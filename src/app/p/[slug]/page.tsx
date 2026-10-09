@@ -203,6 +203,13 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
     .eq('show_in_portal', true)
     .order('created_at', { ascending: true })
 
+  // Fetch change orders for client review and approval
+  const { data: changeOrders } = await supabase
+    .from('change_orders')
+    .select('*')
+    .eq('project_id', project.id)
+    .order('created_at', { ascending: false })
+
   // Calculated Progress & Milestone metrics
   const totalMilestones = milestones?.length ?? 0
   const completedMilestones = (milestones ?? []).filter(m => m.done).length
@@ -363,6 +370,7 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
           leadSpecialistName={leadSpecialistName}
           isDepositPending={isDepositPending}
           depositInvoice={depositInvoice}
+          changeOrders={(changeOrders as any[]) ?? []}
         />
 
         {/* ── Footer Referral Branding ─────────────────────────────── */}

@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { ThumbsUp, ThumbsDown, MessageSquare } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, MessageSquare, ShieldAlert } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { ChangeOrderModal } from '@/components/project/change-order-modal'
 
 interface Feedback {
   id: string
@@ -13,8 +14,19 @@ interface Feedback {
   created_at: string
 }
 
-export function ClientFeedbackList({ feedback }: { feedback: Feedback[] }) {
+export function ClientFeedbackList({
+  feedback,
+  projectId,
+  currency = 'USD',
+  onConverted,
+}: {
+  feedback: Feedback[]
+  projectId?: string
+  currency?: string
+  onConverted?: () => void
+}) {
   const [currentPage, setCurrentPage] = useState(1)
+  const [selectedFeedback, setSelectedFeedback] = useState<Feedback | null>(null)
   const itemsPerPage = 5
 
   if (!feedback || feedback.length === 0) {
@@ -62,9 +74,23 @@ export function ClientFeedbackList({ feedback }: { feedback: Feedback[] }) {
                 </span>
               </div>
               {fb.message ? (
-                <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 rounded-xl px-3.5 py-2 mt-2 leading-relaxed font-sans">
-                  {fb.message}
-                </p>
+                <>
+                  <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 rounded-xl px-3.5 py-2 mt-2 leading-relaxed font-sans">
+                    {fb.message}
+                  </p>
+                  {projectId && (
+                    <div className="mt-2.5 flex items-center justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedFeedback(fb)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold text-amber-700 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition-all cursor-pointer shadow-2xs"
+                      >
+                        <ShieldAlert className="w-3.5 h-3.5" />
+                        <span>Scope Creep Shield · Convert to Change Order</span>
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
                 <p className="text-xs text-slate-400 dark:text-slate-500 italic mt-0.5 font-sans">No message attached.</p>
               )}
@@ -97,6 +123,21 @@ export function ClientFeedbackList({ feedback }: { feedback: Feedback[] }) {
             </button>
           </div>
         </div>
+      )}
+
+      {projectId && (
+        <ChangeOrderModal
+          isOpen={Boolean(selectedFeedback)}
+          onClose={() => setSelectedFeedback(null)}
+          projectId={projectId}
+          currency={currency}
+          sourceFeedbackMessage={selectedFeedback?.message || ''}
+          sourceFeedbackId={selectedFeedback?.id || ''}
+          onSuccess={() => {
+            setSelectedFeedback(null)
+            onConverted?.()
+          }}
+        />
       )}
     </div>
   )

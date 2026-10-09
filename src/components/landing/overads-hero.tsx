@@ -122,7 +122,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
         <div className="relative z-10 flex w-full max-w-4xl flex-col items-center text-center">
           <h1
             ref={titleRef}
-            className="text-4xl sm:text-6xl md:text-7xl font-light tracking-[-0.025em] leading-[1.15] max-w-4xl text-balance text-slate-950 dark:text-white"
+            className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-[-0.025em] leading-[1.12] max-w-4xl text-balance text-slate-950 dark:text-white"
           >
             Stop answering{' '}
             <span className="font-serif italic font-normal text-amber-600 dark:text-amber-300">
@@ -133,9 +133,9 @@ export function OveradsHero({ signupHref }: HeroProps) {
 
           <p
             ref={subtitleRef}
-            className="mt-6 max-w-4xl text-sm font-light leading-relaxed text-slate-600 dark:text-white/85 sm:text-base md:text-lg"
+            className="mt-5 sm:mt-6 max-w-4xl text-sm font-light leading-relaxed text-slate-600 dark:text-white/85 sm:text-base md:text-lg"
           >
-            <span className="md:whitespace-nowrap block">
+            <span className="lg:whitespace-nowrap block">
               Frevio gives your clients a single, passcode-locked dashboard to track project milestones, sign agreements,
             </span>
             <span className="block mt-1">
@@ -288,7 +288,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
             </div>
 
             {/* Main Dashboard Canvas Area */}
-            <div className="flex-1 p-6 sm:p-8 space-y-5 overflow-hidden bg-[#000000]">
+            <div className="flex-1 p-4 sm:p-6 lg:p-8 space-y-5 overflow-hidden bg-[#000000]">
               
               {/* Header Greeting & Action Bar */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -340,7 +340,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
               </div>
 
               {/* 4 KPI Stat Cards */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
                 {/* KPI 1: Outstanding */}
                 <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d12] p-4 sm:p-5 space-y-1.5 hover:border-white/15 transition-colors">
                   <div className="flex items-center justify-between">

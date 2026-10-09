@@ -29,6 +29,7 @@ html.dark {
 html {
   scroll-behavior: smooth;
   color-scheme: light;
+  max-width: 100vw;
 }
 
 html.dark {
@@ -40,10 +41,18 @@ body {
   color: var(--foreground);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
+  max-width: 100vw;
+  overflow-x: hidden;
+  position: relative;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Ensure embedded media never blows out container widths on mobile */
+img, video, canvas, iframe {
+  max-width: 100%;
 }
 
 @keyframes fade-in {
@@ -173,7 +182,7 @@ body {
   /* Suppress all interactive browser chrome during PDF generation */
   aside,
   nav,
-  .print\\:hidden {
+  .print\:hidden {
     display: none !important;
   }
 
