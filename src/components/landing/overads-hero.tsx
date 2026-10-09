@@ -7,6 +7,7 @@ import {
   CreditCard, Sparkles, FileText, ChevronRight, Play,
   FolderGit2, Layers, AlertCircle, ArrowRight
 } from 'lucide-react'
+import { HaikeiLayeredWaves, HaikeiDotMatrix, HaikeiBlobAura } from '@/components/ui/haikei-backgrounds'
 
 interface HeroProps {
   signupHref: string
@@ -20,11 +21,10 @@ export function OveradsHero({ signupHref }: HeroProps) {
       id="overview"
       className="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-[#101113] text-[#F5F5F3]"
     >
-      {/* Subtle Ambient Radial Lighting */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[radial-gradient(ellipse_at_top,rgba(167,184,255,0.12)_0%,rgba(155,205,191,0.04)_45%,transparent_70%)] blur-[90px] -z-10"
-      />
+      {/* Haikei Ambient Background Elements */}
+      <HaikeiBlobAura className="absolute -top-36 left-1/2 -translate-x-1/2 w-[850px] h-[850px]" opacity={0.14} />
+      <HaikeiDotMatrix className="absolute inset-0 w-full h-full" opacity={0.07} />
+      <HaikeiLayeredWaves className="absolute bottom-0 inset-x-0 w-full h-[320px]" opacity={0.06} />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         

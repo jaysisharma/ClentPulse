@@ -7,6 +7,7 @@ import {
   ExternalLink, CreditCard, Layers, MessageSquare,
   FileText, ShieldCheck, ArrowRight, Play
 } from 'lucide-react'
+import { HaikeiDotMatrix, HaikeiPolyMesh } from '@/components/ui/haikei-backgrounds'
 
 export function InteractiveWorkspaceDemo() {
   type DemoTab = 'overview' | 'deliverables' | 'approvals' | 'invoices'
@@ -23,8 +24,11 @@ export function InteractiveWorkspaceDemo() {
   return (
     <section
       id="demo"
-      className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
+      className="relative py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3] overflow-hidden"
     >
+      {/* Haikei Background Accents */}
+      <HaikeiDotMatrix className="absolute inset-0 w-full h-full" opacity={0.06} />
+      <HaikeiPolyMesh className="absolute top-0 right-0 w-full md:w-3/4 h-full" opacity={0.035} />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}

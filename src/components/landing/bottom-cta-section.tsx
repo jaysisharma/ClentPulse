@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowUpRight, Play, Sparkles } from 'lucide-react'
+import { HaikeiLayeredWaves } from '@/components/ui/haikei-backgrounds'
 
 interface Props {
   signupHref: string
@@ -10,11 +11,8 @@ interface Props {
 export function BottomCtaSection({ signupHref }: Props) {
   return (
     <section className="py-20 md:py-32 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3] relative overflow-hidden">
-      {/* Subtle Ambient Radial Lighting */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-[radial-gradient(ellipse_at_bottom,rgba(167,184,255,0.1)_0%,transparent_70%)] blur-[90px] -z-10"
-      />
+      {/* Haikei Layered Waves Horizon */}
+      <HaikeiLayeredWaves className="absolute inset-x-0 bottom-0 w-full h-[450px]" opacity={0.08} />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         

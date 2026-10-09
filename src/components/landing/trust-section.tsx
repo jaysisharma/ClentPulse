@@ -1,6 +1,7 @@
 'use client'
 
 import { ShieldCheck, Lock, CreditCard, Database, KeyRound, CheckCircle2 } from 'lucide-react'
+import { HaikeiTopography } from '@/components/ui/haikei-backgrounds'
 
 export function TrustSection() {
   const pillars = [
@@ -35,7 +36,9 @@ export function TrustSection() {
   ]
 
   return (
-    <section className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]">
+    <section className="relative py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3] overflow-hidden">
+      {/* Haikei Topography Accents */}
+      <HaikeiTopography className="absolute inset-0 w-full h-full" opacity={0.05} />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
