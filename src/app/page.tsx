@@ -16,9 +16,6 @@ export default async function LandingPage() {
   return (
     <div className="min-h-screen bg-[#101113] text-[#F5F5F3] font-sans antialiased flex flex-col justify-center items-center px-4">
       <div className="max-w-md w-full text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-mono text-indigo-400">
-          <span>Ready for Rebuild</span>
-        </div>
         <h1 className="text-3xl font-light tracking-tight text-[#F5F5F3]">
           Frevio Cloud
         </h1>
