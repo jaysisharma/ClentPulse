@@ -65,7 +65,7 @@ export function OveradsFooter() {
               <li><Link href="/privacy" className="hover:text-[#F5F5F3] transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-[#F5F5F3] transition-colors">Terms of Service</Link></li>
               <li><Link href="/roadmap" className="hover:text-[#F5F5F3] transition-colors">Public Roadmap</Link></li>
-              <li><a href="mailto:support@frevio.cloud" className="hover:text-[#F5F5F3] transition-colors">Contact Support</a></li>
+              <li><a href="mailto:hello@frevio.com" className="hover:text-[#F5F5F3] transition-colors">Contact Support</a></li>
             </ul>
           </div>
 
