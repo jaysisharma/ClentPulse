@@ -116,147 +116,185 @@ export function OveradsHero({ signupHref }: HeroProps) {
       <HaikeiDotMatrix className="absolute inset-0 w-full h-full" opacity={0.07} />
       <HaikeiLayeredWaves className="absolute bottom-0 inset-x-0 w-full h-[320px]" opacity={0.06} />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        
-        {/* Category Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-mono text-indigo-400 mb-6">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse" />
-          <span>The Client Workspace for Independent Professionals</span>
-        </div>
-
-        {/* Editorial Hero Heading */}
-        <h1
-          ref={titleRef}
-          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.12] max-w-4xl mx-auto"
-        >
-          Your work, beautifully organised. <br />
-          <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-indigo-300 to-purple-400">
-            Your clients, always in the loop.
-          </span>
-        </h1>
-
-        {/* Supporting Copy */}
-        <p
-          ref={subtitleRef}
-          className="mt-5 sm:mt-6 text-sm sm:text-base md:text-lg text-[#A1A5AD] font-normal leading-relaxed max-w-2xl mx-auto text-balance"
-        >
-          One simple workspace for clients to follow progress, review deliverables, and manage project updates — so you can spend less time chasing messages and more time doing your best work.
-        </p>
-
-        {/* CTAs */}
-        <div
-          ref={ctaRef}
-          className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5"
-        >
-          <Link
-            href={signupHref}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white h-11 px-7 text-sm font-semibold transition-all hover:scale-[1.03] shadow-lg shadow-indigo-500/25 cursor-pointer"
-          >
-            <span>Start free</span>
-            <ArrowUpRight className="w-4 h-4 text-white" />
-          </Link>
-
-          <Link
-            href="/demo"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#17191D] hover:bg-[#1E2126] text-[#F5F5F3] border border-[#2A2D33] h-11 px-6 text-sm font-medium transition-all hover:border-indigo-500/50 cursor-pointer"
-          >
-            <Play className="w-3.5 h-3.5 text-purple-400 fill-current" />
-            <span>Explore the demo</span>
-          </Link>
-        </div>
-
-        {/* Reassurance statement */}
-        <p className="mt-3.5 text-xs text-[#A1A5AD]/80 font-mono">
-          Set up your first client workspace in minutes · No credit card required
-        </p>
-
-        {/* ── CINEMATIC PRODUCT SHOWCASE WITH GENERATED VISUAL & LIVE CONTROLS ── */}
-        <div
-          ref={showcaseRef}
-          className="relative mt-14 max-w-5xl mx-auto rounded-2xl sm:rounded-3xl border border-[#2A2D33] bg-[#17191D] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.8),0_0_80px_-20px_rgba(99,102,241,0.22)] overflow-hidden text-left ring-1 ring-white/10"
-        >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
           
-          {/* Top Browser Bar */}
-          <div className="flex items-center justify-between border-b border-[#2A2D33] bg-[#101113] px-4 py-3 select-none">
-            <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
-              <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
-              <span className="ml-2 text-xs font-mono text-[#A1A5AD] hidden sm:inline">
-                frevio.cloud/p/acme-brand-experience
-              </span>
+          {/* Left Column: Bold Editorial Copy, CTAs, Trust Proof (Cols 1-5 / 6) */}
+          <div className="lg:col-span-6 xl:col-span-5 text-left">
+            {/* Category Pill */}
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-mono text-indigo-400 mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse" />
+              <span>The Client Workspace for Independent Professionals</span>
             </div>
 
-            <div className="flex items-center gap-3 text-xs">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#34D399]/15 border border-[#34D399]/30 text-[#34D399] text-[11px] font-medium font-mono">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse" />
-                Live Client Portal
+            {/* Editorial Hero Heading */}
+            <h1
+              ref={titleRef}
+              className="text-4xl sm:text-5xl lg:text-6xl font-light tracking-[-0.035em] text-[#F5F5F3] leading-[1.08]"
+            >
+              Your work, beautifully organised. <br />
+              <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-indigo-300 to-purple-400">
+                Your clients, always in the loop.
               </span>
+            </h1>
+
+            {/* Supporting Copy */}
+            <p
+              ref={subtitleRef}
+              className="mt-6 text-base sm:text-lg text-[#A1A5AD] font-normal leading-relaxed text-balance"
+            >
+              One simple workspace for clients to follow progress, review deliverables, and approve milestones with 1 click — so you spend less time chasing messages and more time doing your best work.
+            </p>
+
+            {/* Action CTAs */}
+            <div ref={ctaRef} className="mt-8 space-y-5">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                <Link
+                  href={signupHref}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white h-12 px-7 text-sm font-semibold transition-all hover:scale-[1.02] shadow-lg shadow-indigo-500/25 cursor-pointer"
+                >
+                  <span>Start free</span>
+                  <ArrowUpRight className="w-4 h-4 text-white" />
+                </Link>
+
+                <Link
+                  href="/demo"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#17191D] hover:bg-[#1E2126] text-[#F5F5F3] border border-[#2A2D33] h-12 px-6 text-sm font-medium transition-all hover:border-indigo-500/50 cursor-pointer"
+                >
+                  <Play className="w-3.5 h-3.5 text-purple-400 fill-current" />
+                  <span>Explore live demo</span>
+                </Link>
+              </div>
+
+              {/* Micro-trust bullets */}
+              <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs font-mono text-[#A1A5AD]/80">
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-[#34D399]" />
+                  2-min client setup
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-[#34D399]" />
+                  Zero client login required
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-[#34D399]" />
+                  No credit card needed
+                </span>
+              </div>
+
+              {/* Social proof avatar stack */}
+              <div className="pt-4 border-t border-[#2A2D33]/60 flex items-center gap-3">
+                <div className="flex -space-x-2 overflow-hidden">
+                  <div className="inline-flex h-7 w-7 rounded-full ring-2 ring-[#101113] bg-indigo-600 text-white text-[10px] font-bold items-center justify-center">
+                    AL
+                  </div>
+                  <div className="inline-flex h-7 w-7 rounded-full ring-2 ring-[#101113] bg-purple-600 text-white text-[10px] font-bold items-center justify-center">
+                    MK
+                  </div>
+                  <div className="inline-flex h-7 w-7 rounded-full ring-2 ring-[#101113] bg-teal-600 text-white text-[10px] font-bold items-center justify-center">
+                    RD
+                  </div>
+                  <div className="inline-flex h-7 w-7 rounded-full ring-2 ring-[#101113] bg-[#2A2D33] text-white text-[10px] font-bold items-center justify-center">
+                    +1k
+                  </div>
+                </div>
+                <div className="text-xs text-[#A1A5AD]">
+                  Trusted by <span className="text-[#F5F5F3] font-medium">1,200+</span> independent freelancers & creative studios
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Generated Product UI Graphic */}
-          <div className="relative w-full aspect-[16/9] bg-[#0c0d10] overflow-hidden group">
-            <Image
-              src="/hero_client_portal.png"
-              alt="Frevio Client Portal Interface showing Acme Corp Brand Experience with milestones, 1-Click Approve deliverable card, and Stripe deposit settlement"
-              fill
-              priority
-              className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.01]"
-            />
-
-            {/* Subtle Gradient Vignette to ground the image */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#101113] via-transparent to-transparent opacity-40 pointer-events-none" />
-
-            {/* Floating Live Badge 1: 1-Click Sign-off */}
+          {/* Right Column: Floating 3D Client Portal Mockup (Cols 7-12) */}
+          <div className="lg:col-span-6 xl:col-span-7 relative">
             <div
-              ref={floatingBadge1Ref}
-              className="hidden md:flex absolute bottom-8 left-8 z-20 items-center gap-3 p-3.5 rounded-xl bg-[#101113]/90 backdrop-blur-md border border-[#34D399]/30 shadow-xl"
+              ref={showcaseRef}
+              className="relative w-full rounded-2xl sm:rounded-3xl border border-[#2A2D33] bg-[#17191D] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.8),0_0_80px_-20px_rgba(99,102,241,0.22)] overflow-hidden text-left ring-1 ring-white/10"
             >
-              <div className="p-2 rounded-lg bg-[#34D399]/15 text-[#34D399]">
-                <Check className="w-4 h-4" />
-              </div>
-              <div className="text-xs">
-                <div className="font-semibold text-[#F5F5F3]">1-Click Client Sign-off</div>
-                <div className="text-[11px] text-[#A1A5AD] font-mono">Homepage UI v2.4 Approved</div>
-              </div>
-            </div>
+              
+              {/* Top Browser Bar */}
+              <div className="flex items-center justify-between border-b border-[#2A2D33] bg-[#101113] px-4 py-3 select-none">
+                <div className="flex items-center gap-2">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
+                  <span className="ml-2 text-xs font-mono text-[#A1A5AD] hidden sm:inline">
+                    frevio.cloud/p/acme-brand-experience
+                  </span>
+                </div>
 
-            {/* Floating Live Badge 2: Stripe Deposit Settled */}
-            <div
-              ref={floatingBadge2Ref}
-              className="hidden md:flex absolute top-8 right-8 z-20 items-center gap-3 p-3.5 rounded-xl bg-[#101113]/90 backdrop-blur-md border border-indigo-500/30 shadow-xl"
-            >
-              <div className="p-2 rounded-lg bg-indigo-500/15 text-indigo-400">
-                <CreditCard className="w-4 h-4" />
+                <div className="flex items-center gap-3 text-xs">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#34D399]/15 border border-[#34D399]/30 text-[#34D399] text-[11px] font-medium font-mono">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse" />
+                    Live Client Portal
+                  </span>
+                </div>
               </div>
-              <div className="text-xs">
-                <div className="font-semibold text-[#F5F5F3]">Stripe Settlement</div>
-                <div className="text-[11px] text-[#34D399] font-mono">$4,500 Paid directly</div>
+
+              {/* Generated Product UI Graphic */}
+              <div className="relative w-full aspect-[16/10] bg-[#0c0d10] overflow-hidden group">
+                <Image
+                  src="/hero_client_portal.png"
+                  alt="Frevio Client Portal Interface showing Acme Corp Brand Experience with milestones, 1-Click Approve deliverable card, and Stripe deposit settlement"
+                  fill
+                  priority
+                  className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.01]"
+                />
+
+                {/* Subtle Gradient Vignette to ground the image */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#101113] via-transparent to-transparent opacity-40 pointer-events-none" />
+
+                {/* Floating Live Badge 1: 1-Click Sign-off */}
+                <div
+                  ref={floatingBadge1Ref}
+                  className="hidden sm:flex absolute bottom-6 left-6 z-20 items-center gap-3 p-3 rounded-xl bg-[#101113]/92 backdrop-blur-md border border-[#34D399]/30 shadow-xl"
+                >
+                  <div className="p-2 rounded-lg bg-[#34D399]/15 text-[#34D399]">
+                    <Check className="w-4 h-4" />
+                  </div>
+                  <div className="text-xs">
+                    <div className="font-semibold text-[#F5F5F3]">1-Click Client Sign-off</div>
+                    <div className="text-[11px] text-[#A1A5AD] font-mono">Homepage UI v2.4 Approved</div>
+                  </div>
+                </div>
+
+                {/* Floating Live Badge 2: Stripe Deposit Settled */}
+                <div
+                  ref={floatingBadge2Ref}
+                  className="hidden sm:flex absolute top-6 right-6 z-20 items-center gap-3 p-3 rounded-xl bg-[#101113]/92 backdrop-blur-md border border-indigo-500/30 shadow-xl"
+                >
+                  <div className="p-2 rounded-lg bg-indigo-500/15 text-indigo-400">
+                    <CreditCard className="w-4 h-4" />
+                  </div>
+                  <div className="text-xs">
+                    <div className="font-semibold text-[#F5F5F3]">Stripe Settlement</div>
+                    <div className="text-[11px] text-[#34D399] font-mono">$4,500 Paid directly</div>
+                  </div>
+                </div>
+
               </div>
-            </div>
 
-          </div>
+              {/* Interactive Footer Controls Strip */}
+              <div className="p-3.5 sm:p-4 bg-[#17191D] border-t border-[#2A2D33] flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs text-[#A1A5AD]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#34D399]" />
+                  <span className="text-[#F5F5F3] font-medium">Interactive Demo:</span>
+                  <span>Clients follow milestones with zero login friction.</span>
+                </div>
+                
+                <Link
+                  href="/demo"
+                  className="inline-flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 font-semibold transition-colors flex-shrink-0"
+                >
+                  <span>Test portal</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
 
-          {/* Interactive Footer Controls Strip */}
-          <div className="p-4 sm:p-5 bg-[#17191D] border-t border-[#2A2D33] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#A1A5AD]">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#34D399]" />
-              <span className="text-[#F5F5F3] font-medium">Interactive Demonstration:</span>
-              <span>Clients see progress in real time without creating accounts.</span>
             </div>
-            
-            <Link
-              href="/demo"
-              className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
-            >
-              <span>Test live portal demo</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </Link>
           </div>
 
         </div>
-
       </div>
     </section>
   )
