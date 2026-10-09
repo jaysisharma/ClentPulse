@@ -1,8 +1,67 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import { FolderPlus, Share2, ArrowRightCircle } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 export function HowItWorksSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const stepsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+
+      if (stepsRef.current) {
+        gsap.fromTo(
+          stepsRef.current.children,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            stagger: 0.18,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: stepsRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   const steps = [
     {
       number: '01',
@@ -32,13 +91,14 @@ export function HowItWorksSection() {
 
   return (
     <section
+      ref={sectionRef}
       id="how-it-works"
-      className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
+      className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3] relative overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-4">
             <span>Simple 3-Step Flow</span>
           </div>
@@ -53,26 +113,26 @@ export function HowItWorksSection() {
           </p>
         </div>
 
-        {/* 3 Horizontal Steps on Desktop, Vertical on Mobile */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
+        {/* 3 Horizontal Steps with GSAP Entrance */}
+        <div ref={stepsRef} className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
           {steps.map((step, idx) => {
             const Icon = step.icon
             return (
               <div
                 key={idx}
-                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors"
+                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/40 transition-all hover:translate-y-[-2px] group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
                     <span className="text-xs font-mono font-bold text-[#A7B8FF] px-2.5 py-1 rounded-md bg-[#101113] border border-[#2A2D33]">
                       {step.tag}
                     </span>
-                    <span className="text-2xl font-light font-mono text-[#A1A5AD]/40">
+                    <span className="text-2xl font-light font-mono text-[#A1A5AD]/40 group-hover:text-[#A7B8FF]/40 transition-colors">
                       {step.number}
                     </span>
                   </div>
 
-                  <div className="w-10 h-10 rounded-xl bg-[#1E2126] border border-[#2A2D33] flex items-center justify-center text-[#A7B8FF] mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-[#1E2126] border border-[#2A2D33] flex items-center justify-center text-[#A7B8FF] mb-4 group-hover:border-[#A7B8FF]/40 transition-colors">
                     <Icon className="w-5 h-5" />
                   </div>
 

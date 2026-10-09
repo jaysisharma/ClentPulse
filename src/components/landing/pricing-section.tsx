@@ -1,9 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Check, ArrowRight, Sparkles } from 'lucide-react'
 import { PRICING, ANNUAL_MONTHLY_EQUIV, ANNUAL_DISCOUNT_PCT, AGENCY_PRICING } from '@/lib/plans'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface PricingProps {
   signupHref: string
@@ -11,6 +17,58 @@ interface PricingProps {
 
 export function PricingSection({ signupHref }: PricingProps) {
   const [isAnnual, setIsAnnual] = useState(true)
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+
+      if (cardsRef.current) {
+        gsap.fromTo(
+          cardsRef.current.children,
+          { opacity: 0, y: 40, scale: 0.95 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.75,
+            stagger: 0.12,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
 
   const plans = [
     {
@@ -98,13 +156,14 @@ export function PricingSection({ signupHref }: PricingProps) {
 
   return (
     <section
+      ref={sectionRef}
       id="pricing"
       className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-12">
+        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-4">
             <span>Transparent Pricing</span>
           </div>
@@ -149,7 +208,7 @@ export function PricingSection({ signupHref }: PricingProps) {
         </div>
 
         {/* 4 Pricing Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {plans.map((plan, idx) => (
             <div
               key={idx}

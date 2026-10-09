@@ -1,25 +1,88 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import {
   CheckCircle2, Clock, Sparkles, ExternalLink,
-  ShieldCheck, CreditCard, ArrowRight, ArrowUpRight
+  ShieldCheck, CreditCard, ArrowRight, ArrowUpRight,
+  Check
 } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface Props {
   signupHref: string
 }
 
 export function SolutionSection({ signupHref }: Props) {
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const cardsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReducedMotion) return
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+
+      if (cardsRef.current) {
+        gsap.fromTo(
+          cardsRef.current.children,
+          { opacity: 0, y: 40, scale: 0.96 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: cardsRef.current,
+              start: 'top 85%',
+              once: true,
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
     <section
+      ref={sectionRef}
       id="solutions"
-      className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3]"
+      className="py-20 md:py-28 bg-[#101113] border-t border-[#2A2D33] text-[#F5F5F3] relative overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#9BCDBF] mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-[#9BCDBF]" />
             <span>The Frevio Solution</span>
@@ -36,10 +99,10 @@ export function SolutionSection({ signupHref }: Props) {
         </div>
 
         {/* 3 Clear Capability Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div ref={cardsRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           
           {/* Capability A: Keep every project clear */}
-          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors">
+          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-all hover:translate-y-[-2px]">
             <div>
               <div className="text-xs font-mono text-[#9BCDBF] uppercase tracking-wider mb-2">
                 01 · Visibility
@@ -72,11 +135,15 @@ export function SolutionSection({ signupHref }: Props) {
                   <Clock className="w-3.5 h-3.5" />
                 </div>
               </div>
+              <div className="pt-2 border-t border-[#2A2D33] flex justify-between text-[11px] text-[#A1A5AD]">
+                <span>Progress: 68%</span>
+                <span className="text-[#34D399]">On Schedule</span>
+              </div>
             </div>
           </div>
 
-          {/* Capability B: Share work and collect feedback */}
-          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors">
+          {/* Capability B: Share work and collect feedback (With Generated Visual) */}
+          <div className="rounded-2xl border border-[#A7B8FF]/30 bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/60 transition-all hover:translate-y-[-2px] shadow-lg shadow-[#A7B8FF]/5">
             <div>
               <div className="text-xs font-mono text-[#A7B8FF] uppercase tracking-wider mb-2">
                 02 · Approvals
@@ -84,32 +151,33 @@ export function SolutionSection({ signupHref }: Props) {
               <h3 className="text-lg font-medium text-[#F5F5F3] mb-2">
                 Share work and collect feedback
               </h3>
-              <p className="text-xs sm:text-sm text-[#A1A5AD] leading-relaxed mb-6">
+              <p className="text-xs sm:text-sm text-[#A1A5AD] leading-relaxed mb-4">
                 Deliverables are easy to access, review, and approve with 1 click. Create a crystal-clear paper trail for revisions and sign-offs.
               </p>
             </div>
 
-            {/* Realistic UI Example B */}
-            <div className="rounded-xl border border-[#2A2D33] bg-[#101113] p-4 space-y-3 font-mono text-xs">
-              <div className="flex items-center justify-between text-[11px] text-[#A1A5AD]">
-                <span className="text-[#A7B8FF]">Deliverable Sign-off</span>
-                <span>Figma v2.1</span>
+            {/* Embedded Visual: Deliverable Approval Graphic */}
+            <div className="rounded-xl border border-[#2A2D33] bg-[#101113] overflow-hidden shadow-inner">
+              <div className="relative w-full aspect-[16/10]">
+                <Image
+                  src="/deliverable_approval.png"
+                  alt="Client deliverable review interface with illuminated Approved by Client stamp and Stripe milestone payment"
+                  fill
+                  className="object-cover object-top"
+                />
               </div>
-              <div className="text-xs text-[#F5F5F3] font-sans font-medium">
-                Landing Page Prototypes
-              </div>
-              <div className="pt-2 border-t border-[#2A2D33] flex items-center justify-between">
-                <span className="text-[10px] text-[#A1A5AD]">Awaiting client</span>
-                <span className="inline-flex items-center gap-1 text-[11px] bg-[#34D399]/15 text-[#34D399] border border-[#34D399]/30 px-2 py-0.5 rounded">
-                  <CheckCircle2 className="w-3 h-3" />
-                  1-Click Approve
+              <div className="p-3 bg-[#101113] flex items-center justify-between text-[11px] font-mono text-[#34D399]">
+                <span className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5" />
+                  1-Click Immutable Sign-off
                 </span>
+                <span className="text-[#A1A5AD]">No PDF printing</span>
               </div>
             </div>
           </div>
 
           {/* Capability C: Keep project administration organised */}
-          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-colors">
+          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-all hover:translate-y-[-2px]">
             <div>
               <div className="text-xs font-mono text-[#9BCDBF] uppercase tracking-wider mb-2">
                 03 · Administration
@@ -130,11 +198,15 @@ export function SolutionSection({ signupHref }: Props) {
               </div>
               <div className="flex items-center justify-between text-xs text-[#F5F5F3]">
                 <span>Milestone 1 Deposit</span>
-                <span className="text-[#34D399]">$3,500 Paid</span>
+                <span className="text-[#34D399] font-medium">$3,500 Paid</span>
               </div>
               <div className="flex items-center justify-between text-xs text-[#A1A5AD]">
-                <span>Change Order #01</span>
+                <span>Scope Creep Shield #01</span>
                 <span className="text-[#FBBF24]">Due on approval</span>
+              </div>
+              <div className="pt-2 border-t border-[#2A2D33] flex justify-between text-[11px] text-[#A1A5AD]">
+                <span>Master Services Agreement</span>
+                <span className="text-[#34D399]">✓ E-Signed</span>
               </div>
             </div>
           </div>
