@@ -121,12 +121,12 @@ export function UseCasesSection() {
         
         {/* Section Header */}
         <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#9BCDBF] mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-purple-400 mb-4">
             <span>Tailored for Client Services</span>
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
             Whatever you create, <br />
-            <span className="font-normal text-[#A7B8FF]">
+            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
               your clients deserve clarity.
             </span>
           </h2>
@@ -142,11 +142,11 @@ export function UseCasesSection() {
             return (
               <div
                 key={idx}
-                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/40 transition-all hover:translate-y-[-2px] group"
+                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all hover:translate-y-[-2px] group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-2.5 rounded-xl bg-[#1E2126] border border-[#2A2D33] text-[#A7B8FF] group-hover:border-[#A7B8FF]/40 transition-colors">
+                    <div className="p-2.5 rounded-xl bg-[#1E2126] border border-[#2A2D33] text-indigo-400 group-hover:border-indigo-500/40 transition-colors">
                       <Icon className="w-5 h-5" />
                     </div>
                     <span className="text-[11px] font-mono text-[#A1A5AD]">
@@ -166,7 +166,7 @@ export function UseCasesSection() {
                 <div className="rounded-xl border border-[#2A2D33] bg-[#101113] p-4 space-y-2.5 font-mono text-xs">
                   <div className="flex justify-between items-center text-[11px] text-[#A1A5AD]">
                     <span className="truncate max-w-[150px]">{uc.example.title}</span>
-                    <span className="text-[#A7B8FF]">{uc.example.status}</span>
+                    <span className="text-indigo-400">{uc.example.status}</span>
                   </div>
                   
                   <div className="pt-2 border-t border-[#2A2D33] space-y-1.5">
@@ -178,7 +178,7 @@ export function UseCasesSection() {
                     </div>
                     <div className="flex justify-between items-center text-xs">
                       <span className="text-[#A1A5AD] font-sans truncate mr-2">{uc.example.item2}</span>
-                      <span className="text-[#A7B8FF] text-[10px] bg-[#A7B8FF]/10 px-1.5 py-0.5 rounded">
+                      <span className="text-indigo-400 text-[10px] bg-indigo-500/10 px-1.5 py-0.5 rounded">
                         {uc.example.item2Status}
                       </span>
                     </div>

@@ -27,12 +27,12 @@ export function HaikeiLayeredWaves({ className = '', opacity = 0.08 }: SvgProps)
     >
       <defs>
         <linearGradient id="haikei-wave-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#A7B8FF" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#9BCDBF" stopOpacity="0.2" />
+          <stop offset="0%" stopColor="#6366F1" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#A855F7" stopOpacity="0.2" />
         </linearGradient>
         <linearGradient id="haikei-wave-grad-2" x1="100%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#9BCDBF" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#A7B8FF" stopOpacity="0.1" />
+          <stop offset="0%" stopColor="#A855F7" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="#6366F1" stopOpacity="0.1" />
         </linearGradient>
       </defs>
       
@@ -67,29 +67,29 @@ export function HaikeiTopography({ className = '', opacity = 0.05 }: SvgProps) {
     >
       <path
         d="M-50,150 Q250,50 500,200 T1050,150"
-        stroke="#A7B8FF"
+        stroke="#818CF8"
         strokeWidth="1.2"
         strokeDasharray="4 6"
       />
       <path
         d="M-50,220 Q200,120 500,270 T1050,220"
-        stroke="#A7B8FF"
+        stroke="#6366F1"
         strokeWidth="1.2"
       />
       <path
         d="M-50,290 Q220,190 500,340 T1050,290"
-        stroke="#9BCDBF"
+        stroke="#C084FC"
         strokeWidth="1.2"
         strokeDasharray="8 8"
       />
       <path
         d="M-50,360 Q240,260 500,410 T1050,360"
-        stroke="#A7B8FF"
+        stroke="#818CF8"
         strokeWidth="1.2"
       />
       <path
         d="M-50,430 Q260,330 500,480 T1050,430"
-        stroke="#9BCDBF"
+        stroke="#A855F7"
         strokeWidth="1.2"
         strokeDasharray="2 6"
       />
@@ -113,7 +113,7 @@ export function HaikeiDotMatrix({ className = '', opacity = 0.08 }: SvgProps) {
     >
       <defs>
         <pattern id="haikei-dots" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
-          <circle cx="2" cy="2" r="1" fill="#A7B8FF" />
+          <circle cx="2" cy="2" r="1" fill="#818CF8" />
         </pattern>
         <radialGradient id="haikei-dots-fade" cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#fff" stopOpacity="1" />
@@ -146,23 +146,23 @@ export function HaikeiPolyMesh({ className = '', opacity = 0.04 }: SvgProps) {
     >
       <path
         d="M0,0 L300,180 L600,60 L900,220 L1200,80 L1200,600 L0,600 Z"
-        stroke="#A7B8FF"
+        stroke="#818CF8"
         strokeWidth="1"
       />
       <path
         d="M300,180 L600,340 L900,220"
-        stroke="#9BCDBF"
+        stroke="#C084FC"
         strokeWidth="1"
         strokeDasharray="4 4"
       />
       <path
         d="M0,240 L300,180 L350,480 L600,340 L850,520 L900,220 L1200,380"
-        stroke="#A7B8FF"
+        stroke="#6366F1"
         strokeWidth="1"
       />
-      <circle cx="300" cy="180" r="3" fill="#A7B8FF" />
-      <circle cx="600" cy="340" r="3" fill="#9BCDBF" />
-      <circle cx="900" cy="220" r="3" fill="#A7B8FF" />
+      <circle cx="300" cy="180" r="3" fill="#818CF8" />
+      <circle cx="600" cy="340" r="3" fill="#C084FC" />
+      <circle cx="900" cy="220" r="3" fill="#818CF8" />
     </svg>
   )
 }
@@ -185,9 +185,9 @@ export function HaikeiBlobAura({ className = '', opacity = 0.12 }: SvgProps) {
           <feGaussianBlur stdDeviation="90" />
         </filter>
         <linearGradient id="haikei-blob-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#A7B8FF" />
-          <stop offset="50%" stopColor="#7E95F7" />
-          <stop offset="100%" stopColor="#9BCDBF" />
+          <stop offset="0%" stopColor="#6366F1" />
+          <stop offset="50%" stopColor="#8B5CF6" />
+          <stop offset="100%" stopColor="#A855F7" />
         </linearGradient>
       </defs>
       <path

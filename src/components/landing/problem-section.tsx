@@ -184,11 +184,11 @@ export function ProblemSection() {
             return (
               <div
                 key={idx}
-                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-all hover:translate-y-[-2px] group"
+                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all hover:translate-y-[-2px] group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-2.5 rounded-xl bg-[#1E2126] border border-[#2A2D33] text-[#A7B8FF] group-hover:border-[#A7B8FF]/40 transition-colors">
+                    <div className="p-2.5 rounded-xl bg-[#1E2126] border border-[#2A2D33] text-indigo-400 group-hover:border-indigo-500/40 transition-colors">
                       <Icon className="w-5 h-5" />
                     </div>
                     <span className="text-[11px] font-mono text-[#A1A5AD] px-2.5 py-1 rounded bg-[#101113] border border-[#2A2D33]">

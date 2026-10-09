@@ -111,7 +111,7 @@ export function TrustSection() {
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
             Professional work deserves <br />
-            <span className="font-normal text-[#A7B8FF]">
+            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
               a professional experience.
             </span>
           </h2>
@@ -127,7 +127,7 @@ export function TrustSection() {
             return (
               <div
                 key={idx}
-                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-all hover:translate-y-[-2px] group"
+                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all hover:translate-y-[-2px] group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">

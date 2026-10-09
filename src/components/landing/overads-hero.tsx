@@ -119,7 +119,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         
         {/* Category Pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-mono text-indigo-400 mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-[#34D399] animate-pulse" />
           <span>The Client Workspace for Independent Professionals</span>
         </div>
@@ -130,7 +130,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
           className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.12] max-w-4xl mx-auto"
         >
           Your work, beautifully organised. <br />
-          <span className="font-normal text-[#A7B8FF]">
+          <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-indigo-300 to-purple-400">
             Your clients, always in the loop.
           </span>
         </h1>
@@ -150,17 +150,17 @@ export function OveradsHero({ signupHref }: HeroProps) {
         >
           <Link
             href={signupHref}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#A7B8FF] text-[#101113] hover:bg-[#b8c6ff] h-11 px-7 text-sm font-semibold transition-all hover:scale-[1.03] shadow-md shadow-[#A7B8FF]/10 cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white h-11 px-7 text-sm font-semibold transition-all hover:scale-[1.03] shadow-lg shadow-indigo-500/25 cursor-pointer"
           >
             <span>Start free</span>
-            <ArrowUpRight className="w-4 h-4 text-[#101113]" />
+            <ArrowUpRight className="w-4 h-4 text-white" />
           </Link>
 
           <Link
             href="/demo"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#17191D] hover:bg-[#1E2126] text-[#F5F5F3] border border-[#2A2D33] h-11 px-6 text-sm font-medium transition-all hover:border-[#A7B8FF]/40 cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#17191D] hover:bg-[#1E2126] text-[#F5F5F3] border border-[#2A2D33] h-11 px-6 text-sm font-medium transition-all hover:border-indigo-500/50 cursor-pointer"
           >
-            <Play className="w-3.5 h-3.5 text-[#9BCDBF] fill-current" />
+            <Play className="w-3.5 h-3.5 text-purple-400 fill-current" />
             <span>Explore the demo</span>
           </Link>
         </div>
@@ -173,7 +173,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
         {/* ── CINEMATIC PRODUCT SHOWCASE WITH GENERATED VISUAL & LIVE CONTROLS ── */}
         <div
           ref={showcaseRef}
-          className="relative mt-14 max-w-5xl mx-auto rounded-2xl sm:rounded-3xl border border-[#2A2D33] bg-[#17191D] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.8),0_0_80px_-20px_rgba(167,184,255,0.18)] overflow-hidden text-left ring-1 ring-white/10"
+          className="relative mt-14 max-w-5xl mx-auto rounded-2xl sm:rounded-3xl border border-[#2A2D33] bg-[#17191D] shadow-[0_25px_70px_-15px_rgba(0,0,0,0.8),0_0_80px_-20px_rgba(99,102,241,0.22)] overflow-hidden text-left ring-1 ring-white/10"
         >
           
           {/* Top Browser Bar */}
@@ -225,9 +225,9 @@ export function OveradsHero({ signupHref }: HeroProps) {
             {/* Floating Live Badge 2: Stripe Deposit Settled */}
             <div
               ref={floatingBadge2Ref}
-              className="hidden md:flex absolute top-8 right-8 z-20 items-center gap-3 p-3.5 rounded-xl bg-[#101113]/90 backdrop-blur-md border border-[#A7B8FF]/30 shadow-xl"
+              className="hidden md:flex absolute top-8 right-8 z-20 items-center gap-3 p-3.5 rounded-xl bg-[#101113]/90 backdrop-blur-md border border-indigo-500/30 shadow-xl"
             >
-              <div className="p-2 rounded-lg bg-[#A7B8FF]/15 text-[#A7B8FF]">
+              <div className="p-2 rounded-lg bg-indigo-500/15 text-indigo-400">
                 <CreditCard className="w-4 h-4" />
               </div>
               <div className="text-xs">
@@ -248,7 +248,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
             
             <Link
               href="/demo"
-              className="inline-flex items-center gap-1.5 text-xs text-[#A7B8FF] hover:text-[#b8c6ff] font-semibold transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-semibold transition-colors"
             >
               <span>Test live portal demo</span>
               <ArrowUpRight className="w-3.5 h-3.5" />

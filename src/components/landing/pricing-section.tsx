@@ -164,12 +164,12 @@ export function PricingSection({ signupHref }: PricingProps) {
         
         {/* Section Header */}
         <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-indigo-400 mb-4">
             <span>Transparent Pricing</span>
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
             Start simple. <br />
-            <span className="font-normal text-[#A7B8FF]">
+            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
               Grow when you need to.
             </span>
           </h2>
@@ -184,7 +184,7 @@ export function PricingSection({ signupHref }: PricingProps) {
               onClick={() => setIsAnnual(false)}
               className={`px-4 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
                 !isAnnual
-                  ? 'bg-[#A7B8FF] text-[#101113] font-semibold'
+                  ? 'bg-indigo-600 text-white font-semibold shadow-sm'
                   : 'text-[#A1A5AD] hover:text-[#F5F5F3]'
               }`}
             >
@@ -195,7 +195,7 @@ export function PricingSection({ signupHref }: PricingProps) {
               onClick={() => setIsAnnual(true)}
               className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
                 isAnnual
-                  ? 'bg-[#A7B8FF] text-[#101113] font-semibold'
+                  ? 'bg-indigo-600 text-white font-semibold shadow-sm'
                   : 'text-[#A1A5AD] hover:text-[#F5F5F3]'
               }`}
             >
@@ -214,12 +214,12 @@ export function PricingSection({ signupHref }: PricingProps) {
               key={idx}
               className={`rounded-2xl p-6 sm:p-7 flex flex-col justify-between transition-all relative ${
                 plan.isHighlighted
-                  ? 'bg-[#17191D] border-2 border-[#A7B8FF] shadow-xl shadow-[#A7B8FF]/5 ring-1 ring-[#A7B8FF]/20'
+                  ? 'bg-[#17191D] border-2 border-indigo-500 shadow-xl shadow-indigo-500/15 ring-1 ring-indigo-500/30'
                   : 'bg-[#17191D] border border-[#2A2D33] hover:border-[#2A2D33]/80'
               }`}
             >
               {plan.isHighlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#A7B8FF] text-[#101113] text-[11px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-[11px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
                   <Sparkles className="w-3 h-3" />
                   <span>Recommended</span>
                 </div>
@@ -250,7 +250,7 @@ export function PricingSection({ signupHref }: PricingProps) {
                       {plan.period.split('(')[1].replace(')', '')}
                     </div>
                   )}
-                  <div className="text-[11px] font-mono text-[#A7B8FF] mt-2">
+                  <div className="text-[11px] font-mono text-indigo-400 mt-2">
                     {plan.limits}
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export function PricingSection({ signupHref }: PricingProps) {
                 href={plan.ctaHref}
                 className={`w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center transition-all inline-flex items-center justify-center gap-1.5 ${
                   plan.isHighlighted
-                    ? 'bg-[#A7B8FF] text-[#101113] hover:bg-[#b8c6ff] shadow-sm'
+                    ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white shadow-md shadow-indigo-500/25'
                     : 'bg-[#101113] text-[#F5F5F3] border border-[#2A2D33] hover:bg-[#1E2126]'
                 }`}
               >

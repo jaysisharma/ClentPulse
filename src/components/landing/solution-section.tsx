@@ -83,13 +83,13 @@ export function SolutionSection({ signupHref }: Props) {
         
         {/* Section Header */}
         <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#9BCDBF] mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#9BCDBF]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-purple-400 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
             <span>The Frevio Solution</span>
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
             One workspace. <br />
-            <span className="font-normal text-[#A7B8FF]">
+            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
               A better experience for every client.
             </span>
           </h2>
@@ -102,9 +102,9 @@ export function SolutionSection({ signupHref }: Props) {
         <div ref={cardsRef} className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           
           {/* Capability A: Keep every project clear */}
-          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-all hover:translate-y-[-2px]">
+          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all hover:translate-y-[-2px]">
             <div>
-              <div className="text-xs font-mono text-[#9BCDBF] uppercase tracking-wider mb-2">
+              <div className="text-xs font-mono text-purple-400 uppercase tracking-wider mb-2">
                 01 · Visibility
               </div>
               <h3 className="text-lg font-medium text-[#F5F5F3] mb-2">
@@ -126,9 +126,9 @@ export function SolutionSection({ signupHref }: Props) {
                   <span>Discovery & Wireframes</span>
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#34D399]" />
                 </div>
-                <div className="flex justify-between text-xs text-[#A7B8FF]">
+                <div className="flex justify-between text-xs text-indigo-400">
                   <span>Visual Design & UI</span>
-                  <span className="text-[10px] bg-[#A7B8FF]/15 px-1.5 py-0.5 rounded text-[#A7B8FF]">Active</span>
+                  <span className="text-[10px] bg-indigo-500/15 px-1.5 py-0.5 rounded text-indigo-400">Active</span>
                 </div>
                 <div className="flex justify-between text-xs text-[#A1A5AD]">
                   <span>Frontend Engineering</span>
@@ -143,9 +143,9 @@ export function SolutionSection({ signupHref }: Props) {
           </div>
 
           {/* Capability B: Share work and collect feedback (With Generated Visual) */}
-          <div className="rounded-2xl border border-[#A7B8FF]/30 bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/60 transition-all hover:translate-y-[-2px] shadow-lg shadow-[#A7B8FF]/5">
+          <div className="rounded-2xl border border-indigo-500/30 bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-indigo-500/60 transition-all hover:translate-y-[-2px] shadow-lg shadow-indigo-500/10">
             <div>
-              <div className="text-xs font-mono text-[#A7B8FF] uppercase tracking-wider mb-2">
+              <div className="text-xs font-mono text-indigo-400 uppercase tracking-wider mb-2">
                 02 · Approvals
               </div>
               <h3 className="text-lg font-medium text-[#F5F5F3] mb-2">
@@ -177,9 +177,9 @@ export function SolutionSection({ signupHref }: Props) {
           </div>
 
           {/* Capability C: Keep project administration organised */}
-          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-all hover:translate-y-[-2px]">
+          <div className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all hover:translate-y-[-2px]">
             <div>
-              <div className="text-xs font-mono text-[#9BCDBF] uppercase tracking-wider mb-2">
+              <div className="text-xs font-mono text-purple-400 uppercase tracking-wider mb-2">
                 03 · Administration
               </div>
               <h3 className="text-lg font-medium text-[#F5F5F3] mb-2">

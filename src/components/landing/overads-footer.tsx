@@ -14,7 +14,7 @@ export function OveradsFooter() {
           {/* Brand Info (2 columns) */}
           <div className="md:col-span-2 space-y-3.5">
             <Link href="/" className="inline-flex items-center gap-2.5 text-[#F5F5F3]">
-              <Logo className="w-5 h-5 text-[#A7B8FF]" />
+              <Logo className="w-5 h-5 text-indigo-400" />
               <span className="font-semibold text-sm tracking-tight text-[#F5F5F3]">Frevio</span>
               <span className="text-[10px] font-mono text-[#A1A5AD] px-1.5 py-0.5 rounded bg-[#17191D] border border-[#2A2D33]">
                 Cloud

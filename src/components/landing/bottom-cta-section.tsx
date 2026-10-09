@@ -62,15 +62,15 @@ export function BottomCtaSection({ signupHref }: Props) {
         className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
       >
         {/* Subtle pill */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-6">
-          <Sparkles className="w-3.5 h-3.5 text-[#A7B8FF]" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-mono text-indigo-400 mb-6">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
           <span>Get Started in 2 Minutes</span>
         </div>
 
         {/* Editorial Heading */}
         <h2 className="text-3xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.12] max-w-3xl mx-auto">
           Make working with your clients <br />
-          <span className="font-normal text-[#A7B8FF]">
+          <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
             feel effortless.
           </span>
         </h2>
@@ -84,17 +84,17 @@ export function BottomCtaSection({ signupHref }: Props) {
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5">
           <Link
             href={signupHref}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#A7B8FF] text-[#101113] hover:bg-[#b8c6ff] h-11 px-7 text-sm font-semibold transition-all hover:scale-[1.03] shadow-md shadow-[#A7B8FF]/10 cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-400 hover:to-indigo-500 text-white h-11 px-7 text-sm font-semibold transition-all hover:scale-[1.03] shadow-lg shadow-indigo-500/25 cursor-pointer"
           >
             <span>Start free</span>
-            <ArrowUpRight className="w-4 h-4 text-[#101113]" />
+            <ArrowUpRight className="w-4 h-4 text-white" />
           </Link>
 
           <Link
             href="/demo"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#17191D] hover:bg-[#1E2126] text-[#F5F5F3] border border-[#2A2D33] h-11 px-6 text-sm font-medium transition-all hover:border-[#A7B8FF]/40 cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-[#17191D] hover:bg-[#1E2126] text-[#F5F5F3] border border-[#2A2D33] h-11 px-6 text-sm font-medium transition-all hover:border-indigo-500/50 cursor-pointer"
           >
-            <Play className="w-3.5 h-3.5 text-[#9BCDBF] fill-current" />
+            <Play className="w-3.5 h-3.5 text-purple-400 fill-current" />
             <span>Explore the demo</span>
           </Link>
         </div>

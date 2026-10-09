@@ -58,8 +58,8 @@ export function FaqSection() {
         
         {/* Section Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-4">
-            <HelpCircle className="w-3.5 h-3.5 text-[#A7B8FF]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-indigo-400 mb-4">
+            <HelpCircle className="w-3.5 h-3.5 text-indigo-400" />
             <span>Common Questions</span>
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
@@ -90,7 +90,7 @@ export function FaqSection() {
                   </span>
                   <ChevronDown
                     className={`w-4 h-4 text-[#A1A5AD] flex-shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 text-[#A7B8FF]' : ''
+                      isOpen ? 'rotate-180 text-indigo-400' : ''
                     }`}
                   />
                 </button>

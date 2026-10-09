@@ -33,8 +33,8 @@ export function InteractiveWorkspaceDemo() {
         
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-4">
-            <Play className="w-3 h-3 text-[#A7B8FF] fill-current" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-indigo-400 mb-4">
+            <Play className="w-3 h-3 text-indigo-400 fill-current" />
             <span>Interactive Client Experience</span>
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
@@ -58,7 +58,7 @@ export function InteractiveWorkspaceDemo() {
                   onClick={() => setActiveTab(tab.id)}
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'bg-[#A7B8FF] text-[#101113] shadow-sm font-semibold'
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 font-semibold'
                       : 'text-[#A1A5AD] hover:text-[#F5F5F3] hover:bg-[#1E2126]'
                   }`}
                 >
@@ -117,10 +117,10 @@ export function InteractiveWorkspaceDemo() {
                 <div>
                   <div className="flex justify-between text-xs font-mono text-[#A1A5AD] mb-2">
                     <span>Overall Milestone Progress</span>
-                    <span className="text-[#A7B8FF] font-semibold">75% Complete (3 of 4 Milestones)</span>
+                    <span className="text-indigo-400 font-semibold">75% Complete (3 of 4 Milestones)</span>
                   </div>
                   <div className="w-full bg-[#2A2D33] h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-[#A7B8FF] h-full w-3/4 rounded-full" />
+                    <div className="bg-indigo-500 h-full w-3/4 rounded-full" />
                   </div>
                 </div>
 
@@ -142,12 +142,12 @@ export function InteractiveWorkspaceDemo() {
                     <span className="text-[11px] font-mono text-[#34D399]">Completed Oct 7</span>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#17191D] border border-[#A7B8FF]/30 text-xs">
-                    <div className="flex items-center gap-2.5 text-[#A7B8FF]">
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[#17191D] border border-indigo-500/30 text-xs">
+                    <div className="flex items-center gap-2.5 text-indigo-400">
                       <Clock className="w-4 h-4" />
-                      <span className="text-[#A7B8FF] font-medium">3. Frontend Staging & Stripe Integration</span>
+                      <span className="text-indigo-400 font-medium">3. Frontend Staging & Stripe Integration</span>
                     </div>
-                    <span className="text-[11px] font-mono text-[#A7B8FF]">In Review · Due Oct 14</span>
+                    <span className="text-[11px] font-mono text-indigo-400">In Review · Due Oct 14</span>
                   </div>
 
                   <div className="flex items-center justify-between p-3 rounded-xl bg-[#17191D]/50 border border-[#2A2D33] text-xs text-[#A1A5AD]">
@@ -172,10 +172,10 @@ export function InteractiveWorkspaceDemo() {
               <div className="space-y-4 animate-fade-in">
                 
                 {/* Deliverable 1 */}
-                <div className="p-4 rounded-xl bg-[#17191D] border border-[#A7B8FF]/40 shadow-sm">
+                <div className="p-4 rounded-xl bg-[#17191D] border border-indigo-500/40 shadow-sm">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <div className="flex items-center gap-2 text-xs font-mono text-[#A7B8FF] mb-1">
+                      <div className="flex items-center gap-2 text-xs font-mono text-indigo-400 mb-1">
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>Interactive Prototype · Figma</span>
                       </div>
@@ -197,7 +197,7 @@ export function InteractiveWorkspaceDemo() {
                         <button
                           type="button"
                           onClick={() => setApprovedDeliverable(true)}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#101113] bg-[#A7B8FF] hover:bg-[#b8c6ff] px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 px-3.5 py-1.5 rounded-lg transition-colors cursor-pointer shadow-sm shadow-indigo-600/20"
                         >
                           <Check className="w-3.5 h-3.5" />
                           <span>Approve Deliverable</span>
@@ -211,7 +211,7 @@ export function InteractiveWorkspaceDemo() {
                 <div className="p-4 rounded-xl bg-[#17191D] border border-[#2A2D33]">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                      <div className="flex items-center gap-2 text-xs font-mono text-[#9BCDBF] mb-1">
+                      <div className="flex items-center gap-2 text-xs font-mono text-purple-400 mb-1">
                         <ExternalLink className="w-3.5 h-3.5" />
                         <span>Staging Environment</span>
                       </div>
@@ -253,7 +253,7 @@ export function InteractiveWorkspaceDemo() {
                 {/* Client comment with response */}
                 <div className="p-4 rounded-xl bg-[#17191D] border border-[#2A2D33] space-y-3">
                   <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#A7B8FF]">Sarah Lin (Acme VP Product)</span>
+                    <span className="text-indigo-400">Sarah Lin (Acme VP Product)</span>
                     <span className="text-[#A1A5AD]">Yesterday, 3:45 PM</span>
                   </div>
                   <p className="text-xs text-[#F5F5F3] leading-relaxed">
@@ -268,7 +268,7 @@ export function InteractiveWorkspaceDemo() {
                 {/* Change Order Card */}
                 <div className="p-4 rounded-xl bg-[#17191D] border border-[#2A2D33] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <div className="flex items-center gap-2 text-xs font-mono text-[#9BCDBF] mb-1">
+                    <div className="flex items-center gap-2 text-xs font-mono text-purple-400 mb-1">
                       <Layers className="w-3.5 h-3.5" />
                       <span>Change Order #02 · Scope Creep Shield</span>
                     </div>
@@ -311,15 +311,15 @@ export function InteractiveWorkspaceDemo() {
                 </div>
 
                 {/* Invoice 2: Upcoming */}
-                <div className="p-4 rounded-xl bg-[#17191D] border border-[#A7B8FF]/30 flex items-center justify-between text-xs">
+                <div className="p-4 rounded-xl bg-[#17191D] border border-indigo-500/30 flex items-center justify-between text-xs">
                   <div>
-                    <div className="text-xs font-mono text-[#A7B8FF]">Invoice #INV-2026-02</div>
+                    <div className="text-xs font-mono text-indigo-400">Invoice #INV-2026-02</div>
                     <div className="text-sm font-medium text-[#F5F5F3]">Milestone 2 Sign-off Settlement</div>
                     <div className="text-[11px] text-[#A1A5AD] font-mono mt-0.5">Due upon Sprint 3 deliverable approval</div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-semibold text-[#F5F5F3] font-mono">$3,500.00</div>
-                    <span className="text-[11px] font-mono text-[#A7B8FF] bg-[#A7B8FF]/15 px-2 py-0.5 rounded">
+                    <span className="text-[11px] font-mono text-indigo-400 bg-indigo-500/15 px-2 py-0.5 rounded">
                       Pay with Stripe
                     </span>
                   </div>
@@ -344,7 +344,7 @@ export function InteractiveWorkspaceDemo() {
             <span>This demonstration reflects genuine Frevio client portal capabilities.</span>
             <Link
               href="/demo"
-              className="inline-flex items-center gap-1.5 text-xs text-[#A7B8FF] hover:text-[#b8c6ff] font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
             >
               <span>Open full interactive demo</span>
               <ArrowRight className="w-3.5 h-3.5" />

@@ -102,13 +102,13 @@ export function AutomationSection() {
         
         {/* Section Header */}
         <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-[#A7B8FF] mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-[#A7B8FF]" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#17191D] border border-[#2A2D33] text-xs font-mono text-indigo-400 mb-4">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
             <span>Practical Productivity</span>
           </div>
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-light tracking-[-0.03em] text-[#F5F5F3] leading-[1.15]">
             Let routine work <br />
-            <span className="font-normal text-[#A7B8FF]">
+            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
               take care of itself.
             </span>
           </h2>
@@ -124,14 +124,14 @@ export function AutomationSection() {
             return (
               <div
                 key={idx}
-                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-[#A7B8FF]/30 transition-all hover:translate-y-[-2px] group"
+                className="rounded-2xl border border-[#2A2D33] bg-[#17191D] p-6 sm:p-7 flex flex-col justify-between hover:border-indigo-500/40 transition-all hover:translate-y-[-2px] group"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="p-2.5 rounded-xl bg-[#1E2126] border border-[#2A2D33] text-[#A7B8FF] group-hover:border-[#A7B8FF]/40 transition-colors">
+                    <div className="p-2.5 rounded-xl bg-[#1E2126] border border-[#2A2D33] text-indigo-400 group-hover:border-indigo-500/40 transition-colors">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-[11px] font-mono text-[#9BCDBF] px-2.5 py-1 rounded bg-[#101113] border border-[#2A2D33]">
+                    <span className="text-[11px] font-mono text-purple-400 px-2.5 py-1 rounded bg-[#101113] border border-[#2A2D33]">
                       {item.badge}
                     </span>
                   </div>

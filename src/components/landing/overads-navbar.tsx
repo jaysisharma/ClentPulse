@@ -31,9 +31,9 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
         {/* Left: Brand Logo & Wordmark */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 text-[#F5F5F3] hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#A7B8FF]/40 rounded-lg py-1 px-1.5"
+          className="flex items-center gap-2.5 text-[#F5F5F3] hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-indigo-500/40 rounded-lg py-1 px-1.5"
         >
-          <Logo className="w-5 h-5 text-[#A7B8FF]" />
+          <Logo className="w-5 h-5 text-indigo-400" />
           <span className="font-semibold text-base tracking-tight text-[#F5F5F3]">Frevio</span>
           <span className="hidden sm:inline-block text-[11px] font-mono text-[#A1A5AD] px-1.5 py-0.5 rounded bg-[#17191D] border border-[#2A2D33]">
             Cloud
@@ -64,7 +64,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
 
           <Link
             href={signupHref}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-[#101113] bg-[#A7B8FF] hover:bg-[#b8c6ff] px-4 py-2 rounded-full transition-all shadow-sm hover:shadow-[#A7B8FF]/20"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 px-4 py-2 rounded-full transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-500/30"
           >
             <span>{isLoggedIn ? 'Open App' : 'Start free'}</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
@@ -75,7 +75,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
         <div className="flex md:hidden items-center gap-2">
           <Link
             href={signupHref}
-            className="text-xs font-medium text-[#101113] bg-[#A7B8FF] hover:bg-[#b8c6ff] px-3 py-1.5 rounded-full transition-all"
+            className="text-xs font-medium text-white bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded-full transition-all"
           >
             Start free
           </Link>
@@ -118,7 +118,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
             <Link
               href={signupHref}
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-1.5 text-center text-sm font-medium text-[#101113] bg-[#A7B8FF] py-2.5 rounded-lg"
+              className="flex items-center justify-center gap-1.5 text-center text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 py-2.5 rounded-lg"
             >
               <span>{isLoggedIn ? 'Open App' : 'Start free'}</span>
               <ArrowRight className="w-4 h-4" />
