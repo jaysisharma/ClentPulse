@@ -16,9 +16,6 @@ export function OveradsFooter() {
             <Link href="/" className="inline-flex items-center gap-2.5 text-[#F5F5F3]">
               <Logo className="w-5 h-5 text-indigo-400" />
               <span className="font-semibold text-sm tracking-tight text-[#F5F5F3]">Frevio</span>
-              <span className="text-[10px] font-mono text-[#A1A5AD] px-1.5 py-0.5 rounded bg-[#17191D] border border-[#2A2D33]">
-                Cloud
-              </span>
             </Link>
 
             <p className="text-xs text-[#A1A5AD] font-normal leading-relaxed max-w-sm">
@@ -77,7 +74,7 @@ export function OveradsFooter() {
         {/* Bottom Colophon */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#A1A5AD]/80">
           <div>
-            © {new Date().getFullYear()} Frevio Cloud. Built for independent professionals.
+            © {new Date().getFullYear()} Frevio. Built for independent professionals.
           </div>
           <div>
             Zero-friction client portals · Powered by Stripe & PostgreSQL

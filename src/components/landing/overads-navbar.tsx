@@ -34,7 +34,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
           className="flex items-center gap-2.5 text-[#F5F5F3] hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-indigo-500/40 rounded-lg py-1 px-1.5"
         >
           <Logo className="w-5 h-5 text-indigo-400" />
-          <span className="font-semibold text-base tracking-tight text-[#F5F5F3]">Frevio Cloud</span>
+          <span className="font-semibold text-base tracking-tight text-[#F5F5F3]">Frevio</span>
         </Link>
 
         {/* Center: Clean Minimal Navigation Links */}

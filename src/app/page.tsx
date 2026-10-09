@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { OveradsNavbar } from '@/components/landing/overads-navbar'
 
 export const metadata: Metadata = {
-  title: 'Frevio Cloud — Client Workspace & Business Management',
+  title: 'Frevio — Client Workspace & Business Management',
   description:
     'The client workspace that keeps projects moving and clients informed.',
 }
@@ -22,7 +22,7 @@ export default async function LandingPage() {
       <main className="flex-1 flex flex-col justify-center items-center px-4">
         <div className="max-w-md w-full text-center space-y-4">
           <h1 className="text-3xl font-light tracking-tight text-[#F5F5F3]">
-            Frevio Cloud
+            Frevio
           </h1>
           <p className="text-sm text-[#A1A5AD]">
             Navbar active. What should we build next?
