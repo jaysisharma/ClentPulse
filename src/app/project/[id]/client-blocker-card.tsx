@@ -148,8 +148,8 @@ export function ClientBlockerCard({
       {/* Waiting on Client Blocker Box */}
       <div className={`rounded-2xl border transition-all p-5 backdrop-blur-md shadow-xs ${
         isWaiting
-          ? 'border-amber-500/30 bg-amber-500/5 dark:bg-[#0c0d12]/95 ring-1 ring-amber-500/20'
-          : 'border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 ring-1 ring-slate-950/5 dark:ring-white/5'
+          ? 'border-amber-500/30 bg-amber-500/5 dark:bg-[#0c0d12]/95'
+          : 'border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90'
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/5">
           <div className="flex items-center gap-3">

@@ -8,7 +8,7 @@ import Link from 'next/link'
 import {
   ArrowLeft, Plus, Link2, Check, Send,
   Clock, AlertTriangle, FileSignature, CheckCircle2, ChevronRight,
-  BarChart3, Globe, Sparkles, ExternalLink, Layout, ShieldAlert,
+  BarChart3, Globe, Sparkles, ExternalLink, Layout, ShieldAlert, Eye,
 } from 'lucide-react'
 import { parseCanvasEmbedUrl } from '@/lib/canvas-embed'
 import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
@@ -267,6 +267,17 @@ export default async function ProjectPage({
           </div>
 
           <div className="flex items-center gap-2.5 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-start">
+            <a
+              href={publicUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 px-3.5 py-2 text-xs font-semibold transition-all shadow-xs"
+              title="Open live client portal in a new tab"
+            >
+              <Eye className="w-3.5 h-3.5 text-slate-400" />
+              <span>Preview Portal</span>
+              <ExternalLink className="w-3 h-3 text-slate-400 opacity-60" />
+            </a>
             <Link href={`/project/${id}/update`} className="flex-1 sm:flex-initial">
               <button className="w-full sm:w-auto justify-center rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs">
                 <Plus className="w-3.5 h-3.5" />
@@ -328,8 +339,16 @@ export default async function ProjectPage({
                 count={updates?.length ?? 0}
               >
                 {!updates?.length ? (
-                  <div className="bg-white/60 dark:bg-[#0c0d12]/60 border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-12 text-center ring-1 ring-slate-950/5 dark:ring-white/5">
-                    <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-4 font-light">No updates sent to {project.client_name} yet.</p>
+                  <div className="bg-white/40 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-10 sm:p-12 text-center transition-all">
+                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4">
+                      <Send className="w-5 h-5 ml-0.5" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
+                      Keep {project.client_name} in the loop
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-5 font-light max-w-sm mx-auto leading-relaxed">
+                      Publish weekly progress, Loom walkthroughs, and deliverable links directly to their live portal.
+                    </p>
                     <Link href={`/project/${id}/update`}>
                       <button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all inline-flex items-center gap-1.5 shadow-xs">
                         <Plus className="w-3.5 h-3.5" />

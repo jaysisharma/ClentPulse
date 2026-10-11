@@ -45,7 +45,7 @@ export function CollapsibleCard({
   }
 
   return (
-    <div className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none rounded-2xl overflow-hidden backdrop-blur-md">
+    <div className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs backdrop-blur-md">
       <div className="flex items-center justify-between px-5 py-4 gap-2">
         <button
           type="button"

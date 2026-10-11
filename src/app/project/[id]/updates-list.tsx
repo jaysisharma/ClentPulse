@@ -64,7 +64,7 @@ export function UpdatesList({
   return (
     <div className="space-y-4">
       {visibleUpdates.map(update => (
-        <div key={update.id} className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none rounded-2xl p-6 backdrop-blur-md">
+        <div key={update.id} className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-xs backdrop-blur-md transition-colors">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-semibold text-slate-900 dark:text-white font-sans">{getWeekOf(update.created_at)}</span>
             <div className="flex items-center gap-2">
