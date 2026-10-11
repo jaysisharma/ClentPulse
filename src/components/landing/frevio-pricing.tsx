@@ -99,14 +99,14 @@ export function FrevioPricing({ signupHref }: PricingProps) {
           <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#5E6AD2] mb-3 font-semibold">
             04 / Transparent Plans
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.035em] text-white leading-[1.12]">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-[-0.035em] text-white leading-[1.12]">
             Start free. <br />
-            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#5E6AD2] via-[#818CF8] to-[#38BDF8]">
-              Upgrade when your client roster grows.
+            <span className="text-[#8A8F98]">
+              Upgrade only when your client roster grows.
             </span>
           </h2>
           <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
-            Transparent pricing for solo professionals and expanding boutique teams. No hidden payment surcharges.
+            Transparent pricing for solo professionals and expanding boutique teams. No transaction cuts or hidden payment surcharges.
           </p>
 
           {/* Toggle */}

@@ -25,8 +25,8 @@ export function InteractiveSandbox() {
       id="sandbox"
       className="py-20 md:py-32 bg-[#08090A] border-t border-white/[0.08] text-[#F3F4F6] relative overflow-hidden"
     >
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-r from-[#5E6AD2]/10 to-[#38BDF8]/10 rounded-full blur-[120px] pointer-events-none" />
+      {/* Background subtle radial lighting */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#5E6AD2]/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -35,8 +35,8 @@ export function InteractiveSandbox() {
           <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#5E6AD2] mb-3 font-semibold">
             03 / Live Simulator
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.035em] text-white leading-[1.12]">
-            See what your clients see.
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-[-0.035em] text-white leading-[1.12]">
+            Experience what your clients see.
           </h2>
           <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
             Test the live client workspace interface without registering. Switch tabs to see how deliverables, sign-offs, and payments look to your clients.
@@ -75,7 +75,7 @@ export function InteractiveSandbox() {
               <div className="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]" />
               <div className="w-2.5 h-2.5 rounded-full bg-[#27c93f]" />
               <span className="ml-2 text-xs font-mono text-[#8A8F98] hidden sm:inline">
-                frevio.com/p/acme-brand
+                frevio.cloud/p/acme-brand
               </span>
             </div>
 
@@ -97,7 +97,7 @@ export function InteractiveSandbox() {
                     <span className="text-[#5E6AD2] font-semibold">75% Complete (3 of 4 Milestones)</span>
                   </div>
                   <div className="w-full bg-white/[0.08] h-2.5 rounded-full overflow-hidden">
-                    <div className="bg-gradient-to-r from-[#5E6AD2] to-[#38BDF8] h-full w-3/4 rounded-full" />
+                    <div className="bg-[#5E6AD2] h-full w-3/4 rounded-full" />
                   </div>
                 </div>
 

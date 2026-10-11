@@ -129,18 +129,18 @@ export function TensionSection() {
           <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#8A8F98] mb-3">
             01 / The Problem
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.035em] text-white leading-[1.12]">
-            Your creative work is organised. <br />
-            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#8A8F98] via-[#D1D5DB] to-white">
-              Why is managing your clients so messy?
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-[-0.035em] text-white leading-[1.12]">
+            Your client work is exceptional. <br />
+            <span className="text-[#8A8F98]">
+              Why is client management still so chaotic?
             </span>
           </h2>
           <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
-            Project updates live in messages. Feedback gets buried. Invoices need repeated follow-ups. Clients ask questions you&apos;ve already answered.
+            Updates trapped in 11 PM WhatsApp chats. Deliverables lost in Slack threads. Endless unpaid scope revisions. Frevio replaces the noise with one quiet operating system.
           </p>
         </div>
 
-        {/* 100% Pure React/CSS Vector UI Comparative Arena (Replacing blurry image) */}
+        {/* 100% Pure React/CSS Vector UI Comparative Arena */}
         <div
           ref={visualRef}
           className="mb-16 rounded-2xl sm:rounded-3xl border border-white/[0.1] bg-[#0E1013] shadow-[0_20px_70px_rgba(0,0,0,0.7)] overflow-hidden"
@@ -208,7 +208,7 @@ export function TensionSection() {
                     <CheckCircle2 className="w-4 h-4" />
                     <span>With Frevio · 1 Dedicated Client Link</span>
                   </div>
-                  <span className="text-[10px] font-mono text-[#38BDF8]">frevio.com/p/acme</span>
+                  <span className="text-[10px] font-mono text-[#38BDF8]">frevio.cloud/p/acme</span>
                 </div>
 
                 <div className="space-y-3 font-mono text-xs">

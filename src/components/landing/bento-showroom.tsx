@@ -69,7 +69,7 @@ export function BentoShowroom() {
   }, [])
 
   const handleCopyLink = () => {
-    navigator.clipboard?.writeText('https://frevio.com/p/acme-brand')
+    navigator.clipboard?.writeText('https://frevio.cloud/p/acme-brand')
     setCopiedLink(true)
     setTimeout(() => setCopiedLink(false), 2000)
   }
@@ -87,14 +87,14 @@ export function BentoShowroom() {
           <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#5E6AD2] mb-3 font-semibold">
             02 / Capabilities
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-[-0.035em] text-white leading-[1.12]">
-            One shared destination. <br />
-            <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#5E6AD2] via-[#818CF8] to-[#38BDF8]">
-              A smoother experience for every client.
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-[-0.035em] text-white leading-[1.12]">
+            One shared portal. <br />
+            <span className="text-[#8A8F98]">
+              A frictionless experience for every client.
             </span>
           </h2>
           <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
-            Instead of spreading your projects across emails, chats, and drives, give each client one dedicated space that answers their questions before they ask.
+            Instead of scattering projects across email threads, drives, and WhatsApp, give every client one dedicated workspace that answers questions before they are asked.
           </p>
         </div>
 
@@ -216,7 +216,7 @@ export function BentoShowroom() {
                   <span className="text-[#5E6AD2] font-semibold">68% On Track</span>
                 </div>
                 <div className="w-full bg-white/[0.08] h-2 rounded-full overflow-hidden">
-                  <div className="bg-gradient-to-r from-[#5E6AD2] to-[#38BDF8] h-full w-[68%] rounded-full" />
+                  <div className="bg-[#5E6AD2] h-full w-[68%] rounded-full" />
                 </div>
               </div>
 
@@ -342,7 +342,7 @@ export function BentoShowroom() {
             <div className="rounded-xl border border-white/[0.08] bg-[#0A0C0E] p-3.5 space-y-2 font-mono text-xs">
               <div className="text-[11px] text-[#8A8F98]">Dedicated Client Link</div>
               <div className="flex items-center justify-between text-xs text-[#38BDF8] bg-[#5E6AD2]/10 px-2.5 py-1.5 rounded border border-[#5E6AD2]/20 font-mono">
-                <span className="truncate">frevio.com/p/acme-brand</span>
+                <span className="truncate">frevio.cloud/p/acme-brand</span>
                 <button
                   type="button"
                   onClick={handleCopyLink}
