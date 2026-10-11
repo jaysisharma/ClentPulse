@@ -3,7 +3,6 @@ import { createClient } from '@/lib/supabase/server'
 import { OveradsNavbar } from '@/components/landing/overads-navbar'
 import { FrevioHero } from '@/components/landing/frevio-hero'
 import { ClientProofTicker } from '@/components/landing/client-proof-ticker'
-import { TensionSection } from '@/components/landing/tension-section'
 import { BentoShowroom } from '@/components/landing/bento-showroom'
 import { InteractiveSandbox } from '@/components/landing/interactive-sandbox'
 import { FrevioPricing } from '@/components/landing/frevio-pricing'
@@ -36,10 +35,7 @@ export default async function LandingPage() {
         {/* ── 02. Continuous Studio Marquee Ticker ── */}
         <ClientProofTicker />
 
-        {/* ── 03. Tension Section: Chaos vs Calm with Problem Spotlights ── */}
-        <TensionSection />
-
-        {/* ── 04. 12-Column 21st.dev Bento Grid Showroom ── */}
+        {/* ── 03. Core Capabilities Showroom ── */}
         <BentoShowroom />
 
         {/* ── 05. Live Interactive Client Portal Sandbox ── */}

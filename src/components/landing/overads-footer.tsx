@@ -34,9 +34,8 @@ export function OveradsFooter() {
               Product
             </div>
             <ul className="space-y-2 font-normal text-xs">
-              <li><a href="#overview" className="hover:text-white transition-colors">Overview</a></li>
+              <li><a href="#solutions" className="hover:text-white transition-colors">Features</a></li>
               <li><a href="#sandbox" className="hover:text-white transition-colors">Interactive Demo</a></li>
-              <li><a href="#solutions" className="hover:text-white transition-colors">Capabilities</a></li>
               <li><a href="#pricing" className="hover:text-white transition-colors">Pricing & Plans</a></li>
               <li><Link href="/demo" className="hover:text-white transition-colors">Client Portal Preview</Link></li>
             </ul>

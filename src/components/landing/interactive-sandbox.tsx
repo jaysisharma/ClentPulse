@@ -14,10 +14,10 @@ export function InteractiveSandbox() {
   const [approvedDeliverable, setApprovedDeliverable] = useState(false)
 
   const tabs = [
-    { id: 'overview' as TabType, label: '01 Milestone Progress' },
-    { id: 'deliverables' as TabType, label: '02 Deliverable Sign-off' },
-    { id: 'approvals' as TabType, label: '03 Scope Creep Shield' },
-    { id: 'invoices' as TabType, label: '04 Stripe Settlements' },
+    { id: 'overview' as TabType, label: 'Milestones' },
+    { id: 'deliverables' as TabType, label: 'Deliverables' },
+    { id: 'approvals' as TabType, label: 'Scope Shield' },
+    { id: 'invoices' as TabType, label: 'Payments' },
   ]
 
   return (
@@ -30,16 +30,13 @@ export function InteractiveSandbox() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Section Header (No chips) */}
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#5E6AD2] mb-3 font-semibold">
-            03 / Live Simulator
-          </div>
+        {/* Section Header */}
+        <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-[-0.035em] text-white leading-[1.12]">
             Experience what your clients see.
           </h2>
-          <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
-            Test the live client workspace interface without registering. Switch tabs to see how deliverables, sign-offs, and payments look to your clients.
+          <p className="mt-3 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-lg mx-auto">
+            Test the live client workspace below. No registration required.
           </p>
         </div>
 
@@ -202,18 +199,12 @@ export function InteractiveSandbox() {
             {/* VIEW 3: Scope Creep Shield */}
             {activeTab === 'approvals' && (
               <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-[#121418] border border-white/[0.08] space-y-3">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-[#5E6AD2]">Sarah Lin (Acme VP Product)</span>
-                    <span className="text-[#8A8F98]">Yesterday, 3:45 PM</span>
+                <div className="p-4 rounded-xl bg-[#121418] border border-white/[0.08] flex items-center justify-between text-xs font-mono">
+                  <div className="flex items-center gap-2 text-white">
+                    <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+                    <span>Out-of-scope requests converted into authorized add-ons automatically</span>
                   </div>
-                  <p className="text-xs text-white leading-relaxed">
-                    &ldquo;The subscription upgrade dialog is perfect. Could we add Apple Pay and Google Pay one-touch buttons to the checkout step?&rdquo;
-                  </p>
-                  <div className="p-2.5 rounded-lg bg-black/40 border border-white/[0.06] text-xs text-[#8A8F98] flex items-center justify-between">
-                    <span>Converted to Change Order #02 with price & timeline impact.</span>
-                    <span className="text-[#10B981] font-mono text-[11px]">Protected via Shield</span>
-                  </div>
+                  <span className="text-[#10B981]">Scope Shield Active</span>
                 </div>
 
                 <div className="p-4 rounded-xl bg-[#121418] border border-white/[0.08] flex flex-col sm:flex-row sm:items-center justify-between gap-3">

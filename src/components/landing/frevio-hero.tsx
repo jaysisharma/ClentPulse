@@ -37,79 +37,45 @@ export function FrevioHero({ signupHref }: HeroProps) {
 
       <div className="relative z-10 max-w-6xl mx-auto flex flex-col items-center text-center">
         
-        {/* ── 01. Pain-Driven Category Tag ── */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-xs font-mono text-slate-300 mb-6 sm:mb-8 backdrop-blur-md">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-          <span className="text-white font-medium">Never Chase a Client Invoice Again</span>
-          <span className="text-slate-500">·</span>
-          <span className="text-slate-400">Zero Client Login Friction</span>
-        </div>
-
-        {/* ── 02. High-Converting Pain-Driven Headline ── */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[74px] font-normal tracking-[-0.035em] text-white leading-[1.05] max-w-5xl mx-auto text-balance">
+        {/* Headline */}
+        <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[76px] font-normal tracking-[-0.035em] text-white leading-[1.06] max-w-4xl mx-auto text-balance">
           Stop chasing clients for feedback, files, and final payments.
         </h1>
 
-        {/* ── 03. High-Converting ROI Subheading ── */}
-        <p className="mt-6 sm:mt-7 text-base sm:text-lg md:text-xl text-slate-400 font-light max-w-3xl mx-auto leading-relaxed text-balance">
-          The dedicated client portal that keeps projects moving and cash flowing. Lock upfront deposits with Stripe, get deliverable sign-offs in 1 click, and end 11 PM WhatsApp check-ins forever.
+        {/* Subtitle */}
+        <p className="mt-5 sm:mt-6 text-base sm:text-lg md:text-xl text-slate-400 font-light max-w-2xl mx-auto leading-relaxed text-balance">
+          One private link for milestone progress, 1-click deliverable sign-offs, and direct Stripe payouts. No client logins required.
         </p>
 
-        {/* ── 04. Interactive "Try Before Signup" Portal Generator Hook ── */}
-        <div className="mt-8 sm:mt-10 w-full max-w-xl mx-auto">
-          <form
-            onSubmit={handleGenerate}
-            className="flex flex-col sm:flex-row items-center gap-2.5 p-2 rounded-2xl bg-[#111317] border border-white/10 shadow-2xl focus-within:border-white/30 transition-all"
+        {/* Action Buttons */}
+        <div className="mt-8 sm:mt-9 flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto">
+          <Link
+            href={signupHref}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-white text-slate-950 hover:bg-slate-100 h-12 px-7 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer shadow-sm hover:scale-[1.01]"
           >
-            <div className="flex-1 w-full flex items-center gap-2 px-3 py-2 text-left">
-              <span className="text-xs font-mono text-slate-500 shrink-0">Client:</span>
-              <input
-                type="text"
-                value={clientName}
-                onChange={(e) => {
-                  setClientName(e.target.value)
-                  setGenerated(true)
-                }}
-                placeholder="Enter client name (e.g. Nike, Acme)"
-                className="w-full bg-transparent text-sm text-white placeholder:text-slate-600 focus:outline-none font-medium"
-              />
-            </div>
+            <span>Start free — No card needed</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
 
-            <Link
-              href={`${signupHref}&client=${encodeURIComponent(clientName)}`}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-white text-slate-950 hover:bg-slate-100 h-11 px-6 text-xs font-semibold uppercase tracking-wider transition-all shrink-0 cursor-pointer shadow-sm hover:scale-[1.01]"
-            >
-              <span>Build Portal Free</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </form>
-
-          <p className="mt-3 text-xs font-mono text-slate-400">
-            Type your client name above to test live preview below · No credit card required
-          </p>
+          <Link
+            href="/demo"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] text-white border border-white/[0.1] h-12 px-6 text-xs font-medium transition-all cursor-pointer"
+          >
+            <span>Explore live demo</span>
+          </Link>
         </div>
 
-        {/* ── 05. Core ROI Conversion Metrics Bar ── */}
-        <div className="mt-10 sm:mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-4xl text-left">
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.08]">
-            <div className="text-xl sm:text-2xl font-light font-mono text-white">4x Faster</div>
-            <div className="text-xs text-slate-400 mt-1">Client milestone approvals without endless email threads</div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.08]">
-            <div className="text-xl sm:text-2xl font-light font-mono text-emerald-400">100% Paid</div>
-            <div className="text-xs text-slate-400 mt-1">Upfront kickoff deposit gate before any work starts</div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.08]">
-            <div className="text-xl sm:text-2xl font-light font-mono text-indigo-400">0 Logins</div>
-            <div className="text-xs text-slate-400 mt-1">No forgotten passwords or friction for your clients</div>
-          </div>
-
-          <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.08]">
-            <div className="text-xl sm:text-2xl font-light font-mono text-white">0% Fees</div>
-            <div className="text-xs text-slate-400 mt-1">Direct Stripe Connect payouts straight to your bank</div>
-          </div>
+        {/* Interactive client name switcher right above preview */}
+        <div className="mt-8 flex items-center justify-center gap-2 text-xs font-mono text-slate-400">
+          <span className="text-slate-400">Previewing portal for:</span>
+          <input
+            type="text"
+            value={clientName}
+            onChange={(e) => setClientName(e.target.value)}
+            placeholder="Client Name"
+            className="bg-white/[0.05] border border-white/[0.12] rounded-lg px-2.5 py-1 text-white text-xs font-mono focus:outline-none focus:border-white/40 w-32 sm:w-40 transition-colors"
+          />
+          <span className="text-emerald-400 hidden sm:inline">● Live Interactive Preview</span>
         </div>
 
         {/* ── 06. The Live Generated Portal Showcase Stage ── */}

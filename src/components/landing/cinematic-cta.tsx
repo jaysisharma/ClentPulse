@@ -32,19 +32,14 @@ export function CinematicCta({ signupHref }: CinematicCtaProps) {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#5E6AD2]/5 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-        {/* Kicker */}
-        <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#5E6AD2] mb-4 font-semibold">
-          Ready to eliminate client chaos?
-        </div>
-
-        {/* Monumental Headline */}
+        {/* Headline */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal tracking-[-0.035em] text-white leading-[1.12]">
-          Your next client project deserves a calmer operating system.
+          Build your first client portal in two minutes.
         </h2>
 
         {/* Subtitle */}
-        <p className="mt-4 text-sm sm:text-base md:text-lg text-[#8A8F98] font-normal leading-relaxed max-w-2xl mx-auto">
-          Lock in upfront deposits, get 1-click deliverable sign-offs, and stop answering 11 PM WhatsApp status inquiries.
+        <p className="mt-4 text-sm sm:text-base md:text-lg text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
+          Free forever for up to 2 active clients. No credit card required.
         </p>
 
         {/* High-Converting Client Portal Generator Hook */}

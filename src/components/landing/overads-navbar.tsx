@@ -16,8 +16,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navLinks = [
-    { label: 'Overview', href: '#overview' },
-    { label: 'Capabilities', href: '#solutions' },
+    { label: 'Features', href: '#solutions' },
     { label: 'Simulator', href: '#sandbox' },
     { label: 'Pricing', href: '#pricing' },
   ]

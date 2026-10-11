@@ -82,42 +82,36 @@ export function BentoShowroom() {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Section Header (No chips) */}
-        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-16">
-          <div className="text-[11px] font-mono uppercase tracking-[0.22em] text-[#5E6AD2] mb-3 font-semibold">
-            02 / Capabilities
-          </div>
+        {/* Section Header */}
+        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-14">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal tracking-[-0.035em] text-white leading-[1.12]">
-            One shared portal. <br />
-            <span className="text-[#8A8F98]">
-              A frictionless experience for every client.
-            </span>
+            Everything in one shared workspace.
           </h2>
-          <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-xl mx-auto">
-            Instead of scattering projects across email threads, drives, and WhatsApp, give every client one dedicated workspace that answers questions before they are asked.
+          <p className="mt-4 text-sm sm:text-base text-[#8A8F98] font-normal leading-relaxed max-w-lg mx-auto">
+            Deliverables, approvals, and milestone invoices — without the scattered email threads.
           </p>
         </div>
 
-        {/* ── 12-COLUMN 21ST.DEV ASYMMETRICAL BENTO GRID ── */}
+        {/* ── 12-COLUMN ASYMMETRICAL BENTO GRID ── */}
         <div ref={bentoGridRef} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
-          {/* Bento Card 1: Deliverable Sign-off Hub (7 cols) - Pure Vector UI */}
+          {/* Bento Card 1: Deliverable Sign-off Hub (7 cols) */}
           <SpotlightCard className="lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between group">
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-mono text-[#5E6AD2] uppercase tracking-wider font-semibold">
-                  01 · Deliverable Approvals
+                  Deliverable Sign-Offs
                 </span>
                 <span className="text-xs font-mono text-[#10B981] flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  Audit Trail Protected
+                  Audit Trail
                 </span>
               </div>
               <h3 className="text-xl sm:text-2xl font-medium text-white mb-2">
-                1-Click Client Sign-offs. No PDF printing or buried threads.
+                1-Click Client Approvals
               </h3>
               <p className="text-xs sm:text-sm text-[#8A8F98] leading-relaxed mb-6 max-w-xl">
-                Deliverables are easy for clients to access, review, and approve with a single click. Every approval is cryptographically logged, protecting you from scope disputes.
+                Clients review and sign off with a single tap. Every approval is cryptographically logged to prevent revision disputes.
               </p>
             </div>
 
@@ -194,17 +188,17 @@ export function BentoShowroom() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider font-semibold">
-                  02 · Milestone Visibility
+                  Milestone Health
                 </span>
                 <span className="text-xs font-mono text-[#5E6AD2]">
                   Sprint 2 of 4
                 </span>
               </div>
               <h3 className="text-xl sm:text-2xl font-medium text-white mb-2">
-                Keep clients informed before they ask.
+                Real-Time Project Status
               </h3>
               <p className="text-xs sm:text-sm text-[#8A8F98] leading-relaxed mb-6">
-                Clients see overall project health, active deliverables, and real-time sprint stages without messaging you at odd hours.
+                Clients see overall project health, active deliverables, and upcoming sprint stages anytime.
               </p>
             </div>
 
@@ -247,7 +241,7 @@ export function BentoShowroom() {
               <div className="pt-2.5 border-t border-white/[0.06] flex justify-between text-[11px] text-[#10B981]">
                 <span className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-                  No Status Meetings Needed
+                  Real-time synchronization
                 </span>
                 <span className="text-[#8A8F98]">Due Oct 18</span>
               </div>
@@ -263,15 +257,15 @@ export function BentoShowroom() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider font-semibold">
-                  03 · Scope Creep Shield
+                  Scope Protection
                 </span>
                 <ShieldCheck className="w-4 h-4 text-[#38BDF8]" />
               </div>
               <h3 className="text-lg font-medium text-white mb-2">
-                Convert changes into paid orders
+                Scope Creep Shield
               </h3>
               <p className="text-xs text-[#8A8F98] leading-relaxed mb-5">
-                When clients request new features mid-sprint, log it as an official change order with clear cost & timeline impact before starting work.
+                Convert out-of-scope requests into approved, paid change orders before starting extra work.
               </p>
             </div>
 
@@ -295,15 +289,15 @@ export function BentoShowroom() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-mono text-[#5E6AD2] uppercase tracking-wider font-semibold">
-                  04 · Direct Settlements
+                  Payments
                 </span>
                 <CreditCard className="w-4 h-4 text-[#5E6AD2]" />
               </div>
               <h3 className="text-lg font-medium text-white mb-2">
-                Instant deposits via Stripe
+                Stripe Direct Payouts
               </h3>
               <p className="text-xs text-[#8A8F98] leading-relaxed mb-5">
-                Clients pay invoices & milestone retainers in 1 click using credit cards, Apple Pay, or bank transfers. Funds route straight to your Stripe account.
+                Upfront deposits and milestone settlements paid via Apple Pay or credit card directly to your account.
               </p>
             </div>
 
@@ -316,7 +310,7 @@ export function BentoShowroom() {
                 <span>Milestone 2 Sign-off Settlement</span>
               </div>
               <div className="pt-1.5 border-t border-white/[0.06] flex justify-between text-[10px]">
-                <span className="text-[#8A8F98]">0% Frevio Commission</span>
+                <span className="text-[#8A8F98]">0% Frevio Fee</span>
                 <span className="text-[#10B981] font-mono">Paid directly</span>
               </div>
             </div>
@@ -327,15 +321,15 @@ export function BentoShowroom() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-mono text-[#38BDF8] uppercase tracking-wider font-semibold">
-                  05 · Zero Client Friction
+                  Client Access
                 </span>
                 <ExternalLink className="w-4 h-4 text-[#38BDF8]" />
               </div>
               <h3 className="text-lg font-medium text-white mb-2">
-                No logins or passwords for clients
+                Zero Client Logins
               </h3>
               <p className="text-xs text-[#8A8F98] leading-relaxed mb-5">
-                Clients access their workspace via an authenticated private link. No forgotten passwords, signup obstacles, or client onboarding headaches.
+                One private link for desktop and mobile. No passwords, app downloads, or client onboarding friction.
               </p>
             </div>
 
