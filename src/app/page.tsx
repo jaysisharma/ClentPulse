@@ -1,69 +1,60 @@
 import { createClient } from '@/lib/supabase/server'
-import { FrevioNavbar } from '@/components/landing/frevio-navbar'
-import { FrevioHero } from '@/components/landing/frevio-hero'
-import { FrevioTrust } from '@/components/landing/frevio-trust'
-import { FrevioProblem } from '@/components/landing/frevio-problem'
-import { FrevioSolution } from '@/components/landing/frevio-solution'
-import { FrevioWorkflow } from '@/components/landing/frevio-workflow'
-import { FrevioClientExperience } from '@/components/landing/frevio-client-experience'
-import { FrevioAudience } from '@/components/landing/frevio-audience'
+import { OveradsNavbar } from '@/components/landing/overads-navbar'
+import { StoryColdOpen } from '@/components/landing/story-cold-open'
+import { StoryComparison } from '@/components/landing/story-comparison'
+import { OveradsScreensShowcase } from '@/components/landing/overads-screens-showcase'
+import { StoryMoments } from '@/components/landing/story-moments'
+import { StoryInteractiveSandbox } from '@/components/landing/story-interactive-sandbox'
+import { OveradsIntegrations } from '@/components/landing/overads-integrations'
 import { FrevioPricing } from '@/components/landing/frevio-pricing'
 import { FrevioFaq } from '@/components/landing/frevio-faq'
-import { FrevioCta } from '@/components/landing/frevio-cta'
+import { OveradsCta } from '@/components/landing/overads-cta'
 import { FrevioFooter } from '@/components/landing/frevio-footer'
 
 export default async function LandingPage() {
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   const isLoggedIn = !!user
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
   return (
-    <div className="min-h-screen bg-[#08090a] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
-
-      {/* ── 0. Navigation ── */}
-      <FrevioNavbar
-        isLoggedIn={isLoggedIn}
-        signupHref={signupHref}
-      />
+    <div className="min-h-screen bg-[#030407] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white overflow-x-hidden">
+      {/* ── 0. Floating Glass Navbar ── */}
+      <OveradsNavbar isLoggedIn={isLoggedIn} signupHref={signupHref} />
 
       <main className="flex-1">
+        {/* ── Act I: The Cold Open (Cinematic Hook & Master Interactive Viewport) ── */}
+        <StoryColdOpen signupHref={signupHref} />
 
-        {/* ── 1. Hero: Editorial Split (Headline + Substantial Product UI) ── */}
-        <FrevioHero signupHref={signupHref} />
+        {/* ── Act II: The Friction & Architectural Contrast (Traditional Chaos vs Frevio) ── */}
+        <StoryComparison />
 
-        {/* ── 2. Credibility & Authentic Trust ── */}
-        <FrevioTrust />
+        {/* ── Act III: Inside Frevio ("Three screens. That is the whole job.") ── */}
+        <OveradsScreensShowcase />
 
-        {/* ── 3. Problem: Client Work Gets Messy When It's Everywhere ── */}
-        <FrevioProblem />
+        {/* ── Act IV: The Four Key Moments (Kickoff to Final Stripe Payout) ── */}
+        <StoryMoments />
 
-        {/* ── 4. Solution: Everything Your Client Needs. One Clear Place. ── */}
-        <FrevioSolution />
+        {/* ── Act V: Interactive Sandbox (Hands-on Live Simulator) ── */}
+        <StoryInteractiveSandbox />
 
-        {/* ── 5. Workflow: From Project Start to Final Delivery ── */}
-        <FrevioWorkflow />
+        {/* ── Act VI: Connected Toolchain (VS Code, GitHub, Figma, Drive, Stripe) ── */}
+        <OveradsIntegrations />
 
-        {/* ── 6. Client Experience: In The Loop Without The Back And Forth ── */}
-        <FrevioClientExperience />
-
-        {/* ── 7. Audience: Built For People Who Work With Clients ── */}
-        <FrevioAudience />
-
-        {/* ── 8. Pricing: Simple Pricing As Your Work Grows (Free, Pro, Agency, Scale) ── */}
+        {/* ── Act VII: Transparent Pricing (Free, Pro, Agency, Scale) ── */}
         <FrevioPricing signupHref={signupHref} />
 
-        {/* ── 9. FAQ: Frequently Answered Questions (8 Real Purchase Questions) ── */}
+        {/* ── Act VIII: Frequently Answered Questions ── */}
         <FrevioFaq />
 
-        {/* ── 10. Quiet & Confident Closing CTA ── */}
-        <FrevioCta signupHref={signupHref} />
-
+        {/* ── Act IX: Final Closing CTA ── */}
+        <OveradsCta signupHref={signupHref} />
       </main>
 
-      {/* ── 11. Refined Studio Footer ── */}
+      {/* ── Footer: Clean Studio Footer ── */}
       <FrevioFooter />
-
     </div>
   )
 }
