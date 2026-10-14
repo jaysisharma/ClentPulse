@@ -499,21 +499,24 @@ export function OveradsHero({ signupHref }: HeroProps) {
                 <button
                   type="button"
                   onClick={() => setApprovedState(!approvedState)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     approvedState
-                      ? 'bg-emerald-500 text-slate-950'
-                      : 'bg-white text-slate-950 hover:bg-slate-100 shadow-sm'
+                      ? 'bg-emerald-400 text-slate-950 scale-105 shadow-[0_0_20px_rgba(52,211,153,0.3)]'
+                      : 'bg-white text-slate-950 hover:bg-slate-100 shadow-[0_0_15px_rgba(255,255,255,0.2)] hover:scale-105 active:scale-95'
                   }`}
                 >
                   {approvedState ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-slate-950" />
-                      <span>Deliverable Approved</span>
+                      <Check className="w-3.5 h-3.5 text-slate-950 stroke-[3]" />
+                      <span>Deliverable Approved ✓</span>
                     </>
                   ) : (
                     <>
-                      <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />
-                      <span>1-Click Approval</span>
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-600" />
+                      </span>
+                      <span>Try 1-Click Approval</span>
                     </>
                   )}
                 </button>

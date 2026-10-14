@@ -148,8 +148,18 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props)
               <a href="#testimonials" className="px-3 py-1.5 rounded-full text-xs font-medium hover:text-white hover:bg-white/5 transition-colors">
                 Testimonials
               </a>
-              <Link href="/calculator" className="px-3 py-1.5 rounded-full text-xs font-medium text-indigo-400 hover:text-white hover:bg-white/5 transition-colors">
+              <Link href="/calculator" className="px-3 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
                 Free Tools
+              </Link>
+              <Link
+                href="/demo"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition-all shadow-xs"
+              >
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                </span>
+                Live Demo
               </Link>
               <a href="#pricing" className="px-3 py-1.5 rounded-full text-xs font-medium hover:text-white hover:bg-white/5 transition-colors">
                 Pricing
@@ -212,7 +222,15 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props)
               <a href="#screens" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Inside</a>
               <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Comparison</a>
               <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Testimonials</a>
-              <Link href="/calculator" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 text-indigo-400 font-medium">Free Tools & Calculators</Link>
+              <Link href="/calculator" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 text-slate-300">Free Tools &amp; Calculators</Link>
+              <Link
+                href="/demo"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-3 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 font-semibold flex items-center gap-2"
+              >
+                <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+                Interactive Client Portal Demo
+              </Link>
               <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Pricing</a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">FAQ</a>
             </nav>

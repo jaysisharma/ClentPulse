@@ -11,6 +11,7 @@ import { LandingPricing } from '@/components/landing/landing-pricing'
 import { LandingFaq } from '@/components/landing/landing-faq'
 import { OveradsCta } from '@/components/landing/overads-cta'
 import { Logo } from '@/components/ui/logo'
+import { ShieldCheck, Zap, Globe } from 'lucide-react'
 
 export default async function LandingPage() {
   const supabase = await createClient()
@@ -61,6 +62,39 @@ export default async function LandingPage() {
               <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
                 Start completely free for 2 active projects. Upgrade to Pro or Agency as your studio scales.
               </p>
+            </div>
+
+            {/* ── 3 High-Impact Visual Guarantees for Skimmers ── */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16 max-w-4xl mx-auto">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 flex items-center gap-3.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 text-emerald-400">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-white">No Credit Card Needed</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Start free forever with 2 active projects</div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 flex items-center gap-3.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-400">
+                  <Zap className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-white">Live in 60 Seconds</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Zero complex setup, plug &amp; play instantly</div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 flex items-center gap-3.5 shadow-xs">
+                <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0 text-violet-400">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-white">1 Permanent Portal</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Replaces messy Slack, emails &amp; Notion threads</div>
+                </div>
+              </div>
             </div>
 
             <LandingPricing />
