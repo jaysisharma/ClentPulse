@@ -2,11 +2,12 @@
 
 import { useState, useEffect, use } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Zap, CheckCircle2 } from 'lucide-react'
+import { Zap, CheckCircle2, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { PoweredByReferral } from '@/components/ui/powered-by-referral'
 import { isPaidPlan } from '@/lib/plans'
 import { notFound } from 'next/navigation'
+import { generateDigitalSeal } from '@/lib/audit-crypto'
 
 interface Contract {
   id: string; title: string; type: string; amount: number | null; terms: string
@@ -23,12 +24,24 @@ export default function ContractSignPage({ params }: { params: Promise<{ id: str
   const [agreed, setAgreed] = useState(false)
   const [signing, setSigning] = useState(false)
   const [signed, setSigned] = useState(false)
+  const [seal, setSeal] = useState<string | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
     supabase.from('contracts').select('*, projects(project_name,client_name), users(id,name,username,plan,accent_color)').eq('id', id).single()
       .then(({ data }: { data: any }) => { setContract(data); setLoading(false) })
   }, [id])
+
+  useEffect(() => {
+    if (contract && (contract.signed_at || signed)) {
+      generateDigitalSeal(
+        contract.id,
+        contract.title,
+        contract.signed_name || name || 'Client Signatory',
+        contract.signed_at || new Date().toISOString()
+      ).then(res => setSeal(res.seal))
+    }
+  }, [contract, signed, name])
 
   if (loading) return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#08090a] flex items-center justify-center text-xs text-slate-400 dark:text-slate-500 font-mono">
@@ -58,6 +71,15 @@ export default function ContractSignPage({ params }: { params: Promise<{ id: str
             {contract.signed_at && ` on ${new Date(contract.signed_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`}.
             A copy has been recorded in the studio ledger.
           </p>
+
+          {seal && (
+            <div className="pt-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-300">
+                <Lock className="w-3 h-3 text-emerald-400" />
+                <span>Audit Seal: {seal}</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )

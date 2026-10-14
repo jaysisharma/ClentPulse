@@ -1,3 +1,5 @@
+import crypto from 'crypto'
+
 /**
  * Webhook integration helper for Slack, Discord, and custom endpoints.
  */
@@ -10,6 +12,47 @@ export interface WebhookNotificationPayload {
   actionUrl?: string
   type?: 'approval' | 'feedback' | 'comment' | 'deposit' | 'general'
   fields?: { name: string; value: string }[]
+}
+
+/**
+ * Signs a webhook payload using HMAC-SHA256 for tamper-proof delivery.
+ */
+export function signWebhookPayload(payloadString: string, secret?: string): string {
+  const signingSecret =
+    secret ||
+    process.env.WEBHOOK_SIGNING_SECRET ||
+    process.env.INTEGRATION_ENCRYPTION_KEY ||
+    'frevio-webhook-cryptographic-salt'
+  return crypto.createHmac('sha256', signingSecret).update(payloadString, 'utf8').digest('hex')
+}
+
+/**
+ * Verifies that a received webhook payload matches the HMAC-SHA256 signature in constant time.
+ */
+export function verifyWebhookSignature(
+  payloadString: string,
+  signature: string,
+  secret?: string
+): boolean {
+  if (!signature || !payloadString) return false
+  const signingSecret =
+    secret ||
+    process.env.WEBHOOK_SIGNING_SECRET ||
+    process.env.INTEGRATION_ENCRYPTION_KEY ||
+    'frevio-webhook-cryptographic-salt'
+
+  const expectedSig = crypto.createHmac('sha256', signingSecret).update(payloadString, 'utf8').digest('hex')
+  const cleanSig = signature.replace(/^sha256=/, '')
+
+  const bufA = Buffer.from(cleanSig, 'hex')
+  const bufB = Buffer.from(expectedSig, 'hex')
+
+  if (bufA.length !== bufB.length) {
+    crypto.timingSafeEqual(bufA, bufA)
+    return false
+  }
+
+  return crypto.timingSafeEqual(bufA, bufB)
 }
 
 /**
@@ -27,6 +70,7 @@ export async function dispatchWebhook(
   const isDiscord = webhookUrl.includes('discord.com/api/webhooks')
 
   let body: any
+  let headers: Record<string, string> = { 'Content-Type': 'application/json' }
 
   if (isDiscord) {
     // Discord Embed format
@@ -61,19 +105,23 @@ export async function dispatchWebhook(
       blocks: [
         {
           type: 'header',
-          text: {
-            type: 'plain_text',
-            text: `⚡ ${payload.title}`,
-            emoji: true,
-          },
+          text: { type: 'plain_text', text: payload.title, emoji: true },
         },
         {
           type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: payload.message,
-          },
+          text: { type: 'mrkdwn', text: payload.message },
         },
+        ...(payload.fields && payload.fields.length > 0
+          ? [
+              {
+                type: 'section',
+                fields: payload.fields.map(f => ({
+                  type: 'mrkdwn',
+                  text: `*${f.name}:*\n${f.value}`,
+                })),
+              },
+            ]
+          : []),
         ...(payload.projectName || payload.clientName
           ? [
               {
@@ -107,18 +155,26 @@ export async function dispatchWebhook(
       ],
     }
   } else {
-    // Standard generic webhook
+    // Standard generic webhook with cryptographic HMAC signature
     body = {
       event: payload.type || 'notification',
       ...payload,
       timestamp: new Date().toISOString(),
+    }
+
+    const payloadString = JSON.stringify(body)
+    const signature = signWebhookPayload(payloadString)
+    headers = {
+      'Content-Type': 'application/json',
+      'X-Frevio-Signature': `sha256=${signature}`,
+      'X-Frevio-Timestamp': Math.floor(Date.now() / 1000).toString(),
     }
   }
 
   try {
     const res = await fetch(webhookUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(body),
     })
 

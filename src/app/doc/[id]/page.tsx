@@ -3,9 +3,10 @@
 import { useState, useEffect, use } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
-import { Zap, CheckCircle2, XCircle, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { Zap, CheckCircle2, XCircle, ThumbsUp, ThumbsDown, Lock } from 'lucide-react'
 import { PoweredByReferral } from '@/components/ui/powered-by-referral'
 import { isPaidPlan } from '@/lib/plans'
+import { generateDigitalSeal } from '@/lib/audit-crypto'
 
 interface Doc {
   id: string; type: string; title: string; content: string
@@ -20,6 +21,7 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
   const [loading, setLoading] = useState(true)
   const [done, setDone] = useState(false)
   const [outcome, setOutcome] = useState<'accepted' | 'signed' | 'declined' | null>(null)
+  const [seal, setSeal] = useState<string | null>(null)
 
   // Signing form (agreement)
   const [signName, setSignName] = useState('')
@@ -38,6 +40,17 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
       .eq('id', id).single()
       .then(({ data }: { data: any }) => { setDoc(data); setLoading(false) })
   }, [id])
+
+  useEffect(() => {
+    if (doc && (doc.status === 'signed' || doc.status === 'accepted' || outcome === 'signed' || outcome === 'accepted')) {
+      generateDigitalSeal(
+        doc.id,
+        doc.title,
+        doc.signed_name || signName || doc.client_name || 'Client Signatory',
+        doc.signed_at || new Date().toISOString()
+      ).then(res => setSeal(res.seal))
+    }
+  }, [doc, outcome, signName])
 
   if (loading) return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#08090a] flex items-center justify-center text-xs text-slate-400 dark:text-slate-500 font-mono">
@@ -93,6 +106,15 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
                   ? `Executed by ${doc.signed_name ?? signName}. ${freelancer} has received the verified copy.`
                   : `${freelancer} has been alerted and will begin onboarding the engagement.`}
               </p>
+
+              {seal && (
+                <div className="pt-2">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono text-emerald-300">
+                    <Lock className="w-3 h-3 text-emerald-400" />
+                    <span>Audit Seal: {seal}</span>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>

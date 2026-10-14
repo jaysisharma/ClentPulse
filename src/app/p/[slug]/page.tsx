@@ -14,6 +14,7 @@ import { isPaidPlan } from '@/lib/plans'
 import { PoweredByReferral } from '@/components/ui/powered-by-referral'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { ClientPortalView } from './client-portal-view'
+import { verifyPasscodeTicket, timingSafeCompare } from '@/lib/passcode-crypto'
 
 export async function generateMetadata({
   params,
@@ -84,8 +85,15 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
 
   if (project.passcode) {
     const cookieStore = await cookies()
-    const enteredPasscode = cookieStore.get(`client_project_passcode_${slug}`)?.value
-    if (enteredPasscode !== project.passcode) {
+    const enteredPasscodeOrTicket = cookieStore.get(`client_project_passcode_${slug}`)?.value
+
+    const isTicketValid = verifyPasscodeTicket(enteredPasscodeOrTicket, project.id, slug)
+    const isLegacyPlaintextMatch =
+      !isTicketValid &&
+      enteredPasscodeOrTicket &&
+      timingSafeCompare(enteredPasscodeOrTicket, project.passcode)
+
+    if (!isTicketValid && !isLegacyPlaintextMatch) {
       return <PasscodeGate slug={slug} projectColor={project.color} />
     }
   }

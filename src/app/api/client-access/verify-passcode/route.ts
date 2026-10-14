@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { timingSafeCompare, createPasscodeTicket } from '@/lib/passcode-crypto'
 
 export async function POST(request: Request) {
   try {
@@ -18,12 +19,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
-    if (project.passcode && project.passcode !== passcode) {
+    if (project.passcode && !timingSafeCompare(project.passcode, String(passcode).trim())) {
       return NextResponse.json({ error: 'Incorrect passcode' }, { status: 401 })
     }
 
+    // Generate cryptographic HMAC-signed session ticket (no plaintext in cookies)
+    const signedTicket = createPasscodeTicket(project.id, slug)
+
     const cookieStore = await cookies()
-    cookieStore.set(`client_project_passcode_${slug}`, passcode, {
+    cookieStore.set(`client_project_passcode_${slug}`, signedTicket, {
       path: '/',
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
