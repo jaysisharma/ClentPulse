@@ -14,12 +14,24 @@ export async function POST(request: Request) {
 
   const { data: project } = await supabase
     .from('projects')
-    .select('project_name, client_name, slug')
+    .select('id, project_name, client_name, slug, user_id, org_id')
     .eq('id', projectId)
-    .eq('user_id', user.id)
     .single()
 
   if (!project) return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+
+  let isAuthorized = project.user_id === user.id
+  if (!isAuthorized && project.org_id) {
+    const { data: membership } = await supabase
+      .from('organization_members')
+      .select('id')
+      .eq('org_id', project.org_id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+    if (membership) isAuthorized = true
+  }
+
+  if (!isAuthorized) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
 
   const { data: owner } = await supabase
     .from('users')
@@ -27,7 +39,7 @@ export async function POST(request: Request) {
     .eq('id', user.id)
     .single()
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL!
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : 'https://frevio.cloud')
   const updateUrl = `${appUrl}/project/${projectId}/update`
   const accent = owner?.accent_color ?? '#6366F1'
 

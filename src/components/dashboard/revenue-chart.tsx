@@ -1,6 +1,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import Link from 'next/link'
+import { Plus, Receipt, TrendingUp } from 'lucide-react'
 
 type Point = { date: string; amount: number }
 
@@ -138,7 +140,31 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
       </div>
 
       {empty ? (
-        <div className="h-44 sm:h-56 flex items-center justify-center text-sm text-slate-500 dark:text-slate-400 font-medium">No money in or out in this period yet.</div>
+        <div className="h-48 sm:h-56 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-200 dark:border-white/10 rounded-xl">
+          <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center mb-3">
+            <TrendingUp className="w-4 h-4 text-slate-400" />
+          </div>
+          <p className="text-sm font-semibold text-slate-900 dark:text-white">No cash transactions in this period</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
+            This chart tracks payments collected and business expenses logged. Record activity to see your cash flow trend.
+          </p>
+          <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
+            <Link
+              href="/invoices/new"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-semibold transition-all shadow-xs"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Create invoice
+            </Link>
+            <Link
+              href="/expenses"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 text-xs font-medium transition-colors shadow-xs"
+            >
+              <Receipt className="w-3.5 h-3.5" />
+              Record expense
+            </Link>
+          </div>
+        </div>
       ) : (
         <>
           {/* Plot */}

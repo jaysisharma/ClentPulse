@@ -38,9 +38,9 @@ export function RemindSelfButton({ projectId }: { projectId: string }) {
     <button
       onClick={handleClick}
       disabled={status === 'loading' || status === 'sent'}
-      title="Email yourself a reminder to send an update"
-      className="text-xs font-medium flex items-center gap-1 px-2 py-1 rounded-full transition-all flex-shrink-0 disabled:opacity-60
-        bg-slate-100 text-slate-500 hover:bg-amber-50 hover:text-amber-700"
+      className="text-xs font-medium flex items-center gap-1 px-2.5 py-1 rounded-full transition-all flex-shrink-0 disabled:opacity-60
+        bg-slate-100 text-slate-600 hover:bg-amber-50 hover:text-amber-700
+        dark:bg-white/5 dark:text-slate-400 dark:hover:bg-amber-500/10 dark:hover:text-amber-400 dark:border dark:border-white/5"
     >
       {status === 'loading' && <Loader2 className="w-3 h-3 animate-spin" />}
       {status === 'sent'    && <Check   className="w-3 h-3 text-emerald-500" />}
