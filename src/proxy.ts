@@ -41,7 +41,7 @@ export async function proxy(request: NextRequest) {
       const targetPath = pathname.startsWith('/p/')
         ? pathname
         : pathname === '/'
-        ? '/client/login'
+        ? '/client/portal'
         : `/p${pathname}`
 
       const rewriteUrl = request.nextUrl.clone()

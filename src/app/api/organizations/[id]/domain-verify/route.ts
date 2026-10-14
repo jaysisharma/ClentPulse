@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
-import dns from 'dns'
+import { checkCustomDomain } from '@/lib/domains'
 
 export async function GET(
   request: Request,
@@ -33,48 +33,15 @@ export async function GET(
     return NextResponse.json({
       configured: false,
       verified: false,
+      sslReady: false,
       message: 'No custom domain configured for this organization.',
     })
   }
 
-  const domain = org.custom_domain
-  let verified = false
-  let resolvedTarget: string | null = null
-  let message = ''
-
-  try {
-    const cnames = await dns.promises.resolveCname(domain)
-    if (cnames && cnames.length > 0) {
-      resolvedTarget = cnames[0]
-      // Check if target points to cname.frevio.app or frevio domain
-      if (resolvedTarget.includes('frevio') || resolvedTarget.includes('vercel')) {
-        verified = true
-        message = `CNAME properly points to ${resolvedTarget}`
-      } else {
-        verified = true
-        message = `CNAME resolves to ${resolvedTarget}`
-      }
-    }
-  } catch (err: any) {
-    // If resolveCname fails, try basic lookup
-    try {
-      const lookup = await dns.promises.lookup(domain)
-      if (lookup.address) {
-        verified = true
-        resolvedTarget = lookup.address
-        message = `Domain resolves to IP ${lookup.address}`
-      }
-    } catch (lookupErr: any) {
-      verified = false
-      message = `DNS record not detected yet. CNAME changes may take up to 24-48 hours to propagate.`
-    }
-  }
+  const result = await checkCustomDomain(org.custom_domain)
 
   return NextResponse.json({
-    configured: true,
-    domain,
-    verified,
-    resolvedTarget,
-    message,
+    domain: org.custom_domain,
+    ...result,
   })
 }

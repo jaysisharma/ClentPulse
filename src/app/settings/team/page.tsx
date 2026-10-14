@@ -58,6 +58,7 @@ export default function TeamSettingsPage() {
     verified: boolean
     message: string
     resolvedTarget?: string | null
+    sslReady?: boolean
   } | null>(null)
 
   // Invite Modal
@@ -652,11 +653,18 @@ export default function TeamSettingsPage() {
                           ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400'
                           : 'bg-amber-500/10 border-amber-500/20 text-amber-800 dark:text-amber-300'
                       }`}>
-                        <div className="flex items-center gap-2 font-semibold mb-1">
-                          {verificationResult.verified ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
-                          <span>{verificationResult.verified ? 'DNS Verified' : 'DNS Record Pending'}</span>
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2 font-semibold">
+                            {verificationResult.verified ? <Check className="w-4 h-4 text-emerald-500" /> : <AlertTriangle className="w-4 h-4" />}
+                            <span>{verificationResult.verified ? 'DNS Verified' : 'DNS Record Pending'}</span>
+                          </div>
+                          {verificationResult.sslReady && (
+                            <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono">
+                              <Lock className="w-2.5 h-2.5" /> SSL Active
+                            </span>
+                          )}
                         </div>
-                        <p className="font-sans font-light text-slate-600 dark:text-slate-300">{verificationResult.message}</p>
+                        <p className="font-sans font-light text-slate-600 dark:text-slate-300 mt-1">{verificationResult.message}</p>
                       </div>
                     )}
 

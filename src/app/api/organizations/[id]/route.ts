@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { registerDomainWithVercel, removeDomainFromVercel } from '@/lib/domains'
 
 export async function GET(
   request: Request,
@@ -116,6 +117,23 @@ export async function PATCH(
       }
 
       updates.custom_domain = domain
+    }
+  }
+
+  // If custom domain is changing, sync with host/Vercel
+  if (updates.custom_domain !== undefined) {
+    const { data: currentOrg } = await supabase
+      .from('organizations')
+      .select('custom_domain')
+      .eq('id', id)
+      .maybeSingle()
+
+    if (currentOrg?.custom_domain && currentOrg.custom_domain !== updates.custom_domain) {
+      await removeDomainFromVercel(currentOrg.custom_domain)
+    }
+
+    if (updates.custom_domain) {
+      await registerDomainWithVercel(updates.custom_domain)
     }
   }
 
