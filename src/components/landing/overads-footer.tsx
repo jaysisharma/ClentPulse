@@ -65,6 +65,7 @@ export function OveradsFooter() {
               Legal & Support
             </div>
             <ul className="space-y-2 font-normal text-xs">
+              <li><Link href="/calculator" className="text-indigo-400 hover:text-white transition-colors flex items-center gap-1">Rate Calculator <span className="text-[10px] bg-indigo-500/20 px-1 py-0.2 rounded font-mono">Free</span></Link></li>
               <li><Link href="/privacy" className="hover:text-[#F5F5F3] transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-[#F5F5F3] transition-colors">Terms of Service</Link></li>
               <li><Link href="/roadmap" className="hover:text-[#F5F5F3] transition-colors">Public Roadmap</Link></li>
