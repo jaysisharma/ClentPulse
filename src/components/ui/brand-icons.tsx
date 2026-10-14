@@ -321,3 +321,70 @@ export function SlackIcon({ className = 'w-4 h-4', size }: BrandIconProps) {
     </svg>
   )
 }
+
+// 12. Resend Official Icon
+export function ResendIcon({ className = 'w-4 h-4', size }: BrandIconProps) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="24" height="24" rx="5" fill="#000000" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+      <path
+        d="M5 8.5L12 4.5L19 8.5V15.5L12 19.5L5 15.5V8.5Z"
+        stroke="#FFFFFF"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 4.5V19.5M5 8.5L19 15.5M19 8.5L5 15.5"
+        stroke="#FFFFFF"
+        strokeWidth="1.2"
+        strokeOpacity="0.5"
+      />
+    </svg>
+  )
+}
+
+// 13. Frevio Official Icon
+export function FrevioIcon({ className = 'w-4 h-4', size }: BrandIconProps) {
+  return (
+    <svg
+      className={className}
+      width={size}
+      height={size}
+      viewBox="0 0 100 100"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <linearGradient id="brand-frevio-main" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%" stopColor="#4f46e5" />
+          <stop offset="60%" stopColor="#8b5cf6" />
+          <stop offset="100%" stopColor="#ec4899" />
+        </linearGradient>
+        <linearGradient id="brand-frevio-mid" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#00f2fe" />
+          <stop offset="100%" stopColor="#3b82f6" />
+        </linearGradient>
+      </defs>
+      <path
+        d="M 28 82 V 28 C 28 20, 34 14, 42 14 H 70 C 74 14, 77 17, 77 21 C 77 25, 74 28, 70 28 H 42 V 82 C 42 86, 39 89, 35 89 C 31 89, 28 86, 28 82 Z"
+        fill="url(#brand-frevio-main)"
+      />
+      <rect
+        x="35"
+        y="46"
+        width="28"
+        height="14"
+        rx="7"
+        fill="url(#brand-frevio-mid)"
+      />
+    </svg>
+  )
+}
+

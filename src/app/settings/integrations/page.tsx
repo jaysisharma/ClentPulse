@@ -7,6 +7,12 @@ import { DarkShell } from '@/components/layout/dark-shell'
 import { IntegrationCard } from '@/components/integrations/integration-card'
 import { CheckCircle2, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
+import {
+  GoogleDriveIcon,
+  GoogleCalendarIcon,
+  GitHubIcon,
+  FigmaIcon,
+} from '@/components/ui/brand-icons'
 
 // ---------------------------------------------------------------------------
 // Provider logo SVGs (inline, no external dependency)
@@ -146,7 +152,7 @@ export default function IntegrationsPage() {
           key: 'google' as const,
           displayName: 'Google Drive',
           description: 'Attach Drive files and folders to projects. Clients see them in the portal.',
-          logo: <GoogleLogo />,
+          logo: <GoogleDriveIcon className="w-5 h-5" />,
         },
       ],
     },
@@ -157,7 +163,7 @@ export default function IntegrationsPage() {
           key: 'google' as const,
           displayName: 'Google Calendar',
           description: 'Connect project meetings and deadlines from Google Calendar.',
-          logo: <GoogleLogo />,
+          logo: <GoogleCalendarIcon className="w-5 h-5" />,
         },
       ],
     },
@@ -168,7 +174,7 @@ export default function IntegrationsPage() {
           key: 'github' as const,
           displayName: 'GitHub',
           description: 'Link a repository, surface pull requests and deployment status to clients.',
-          logo: <GitHubLogo />,
+          logo: <GitHubIcon className="w-5 h-5 text-slate-900 dark:text-white" />,
         },
       ],
     },
@@ -179,7 +185,7 @@ export default function IntegrationsPage() {
           key: 'figma' as const,
           displayName: 'Figma',
           description: 'Connect Figma design files for client review and in-flow approvals.',
-          logo: <FigmaLogo />,
+          logo: <FigmaIcon className="w-4 h-5" />,
         },
       ],
     },

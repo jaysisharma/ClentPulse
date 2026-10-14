@@ -8,6 +8,14 @@ import {
   ExternalLink, Download, FolderKanban, DollarSign, TrendingUp, Users
 } from 'lucide-react'
 import gsap from 'gsap'
+import {
+  VSCodeIcon,
+  GitHubIcon,
+  FigmaIcon,
+  GoogleDriveIcon,
+  GoogleCalendarIcon,
+  StripeIcon,
+} from '@/components/ui/brand-icons'
 
 const WORKFLOW_PROMPTS = [
   "Broadcast live coding status: 'Payment webhook refactor'...",
@@ -368,12 +376,12 @@ export function OveradsHero({ signupHref }: HeroProps) {
             Works with every tool you already use
           </p>
           <ul className="mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-slate-300 text-xs font-mono">
-            <li className="flex items-center gap-1.5"><Terminal className="w-3.5 h-3.5 text-emerald-400" /> VS Code</li>
-            <li className="flex items-center gap-1.5"><FileCode className="w-3.5 h-3.5 text-indigo-400" /> GitHub</li>
-            <li className="flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-purple-400" /> Figma</li>
-            <li className="flex items-center gap-1.5"><FolderKanban className="w-3.5 h-3.5 text-amber-400" /> Google Drive</li>
-            <li className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-blue-400" /> Google Calendar</li>
-            <li className="flex items-center gap-1.5"><CreditCard className="w-3.5 h-3.5 text-indigo-400" /> Stripe</li>
+            <li className="flex items-center gap-2"><VSCodeIcon className="w-3.5 h-3.5 flex-shrink-0" /> VS Code</li>
+            <li className="flex items-center gap-2"><GitHubIcon className="w-3.5 h-3.5 text-white flex-shrink-0" /> GitHub</li>
+            <li className="flex items-center gap-2"><FigmaIcon className="w-3 h-3.5 flex-shrink-0" /> Figma</li>
+            <li className="flex items-center gap-2"><GoogleDriveIcon className="w-3.5 h-3.5 flex-shrink-0" /> Google Drive</li>
+            <li className="flex items-center gap-2"><GoogleCalendarIcon className="w-3.5 h-3.5 flex-shrink-0" /> Google Calendar</li>
+            <li className="flex items-center gap-2"><StripeIcon className="w-3.5 h-3.5 flex-shrink-0" /> Stripe</li>
           </ul>
         </div>
 

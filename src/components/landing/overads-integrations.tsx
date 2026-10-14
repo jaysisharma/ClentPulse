@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { Terminal, Shield, CreditCard, Mail, Globe, Radio, Database, Check } from 'lucide-react'
+import { VSCodeIcon, FrevioIcon, StripeIcon, ResendIcon } from '@/components/ui/brand-icons'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -166,8 +167,8 @@ export function OveradsIntegrations() {
 
               {/* Node 1: Workstation */}
               <div ref={node1Ref} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-white/10 bg-white/[0.02] text-center w-full sm:w-36 shadow-sm">
-                <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                  <Terminal className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-lg bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                  <VSCodeIcon className="w-5 h-5" />
                 </div>
                 <div className="text-xs font-semibold text-white">VS Code & CLI</div>
                 <div className="text-[10px] text-slate-400">Heartbeat pulses</div>
@@ -180,8 +181,8 @@ export function OveradsIntegrations() {
 
               {/* Node 2: Core Hub */}
               <div ref={node2Ref} className="flex flex-col items-center gap-2 p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 text-center w-full sm:w-44 shadow-lg ring-1 ring-indigo-500/20">
-                <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                  F
+                <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center p-1.5 shadow-md">
+                  <FrevioIcon className="w-7 h-7" />
                 </div>
                 <div className="text-xs font-bold text-white">Frevio Engine</div>
                 <div className="text-[10px] text-indigo-300">Time consolidation & presence</div>
@@ -195,15 +196,15 @@ export function OveradsIntegrations() {
               {/* Node 3: Outputs */}
               <div ref={node3Ref} className="flex flex-col gap-2 w-full sm:w-44">
                 <div className="flex items-center gap-2.5 p-2 rounded-lg border border-white/5 bg-white/[0.02] text-xs text-slate-300">
-                  <CreditCard className="w-3.5 h-3.5 text-amber-400" />
+                  <StripeIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Stripe Connect</span>
                 </div>
                 <div className="flex items-center gap-2.5 p-2 rounded-lg border border-white/5 bg-white/[0.02] text-xs text-slate-300">
-                  <Globe className="w-3.5 h-3.5 text-indigo-400" />
+                  <Globe className="w-4 h-4 text-indigo-400 flex-shrink-0" />
                   <span>Client Status Hub</span>
                 </div>
                 <div className="flex items-center gap-2.5 p-2 rounded-lg border border-white/5 bg-white/[0.02] text-xs text-slate-300">
-                  <Mail className="w-3.5 h-3.5 text-emerald-400" />
+                  <ResendIcon className="w-4 h-4 flex-shrink-0" />
                   <span>Resend Alerts</span>
                 </div>
               </div>
