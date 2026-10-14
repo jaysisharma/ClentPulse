@@ -319,7 +319,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
           ref={subtitleRef}
           className="mt-6 max-w-xl text-balance text-sm font-light leading-relaxed text-slate-300 md:text-base"
         >
-          Frevio watches your code, your Figma files and your hours, then drafts the work: the milestone recap written, the invoice generated, the client portal updated. Nothing goes out without your yes. Free, no card.
+          One encrypted client portal for live milestone approvals, time tracking, and instant Stripe invoices. No scattered emails. No chasing payments.
         </p>
 
         {/* Interactive Live Command Terminal Box */}

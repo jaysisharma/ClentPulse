@@ -48,15 +48,15 @@ const COMPARISON_ROWS: RowItem[] = [
   },
   {
     id: '06',
-    title: 'Client seats & portals',
-    frevio: { text: 'Unlimited', status: 'yes' },
+    title: 'Active projects & clients',
+    frevio: { text: '2 Free, Pro for unlimited', status: 'yes' },
     stack: { text: 'Per-seat pricing', status: 'partial' },
     traditional: { text: 'Manual friction', status: 'partial' },
   },
   {
     id: '07',
-    title: 'What it costs',
-    frevio: { text: 'Free, everything included', status: 'yes' },
+    title: 'Pricing model',
+    frevio: { text: '$0 Free / $19/mo Pro', status: 'yes' },
     stack: { text: '~$180/mo combined', status: 'partial' },
     traditional: { text: 'Lost hours & late fees', status: 'no' },
   },
@@ -72,10 +72,10 @@ export function OveradsComparisonTable() {
             <span>Honest comparison</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-            The whole studio’s work, or four tools and chasing
+            Everything in one place, zero scattered subscriptions
           </h2>
           <p className="text-sm leading-relaxed text-slate-400 md:text-base font-light">
-            Every job a modern independent studio does, in one login, free. The same jobs split across point tools bill per seat and never quite talk to each other; traditional freelancing leaves you chasing invoices.
+            Free forever for up to 2 active client projects. Upgrade to Pro only when your roster grows.
           </p>
         </div>
 

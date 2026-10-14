@@ -11,43 +11,27 @@ import {
 interface Props {
   isLoggedIn: boolean
   signupHref: string
-  promoRemaining: number | null
+  promoRemaining?: number | null
 }
 
-export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props) {
+export function OveradsNavbar({ isLoggedIn, signupHref }: Props) {
   const [productMenuOpen, setProductMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [copiedCoupon, setCopiedCoupon] = useState(false)
-
-  function copyCoupon() {
-    navigator.clipboard.writeText('EARLY50')
-    setCopiedCoupon(true)
-    setTimeout(() => setCopiedCoupon(false), 2000)
-  }
 
   return (
     <>
-      {/* ── Top Announcement Banner ── */}
-      {promoRemaining !== null && promoRemaining > 0 && (
-        <div className="relative z-50 bg-[#08090a] text-slate-200 border-b border-white/5 text-xs py-2 px-4">
-          <div className="max-w-6xl mx-auto flex items-center justify-center gap-x-3 text-center flex-wrap gap-y-1">
-            <span className="inline-flex items-center gap-1.5 font-normal text-slate-300">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-              First 50 users get <strong className="text-white font-semibold">1 Month of Frevio Pro FREE</strong> ({promoRemaining} left).
-            </span>
-            <button
-              onClick={copyCoupon}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-white/15 bg-white/5 font-mono text-[11px] text-white hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              {copiedCoupon ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-slate-400" />}
-              EARLY50
-            </button>
-            <Link href={signupHref} className="inline-flex items-center gap-0.5 text-white font-medium underline underline-offset-4 hover:text-amber-200 transition-colors">
-              Claim <ArrowUpRight className="w-3 h-3" />
-            </Link>
-          </div>
+      {/* ── Top Announcement Banner (Honest & Friction-Free) ── */}
+      <div className="relative z-50 bg-[#0c0d12] text-slate-200 border-b border-white/5 text-xs py-2 px-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-center gap-x-3 text-center flex-wrap gap-y-1">
+          <span className="inline-flex items-center gap-1.5 font-normal text-slate-300">
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <span>100% Free for up to 2 active projects. Zero credit card required.</span>
+          </span>
+          <Link href={signupHref} className="inline-flex items-center gap-1 text-white font-semibold hover:text-indigo-300 transition-colors ml-1">
+            Start free <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
-      )}
+      </div>
 
       {/* ── Floating Header ── */}
       <header className="sticky top-4 z-40 w-full px-4 sm:px-6 pointer-events-none">
@@ -136,17 +120,14 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props)
                 )}
               </div>
 
-              <a href="#workflows" className="px-3 py-1.5 rounded-full text-xs font-medium hover:text-white hover:bg-white/5 transition-colors">
-                Workflows
-              </a>
               <a href="#screens" className="px-3 py-1.5 rounded-full text-xs font-medium hover:text-white hover:bg-white/5 transition-colors">
                 Inside
               </a>
               <a href="#comparison" className="px-3 py-1.5 rounded-full text-xs font-medium hover:text-white hover:bg-white/5 transition-colors">
                 Comparison
               </a>
-              <a href="#testimonials" className="px-3 py-1.5 rounded-full text-xs font-medium hover:text-white hover:bg-white/5 transition-colors">
-                Testimonials
+              <a href="#integrations" className="px-3 py-1.5 rounded-full text-xs font-medium hover:text-white hover:bg-white/5 transition-colors">
+                Integrations
               </a>
               <Link href="/calculator" className="px-3 py-1.5 rounded-full text-xs font-medium text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
                 Free Tools
@@ -218,10 +199,9 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props)
         {mobileMenuOpen && (
           <div className="md:hidden mt-2 mx-auto max-w-sm rounded-2xl border border-white/10 bg-[#0b0c10]/95 backdrop-blur-2xl p-4 shadow-2xl space-y-3 pointer-events-auto animate-in fade-in duration-150">
             <nav className="flex flex-col space-y-1 text-sm text-slate-200">
-              <a href="#workflows" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Workflows</a>
               <a href="#screens" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Inside</a>
               <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Comparison</a>
-              <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Testimonials</a>
+              <a href="#integrations" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Integrations</a>
               <Link href="/calculator" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 text-slate-300">Free Tools &amp; Calculators</Link>
               <Link
                 href="/demo"

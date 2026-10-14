@@ -2,11 +2,9 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { OveradsNavbar } from '@/components/landing/overads-navbar'
 import { OveradsHero } from '@/components/landing/overads-hero'
-import { OveradsWorkflowsSection } from '@/components/landing/overads-workflows-section'
 import { OveradsScreensShowcase } from '@/components/landing/overads-screens-showcase'
 import { OveradsComparisonTable } from '@/components/landing/overads-comparison-table'
 import { OveradsIntegrations } from '@/components/landing/overads-integrations'
-import { OveradsTestimonials } from '@/components/landing/overads-testimonials'
 import { LandingPricing } from '@/components/landing/landing-pricing'
 import { LandingFaq } from '@/components/landing/landing-faq'
 import { OveradsCta } from '@/components/landing/overads-cta'
@@ -26,7 +24,6 @@ export default async function LandingPage() {
       <OveradsNavbar
         isLoggedIn={isLoggedIn}
         signupHref={signupHref}
-        promoRemaining={17}
       />
 
       <main className="flex-1">
@@ -34,20 +31,14 @@ export default async function LandingPage() {
         {/* ── 1. Hero: Light Uppercase Display + Rotating Prompts + Workspace Showcase ── */}
         <OveradsHero signupHref={signupHref} />
 
-        {/* ── 2. Workflows: Plain English Automation ("Tell it once. It does it every week.") ── */}
-        <OveradsWorkflowsSection signupHref={signupHref} />
-
-        {/* ── 3. Screens: Inside Frevio ("Three screens. That is the whole job.") ── */}
+        {/* ── 2. Screens: Inside Frevio ("Three screens. That is the whole job.") ── */}
         <OveradsScreensShowcase />
 
-        {/* ── 4. Honest Comparison Table (7 Capabilities vs Stack of Tools vs Traditional) ── */}
+        {/* ── 3. Honest Comparison Table (7 Capabilities vs Stack of Tools vs Traditional) ── */}
         <OveradsComparisonTable />
 
-        {/* ── 5. Connected Toolchain (VS Code, GitHub, Figma, Drive, Stripe Pipeline) ── */}
+        {/* ── 4. Connected Toolchain (VS Code, GitHub, Figma, Drive, Stripe Pipeline) ── */}
         <OveradsIntegrations />
-
-        {/* ── 6. Testimonials: Verified Client & Specialist Outcomes ── */}
-        <OveradsTestimonials />
 
         {/* ── 7. Pricing: Simple Plans. Predictable Growth. ── */}
         <section id="pricing" className="py-24 lg:py-32 px-4 sm:px-6 bg-[#08090a] border-t border-white/5">
@@ -136,9 +127,9 @@ export default async function LandingPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-6 text-slate-400 font-mono text-[11px]">
-            <a href="#workflows" className="hover:text-white transition-colors">Workflows</a>
             <a href="#screens" className="hover:text-white transition-colors">Inside</a>
             <a href="#comparison" className="hover:text-white transition-colors">Comparison</a>
+            <a href="#integrations" className="hover:text-white transition-colors">Integrations</a>
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
             <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
