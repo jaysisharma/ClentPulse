@@ -8,6 +8,8 @@ import {
   TrendingUp, Clock, Calendar, Check, Sparkles, ChevronRight
 } from 'lucide-react'
 
+import { ToolsSubnav } from '@/components/tools/tools-subnav'
+
 export default function FreelanceRateCalculatorPage() {
   const [targetIncome, setTargetIncome] = useState(120000)
   const [annualExpenses, setAnnualExpenses] = useState(12000)
@@ -83,6 +85,8 @@ export default function FreelanceRateCalculatorPage() {
 
       {/* Main Container */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 w-full">
+        <ToolsSubnav />
+
         <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-xs font-mono text-emerald-300">
             <Sparkles className="w-3.5 h-3.5" />

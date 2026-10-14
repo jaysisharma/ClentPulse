@@ -13,6 +13,7 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
   const [actionError, setActionError] = useState('')
   const [sendStatus, setSendStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
   const [reminderStatus, setReminderStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const router = useRouter()
   const sendTimerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
   const reminderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -64,7 +65,6 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
   }
 
   async function handleDelete() {
-    if (!confirm('Delete this invoice? This cannot be undone.')) return
     setLoading(true)
     setActionError('')
     const supabase = createClient()
@@ -160,14 +160,36 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
       )}
       {actionError && <span className="text-xs text-rose-500 font-medium">{actionError}</span>}
 
-      <button
-        type="button"
-        onClick={handleDelete}
-        title="Delete invoice"
-        className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
-      >
-        <Trash2 className="w-3.5 h-3.5" />
-      </button>
+      {confirmingDelete ? (
+        <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-full border border-rose-500/20">
+          <span>Delete invoice?</span>
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={loading}
+            className="font-bold underline hover:text-rose-300 disabled:opacity-50 cursor-pointer"
+          >
+            Yes
+          </button>
+          <span className="text-slate-600">·</span>
+          <button
+            type="button"
+            onClick={() => setConfirmingDelete(false)}
+            className="text-slate-400 hover:text-white cursor-pointer"
+          >
+            Cancel
+          </button>
+        </span>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setConfirmingDelete(true)}
+          title="Delete invoice"
+          className="p-1.5 rounded-full text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      )}
     </div>
   )
 }

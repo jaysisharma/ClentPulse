@@ -149,7 +149,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props)
                 Testimonials
               </a>
               <Link href="/calculator" className="px-3 py-1.5 rounded-full text-xs font-medium text-indigo-400 hover:text-white hover:bg-white/5 transition-colors">
-                Calculator
+                Free Tools
               </Link>
               <a href="#pricing" className="px-3 py-1.5 rounded-full text-xs font-medium hover:text-white hover:bg-white/5 transition-colors">
                 Pricing
@@ -212,7 +212,7 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props)
               <a href="#screens" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Inside</a>
               <a href="#comparison" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Comparison</a>
               <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Testimonials</a>
-              <Link href="/calculator" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 text-indigo-400 font-medium">Rate Calculator</Link>
+              <Link href="/calculator" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 text-indigo-400 font-medium">Free Tools & Calculators</Link>
               <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">Pricing</a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5">FAQ</a>
             </nav>

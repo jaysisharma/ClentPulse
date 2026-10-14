@@ -34,6 +34,7 @@ const agencyPrimaryNav: NavItem[] = [
 ]
 
 const agencyMoreNav: NavItem[] = [
+  { href: '/docs',          label: 'Documents', icon: ScrollText },
   { href: '/settings/team', label: 'Team',     icon: Building2, tourId: 'team' },
   { href: '/upgrade',       label: 'Billing',  icon: Sparkles },
   { href: '/settings',      label: 'Settings', icon: Settings },
