@@ -1,105 +1,63 @@
 'use client'
 
-import { AlertCircle, CheckCircle2, MessageSquare, Mail, Folder, CreditCard } from 'lucide-react'
+import { AlertCircle, CheckCircle2, ArrowRight } from 'lucide-react'
 
 export function FrevioProblem() {
   return (
-    <section id="problem" className="py-20 md:py-28 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
+    <section id="problem" className="py-16 md:py-24 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
         
-        {/* Section Tag */}
-        <div className="mb-4">
-          <span className="text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
-            The reality of client work
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
-          {/* Left: Editorial Headline & Narrative */}
-          <div className="lg:col-span-5 space-y-5">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal text-white tracking-[-0.03em] leading-[1.12]">
-              Client work gets messy when it’s everywhere.
-            </h2>
-            <p className="text-base sm:text-lg text-slate-300 font-light leading-relaxed">
-              Updates live in messaging apps. Feedback arrives through email. Files sit in separate folders. Invoices are disconnected from project progress. Clients end up asking what is happening, while freelancers spend time chasing information.
-            </p>
-            <p className="text-sm text-slate-400 font-light leading-relaxed">
-              When communication is scattered, scope creeps silently, deliverables get lost in long comment chains, and both sides end up frustrated.
-            </p>
+        {/* Section Header: Minimal & Direct */}
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-rose-500/20 bg-rose-500/10 text-xs font-mono uppercase tracking-[0.16em] text-rose-400">
+            <AlertCircle className="w-3.5 h-3.5" />
+            <span>The Fragmented Reality</span>
           </div>
 
-          {/* Right: Authentic Contrast Editorial Board */}
-          <div className="lg:col-span-7 space-y-4">
-            
-            {/* The Fragmented Reality */}
-            <div className="rounded-2xl border border-rose-500/20 bg-rose-500/[0.03] p-5 sm:p-6 space-y-4">
-              <div className="flex items-center justify-between text-xs font-mono text-rose-400">
-                <span className="flex items-center gap-1.5 font-semibold">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  The Fragmented Stack
-                </span>
-                <span>4+ apps open</span>
-              </div>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal text-white tracking-[-0.03em] leading-[1.12]">
+            Client work gets messy when it’s everywhere.
+          </h2>
 
-              <div className="space-y-2.5 text-xs text-slate-300 font-mono">
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.06] flex items-start gap-3">
-                  <MessageSquare className="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-slate-400 font-sans">WhatsApp / Slack:</span>
-                    <p className="text-slate-200 font-sans mt-0.5">&ldquo;Hey, just checking in — where are we on the checkout page design?&rdquo;</p>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.06] flex items-start gap-3">
-                  <Mail className="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-slate-400 font-sans">Email thread (Reply #14):</span>
-                    <p className="text-slate-200 font-sans mt-0.5">&ldquo;Looks great! Can we also change the header and add three new case studies?&rdquo;</p>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.06] flex items-start gap-3">
-                  <Folder className="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-slate-400 font-sans">Google Drive / Dropbox:</span>
-                    <p className="text-slate-200 font-sans mt-0.5">&ldquo;Can you resend the latest link? The one from last Tuesday isn&apos;t opening.&rdquo;</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* The Frevio Workspace */}
-            <div className="rounded-2xl border border-indigo-500/30 bg-indigo-500/[0.04] p-5 sm:p-6 space-y-4">
-              <div className="flex items-center justify-between text-xs font-mono text-indigo-400">
-                <span className="flex items-center gap-1.5 font-semibold">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400" />
-                  The Frevio Way
-                </span>
-                <span>1 organized workspace</span>
-              </div>
-
-              <p className="text-sm text-slate-200 font-light leading-relaxed">
-                One permanent, passcode-protected project link where clients check milestones, review progress updates, sign off on deliverables, and pay invoices. No scattered notifications. No repeated questions.
-              </p>
-            </div>
-
-          </div>
-
+          <p className="text-base sm:text-lg text-slate-300 font-light leading-relaxed max-w-2xl mx-auto">
+            Updates in WhatsApp. Feedback in 20-reply email chains. Files lost in Google Drive. Invoices disconnected from progress.
+          </p>
         </div>
 
-        {/* Editorial Visual: From Fragmented Chaos to Structured Clarity */}
-        <div className="mt-12 sm:mt-16 rounded-2xl border border-white/[0.08] bg-[#0c0d14] overflow-hidden shadow-2xl">
-          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-[#08090a]">
+        {/* ── Centerpiece Visual: Chaos vs. Frevio Clarity ── */}
+        <div className="relative rounded-2xl border border-white/[0.12] bg-[#0c0d14] overflow-hidden shadow-2xl">
+          <div className="relative w-full aspect-[16/9] md:aspect-[16/8.5] bg-[#07080c] overflow-hidden">
             <img
-              src="/images/frevio-chaos-to-clarity.jpg"
-              alt="Editorial visual showing scattered fragmented communications resolving into a single structured client workspace"
+              src="/client_chaos_vs_calm.png"
+              alt="Visual comparison: Scattered fragmented communication vs centralized Frevio client portal link"
               className="w-full h-full object-cover object-center"
             />
           </div>
-          <div className="px-6 py-3.5 bg-[#090a0f] border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-400 font-mono">
-            <span className="text-slate-300">Before: 5 apps, missed DMs, and endless status check-ins</span>
-            <span className="text-indigo-400">With Frevio: 1 link, real-time milestones, and 1-click approvals</span>
+
+          {/* Visual Legend / Breakdown Bar */}
+          <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/[0.08] bg-[#090a0f] border-t border-white/[0.08]">
+            <div className="p-4 sm:p-5 flex items-start gap-3">
+              <span className="size-2 rounded-full bg-rose-500 mt-1.5 flex-shrink-0" />
+              <div>
+                <div className="text-xs font-mono uppercase tracking-wider text-rose-400 font-semibold">
+                  Scattered Communication
+                </div>
+                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                  Lost feedback in chat apps, duplicate emails, awkward payment chasing, and constant &ldquo;where are we on this?&rdquo; messages.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-4 sm:p-5 flex items-start gap-3">
+              <span className="size-2 rounded-full bg-emerald-400 mt-1.5 flex-shrink-0" />
+              <div>
+                <div className="text-xs font-mono uppercase tracking-wider text-emerald-400 font-semibold">
+                  Centralized Frevio Link
+                </div>
+                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                  One clean project URL protected by a 6-digit passcode. Milestones, updates, deliverables, and Stripe billing in one place.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 

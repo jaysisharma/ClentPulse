@@ -1,97 +1,162 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, CheckCircle2, Lock, Sparkles, CreditCard, Send, Plus } from 'lucide-react'
 import { WorkflowPipelineDiagram } from './landing-diagrams'
 
 export function FrevioWorkflow() {
-  const steps = [
+  const visualSteps = [
     {
-      step: 'Step 1',
-      title: 'Create a project',
-      detail:
-        'Set up a new workspace in under 60 seconds with your client details, project description, and target completion date.',
+      num: '01',
+      title: 'Create Project',
+      desc: 'Set project name, deliverables, & deadline in 60s.',
+      visual: (
+        <div className="rounded-lg bg-black/40 border border-white/[0.08] p-3 text-left space-y-1.5 font-mono text-[11px]">
+          <div className="flex items-center justify-between text-slate-400">
+            <span>Project</span>
+            <span className="text-emerald-400">Active</span>
+          </div>
+          <div className="text-white font-sans text-xs font-medium">Acme Web Redesign</div>
+          <div className="text-slate-400 text-[10px]">Due Nov 30 · 4 Milestones</div>
+        </div>
+      ),
     },
     {
-      step: 'Step 2',
-      title: 'Define scope & milestones',
-      detail:
-        'Break the engagement into tangible phases with deliverables so both you and the client have shared expectations from day one.',
+      num: '02',
+      title: 'Define Milestones',
+      desc: 'Set deliverables and Stripe invoice amounts.',
+      visual: (
+        <div className="rounded-lg bg-black/40 border border-white/[0.08] p-3 text-left space-y-1.5 font-mono text-[11px]">
+          <div className="flex justify-between text-slate-400">
+            <span>Milestones</span>
+            <span className="text-indigo-400">75%</span>
+          </div>
+          <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+            <div className="h-full bg-indigo-500 rounded-full" style={{ width: '75%' }} />
+          </div>
+          <div className="text-slate-300 text-[10px] flex justify-between">
+            <span>Stage 3 of 4</span>
+            <span className="text-emerald-400">$3,500</span>
+          </div>
+        </div>
+      ),
     },
     {
-      step: 'Step 3',
-      title: 'Share with your client',
-      detail:
-        'Send your client their private link protected by a 6-digit passcode. They access the workspace instantly without having to create an account.',
+      num: '03',
+      title: 'Share Passcode',
+      desc: 'Client gets private link. Zero signup required.',
+      visual: (
+        <div className="rounded-lg bg-black/40 border border-white/[0.08] p-3 text-left space-y-2 font-mono text-[11px]">
+          <div className="flex items-center gap-1.5 text-indigo-400">
+            <Lock className="w-3 h-3" />
+            <span>Passcode Link</span>
+          </div>
+          <div className="flex justify-center gap-1">
+            {['8', '4', '2', '9'].map((n, i) => (
+              <span key={i} className="size-5 rounded bg-indigo-500/20 text-indigo-300 flex items-center justify-center text-[10px] font-bold">
+                {n}
+              </span>
+            ))}
+          </div>
+          <div className="text-center text-[10px] text-slate-400">1-click client entry</div>
+        </div>
+      ),
     },
     {
-      step: 'Step 4',
-      title: 'Post updates & gather feedback',
-      detail:
-        'Share weekly progress bullets and preview links. Clients can comment or ask questions right inside their portal.',
+      num: '04',
+      title: 'Post Updates',
+      desc: 'Weekly recap delivered to portal & client email.',
+      visual: (
+        <div className="rounded-lg bg-black/40 border border-white/[0.08] p-3 text-left space-y-1.5 font-mono text-[11px]">
+          <div className="flex items-center justify-between text-slate-400">
+            <span>Update #4</span>
+            <span className="text-emerald-400">Sent</span>
+          </div>
+          <div className="text-slate-300 text-[10px] line-clamp-2 font-sans">
+            ✓ Staging checkout build live for client review
+          </div>
+          <div className="text-[10px] text-slate-500">Email digest auto-sent</div>
+        </div>
+      ),
     },
     {
-      step: 'Step 5',
-      title: 'Deliver work & handle invoicing',
-      detail:
-        'Request explicit sign-off on completed milestones and send Stripe-powered invoices for immediate online payment.',
+      num: '05',
+      title: 'Sign-off & Pay',
+      desc: 'Client 1-click approves and pays via Stripe.',
+      visual: (
+        <div className="rounded-lg bg-emerald-500/[0.08] border border-emerald-500/20 p-3 text-left space-y-1.5 font-mono text-[11px]">
+          <div className="flex items-center justify-between text-emerald-400">
+            <span>Approved</span>
+            <span>Stripe</span>
+          </div>
+          <div className="text-white text-xs font-sans font-semibold">$3,500.00 Settled</div>
+          <div className="text-emerald-400 text-[10px]">✓ Direct Bank Payout</div>
+        </div>
+      ),
     },
   ]
 
   return (
-    <section id="workflow" className="py-20 md:py-28 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
+    <section id="workflow" className="py-16 md:py-24 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-14 space-y-4">
-          <div className="text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
-            How it works
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>How it works</span>
           </div>
+
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal text-white tracking-[-0.03em] leading-[1.12]">
-            From project start to final delivery.
+            From project kickoff to final payout.
           </h2>
-          <p className="text-base sm:text-lg text-slate-300 font-light leading-relaxed">
-            A simple, predictable process that keeps you organized and leaves your clients impressed.
+
+          <p className="text-base sm:text-lg text-slate-300 font-light leading-relaxed max-w-2xl mx-auto">
+            A simple 5-step visual pipeline that keeps client work calm, transparent, and completely professional.
           </p>
         </div>
 
-        {/* ── High-Fidelity SVG Pipeline Diagram ── */}
-        <div className="mb-14 rounded-2xl border border-white/[0.08] bg-[#0c0d14] p-5 sm:p-7 shadow-2xl overflow-x-auto">
+        {/* ── High-Fidelity Interactive Pipeline Diagram ── */}
+        <div className="mb-10 rounded-2xl border border-white/[0.08] bg-[#0c0d14] p-5 sm:p-7 shadow-2xl overflow-x-auto">
           <WorkflowPipelineDiagram className="min-w-[620px] w-full max-w-4xl mx-auto" />
         </div>
 
-        {/* Clean Typographic Progression Timeline */}
-        <div className="relative border-l border-white/[0.1] ml-3 sm:ml-4 pl-6 sm:pl-10 space-y-12">
-          {steps.map((item, idx) => (
-            <div key={idx} className="relative group">
-              {/* Subtle Timeline Dot */}
-              <div className="absolute -left-[31px] sm:-left-[47px] top-1.5 size-3 rounded-full bg-[#08090a] border-2 border-indigo-400 group-hover:border-white transition-colors" />
-
-              <div className="space-y-1.5">
-                <span className="text-xs font-mono uppercase tracking-wider text-indigo-400 font-medium">
-                  {item.step}
-                </span>
-                <h3 className="text-xl sm:text-2xl font-normal text-white">
-                  {item.title}
+        {/* ── Visual 5-Step Cards Grid ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {visualSteps.map((step, idx) => (
+            <div
+              key={idx}
+              className="rounded-2xl border border-white/[0.08] bg-[#0d0e14] p-4 flex flex-col justify-between space-y-4 shadow-lg hover:border-white/20 transition-all group"
+            >
+              <div>
+                <div className="flex items-center justify-between text-xs font-mono text-indigo-400 mb-2">
+                  <span>{step.num}</span>
+                  <span className="text-slate-500 text-[10px]">STEP</span>
+                </div>
+                <h3 className="text-sm font-semibold text-white">
+                  {step.title}
                 </h3>
-                <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed max-w-2xl pt-1">
-                  {item.detail}
+                <p className="text-xs text-slate-400 font-light mt-1 leading-relaxed">
+                  {step.desc}
                 </p>
               </div>
+
+              {/* Visual mini-mockup */}
+              {step.visual}
             </div>
           ))}
         </div>
 
         {/* Working Demo Prompt */}
-        <div className="mt-14 pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-sm text-slate-400 font-light">
-            Want to see how the client portal looks and feels in action?
+        <div className="mt-12 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <p className="text-xs sm:text-sm text-slate-400 font-light">
+            Want to see how this looks from both the freelancer and client perspective?
           </p>
           <Link
             href="/demo"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-white hover:text-indigo-300 transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium text-white hover:text-indigo-300 transition-colors"
           >
-            Explore the live interactive demo <ArrowUpRight className="w-4 h-4" />
+            Launch interactive demo <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>
 

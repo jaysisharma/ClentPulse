@@ -1,62 +1,103 @@
 'use client'
 
+import {
+  Code, Palette, Video, LineChart, Briefcase,
+  CheckCircle2, ArrowUpRight
+} from 'lucide-react'
+import {
+  FigmaIcon, GitHubIcon, VSCodeIcon, GoogleDriveIcon, StripeIcon
+} from '@/components/ui/brand-icons'
+
 export function FrevioAudience() {
   const audiences = [
     {
-      role: 'Web Developers',
-      useCase: 'Shipping production code, linking staging previews and repositories, and getting formal milestone sign-off before launch.',
+      role: 'Web & App Developers',
+      tools: ['GitHub', 'VS Code', 'Stripe'],
+      icons: [<GitHubIcon key="gh" className="w-4 h-4" />, <VSCodeIcon key="vs" className="w-4 h-4" />, <StripeIcon key="st" className="w-4 h-4" />],
+      deliverable: 'Staging URLs, GitHub releases, & final milestone code handoff',
+      badge: 'Code Handoff',
+      tagColor: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
     },
     {
-      role: 'Product & Brand Designers',
-      useCase: 'Sharing Figma prototypes and brand assets, managing revisions without lost email attachments, and presenting design iterations cleanly.',
+      role: 'UI/UX & Brand Designers',
+      tools: ['Figma', 'Google Drive', 'Stripe'],
+      icons: [<FigmaIcon key="fig" className="w-4 h-4" />, <GoogleDriveIcon key="gd" className="w-4 h-4" />, <StripeIcon key="st" className="w-4 h-4" />],
+      deliverable: 'Figma prototypes, design token specs, & approved visual assets',
+      badge: 'Design Sign-Off',
+      tagColor: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20',
     },
     {
-      role: 'Content Creators & Copywriters',
-      useCase: 'Submitting drafts, briefs, and campaign assets with clear review milestones, feedback notes, and integrated billing.',
-    },
-    {
-      role: 'Consultants & Strategists',
-      useCase: 'Delivering weekly executive summaries, organizing roadmap deliverables, and keeping stakeholders aligned on timeline and budget.',
+      role: 'Motion & Video Creators',
+      tools: ['Google Drive', 'Figma', 'Stripe'],
+      icons: [<GoogleDriveIcon key="gd" className="w-4 h-4" />, <FigmaIcon key="fig" className="w-4 h-4" />, <StripeIcon key="st" className="w-4 h-4" />],
+      deliverable: 'Rough cuts, storyboard approvals, & final 4K video exports',
+      badge: 'Video Reviews',
+      tagColor: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
     },
     {
       role: 'Boutique Studios & Agencies',
-      useCase: 'Managing multiple client relationships across team members, with shared access, custom branding, and transparent progress oversight.',
+      tools: ['GitHub', 'Figma', 'Google Drive', 'Stripe'],
+      icons: [<FigmaIcon key="fig" className="w-4 h-4" />, <GitHubIcon key="gh" className="w-4 h-4" />, <StripeIcon key="st" className="w-4 h-4" />],
+      deliverable: 'Multi-client accounts, custom studio branding, & team oversight',
+      badge: 'Studio Scale',
+      tagColor: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
     },
   ]
 
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
+    <section className="py-16 md:py-24 px-4 sm:px-6 bg-[#0a0b10] border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 sm:mb-14 space-y-3">
-          <div className="text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
-            Audience
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
+            <Briefcase className="w-3.5 h-3.5" />
+            <span>Audience</span>
           </div>
+
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal text-white tracking-[-0.03em] leading-[1.12]">
-            Built for people who work with clients.
+            Built for people who deliver client work.
           </h2>
-          <p className="text-base sm:text-lg text-slate-300 font-light leading-relaxed">
-            Whether you operate as an independent freelancer or a growing studio, Frevio gives your client engagements a clean, professional structure.
+
+          <p className="text-base sm:text-lg text-slate-300 font-light leading-relaxed max-w-2xl mx-auto">
+            Whether you work solo or lead a creative studio, Frevio fits seamlessly with the tools you already use.
           </p>
         </div>
 
-        {/* Compact, Text-Driven Editorial Rows */}
-        <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+        {/* ── Visual Cards Grid ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
           {audiences.map((item, idx) => (
             <div
               key={idx}
-              className="py-6 sm:py-7 grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-8 items-baseline"
+              className="rounded-2xl border border-white/[0.08] bg-[#0d0e14] p-6 sm:p-7 space-y-5 hover:border-white/20 transition-all shadow-xl group"
             >
-              <div className="md:col-span-4">
-                <span className="text-base sm:text-lg font-medium text-white">
-                  {item.role}
+              <div className="flex items-center justify-between">
+                <span className={`text-[11px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-md border ${item.tagColor}`}>
+                  {item.badge}
                 </span>
+                <div className="flex items-center gap-2">
+                  {item.icons.map((icon, i) => (
+                    <div key={i} className="size-7 rounded-lg bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                      {icon}
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="md:col-span-8">
-                <p className="text-sm sm:text-base text-slate-300 font-light leading-relaxed">
-                  {item.useCase}
+
+              <div>
+                <h3 className="text-xl font-normal text-white">
+                  {item.role}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 font-light mt-1.5 leading-relaxed">
+                  {item.deliverable}
                 </p>
+              </div>
+
+              <div className="pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs font-mono text-slate-400">
+                <span className="flex items-center gap-1.5 text-emerald-400">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Instant Passcode Access
+                </span>
+                <span className="text-slate-500">Stripe Billing Ready</span>
               </div>
             </div>
           ))}
