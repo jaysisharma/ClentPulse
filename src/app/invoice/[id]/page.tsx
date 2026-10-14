@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { InvoicePrint } from '@/app/invoices/[id]/invoice-print'
 import { PayNowButton } from './pay-button'
-import { CheckCircle2 } from 'lucide-react'
+import { CheckCircle2, Clock } from 'lucide-react'
 import { PoweredByReferral } from '@/components/ui/powered-by-referral'
 import { isPaidPlan } from '@/lib/plans'
 import type { Metadata } from 'next'
@@ -99,17 +99,29 @@ export default async function PublicInvoicePage({
       <div className="max-w-2xl mx-auto relative">
         <InvoicePrint invoice={invoice} owner={owner} projectName={projectName} />
 
-        {/* Paid confirmation — shown after returning from Stripe */}
-        {paid === '1' || isPaid ? (
+        {/* Paid confirmation — verified strictly against database invoice status */}
+        {isPaid ? (
           <div className="mt-6 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 p-5 flex items-center gap-3.5 shadow-xs">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
             <div>
               <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-300">Payment Received & Confirmed</p>
-              <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">An official settlement receipt has been sent to your email.</p>
+              <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">An official settlement receipt has been recorded and confirmed by Stripe.</p>
             </div>
           </div>
         ) : (
           <>
+            {paid === '1' && (
+              <div className="mt-6 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 p-5 flex items-center gap-3.5 shadow-xs">
+                <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 animate-spin" />
+                <div>
+                  <p className="text-sm font-semibold text-amber-900 dark:text-amber-300">Payment Processing</p>
+                  <p className="text-xs text-amber-700 dark:text-amber-400 mt-0.5">
+                    Awaiting final confirmation from Stripe webhook. If you just completed checkout, please refresh in a moment.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Pay Now button */}
             <PayNowButton invoiceId={invoice.id} total={total} currency={currency} accentColor={accent} />
 

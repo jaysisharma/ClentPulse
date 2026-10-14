@@ -18,15 +18,17 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           ref={ref}
           id={id}
+          aria-invalid={!!error}
+          aria-describedby={error && id ? `${id}-error` : undefined}
           className={cn(
             'w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 resize-none',
             'focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent',
-            error ? "border-red-400" : "border-slate-200 dark:border-slate-800",
+            error ? "border-rose-400 dark:border-rose-500" : "border-slate-200 dark:border-slate-800",
             className
           )}
           {...props}
         />
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p id={id ? `${id}-error` : undefined} className="text-xs text-rose-500 font-medium">{error}</p>}
       </div>
     )
   }

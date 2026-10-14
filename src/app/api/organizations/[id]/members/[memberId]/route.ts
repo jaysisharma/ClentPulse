@@ -83,6 +83,28 @@ export async function PATCH(
     return NextResponse.json({ error: 'Invalid role' }, { status: 400 })
   }
 
+  // Find target member
+  const { data: targetMember } = await supabase
+    .from('organization_members')
+    .select('id, user_id, role')
+    .eq('id', memberId)
+    .eq('org_id', orgId)
+    .single()
+
+  if (!targetMember) return NextResponse.json({ error: 'Member not found' }, { status: 404 })
+
+  if (targetMember.role === 'owner' && role !== 'owner') {
+    const { count } = await supabase
+      .from('organization_members')
+      .select('*', { count: 'exact', head: true })
+      .eq('org_id', orgId)
+      .eq('role', 'owner')
+
+    if ((count ?? 0) <= 1) {
+      return NextResponse.json({ error: 'Cannot demote the sole owner of the organization' }, { status: 400 })
+    }
+  }
+
   const { data: updated, error } = await supabase
     .from('organization_members')
     .update({ role })

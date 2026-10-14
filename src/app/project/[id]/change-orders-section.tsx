@@ -28,6 +28,7 @@ export function ChangeOrdersSection({
   const [modalOpen, setModalOpen] = useState(false)
   const [editingOrder, setEditingOrder] = useState<ChangeOrder | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
 
   const protectedRevenue = changeOrders
     .filter(co => ['approved', 'paid'].includes(co.status))
@@ -37,6 +38,7 @@ export function ChangeOrdersSection({
   const paidCount = changeOrders.filter(co => co.status === 'paid').length
 
   function handleSuccess(saved: ChangeOrder) {
+    setActionError(null)
     setChangeOrders(prev => {
       const idx = prev.findIndex(item => item.id === saved.id)
       if (idx >= 0) {
@@ -50,16 +52,18 @@ export function ChangeOrdersSection({
 
   async function handleDelete(id: string) {
     if (!confirm('Are you sure you want to delete this change order?')) return
+    setActionError(null)
     try {
       const res = await fetch(`/api/change-orders/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Failed to delete')
       setChangeOrders(prev => prev.filter(c => c.id !== id))
-    } catch (err) {
-      alert('Error deleting change order')
+    } catch {
+      setActionError('Could not delete change order. Please try again.')
     }
   }
 
   async function handleMarkPaid(id: string) {
+    setActionError(null)
     try {
       const res = await fetch(`/api/change-orders/${id}`, {
         method: 'PATCH',
@@ -69,9 +73,11 @@ export function ChangeOrdersSection({
       const data = await res.json()
       if (res.ok && data.changeOrder) {
         handleSuccess(data.changeOrder)
+      } else {
+        setActionError(data.error || 'Failed to update change order status')
       }
     } catch {
-      alert('Error marking change order as paid')
+      setActionError('Network error while marking change order as paid')
     }
   }
 
@@ -122,6 +128,12 @@ export function ChangeOrdersSection({
           </button>
         )}
       </div>
+
+      {actionError && (
+        <div className="p-3 text-xs rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400">
+          {actionError}
+        </div>
+      )}
 
       {/* Mini KPI row */}
       {changeOrders.length > 0 && (

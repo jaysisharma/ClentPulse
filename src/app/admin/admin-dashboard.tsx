@@ -697,7 +697,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
   const handleAdminQuickAction = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!quickActionUserId) {
-      alert('Please select or specify a user ID.')
+      setQuickActionMsg({ type: 'error', text: 'Please select or specify a user ID.' })
       return
     }
     setQuickActionLoading(true)
@@ -815,7 +815,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
   const handleSendBroadcast = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!broadcastSubject || !broadcastFrom || !broadcastHtml) {
-      alert('Please fill out all required broadcast parameters.')
+      setBroadcastResult({ success: false, error: 'Please fill out all required broadcast parameters.' })
       return
     }
 

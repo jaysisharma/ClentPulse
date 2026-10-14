@@ -74,8 +74,9 @@ function NavLink({
       href={href}
       onClick={onNavigate}
       data-tour={tourId || label.toLowerCase()}
+      aria-current={active ? 'page' : undefined}
       className={cn(
-        'group flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150',
+        'group flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
         active
           ? 'bg-indigo-50/80 dark:bg-indigo-500/10 text-indigo-950 dark:text-indigo-200 font-semibold border border-indigo-200/50 dark:border-indigo-500/20 shadow-2xs'
           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/[0.04]'

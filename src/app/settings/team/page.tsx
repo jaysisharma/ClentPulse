@@ -68,6 +68,7 @@ export default function TeamSettingsPage() {
   const [inviting, setInviting] = useState(false)
   const [inviteError, setInviteError] = useState('')
   const [copiedToken, setCopiedToken] = useState<string | null>(null)
+  const [copiedCname, setCopiedCname] = useState(false)
 
   // Create Agency Modal for Personal Studio
   const [newAgencyName, setNewAgencyName] = useState('')
@@ -693,18 +694,26 @@ export default function TeamSettingsPage() {
                         <div className="p-2.5 rounded-lg bg-white dark:bg-black/40 border border-slate-200 dark:border-white/5 flex items-center justify-between">
                           <div>
                             <div className="text-[10px] uppercase text-slate-400">Points to / Value</div>
-                            <div className="font-semibold text-slate-900 dark:text-white mt-0.5">cname.frevio.app</div>
+                            <div className="font-semibold text-slate-900 dark:text-white mt-0.5 font-mono text-xs">cname.frevio.cloud</div>
                           </div>
                           <button
                             type="button"
                             onClick={() => {
-                              navigator.clipboard.writeText('cname.frevio.app')
-                              alert('Copied cname.frevio.app to clipboard')
+                              navigator.clipboard.writeText('cname.frevio.cloud')
+                              setCopiedCname(true)
+                              setTimeout(() => setCopiedCname(false), 2000)
                             }}
-                            className="p-1 rounded hover:bg-white/10 text-slate-400 hover:text-white"
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
                             title="Copy CNAME value"
                           >
-                            <Copy className="w-3.5 h-3.5" />
+                            {copiedCname ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">Copied</span>
+                              </>
+                            ) : (
+                              <Copy className="w-3.5 h-3.5" />
+                            )}
                           </button>
                         </div>
                       </div>

@@ -77,11 +77,14 @@ export function WorkspaceSwitcher({ onWorkspaceChange }: WorkspaceSwitcherProps)
             }
           }
 
-          // If activeId is not found in workspaces, reset to personal
-          if (activeId !== 'personal' && !formatted.some(w => w.id === activeId)) {
-            setActiveId('personal')
-            setActiveWorkspaceCookie('personal')
-          }
+          // If current activeId is not found in workspaces, reset to personal
+          setActiveId(prev => {
+            if (prev !== 'personal' && !formatted.some(w => w.id === prev)) {
+              setActiveWorkspaceCookie('personal')
+              return 'personal'
+            }
+            return prev
+          })
         }
       } catch (err) {
         console.error('Failed to load workspaces:', err)

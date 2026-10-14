@@ -22,6 +22,8 @@ export function ChangeOrderCard({
   const [showDeclineForm, setShowDeclineForm] = useState(false)
   const [declineNotes, setDeclineNotes] = useState('')
 
+  const [error, setError] = useState<string | null>(null)
+
   const isPending = order.status === 'pending'
   const isApproved = order.status === 'approved'
   const isPaid = order.status === 'paid'
@@ -29,6 +31,7 @@ export function ChangeOrderCard({
 
   async function handleApproveAndPay() {
     setLoading(true)
+    setError(null)
     try {
       if (order.requires_payment && order.amount > 0) {
         // Launch Stripe Checkout directly
@@ -53,7 +56,7 @@ export function ChangeOrderCard({
         }
       }
     } catch (err: any) {
-      alert(err.message || 'Error processing approval')
+      setError(err.message || 'Error processing approval')
     } finally {
       setLoading(false)
     }
@@ -61,6 +64,7 @@ export function ChangeOrderCard({
 
   async function handleDecline() {
     setLoading(true)
+    setError(null)
     try {
       const res = await fetch(`/api/change-orders/${order.id}/review`, {
         method: 'POST',
@@ -74,7 +78,7 @@ export function ChangeOrderCard({
         onStatusChange?.(data.changeOrder)
       }
     } catch (err: any) {
-      alert(err.message || 'Error declining change order')
+      setError(err.message || 'Error declining change order')
     } finally {
       setLoading(false)
     }
@@ -85,6 +89,11 @@ export function ChangeOrderCard({
       id={`co-${order.id}`}
       className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md shadow-xs dark:shadow-none p-5 sm:p-6 transition-all space-y-4"
     >
+      {error && (
+        <div className="p-3 text-xs rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400">
+          {error}
+        </div>
+      )}
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
         <div className="space-y-1 min-w-0">
