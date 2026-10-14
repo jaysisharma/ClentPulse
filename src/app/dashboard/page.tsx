@@ -762,12 +762,9 @@ export default async function DashboardPage({
               {/* ── Two-column workspace ─────────────────────────────────── */}
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
 
-                {/* Left column (wider): chart + needs attention */}
+                {/* Left column (wider): needs attention + chart */}
                 <div className="lg:col-span-2 space-y-6 min-w-0 w-full">
-                  {/* ── Cash Flow Chart ────────────────────────────────────── */}
-                  <RevenueChart paid={paidPoints} expenses={expensePoints} />
-
-                  {/* ── Needs attention to-do list ─────────────────────────── */}
+                  {/* ── Needs attention to-do list (Immediate priority at top) ── */}
                   {attentionCount > 0 && (
                     <section className="space-y-3">
                       <div className="flex items-center justify-between">
@@ -853,6 +850,9 @@ export default async function DashboardPage({
                       </div>
                     </section>
                   )}
+
+                  {/* ── Cash Flow Chart ────────────────────────────────────── */}
+                  <RevenueChart paid={paidPoints} expenses={expensePoints} />
                 </div>
 
                 {/* Right column: timer + invoices + projects */}
@@ -860,13 +860,13 @@ export default async function DashboardPage({
 
                   {/* ── Active timer / Workstation Card ───────────────────── */}
                   {runningTimer ? (
-                    <Link href="/time" className="block rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-4 space-y-3 hover:border-slate-300 dark:hover:border-white/20 transition-all shadow-xs dark:shadow-sm">
+                    <Link href="/time" className="block rounded-2xl bg-white dark:bg-[#0c0d12] border border-emerald-500/20 dark:border-emerald-500/25 ring-1 ring-emerald-500/10 p-4 space-y-3 hover:border-emerald-500/40 transition-all shadow-xs dark:shadow-sm">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Timer running</span>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Timer running</span>
                         </div>
-                        <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 font-mono">View →</span>
+                        <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 font-mono">View timer →</span>
                       </div>
                       <div className="text-sm font-semibold text-slate-900 dark:text-white truncate">{runningTimer.description || 'Untitled task'}</div>
                       {timerProject && (
@@ -877,15 +877,17 @@ export default async function DashboardPage({
                       )}
                     </Link>
                   ) : (
-                    <Link href="/time" className="flex items-center gap-3 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 px-4 py-3.5 hover:border-slate-300 dark:hover:border-white/20 transition-all shadow-xs dark:shadow-sm group">
-                      <span className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center flex-shrink-0">
-                        <Timer className="w-4 h-4 text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
+                    <Link href="/time" className="flex items-center gap-3 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 px-4 py-3.5 hover:border-indigo-500/30 hover:scale-[1.01] transition-all shadow-xs dark:shadow-sm group">
+                      <span className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-indigo-400 group-hover:scale-105 transition-transform">
+                        <Timer className="w-4 h-4" />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-slate-900 dark:text-white">Start a timer</p>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400">Track billable hours manually</p>
+                        <p className="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">Start a timer</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">Track billable work with 1 click</p>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors flex-shrink-0" />
+                      <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                        Track <ChevronRight className="w-3.5 h-3.5" />
+                      </span>
                     </Link>
                   )}
 
