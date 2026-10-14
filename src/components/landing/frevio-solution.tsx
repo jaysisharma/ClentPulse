@@ -1,21 +1,101 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import {
-  CheckCircle2, Clock, Sparkles, CreditCard, ExternalLink,
-  ChevronRight, Shield, Layers, FileCheck, ArrowUpRight
+  CheckCircle2, Clock, Sparkles, CreditCard,
+  Layers, FileCheck
 } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 export function FrevioSolution() {
-  const [activeTab, setActiveTab] = useState<'approvals' | 'milestones' | 'updates' | 'payments'>('approvals')
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const bentoGridRef = useRef<HTMLDivElement>(null)
+  const progressBarRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      // 1. Header scroll entrance
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      // 2. Bento cards staggered reveal on scroll
+      if (bentoGridRef.current) {
+        gsap.fromTo(
+          bentoGridRef.current.children,
+          {
+            y: 50,
+            opacity: 0,
+            scale: 0.96,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.85,
+            stagger: 0.14,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: bentoGridRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      // 3. Milestone progress bar animate on scroll
+      if (progressBarRef.current) {
+        gsap.fromTo(
+          progressBarRef.current,
+          { width: '0%' },
+          {
+            width: '75%',
+            duration: 1.2,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: progressBarRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
 
   return (
-    <section id="solution" className="py-16 md:py-24 px-4 sm:px-6 bg-[#0a0b10] border-t border-white/[0.06]">
+    <section ref={sectionRef} id="solution" className="py-16 md:py-24 px-4 sm:px-6 bg-[#0a0b10] border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
+        <div ref={headerRef} className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
             <Sparkles className="w-3.5 h-3.5" />
             <span>The Solution</span>
@@ -31,10 +111,10 @@ export function FrevioSolution() {
         </div>
 
         {/* ── Visual Bento Showcase ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div ref={bentoGridRef} className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           
           {/* Card 1 (Large - 7 cols): 1-Click Deliverable Approval & Stamp */}
-          <div className="lg:col-span-7 rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 sm:p-7 flex flex-col justify-between shadow-xl overflow-hidden relative group">
+          <div className="lg:col-span-7 rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 sm:p-7 flex flex-col justify-between shadow-xl overflow-hidden relative group will-change-transform">
             <div className="space-y-2 mb-6">
               <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-emerald-400">
                 <FileCheck className="w-4 h-4" />
@@ -67,7 +147,7 @@ export function FrevioSolution() {
           </div>
 
           {/* Card 2 (5 cols): Milestone Roadmap */}
-          <div className="lg:col-span-5 rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 sm:p-7 flex flex-col justify-between shadow-xl">
+          <div className="lg:col-span-5 rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 sm:p-7 flex flex-col justify-between shadow-xl will-change-transform">
             <div className="space-y-2 mb-4">
               <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-indigo-400">
                 <Layers className="w-4 h-4" />
@@ -88,9 +168,13 @@ export function FrevioSolution() {
                 <span className="font-mono text-emerald-400 font-medium">75% Complete</span>
               </div>
 
-              {/* Glowing progress line */}
+              {/* Glowing progress line that animates on scroll */}
               <div className="h-2 w-full bg-white/[0.06] rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full" style={{ width: '75%' }} />
+                <div
+                  ref={progressBarRef}
+                  className="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 rounded-full"
+                  style={{ width: '75%' }}
+                />
               </div>
 
               {/* Milestones List */}
@@ -127,7 +211,7 @@ export function FrevioSolution() {
           </div>
 
           {/* Card 3 (5 cols): Connected Stripe Invoicing */}
-          <div className="lg:col-span-5 rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 sm:p-7 flex flex-col justify-between shadow-xl">
+          <div className="lg:col-span-5 rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 sm:p-7 flex flex-col justify-between shadow-xl will-change-transform">
             <div className="space-y-2 mb-4">
               <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-purple-400">
                 <CreditCard className="w-4 h-4" />
@@ -171,7 +255,7 @@ export function FrevioSolution() {
           </div>
 
           {/* Card 4 (Large - 7 cols): Weekly Async Status Updates */}
-          <div className="lg:col-span-7 rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 sm:p-7 flex flex-col justify-between shadow-xl">
+          <div className="lg:col-span-7 rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 sm:p-7 flex flex-col justify-between shadow-xl will-change-transform">
             <div className="space-y-2 mb-4">
               <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-indigo-400">
                 <Clock className="w-4 h-4" />

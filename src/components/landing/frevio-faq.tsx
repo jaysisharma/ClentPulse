@@ -1,7 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Plus, Minus } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 const FAQS = [
   {
@@ -41,12 +47,62 @@ const FAQS = [
 export function FrevioFaq() {
   const [openIdx, setOpenIdx] = useState<number | null>(0)
 
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      if (listRef.current) {
+        gsap.fromTo(
+          listRef.current.children,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.08,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: listRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section id="faq" className="py-20 md:py-28 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
+    <section ref={sectionRef} id="faq" className="py-20 md:py-28 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
       <div className="max-w-4xl mx-auto">
         
         {/* Section Header */}
-        <div className="mb-14 space-y-4 text-center">
+        <div ref={headerRef} className="mb-14 space-y-4 text-center">
           <div className="text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
             Frequently answered
           </div>
@@ -59,11 +115,11 @@ export function FrevioFaq() {
         </div>
 
         {/* Accessible Accordion List */}
-        <div className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
+        <div ref={listRef} className="divide-y divide-white/[0.08] border-y border-white/[0.08]">
           {FAQS.map((faq, idx) => {
             const isOpen = openIdx === idx
             return (
-              <div key={idx} className="py-6 transition-colors">
+              <div key={idx} className="py-6 transition-colors will-change-transform">
                 <button
                   type="button"
                   onClick={() => setOpenIdx(isOpen ? null : idx)}

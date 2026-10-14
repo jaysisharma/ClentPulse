@@ -1,14 +1,72 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import {
   Code, Palette, Video, LineChart, Briefcase,
   CheckCircle2, ArrowUpRight
 } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   FigmaIcon, GitHubIcon, VSCodeIcon, GoogleDriveIcon, StripeIcon
 } from '@/components/ui/brand-icons'
 
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
+
 export function FrevioAudience() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const cardsGridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      if (cardsGridRef.current) {
+        gsap.fromTo(
+          cardsGridRef.current.children,
+          { y: 40, opacity: 0, scale: 0.96 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cardsGridRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   const audiences = [
     {
       role: 'Web & App Developers',
@@ -45,11 +103,11 @@ export function FrevioAudience() {
   ]
 
   return (
-    <section className="py-16 md:py-24 px-4 sm:px-6 bg-[#0a0b10] border-t border-white/[0.06]">
+    <section ref={sectionRef} className="py-16 md:py-24 px-4 sm:px-6 bg-[#0a0b10] border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
+        <div ref={headerRef} className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
             <Briefcase className="w-3.5 h-3.5" />
             <span>Audience</span>
@@ -65,11 +123,11 @@ export function FrevioAudience() {
         </div>
 
         {/* ── Visual Cards Grid ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+        <div ref={cardsGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
           {audiences.map((item, idx) => (
             <div
               key={idx}
-              className="rounded-2xl border border-white/[0.08] bg-[#0d0e14] p-6 sm:p-7 space-y-5 hover:border-white/20 transition-all shadow-xl group"
+              className="rounded-2xl border border-white/[0.08] bg-[#0d0e14] p-6 sm:p-7 space-y-5 hover:border-white/20 transition-all shadow-xl group will-change-transform"
             >
               <div className="flex items-center justify-between">
                 <span className={`text-[11px] font-mono uppercase tracking-wider px-2.5 py-1 rounded-md border ${item.tagColor}`}>

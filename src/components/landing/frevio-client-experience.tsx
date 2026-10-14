@@ -1,16 +1,118 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import {
   Lock, CheckCircle2, ArrowUpRight, MessageSquare,
   FileText, ExternalLink, Check, Sparkles, Smartphone, Laptop, ShieldCheck
 } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 export function FrevioClientExperience() {
-  const [deviceView, setDeviceView] = useState<'desktop' | 'mobile'>('desktop')
   const [commentSent, setCommentSent] = useState(false)
   const [commentText, setCommentText] = useState('')
+
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const passcodeBoxRef = useRef<HTMLDivElement>(null)
+  const pinDigitsRef = useRef<HTMLDivElement>(null)
+  const portalPreviewRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      // 1. Header reveal
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      // 2. Passcode box reveal and sequential pin typing effect
+      if (passcodeBoxRef.current) {
+        gsap.fromTo(
+          passcodeBoxRef.current,
+          { x: -30, opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: passcodeBoxRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      if (pinDigitsRef.current) {
+        gsap.fromTo(
+          pinDigitsRef.current.children,
+          { scale: 0.3, opacity: 0, y: 10 },
+          {
+            scale: 1,
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: 'back.out(2)',
+            scrollTrigger: {
+              trigger: pinDigitsRef.current,
+              start: 'top 82%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      // 3. Portal Preview elevation
+      if (portalPreviewRef.current) {
+        gsap.fromTo(
+          portalPreviewRef.current,
+          {
+            scale: 0.94,
+            opacity: 0,
+            y: 40,
+          },
+          {
+            scale: 1,
+            opacity: 1,
+            y: 0,
+            duration: 0.95,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: portalPreviewRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
 
   const handleSendComment = (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,11 +125,11 @@ export function FrevioClientExperience() {
   }
 
   return (
-    <section id="client-experience" className="py-16 md:py-24 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
+    <section ref={sectionRef} id="client-experience" className="py-16 md:py-24 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
+        <div ref={headerRef} className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-xs font-mono uppercase tracking-[0.16em] text-emerald-400">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>The Client Experience</span>
@@ -47,7 +149,10 @@ export function FrevioClientExperience() {
           
           {/* Left: The Frictionless Passcode Screen (Visual) */}
           <div className="lg:col-span-4 space-y-4">
-            <div className="rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 shadow-xl space-y-6">
+            <div
+              ref={passcodeBoxRef}
+              className="rounded-2xl border border-white/[0.1] bg-[#0d0e14] p-6 shadow-xl space-y-6 will-change-transform"
+            >
               <div className="flex items-center justify-between text-xs font-mono text-slate-400">
                 <span className="flex items-center gap-1.5 text-indigo-400">
                   <Lock className="w-3.5 h-3.5" />
@@ -66,12 +171,12 @@ export function FrevioClientExperience() {
                   Protected project link shared by your studio.
                 </p>
 
-                {/* 6-Digit PIN Visual */}
-                <div className="flex justify-center gap-2 pt-2">
+                {/* 6-Digit PIN Visual with sequential pop */}
+                <div ref={pinDigitsRef} className="flex justify-center gap-2 pt-2">
                   {['8', '4', '2', '9', '1', '6'].map((digit, i) => (
                     <div
                       key={i}
-                      className="size-9 rounded-lg border border-indigo-500/40 bg-indigo-500/10 flex items-center justify-center text-sm font-mono text-white font-bold"
+                      className="size-9 rounded-lg border border-indigo-500/40 bg-indigo-500/10 flex items-center justify-center text-sm font-mono text-white font-bold shadow-xs will-change-transform"
                     >
                       {digit}
                     </div>
@@ -99,8 +204,10 @@ export function FrevioClientExperience() {
 
           {/* Right: The Complete Client Portal Experience */}
           <div className="lg:col-span-8">
-            <div className="rounded-2xl border border-white/[0.12] bg-[#0c0d12] shadow-2xl overflow-hidden">
-              
+            <div
+              ref={portalPreviewRef}
+              className="rounded-2xl border border-white/[0.12] bg-[#0c0d12] shadow-2xl overflow-hidden will-change-transform"
+            >
               {/* Window Bar with Device Mode Selector */}
               <div className="border-b border-white/[0.08] bg-[#08090d] px-5 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">

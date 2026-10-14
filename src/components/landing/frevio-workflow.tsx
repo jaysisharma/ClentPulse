@@ -1,10 +1,91 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { ArrowUpRight, CheckCircle2, Lock, Sparkles, CreditCard, Send, Plus } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { WorkflowPipelineDiagram } from './landing-diagrams'
 
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
+
 export function FrevioWorkflow() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const diagramRef = useRef<HTMLDivElement>(null)
+  const stepsGridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      // 1. Header reveal
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      // 2. Diagram reveal
+      if (diagramRef.current) {
+        gsap.fromTo(
+          diagramRef.current,
+          { scale: 0.95, opacity: 0, y: 30 },
+          {
+            scale: 1,
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: diagramRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      // 3. Staggered 5-step cards
+      if (stepsGridRef.current) {
+        gsap.fromTo(
+          stepsGridRef.current.children,
+          { y: 40, opacity: 0, scale: 0.95 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.7,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: stepsGridRef.current,
+              start: 'top 82%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   const visualSteps = [
     {
       num: '01',
@@ -97,11 +178,11 @@ export function FrevioWorkflow() {
   ]
 
   return (
-    <section id="workflow" className="py-16 md:py-24 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
+    <section ref={sectionRef} id="workflow" className="py-16 md:py-24 px-4 sm:px-6 bg-[#08090a] border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
+        <div ref={headerRef} className="text-center max-w-3xl mx-auto mb-12 sm:mb-14 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
             <Sparkles className="w-3.5 h-3.5" />
             <span>How it works</span>
@@ -117,16 +198,16 @@ export function FrevioWorkflow() {
         </div>
 
         {/* ── High-Fidelity Interactive Pipeline Diagram ── */}
-        <div className="mb-10 rounded-2xl border border-white/[0.08] bg-[#0c0d14] p-5 sm:p-7 shadow-2xl overflow-x-auto">
+        <div ref={diagramRef} className="mb-10 rounded-2xl border border-white/[0.08] bg-[#0c0d14] p-5 sm:p-7 shadow-2xl overflow-x-auto will-change-transform">
           <WorkflowPipelineDiagram className="min-w-[620px] w-full max-w-4xl mx-auto" />
         </div>
 
         {/* ── Visual 5-Step Cards Grid ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div ref={stepsGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {visualSteps.map((step, idx) => (
             <div
               key={idx}
-              className="rounded-2xl border border-white/[0.08] bg-[#0d0e14] p-4 flex flex-col justify-between space-y-4 shadow-lg hover:border-white/20 transition-all group"
+              className="rounded-2xl border border-white/[0.08] bg-[#0d0e14] p-4 flex flex-col justify-between space-y-4 shadow-lg hover:border-white/20 transition-all group will-change-transform"
             >
               <div>
                 <div className="flex items-center justify-between text-xs font-mono text-indigo-400 mb-2">

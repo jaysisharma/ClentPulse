@@ -1,8 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Check, ArrowUpRight } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
   PRICING,
   AGENCY_PRICING,
@@ -13,12 +15,68 @@ import {
   AGENCY_SCALE_FEATURES,
 } from '@/lib/plans'
 
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
+
 interface FrevioPricingProps {
   signupHref: string
 }
 
 export function FrevioPricing({ signupHref }: FrevioPricingProps) {
   const [annual, setAnnual] = useState(false)
+
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const toggleRef = useRef<HTMLDivElement>(null)
+  const cardsGridRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current.children,
+          { y: 35, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.12,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+
+      if (cardsGridRef.current) {
+        gsap.fromTo(
+          cardsGridRef.current.children,
+          { y: 45, opacity: 0, scale: 0.95 },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: cardsGridRef.current,
+              start: 'top 80%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
 
   const proPrice = annual ? Math.round(PRICING.annual / 12) : PRICING.monthly
   const agencyPrice = annual ? Math.round(AGENCY_PRICING.agency.annual / 12) : AGENCY_PRICING.agency.monthly
@@ -96,11 +154,11 @@ export function FrevioPricing({ signupHref }: FrevioPricingProps) {
   ]
 
   return (
-    <section id="pricing" className="py-20 md:py-28 px-4 sm:px-6 bg-[#0a0b10] border-t border-white/[0.06]">
+    <section ref={sectionRef} id="pricing" className="py-20 md:py-28 px-4 sm:px-6 bg-[#0a0b10] border-t border-white/[0.06]">
       <div className="max-w-6xl mx-auto">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 space-y-4">
+        <div ref={headerRef} className="max-w-3xl mb-12 space-y-4">
           <div className="text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
             Pricing
           </div>
@@ -113,7 +171,7 @@ export function FrevioPricing({ signupHref }: FrevioPricingProps) {
         </div>
 
         {/* Monthly / Annual Billing Toggle */}
-        <div className="mb-12 flex items-center gap-3">
+        <div ref={toggleRef} className="mb-12 flex items-center gap-3">
           <div className="inline-flex items-center rounded-full bg-white/[0.04] p-1 border border-white/[0.08]">
             <button
               type="button"
@@ -144,11 +202,11 @@ export function FrevioPricing({ signupHref }: FrevioPricingProps) {
         </div>
 
         {/* 4-Tier Calm & Comparable Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div ref={cardsGridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {tiers.map((tier) => (
             <div
               key={tier.name}
-              className={`rounded-2xl border p-6 flex flex-col justify-between transition-all ${
+              className={`rounded-2xl border p-6 flex flex-col justify-between transition-all will-change-transform ${
                 tier.popular
                   ? 'border-indigo-500/40 bg-indigo-500/[0.03] ring-1 ring-indigo-500/20'
                   : 'border-white/[0.08] bg-[#0c0d12]'
@@ -198,20 +256,14 @@ export function FrevioPricing({ signupHref }: FrevioPricingProps) {
                 className={`w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-center transition-all inline-flex items-center justify-center gap-1.5 ${
                   tier.popular
                     ? 'bg-white text-slate-950 hover:bg-slate-100 shadow-xs'
-                    : 'bg-white/[0.06] text-white hover:bg-white/[0.1] border border-white/[0.08]'
+                    : 'bg-white/[0.06] text-white hover:bg-white/[0.1] border border-white/10'
                 }`}
               >
                 <span>{tier.cta}</span>
-                <ArrowUpRight className="w-3 h-3" />
+                <ArrowUpRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           ))}
-        </div>
-
-        {/* Footnote */}
-        <div className="mt-10 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-400">
-          <span>All plans include secure client passcode links and Stripe checkout.</span>
-          <span>Switch or cancel anytime with zero lock-in.</span>
         </div>
 
       </div>

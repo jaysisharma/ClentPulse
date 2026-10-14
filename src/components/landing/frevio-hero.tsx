@@ -1,9 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowUpRight, Play, CheckCircle2, ShieldCheck, CreditCard, Sparkles, Eye, Monitor } from 'lucide-react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface FrevioHeroProps {
   signupHref: string
@@ -13,14 +19,95 @@ export function FrevioHero({ signupHref }: FrevioHeroProps) {
   const [viewMode, setViewMode] = useState<'portal' | 'studio'>('portal')
   const [approvedBadge, setApprovedBadge] = useState(false)
 
+  const sectionRef = useRef<HTMLElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const ctaRef = useRef<HTMLDivElement>(null)
+  const browserFrameRef = useRef<HTMLDivElement>(null)
+  const hotspotsRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const ctx = gsap.context(() => {
+      // 1. Initial entrance for hero headline and CTAs
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+      if (headerRef.current) {
+        tl.fromTo(
+          headerRef.current.children,
+          { y: 35, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.9, stagger: 0.12 }
+        )
+      }
+
+      if (ctaRef.current) {
+        tl.fromTo(
+          ctaRef.current,
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6 },
+          '-=0.4'
+        )
+      }
+
+      // 2. Awwwards-style 3D perspective reveal on the browser mockup
+      if (browserFrameRef.current) {
+        tl.fromTo(
+          browserFrameRef.current,
+          {
+            y: 60,
+            opacity: 0,
+            scale: 0.94,
+            rotationX: 12,
+            transformPerspective: 1200,
+          },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            rotationX: 0,
+            duration: 1.1,
+            ease: 'power3.out',
+          },
+          '-=0.6'
+        )
+
+        // Subtle 3D scrub on scroll as you scroll down
+        gsap.to(browserFrameRef.current, {
+          y: 40,
+          scale: 0.97,
+          rotationX: -4,
+          transformPerspective: 1200,
+          scrollTrigger: {
+            trigger: browserFrameRef.current,
+            start: 'top 30%',
+            end: 'bottom top',
+            scrub: 1.2,
+          },
+        })
+      }
+
+      // 3. Hotspot badge bounce-in
+      if (hotspotsRef.current) {
+        tl.fromTo(
+          hotspotsRef.current.children,
+          { scale: 0.8, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.7)' },
+          '-=0.3'
+        )
+      }
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
   return (
-    <section className="relative pt-10 pb-16 md:pt-16 md:pb-24 px-4 sm:px-6 bg-[#08090a] overflow-hidden">
+    <section ref={sectionRef} className="relative pt-10 pb-16 md:pt-16 md:pb-24 px-4 sm:px-6 bg-[#08090a] overflow-hidden">
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-indigo-500/10 blur-[130px] pointer-events-none rounded-full" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* ── Top Header: Minimal, Punchy, Fast to Read ── */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
+        <div ref={headerRef} className="text-center max-w-3xl mx-auto space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-indigo-500/20 bg-indigo-500/10 text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
             <span className="size-1.5 rounded-full bg-indigo-400 animate-pulse" />
             <span>The Client Workspace for Freelancers &amp; Studios</span>
@@ -35,44 +122,49 @@ export function FrevioHero({ signupHref }: FrevioHeroProps) {
           </p>
 
           {/* Action CTAs */}
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href={signupHref}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-slate-950 transition-all hover:bg-slate-100 hover:scale-[1.01] shadow-lg shadow-white/5"
-            >
-              <span>Start free</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/demo"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-6 py-3.5 text-sm font-medium text-slate-200 transition-all hover:bg-white/[0.08] hover:text-white"
-            >
-              <Play className="w-3.5 h-3.5 fill-current" />
-              <span>Watch 1-min demo</span>
-            </Link>
-          </div>
+          <div ref={ctaRef} className="space-y-3">
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href={signupHref}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-semibold text-slate-950 transition-all hover:bg-slate-100 hover:scale-[1.01] shadow-lg shadow-white/5"
+              >
+                <span>Start free</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/demo"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-6 py-3.5 text-sm font-medium text-slate-200 transition-all hover:bg-white/[0.08] hover:text-white"
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Watch 1-min demo</span>
+              </Link>
+            </div>
 
-          {/* Trust points */}
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-              Free for up to 2 active projects
-            </span>
-            <span className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-              Clients need zero account
-            </span>
-            <span className="flex items-center gap-1.5">
-              <CreditCard className="w-3.5 h-3.5 text-slate-400" />
-              No credit card required
-            </span>
+            {/* Trust points */}
+            <div className="pt-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                Free for up to 2 active projects
+              </span>
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
+                Clients need zero account
+              </span>
+              <span className="flex items-center gap-1.5">
+                <CreditCard className="w-3.5 h-3.5 text-slate-400" />
+                No credit card required
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* ── Main Feature: Large, Eye-Catching Product Interface Visual ── */}
+        {/* ── Main Feature: Large, Eye-Catching Product Interface Visual with 3D Tilt ── */}
         <div className="mt-10 sm:mt-12">
-          <div className="relative rounded-2xl border border-white/[0.14] bg-[#0c0d12] shadow-2xl overflow-hidden ring-1 ring-white/[0.08]">
-            
+          <div
+            ref={browserFrameRef}
+            style={{ transformStyle: 'preserve-3d' }}
+            className="relative rounded-2xl border border-white/[0.14] bg-[#0c0d12] shadow-2xl overflow-hidden ring-1 ring-white/[0.08] will-change-transform"
+          >
             {/* Window Chrome Header & View Toggle */}
             <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#090a0f] px-4 py-3 text-xs text-slate-400">
               <div className="flex items-center gap-2">
@@ -128,7 +220,7 @@ export function FrevioHero({ signupHref }: FrevioHeroProps) {
                   />
 
                   {/* Interactive Hotspot / Overlay Callouts */}
-                  <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto flex flex-wrap gap-2.5">
+                  <div ref={hotspotsRef} className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto flex flex-wrap gap-2.5">
                     <button
                       type="button"
                       onClick={() => setApprovedBadge(!approvedBadge)}
