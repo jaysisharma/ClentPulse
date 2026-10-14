@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
-import { TasteLanding } from '@/components/landing/taste-landing'
+import { SpatialLanding } from '@/components/landing/spatial-landing'
 
 export default async function LandingPage() {
   const supabase = await createClient()
@@ -9,5 +9,6 @@ export default async function LandingPage() {
   const isLoggedIn = !!user
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
-  return <TasteLanding isLoggedIn={isLoggedIn} signupHref={signupHref} />
+  return <SpatialLanding isLoggedIn={isLoggedIn} signupHref={signupHref} />
 }
+
