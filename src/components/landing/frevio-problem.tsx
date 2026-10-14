@@ -88,6 +88,21 @@ export function FrevioProblem() {
 
         </div>
 
+        {/* Editorial Visual: From Fragmented Chaos to Structured Clarity */}
+        <div className="mt-12 sm:mt-16 rounded-2xl border border-white/[0.08] bg-[#0c0d14] overflow-hidden shadow-2xl">
+          <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-[#08090a]">
+            <img
+              src="/images/frevio-chaos-to-clarity.jpg"
+              alt="Editorial visual showing scattered fragmented communications resolving into a single structured client workspace"
+              className="w-full h-full object-cover object-center"
+            />
+          </div>
+          <div className="px-6 py-3.5 bg-[#090a0f] border-t border-white/[0.06] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-slate-400 font-mono">
+            <span className="text-slate-300">Before: 5 apps, missed DMs, and endless status check-ins</span>
+            <span className="text-indigo-400">With Frevio: 1 link, real-time milestones, and 1-click approvals</span>
+          </div>
+        </div>
+
       </div>
     </section>
   )

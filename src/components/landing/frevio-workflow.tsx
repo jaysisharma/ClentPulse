@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
+import { WorkflowPipelineDiagram } from './landing-diagrams'
 
 export function FrevioWorkflow() {
   const steps = [
@@ -42,7 +43,7 @@ export function FrevioWorkflow() {
       <div className="max-w-6xl mx-auto">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-14 sm:mb-16 space-y-4">
+        <div className="max-w-3xl mb-12 sm:mb-14 space-y-4">
           <div className="text-xs font-mono uppercase tracking-[0.16em] text-indigo-400">
             How it works
           </div>
@@ -52,6 +53,11 @@ export function FrevioWorkflow() {
           <p className="text-base sm:text-lg text-slate-300 font-light leading-relaxed">
             A simple, predictable process that keeps you organized and leaves your clients impressed.
           </p>
+        </div>
+
+        {/* ── High-Fidelity SVG Pipeline Diagram ── */}
+        <div className="mb-14 rounded-2xl border border-white/[0.08] bg-[#0c0d14] p-5 sm:p-7 shadow-2xl overflow-x-auto">
+          <WorkflowPipelineDiagram className="min-w-[620px] w-full max-w-4xl mx-auto" />
         </div>
 
         {/* Clean Typographic Progression Timeline */}
