@@ -129,6 +129,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [saved, setSaved] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [duplicating, setDuplicating] = useState(false)
+  const [confirmingDuplicate, setConfirmingDuplicate] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
   const [error, setError] = useState('')
   const [notFound, setNotFound] = useState(false)
   const savedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -241,7 +243,6 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   }
 
   async function handleDuplicate() {
-    if (!confirm('Duplicate this project?')) return
     setDuplicating(true)
     const res = await fetch('/api/duplicate-project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId: id }) })
     const data = await res.json()
@@ -281,7 +282,6 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   }
 
   async function handleDelete() {
-    if (!confirm('Delete this project permanently? This cannot be undone.')) return
     setDeleting(true)
     await createClient().from('projects').delete().eq('id', id)
     router.push('/dashboard')
@@ -921,14 +921,36 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       <div className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Duplicate project</div>
                       <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Creates a clone with the same client, colour, budget, and hourly rate.</p>
                     </div>
-                    <button 
-                      onClick={handleDuplicate} 
-                      disabled={duplicating}
-                      className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50"
-                    >
-                      {duplicating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Copy className="w-3.5 h-3.5" />}
-                      Duplicate
-                    </button>
+                    {confirmingDuplicate ? (
+                      <span className="inline-flex items-center gap-1.5 text-xs text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-full border border-indigo-500/20">
+                        <span>Duplicate project?</span>
+                        <button
+                          type="button"
+                          onClick={handleDuplicate}
+                          disabled={duplicating}
+                          className="font-bold underline hover:text-indigo-300 cursor-pointer"
+                        >
+                          Yes
+                        </button>
+                        <span className="text-slate-600">·</span>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmingDuplicate(false)}
+                          className="text-slate-400 hover:text-white cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                      </span>
+                    ) : (
+                      <button 
+                        onClick={() => setConfirmingDuplicate(true)} 
+                        disabled={duplicating}
+                        className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                      >
+                        {duplicating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Copy className="w-3.5 h-3.5" />}
+                        Duplicate
+                      </button>
+                    )}
                   </div>
 
                   {/* Delete */}
@@ -944,14 +966,36 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm font-light">
                         Permanently removes all status updates, milestones, approval logs, invoice associations, and logged sessions for this project.
                       </p>
-                      <button 
-                        disabled={deleting} 
-                        onClick={handleDelete} 
-                        className="rounded-full bg-rose-600 hover:bg-rose-500 text-white font-semibold px-4 py-2 text-xs transition-all shadow-xs flex-shrink-0 inline-flex items-center gap-1.5 disabled:opacity-50"
-                      >
-                        {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                        Delete project
-                      </button>
+                      {confirmingDelete ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 px-3 py-1.5 rounded-full border border-rose-500/20">
+                          <span>Permanently delete?</span>
+                          <button
+                            type="button"
+                            onClick={handleDelete}
+                            disabled={deleting}
+                            className="font-bold underline hover:text-rose-300 cursor-pointer"
+                          >
+                            Yes
+                          </button>
+                          <span className="text-slate-600">·</span>
+                          <button
+                            type="button"
+                            onClick={() => setConfirmingDelete(false)}
+                            className="text-slate-400 hover:text-white cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                        </span>
+                      ) : (
+                        <button 
+                          disabled={deleting} 
+                          onClick={() => setConfirmingDelete(true)} 
+                          className="rounded-full bg-rose-600 hover:bg-rose-500 text-white font-semibold px-4 py-2 text-xs transition-all shadow-xs flex-shrink-0 inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                        >
+                          {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                          Delete project
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>

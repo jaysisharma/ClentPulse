@@ -2,14 +2,30 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Frevio — Client Portal & Operating System',
+    name: 'Frevio — Client Portal & Operating System for Freelancers',
     short_name: 'Frevio',
-    description: 'Real-time client project portal, deliverable approvals, and billing settlement.',
+    description:
+      'The client operating system for modern freelancers and boutique studios. Milestone approvals, client portals, and zero-fee Stripe settlements.',
     start_url: '/',
     display: 'standalone',
     background_color: '#08090a',
     theme_color: '#08090a',
     icons: [
+      {
+        src: '/favicon.ico',
+        sizes: '16x16 32x32 48x48',
+        type: 'image/x-icon',
+      },
+      {
+        src: '/android-chrome-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+      {
+        src: '/android-chrome-512x512.png',
+        sizes: '512x512',
+        type: 'image/png',
+      },
       {
         src: '/icon.svg',
         sizes: 'any',

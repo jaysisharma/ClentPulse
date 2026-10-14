@@ -177,6 +177,7 @@ export default function SettingsPage() {
   const [tokens, setTokens] = useState<{ id: string; token_preview: string; name: string; last_used_at: string | null; created_at: string }[]>([])
   const [generatedToken, setGeneratedToken] = useState<string | null>(null)
   const [tokenCopied, setTokenCopied] = useState(false)
+  const [revokingTokenId, setRevokingTokenId] = useState<string | null>(null)
   const [generatingToken, setGeneratingToken] = useState(false)
 
   // Security & Password
@@ -301,9 +302,9 @@ export default function SettingsPage() {
   }
 
   async function handleRevokeToken(id: string) {
-    if (!confirm('Are you sure you want to revoke this extension key? Any connected editors will disconnect.')) return
     await fetch(`/api/extension/token?id=${id}`, { method: 'DELETE' })
     setTokens(prev => prev.filter(t => t.id !== id))
+    setRevokingTokenId(null)
     if (generatedToken) setGeneratedToken(null)
   }
 
@@ -1071,13 +1072,32 @@ export default function SettingsPage() {
                               Synced {new Date(t.last_used_at).toLocaleDateString()}
                             </span>
                           )}
-                          <button
-                            onClick={() => handleRevokeToken(t.id)}
-                            className="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400/70 dark:hover:text-rose-300 flex items-center gap-1 cursor-pointer transition-colors p-1"
-                            title="Revoke Token"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          {revokingTokenId === t.id ? (
+                            <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+                              <span>Revoke?</span>
+                              <button
+                                onClick={() => handleRevokeToken(t.id)}
+                                className="font-bold underline hover:text-rose-300 cursor-pointer"
+                              >
+                                Yes
+                              </button>
+                              <span className="text-slate-600">·</span>
+                              <button
+                                onClick={() => setRevokingTokenId(null)}
+                                className="text-slate-400 hover:text-white cursor-pointer"
+                              >
+                                Cancel
+                              </button>
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => setRevokingTokenId(t.id)}
+                              className="text-xs text-rose-500 hover:text-rose-700 dark:text-rose-400/70 dark:hover:text-rose-300 flex items-center gap-1 cursor-pointer transition-colors p-1"
+                              title="Revoke Token"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
                         </div>
                       </div>
                     ))}

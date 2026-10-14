@@ -41,6 +41,7 @@ export default function PortfolioPage() {
   const [saving, setSaving]     = useState(false)
   const [saved, setSaved]       = useState(false)
   const [copied, setCopied]     = useState(false)
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
   const [bioError, setBioError] = useState('')
 
   // Database schema migration notice
@@ -145,11 +146,11 @@ export default function PortfolioPage() {
   }
 
   async function deleteItem(id: string) {
-    if (!confirm('Remove this work item from your portfolio?')) return
     const supabase = createClient()
     await supabase.from('portfolio_items').delete().eq('id', id)
     deleteLocalPortfolioItem(userId, id)
     setItems(prev => prev.filter(i => i.id !== id))
+    setConfirmingDeleteId(null)
   }
 
   async function handleSaveProjectLink(openShowcase: boolean) {
@@ -519,9 +520,31 @@ export default function PortfolioPage() {
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                       </Link>
-                      <button onClick={() => deleteItem(item.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-200/60 dark:hover:bg-white/5 transition-colors">
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                      {confirmingDeleteId === item.id ? (
+                        <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+                          <span>Remove?</span>
+                          <button
+                            onClick={() => deleteItem(item.id)}
+                            className="font-bold underline hover:text-rose-300 cursor-pointer"
+                          >
+                            Yes
+                          </button>
+                          <span className="text-slate-600">·</span>
+                          <button
+                            onClick={() => setConfirmingDeleteId(null)}
+                            className="text-slate-400 hover:text-white cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                        </span>
+                      ) : (
+                        <button
+                          onClick={() => setConfirmingDeleteId(item.id)}
+                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-200/60 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

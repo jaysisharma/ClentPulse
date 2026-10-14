@@ -238,9 +238,10 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
   // Email Broadcast State Hooks
   const [broadcastTarget, setBroadcastTarget] = useState<'all' | 'leads' | 'free' | 'pro'>('all')
   const [broadcastSubject, setBroadcastSubject] = useState('')
-  const [broadcastFrom, setBroadcastFrom] = useState('Frevio Announcements <onboarding@resend.dev>')
+  const [broadcastFrom, setBroadcastFrom] = useState('Frevio Announcements <updates@frevio.cloud>')
   const [broadcastHtml, setBroadcastHtml] = useState('<h1>Hello {{name}},</h1>\n<p>We are excited to share some new updates...</p>')
   const [sendingBroadcast, setSendingBroadcast] = useState(false)
+  const [confirmingBroadcast, setConfirmingBroadcast] = useState(false)
   const [broadcastResult, setBroadcastResult] = useState<{ success: boolean; sentCount?: number; failCount?: number; totalCount?: number; error?: string } | null>(null)
   const [broadcastEditTab, setBroadcastEditTab] = useState<'write' | 'preview'>('write')
 
@@ -819,10 +820,8 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
       return
     }
 
-    const confirmSend = confirm(`Are you sure you want to broadcast this email to all users in the targeted "${broadcastTarget}" segment?`)
-    if (!confirmSend) return
-
     setSendingBroadcast(true)
+    setConfirmingBroadcast(false)
     setBroadcastResult(null)
 
     try {
@@ -1913,10 +1912,40 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
               </div>
             )}
 
-            <Button type="submit" disabled={sendingBroadcast} className="w-full justify-center">
-              {sendingBroadcast ? 'Sending broadcast...' : 'Dispatch Bulk Announcement'}
-              <ArrowRight className="w-4 h-4 ml-1.5" />
-            </Button>
+            {confirmingBroadcast ? (
+              <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3 space-y-2 text-center">
+                <p className="text-xs font-semibold text-rose-300">
+                  Ready to broadcast this announcement to all &quot;{broadcastTarget}&quot; users?
+                </p>
+                <div className="flex items-center justify-center gap-2">
+                  <Button
+                    type="submit"
+                    disabled={sendingBroadcast}
+                    className="bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs px-4 py-1.5"
+                  >
+                    {sendingBroadcast ? 'Sending broadcast...' : 'Confirm & Send Now'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setConfirmingBroadcast(false)}
+                    className="text-xs px-4 py-1.5"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <Button
+                type="button"
+                onClick={() => setConfirmingBroadcast(true)}
+                disabled={sendingBroadcast}
+                className="w-full justify-center"
+              >
+                {sendingBroadcast ? 'Sending broadcast...' : 'Review & Dispatch Bulk Announcement'}
+                <ArrowRight className="w-4 h-4 ml-1.5" />
+              </Button>
+            )}
           </form>
         </div>
       )}

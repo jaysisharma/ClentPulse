@@ -104,12 +104,8 @@ export async function POST(request: Request) {
     }
 
     // 4. Send the OTP email using Resend
-    // In development, use Resend's built-in test address (no domain verification required).
-    // In production, RESEND_FROM_EMAIL must point to a verified domain.
     const isDev = process.env.NODE_ENV !== 'production'
-    const fromEmail = isDev
-      ? 'Frevio <onboarding@resend.dev>'
-      : (process.env.RESEND_FROM_EMAIL || 'Frevio <login@frevio.cloud>')
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'Frevio <login@frevio.cloud>'
 
     // Always log the code in dev so you can test without needing email delivery
     if (isDev) {

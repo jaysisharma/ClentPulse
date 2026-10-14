@@ -69,6 +69,7 @@ export default function TeamSettingsPage() {
   const [inviteError, setInviteError] = useState('')
   const [copiedToken, setCopiedToken] = useState<string | null>(null)
   const [copiedCname, setCopiedCname] = useState(false)
+  const [removingMemberId, setRemovingMemberId] = useState<string | null>(null)
 
   // Create Agency Modal for Personal Studio
   const [newAgencyName, setNewAgencyName] = useState('')
@@ -255,7 +256,6 @@ export default function TeamSettingsPage() {
 
   async function handleRemoveMember(memberId: string) {
     if (!org) return
-    if (!confirm('Are you sure you want to remove this member from the organization?')) return
 
     try {
       const res = await fetch(`/api/organizations/${org.id}/members/${memberId}`, {
@@ -263,6 +263,7 @@ export default function TeamSettingsPage() {
       })
       if (res.ok) {
         setMembers(prev => prev.filter(m => m.id !== memberId))
+        setRemovingMemberId(null)
       }
     } catch (err) {
       console.error(err)
@@ -778,14 +779,35 @@ export default function TeamSettingsPage() {
                         </span>
 
                         {callerRole === 'owner' && m.role !== 'owner' && (
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveMember(m.id)}
-                            className="p-1 rounded-lg text-slate-400 hover:text-rose-500 transition-colors"
-                            title="Remove member"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                          removingMemberId === m.id ? (
+                            <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">
+                              <span>Remove?</span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveMember(m.id)}
+                                className="font-bold underline hover:text-rose-300 cursor-pointer"
+                              >
+                                Yes
+                              </button>
+                              <span className="text-slate-600">·</span>
+                              <button
+                                type="button"
+                                onClick={() => setRemovingMemberId(null)}
+                                className="text-slate-400 hover:text-white cursor-pointer"
+                              >
+                                Cancel
+                              </button>
+                            </span>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setRemovingMemberId(m.id)}
+                              className="p-1 rounded-lg text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+                              title="Remove member"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )
                         )}
                       </div>
                     </div>

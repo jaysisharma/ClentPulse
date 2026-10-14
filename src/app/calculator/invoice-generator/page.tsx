@@ -46,6 +46,7 @@ export default function FreeInvoiceGeneratorPage() {
   const [fromAddress, setFromAddress] = useState('742 Evergreen Terrace, Suite 400\nSan Francisco, CA 94107')
   const [fromTaxId, setFromTaxId] = useState('US-EIN 94-8829102')
   const [logoUrl, setLogoUrl] = useState<string | null>(null)
+  const [logoError, setLogoError] = useState('')
 
   // Bill To (Client)
   const [toName, setToName] = useState('Acme Corporation')
@@ -100,10 +101,11 @@ export default function FreeInvoiceGeneratorPage() {
   }
 
   function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    setLogoError('')
     const file = e.target.files?.[0]
     if (!file) return
     if (file.size > 2 * 1024 * 1024) {
-      alert('Logo must be under 2MB')
+      setLogoError('Logo file size must be under 2MB.')
       return
     }
     const reader = new FileReader()
@@ -244,11 +246,16 @@ export default function FreeInvoiceGeneratorPage() {
                   </button>
                 </div>
               ) : (
-                <label className="print:hidden inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-dashed border-white/20 hover:border-indigo-400 bg-white/5 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer mb-4">
-                  <Upload className="w-3.5 h-3.5 text-indigo-400" />
-                  <span>Upload logo (PNG/JPG)</span>
-                  <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
-                </label>
+                <div className="mb-4">
+                  <label className="print:hidden inline-flex items-center gap-2 px-3 py-2 rounded-xl border border-dashed border-white/20 hover:border-indigo-400 bg-white/5 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer">
+                    <Upload className="w-3.5 h-3.5 text-indigo-400" />
+                    <span>Upload logo (PNG/JPG)</span>
+                    <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                  </label>
+                  {logoError && (
+                    <p className="text-[11px] text-rose-400 mt-1 font-mono">{logoError}</p>
+                  )}
+                </div>
               )}
 
               <input

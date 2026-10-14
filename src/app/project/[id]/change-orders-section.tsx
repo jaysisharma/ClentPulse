@@ -29,6 +29,7 @@ export function ChangeOrdersSection({
   const [editingOrder, setEditingOrder] = useState<ChangeOrder | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
+  const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null)
 
   const protectedRevenue = changeOrders
     .filter(co => ['approved', 'paid'].includes(co.status))
@@ -51,12 +52,12 @@ export function ChangeOrdersSection({
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Are you sure you want to delete this change order?')) return
     setActionError(null)
     try {
       const res = await fetch(`/api/change-orders/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Failed to delete')
       setChangeOrders(prev => prev.filter(c => c.id !== id))
+      setConfirmingDeleteId(null)
     } catch {
       setActionError('Could not delete change order. Please try again.')
     }
@@ -295,14 +296,35 @@ export function ChangeOrdersSection({
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
 
-                    <button
-                      type="button"
-                      title="Delete"
-                      onClick={() => handleDelete(co.id)}
-                      className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-colors cursor-pointer"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    {confirmingDeleteId === co.id ? (
+                      <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 px-2 py-1 rounded-lg border border-rose-500/20">
+                        <span>Delete?</span>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(co.id)}
+                          className="font-bold underline hover:text-rose-300 cursor-pointer"
+                        >
+                          Yes
+                        </button>
+                        <span className="text-slate-600">·</span>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmingDeleteId(null)}
+                          className="text-slate-400 hover:text-white cursor-pointer"
+                        >
+                          Cancel
+                        </button>
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        title="Delete"
+                        onClick={() => setConfirmingDeleteId(co.id)}
+                        className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-colors cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
