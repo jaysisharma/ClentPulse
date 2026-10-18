@@ -23,10 +23,15 @@ describe('Plan Definitions and Helpers', () => {
     expect(FREE_PROJECT_LIMIT).toBe(2)
     expect(PRICING.monthly).toBe(19)
     expect(PRICING.annual).toBe(190)
-    expect(AGENCY_PRICING.agency.monthly).toBe(79)
-    expect(AGENCY_PRICING.agency.annual).toBe(790)
+    expect(AGENCY_PRICING.agency.monthly).toBe(49)
+    expect(AGENCY_PRICING.agency.annual).toBe(490)
     expect(AGENCY_PRICING.scale.monthly).toBe(199)
     expect(AGENCY_PRICING.scale.annual).toBe(1990)
+  })
+
+  it('defines correct studio pricing', () => {
+    expect(AGENCY_PRICING.agency.monthly).toBe(49)
+    expect(AGENCY_PRICING.agency.annual).toBe(490)
   })
 
   it('normalizes legacy and variant plan strings', () => {
@@ -36,6 +41,7 @@ describe('Plan Definitions and Helpers', () => {
     expect(normalizePlan('')).toBe('free')
     expect(normalizePlan('pro')).toBe('pro')
     expect(normalizePlan('freelancer')).toBe('pro')
+    expect(normalizePlan('studio')).toBe('agency')
     expect(normalizePlan('agency')).toBe('agency')
     expect(normalizePlan('agency_starter')).toBe('agency')
     expect(normalizePlan('starter')).toBe('agency')

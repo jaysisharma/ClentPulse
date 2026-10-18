@@ -32,32 +32,15 @@ export async function POST(request: Request) {
 
   if (totalCents < 50) return NextResponse.json({ error: 'Invoice total too small to process' }, { status: 400 })
 
-  const currencyCode = (invoice.currency || 'usd').toLowerCase()
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL!
-  const session = await stripe.checkout.sessions.create({
-    mode: 'payment',
-    payment_method_types: ['card'],
-    customer_email: invoice.client_email ?? undefined,
-    line_items: [{
-      price_data: {
-        currency: currencyCode,
-        unit_amount: totalCents,
-        product_data: {
-          name: `${invoice.is_deposit ? 'Upfront Deposit: ' : ''}Invoice ${invoice.invoice_number}`,
-          description: `Payment to ${owner?.name ?? 'Freelancer'}${taxRate > 0 ? ` (incl. ${taxRate}% Tax/VAT)` : ''}`,
-        },
-      },
-      quantity: 1,
-    }],
-    metadata: {
-      invoice_id: invoice.id,
-      project_id: invoice.project_id || '',
-      is_deposit: invoice.is_deposit ? 'true' : 'false',
-      type: 'invoice_payment',
-    },
-    success_url: `${appUrl}/invoice/${invoice.id}?paid=1`,
-    cancel_url: `${appUrl}/invoice/${invoice.id}`,
-  })
-
-  return NextResponse.json({ url: session.url })
+  // SAFETY GUARD (Phase 2):
+  // Direct online card payments for client invoices are temporarily disabled because
+  // Frevio does not yet route funds via verified Stripe Connect destination charges.
+  // Creating a platform checkout session would hold client funds in the platform's
+  // Stripe account without an automated payout mechanism, posing critical regulatory
+  // and money-transmission risks.
+  return NextResponse.json({
+    error: 'Direct online card processing for client invoices is temporarily disabled pending studio direct payout (Stripe Connect) integration. Please settle directly with the freelancer/studio via bank transfer or their preferred payment method.',
+    code: 'PAYMENTS_UNAVAILABLE',
+    disabled: true,
+  }, { status: 503 })
 }

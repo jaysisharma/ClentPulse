@@ -102,25 +102,13 @@ describe('POST /api/pay-invoice', () => {
     expect(data.error).toBe('Already paid')
   })
 
-  it('creates Stripe checkout session with currency, tax amount, and deposit metadata', async () => {
+  it('fails closed with 503 PAYMENTS_UNAVAILABLE to prevent collecting client funds into platform account without Connect', async () => {
     const { POST } = await import('./route')
     const res = await POST(makeRequest({ invoiceId: 'inv_123' }))
-    expect(res.status).toBe(200)
+    expect(res.status).toBe(503)
     const data = await res.json()
-    expect(data.url).toBe('https://checkout.stripe.com/test_invoice')
-
-    expect(mockCheckoutCreate).toHaveBeenCalledTimes(1)
-    const sessionArgs = mockCheckoutCreate.mock.calls[0][0]
-
-    // 1000 + 20% tax = 1200 => 120000 cents
-    expect(sessionArgs.line_items[0].price_data.unit_amount).toBe(120000)
-    expect(sessionArgs.line_items[0].price_data.currency).toBe('eur')
-    expect(sessionArgs.line_items[0].price_data.product_data.name).toContain('Upfront Deposit: Invoice INV-001')
-    expect(sessionArgs.metadata).toEqual({
-      invoice_id: 'inv_123',
-      project_id: 'proj_abc',
-      is_deposit: 'true',
-      type: 'invoice_payment',
-    })
+    expect(data.code).toBe('PAYMENTS_UNAVAILABLE')
+    expect(data.disabled).toBe(true)
+    expect(mockCheckoutCreate).not.toHaveBeenCalled()
   })
 })

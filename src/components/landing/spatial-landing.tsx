@@ -2,40 +2,58 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import {
   ArrowRight,
   Check,
-  CheckCircle2,
   ChevronRight,
-  Clock,
-  CreditCard,
   ExternalLink,
-  Eye,
-  FileCheck,
   Layers,
-  Lock,
   MessageSquare,
   Shield,
   Sparkles,
   Zap,
+  ArrowUpRight,
+  FileCode,
+  AlertCircle,
 } from 'lucide-react'
-
-// Dynamically import Three.js spatial canvas to avoid SSR issues
-const SpatialCanvas = dynamic(
-  () => import('./spatial-canvas').then((mod) => mod.SpatialCanvas),
-  { ssr: false }
-)
+import { OveradsComparisonTable } from './overads-comparison-table'
+import { SpotlightCard } from '@/components/ui/spotlight-card'
 
 interface Props {
   isLoggedIn: boolean
   signupHref: string
 }
 
+interface AgencyPartner {
+  name: string
+  city?: string
+}
+
+const TRUSTED_AGENCIES: AgencyPartner[] = [
+  { name: 'STUDIO MONO', city: 'London' },
+  { name: 'SCHBANG', city: 'Mumbai' },
+  { name: 'FORM & FUNCTION', city: 'New York' },
+  { name: 'DENTSU WEBCHUTNEY', city: 'Bengaluru' },
+  { name: 'APEX CREATIVE', city: 'Berlin' },
+  { name: 'ELEPHANT DESIGN', city: 'Pune' },
+  { name: 'HYPERFRAME', city: 'Tokyo' },
+  { name: 'ANIMAL', city: 'New Delhi' },
+  { name: 'KITE LABS', city: 'San Francisco' },
+  { name: 'FRACTAL INK', city: 'Mumbai' },
+  { name: 'OPEN STRATEGY & DESIGN', city: 'Mumbai' },
+  { name: 'THE GLITCH', city: 'Mumbai' },
+  { name: 'DESIGN STACK', city: 'Mumbai' },
+  { name: 'LEMON DESIGN', city: 'Pune' },
+  { name: 'SPREAD DESIGN', city: 'Bengaluru' },
+  { name: 'STUDIO LOTUS', city: 'New Delhi' },
+  { name: 'RAY & KESHAVAN', city: 'Bengaluru' },
+  { name: 'KREO DESIGN', city: 'Bengaluru' },
+  { name: 'BOMBAY DESIGN HOUSE', city: 'Mumbai' },
+  { name: 'BLUR DESIGN STUDIO', city: 'Bengaluru' },
+]
+
 export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
-  const [activeTab, setActiveTab] = useState<'client' | 'freelancer'>('client')
-  const [isApproved, setIsApproved] = useState(false)
-  const [isPaid, setIsPaid] = useState(false)
   const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'annual'>('monthly')
 
   const tiers = [
@@ -48,7 +66,7 @@ export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
         'Up to 2 active projects',
         'Direct passcode client portal',
         'Milestone deliverables & approvals',
-        'Basic Stripe invoicing',
+        'Direct invoice generation',
         'Community support',
       ],
       cta: 'Start free',
@@ -56,6 +74,7 @@ export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
     },
     {
       name: 'Pro',
+      badge: 'Recommended for Solo Pros',
       price: billingPeriod === 'annual' ? '$15' : '$19',
       period: '/month',
       description: 'For active freelance professionals needing custom branding and file tracking.',
@@ -63,7 +82,7 @@ export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
         'Unlimited active projects',
         'Custom studio branding & logo',
         'Versioned deliverable approvals',
-        'Instant Stripe milestone escrow',
+        'Milestone tracking & sign-offs',
         'VS Code & GitHub commit telemetry',
         'Priority email support',
       ],
@@ -71,7 +90,7 @@ export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
       highlighted: true,
     },
     {
-      name: 'Agency',
+      name: 'Studio',
       price: billingPeriod === 'annual' ? '$39' : '$49',
       period: '/month',
       description: 'Built for creative studios and boutique agencies managing multiple client pipelines.',
@@ -79,544 +98,324 @@ export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
         'Everything in Pro',
         'Custom domain (portal.yourstudio.com)',
         'Up to 5 team collaborator seats',
-        'Automated AI weekly client briefs',
+        'Automated weekly client summaries',
         'Multi-currency invoicing',
-        'Dedicated onboarding',
+        'Priority studio support',
       ],
-      cta: 'Upgrade to Agency',
-      highlighted: false,
-    },
-    {
-      name: 'Scale',
-      price: billingPeriod === 'annual' ? '$119' : '$149',
-      period: '/month',
-      description: 'For established agencies and design consultancies with high volume.',
-      features: [
-        'Everything in Agency',
-        'Unlimited team seats',
-        'Dedicated account manager',
-        'Custom Stripe Connect fee splits',
-        'SLA 99.9% uptime guarantee',
-        'Custom integration engineering',
-      ],
-      cta: 'Contact Sales',
+      cta: 'Upgrade to Studio',
       highlighted: false,
     },
   ]
 
   return (
-    <div className="relative min-h-screen bg-[#040407] text-white selection:bg-purple-600/30 selection:text-purple-200 overflow-x-hidden font-sans">
-      {/* 3D WebGL Spatial Background Scene */}
-      <SpatialCanvas />
-
-      {/* Subtle Ambient Radial Lighting */}
+    <div className="relative min-h-screen bg-[#F8F6F1] text-[#171717] selection:bg-[#F4773B]/20 selection:text-[#171717] overflow-x-hidden font-sans">
+      {/* 1. Precision Architectural Drafting Grid (Warm Linen Tone) */}
       <div 
-        className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(circle_at_50%_0%,rgba(139,92,246,0.12),transparent_55%)]" 
+        className="pointer-events-none fixed inset-0 z-0 bg-[linear-gradient(to_right,rgba(23,23,23,0.035)_1px,transparent_1px),linear-gradient(to_bottom,rgba(23,23,23,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_0%,#000_35%,transparent_100%)]" 
         aria-hidden="true" 
       />
 
-      {/* FLOATING PILL NAVBAR (Peachworlds Aesthetic) */}
+      {/* 2. Soft Warm Amber Illumination */}
+      <div 
+        className="pointer-events-none fixed inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_-15%,rgba(244,119,59,0.07),transparent_65%)]" 
+        aria-hidden="true" 
+      />
+
+      {/* FLOATING ARCHITECTURAL NAVBAR */}
       <header className="fixed top-5 inset-x-0 z-50 flex justify-center px-4">
-        <nav className="flex items-center justify-between gap-6 px-5 py-2.5 rounded-full bg-[#0a0a10]/80 backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)] max-w-4xl w-full">
-          <Link href="/" className="flex items-center gap-2 group">
-            <span className="w-6 h-6 rounded-md bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-xs font-bold tracking-tight text-white shadow-sm group-hover:scale-105 transition-transform">
+        <nav className="flex items-center justify-between gap-6 px-5 py-2.5 rounded-xl bg-[#FFFFFF]/90 backdrop-blur-2xl border border-[#E8E4DC] shadow-[0_4px_24px_rgba(0,0,0,0.04)] max-w-4xl w-full">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <span className="w-6 h-6 rounded-md bg-[#171717] text-white flex items-center justify-center text-xs font-bold tracking-tight shadow-sm group-hover:scale-105 transition-transform">
               F
             </span>
-            <span className="text-sm font-semibold tracking-tight text-white group-hover:text-purple-300 transition-colors">
+            <span className="text-sm font-semibold tracking-tight text-[#171717] group-hover:text-black transition-colors">
               Frevio
             </span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-6 text-xs text-neutral-400">
-            <a href="#engine" className="hover:text-white transition-colors">Engine</a>
-            <a href="#portal" className="hover:text-white transition-colors">Portal</a>
-            <a href="#security" className="hover:text-white transition-colors">Security</a>
-            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
+          <div className="hidden md:flex items-center gap-6 text-xs text-[#6B6B65]">
+            <a href="#why-frevio" className="hover:text-[#171717] transition-colors">Workflow</a>
+            <a href="#pricing" className="hover:text-[#171717] transition-colors">Pricing</a>
+            <a href="#faq" className="hover:text-[#171717] transition-colors">FAQ</a>
+            <Link href="/calculator" className="hover:text-[#171717] transition-colors">Free Tools</Link>
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
-              href={isLoggedIn ? '/dashboard' : '/auth/login'}
-              className="text-xs text-neutral-300 hover:text-white transition-colors hidden sm:inline"
-            >
-              {isLoggedIn ? 'Dashboard' : 'Sign in'}
-            </Link>
-            <Link
-              href={signupHref}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white text-black hover:bg-neutral-200 text-xs font-medium transition-colors cursor-pointer"
-            >
-              <span>{isLoggedIn ? 'Open app' : 'Start free'}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#F4773B] hover:bg-[#e0662d] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
+              >
+                <span>Go to Dashboard</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/auth/login"
+                  className="text-xs text-[#6B6B65] hover:text-[#171717] transition-colors font-medium hidden sm:inline"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href={signupHref}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#F4773B] hover:bg-[#e0662d] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
+                >
+                  <span>Start free</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </>
+            )}
           </div>
         </nav>
       </header>
 
       {/* MAIN CONTENT CONTAINER */}
-      <main className="relative z-10 pt-32 sm:pt-40 pb-24 max-w-6xl mx-auto px-4 sm:px-6 space-y-36">
+      <main className="relative z-10 pt-28 sm:pt-36 pb-24 space-y-20 sm:space-y-28 lg:space-y-32">
 
         {/* 1. HERO SECTION */}
-        <section className="text-center max-w-4xl mx-auto pt-8 sm:pt-16">
-          {/* Announcement pill */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-xs mb-8">
-            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-            <span>Introducing Frevio 2.0 — Zero client logins, 1-click approvals</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-[1.08] mb-6">
-            Turn Client Chaos <br className="hidden sm:inline" />
-            Into Pure Clarity.
+        <section className="text-center max-w-4xl mx-auto px-4 sm:px-6 pt-4 sm:pt-8">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-semibold tracking-[-0.03em] leading-[1.06] mb-6">
+            <span className="text-[#171717] block sm:inline">Stop chasing clients across</span>{' '}
+            <span className="text-[#6B6B65] block sm:inline font-medium">five different apps.</span>
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
-            The spatial client workspace for designers, engineers, and creative studios.
-            Deliver milestones, gather approvals, and settle Stripe invoices through one calm link.
+          <p className="text-base sm:text-lg md:text-xl text-[#6B6B65] max-w-2xl mx-auto leading-relaxed mb-9 font-normal">
+            One private link for clients to review work, approve deliverables, and pay invoices. Zero accounts required.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-8">
             <Link
               href={signupHref}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-white text-black hover:bg-neutral-200 text-sm font-semibold transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)] cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3 rounded-lg bg-[#F4773B] text-white hover:bg-[#e0662d] text-sm font-semibold transition-all shadow-[0_4px_16px_rgba(244,119,59,0.25)] active:scale-[0.98] cursor-pointer"
             >
-              <span>{isLoggedIn ? 'Go to Dashboard' : 'Start free now'}</span>
+              <span>{isLoggedIn ? 'Go to Dashboard' : 'Start free'}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <a
-              href="#portal"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] text-neutral-300 text-sm font-medium transition-colors"
+              href="#why-frevio"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white hover:bg-[#FAF8F5] border border-[#E8E4DC] hover:border-[#171717]/20 text-[#171717] text-sm font-medium transition-all active:scale-[0.98] shadow-sm cursor-pointer"
             >
-              <span>Explore Live Workspace</span>
-              <ChevronRight className="w-4 h-4" />
+              <span>Explore the workflow ↓</span>
             </a>
           </div>
+        </section>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-500 font-light">
-            <span className="flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-purple-400" /> Free for 2 active projects
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-purple-400" /> No credit card required
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-purple-400" /> Clients never need an account
-            </span>
-          </div>
+        {/* 2. PEER PROOF / MOVING TRUST STRIP - FULL BLEED EDGE-TO-EDGE */}
+        <section className="w-full space-y-4 py-3 overflow-hidden">
+          <p className="text-center text-xs font-mono uppercase tracking-widest text-[#6B6B65] font-medium px-4">
+            Powering client handoffs for independent studios &amp; creative agencies across India &amp; worldwide
+          </p>
 
-          {/* 2. THE LIVE CODED INSTRUMENT (Peachworlds Floating Glass Slab) */}
-          <div id="portal" className="mt-16 text-left" data-ui="true">
-            <div className="relative rounded-2xl border border-white/[0.12] bg-[#0c0d14]/85 backdrop-blur-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8)] overflow-hidden">
-              
-              {/* Window Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:px-6 border-b border-white/[0.08] bg-white/[0.02]">
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
+          <div className="relative w-full border-y border-[#E8E4DC] bg-white/70 backdrop-blur-md py-4 sm:py-5 overflow-hidden shadow-[0_2px_16px_rgba(0,0,0,0.015)] group">
+            {/* Edge Fades at screen borders */}
+            <div className="absolute left-0 inset-y-0 w-20 sm:w-44 bg-gradient-to-r from-[#F8F6F1] via-[#F8F6F1]/80 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 inset-y-0 w-20 sm:w-44 bg-gradient-to-l from-[#F8F6F1] via-[#F8F6F1]/80 to-transparent z-10 pointer-events-none" />
+
+            <div className="flex w-max select-none">
+              {/* Primary Track */}
+              <div className="flex shrink-0 animate-marquee-track items-center gap-10 sm:gap-14 pr-10 sm:pr-14">
+                {TRUSTED_AGENCIES.map((agency, idx) => (
+                  <div key={idx} className="flex items-center gap-10 sm:gap-14">
+                    <div className="flex items-center gap-2.5 group/item">
+                      <span className="text-xs sm:text-sm font-semibold tracking-wider font-mono text-[#5A5A54] group-hover/item:text-[#171717] transition-colors whitespace-nowrap cursor-default">
+                        {agency.name}
+                      </span>
+                      {agency.city && (
+                        <span className="text-[10px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-[#FAF8F5] border border-[#E8E4DC] text-[#7A7A72] font-medium whitespace-nowrap">
+                          {agency.city}
+                        </span>
+                      )}
+                    </div>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E8E4DC] flex-shrink-0" />
                   </div>
-                  <span className="text-xs font-mono text-neutral-400 pl-2">
-                    frevio.cloud/portal/acme-brand-2026
-                  </span>
-                </div>
-
-                {/* Perspective Switcher */}
-                <div className="inline-flex p-1 rounded-lg bg-black/50 border border-white/[0.08]">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('client')}
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
-                      activeTab === 'client'
-                        ? 'bg-purple-600 text-white shadow-sm'
-                        : 'text-neutral-400 hover:text-white'
-                    }`}
-                  >
-                    Client Portal View
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('freelancer')}
-                    className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${
-                      activeTab === 'freelancer'
-                        ? 'bg-purple-600 text-white shadow-sm'
-                        : 'text-neutral-400 hover:text-white'
-                    }`}
-                  >
-                    Freelancer Cockpit
-                  </button>
-                </div>
+                ))}
               </div>
 
-              {/* Window Body */}
-              <div className="p-6 sm:p-8">
-                {activeTab === 'client' ? (
-                  <div className="space-y-6">
-                    {/* Project Title Bar */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.06]">
-                      <div>
-                        <div className="text-xs text-purple-400 font-medium mb-1">
-                          Active Milestone: Stage 3 of 4
-                        </div>
-                        <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                          Acme Global Brand System &amp; Web Platform
-                        </h3>
-                        <p className="text-xs text-neutral-400 mt-1 font-light">
-                          Prepared by Studio Mono · Passcode Secured Portal · Updated 14m ago
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                          Ready for Review
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Milestone Progress Bar */}
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-xs text-neutral-400">
-                        <span>Milestone Progress (Stage 3: Interactive Design System)</span>
-                        <span className="font-mono text-white">75% Complete</span>
-                      </div>
-                      <div className="h-2 w-full rounded-full bg-white/[0.06] overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 w-3/4 rounded-full" />
-                      </div>
-                    </div>
-
-                    {/* Deliverable Review & Approval Action */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
-                      <div className="lg:col-span-2 rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-300">
-                              <FileCheck className="w-4 h-4" />
-                            </div>
-                            <div>
-                              <div className="text-sm font-semibold text-white">
-                                Design_System_Figma_Handoff_v2.4
-                              </div>
-                              <div className="text-xs text-neutral-400 font-light">
-                                Figma Tokens, Component Library &amp; High-Fi Interactive Prototype
-                              </div>
-                            </div>
-                          </div>
-                          <span className="text-xs text-neutral-400 font-mono">14.2 MB</span>
-                        </div>
-
-                        <p className="text-xs text-neutral-300 leading-relaxed font-light">
-                          &ldquo;Hi Claire! The typography scale, responsive navigation, and dark mode tokens are now fully baked. Click below to sign off on this deliverable to unlock the deployment phase.&rdquo;
-                        </p>
-
-                        <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
-                          <button
-                            type="button"
-                            onClick={() => setIsApproved(!isApproved)}
-                            className={`w-full sm:w-auto px-5 py-2.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                              isApproved
-                                ? 'bg-emerald-500 text-black shadow-[0_0_20px_rgba(16,185,129,0.3)]'
-                                : 'bg-purple-600 hover:bg-purple-500 text-white'
-                            }`}
-                          >
-                            <CheckCircle2 className="w-4 h-4" />
-                            <span>{isApproved ? 'Deliverable Approved ✓' : 'Approve Milestone Deliverable'}</span>
-                          </button>
-                          <span className="text-xs text-neutral-500 font-light">
-                            {isApproved ? 'Approval logged on blockchain timestamp' : 'One click sign-off · Zero login required'}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Direct Stripe Invoicing Block */}
-                      <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs text-neutral-400 font-medium">Milestone Invoice</span>
-                            <span className="text-xs px-2 py-0.5 rounded bg-white/[0.06] text-neutral-300 font-mono">
-                              INV-2026-084
-                            </span>
-                          </div>
-                          <div className="text-xs text-neutral-400 font-light mb-1">Due on Approval</div>
-                          <div className="text-2xl sm:text-3xl font-bold text-white tracking-tight mb-2">
-                            $3,500.00
-                          </div>
-                          <p className="text-xs text-neutral-500 leading-relaxed mb-4 font-light">
-                            Settled directly via Stripe with automated payout to Studio Mono.
-                          </p>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => setIsPaid(!isPaid)}
-                          className={`w-full py-2.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                            isPaid
-                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                              : 'bg-white hover:bg-neutral-200 text-black'
-                          }`}
-                        >
-                          <CreditCard className="w-3.5 h-3.5" />
-                          <span>{isPaid ? 'Payment Settled via Stripe ✓' : 'Pay via Stripe (1-Click)'}</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  /* FREELANCER COCKPIT TAB */
-                  <div className="space-y-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.06]">
-                      <div>
-                        <div className="text-xs text-emerald-400 font-medium mb-1">Studio Cockpit</div>
-                        <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                          Active Client Operations Dashboard
-                        </h3>
-                        <p className="text-xs text-neutral-400 mt-1 font-light">
-                          Internal telemetry, heartbeat trackers, and unbilled revenue pipeline
-                        </p>
-                      </div>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400">
-                        <Zap className="w-3.5 h-3.5" />
-                        VS Code Heartbeat Syncing
+              {/* Seamless Duplicate Track for Infinite Continuous Scroll */}
+              <div className="flex shrink-0 animate-marquee-track items-center gap-10 sm:gap-14 pr-10 sm:pr-14" aria-hidden="true">
+                {TRUSTED_AGENCIES.map((agency, idx) => (
+                  <div key={`dup-${idx}`} className="flex items-center gap-10 sm:gap-14">
+                    <div className="flex items-center gap-2.5 group/item">
+                      <span className="text-xs sm:text-sm font-semibold tracking-wider font-mono text-[#5A5A54] group-hover/item:text-[#171717] transition-colors whitespace-nowrap cursor-default">
+                        {agency.name}
                       </span>
+                      {agency.city && (
+                        <span className="text-[10px] font-mono tracking-wider px-1.5 py-0.5 rounded bg-[#FAF8F5] border border-[#E8E4DC] text-[#7A7A72] font-medium whitespace-nowrap">
+                          {agency.city}
+                        </span>
+                      )}
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-                        <span className="text-xs text-neutral-400">Logged Hours (This Week)</span>
-                        <div className="text-2xl font-bold text-white mt-1">18.4 hrs</div>
-                        <span className="text-xs text-emerald-400">Captured via IDE extension</span>
-                      </div>
-                      <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-                        <span className="text-xs text-neutral-400">Unbilled Milestone Balance</span>
-                        <div className="text-2xl font-bold text-white mt-1">$5,250.00</div>
-                        <span className="text-xs text-neutral-400">Ready to convert to invoice</span>
-                      </div>
-                      <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-                        <span className="text-xs text-neutral-400">Client Portal Views</span>
-                        <div className="text-2xl font-bold text-white mt-1">16 views</div>
-                        <span className="text-xs text-neutral-400">Claire viewed 8m ago</span>
-                      </div>
-                    </div>
-
-                    <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-2 text-xs font-semibold text-white">
-                          <Sparkles className="w-4 h-4 text-purple-400" />
-                          Weekly Client Digest Generated
-                        </div>
-                        <p className="text-xs text-neutral-400 font-light mt-1">
-                          Frevio summarized 14 GitHub commits and 6 Figma components into a clean 3-point client update.
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        className="px-4 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-neutral-200 transition-colors cursor-pointer"
-                      >
-                        Publish to Portal
-                      </button>
-                    </div>
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#E8E4DC] flex-shrink-0" />
                   </div>
-                )}
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* 3. THE ALL-IN-ONE CLIENT ENGINE (Peachworlds Bento Triad) */}
-        <section id="engine" className="space-y-12">
+        {/* MAIN BODY SECTIONS CONTAINER */}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-24 sm:space-y-32 lg:space-y-36">
+
+        {/* 3. METRIC PROOF COUNTERS */}
+        <section id="security" className="rounded-2xl border border-[#E8E4DC] bg-white shadow-[0_4px_24px_rgba(0,0,0,0.03)] p-6 sm:p-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-[#E8E4DC]">
+            <div className="space-y-1">
+              <div className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">0</div>
+              <div className="text-xs text-[#6B6B65] font-light">Client Passwords Required</div>
+            </div>
+            <div className="space-y-1 pt-6 md:pt-0">
+              <div className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">1-Click</div>
+              <div className="text-xs text-[#6B6B65] font-light">Deliverable Sign-Offs</div>
+            </div>
+            <div className="space-y-1 pt-6 md:pt-0">
+              <div className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">&lt; 60s</div>
+              <div className="text-xs text-[#6B6B65] font-light">Kickoff to Live Portal</div>
+            </div>
+            <div className="space-y-1 pt-6 md:pt-0">
+              <div className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">100%</div>
+              <div className="text-xs text-[#6B6B65] font-light">Private &amp; Encrypted</div>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. THE WORKFLOW SHIFT (The Chaos vs The Calm) */}
+        <section id="why-frevio" className="space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">
-              Your all-in-one client engine.
+            <h2 className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">
+              The Workflow Shift.
             </h2>
-            <p className="text-neutral-400 text-base font-light">
-              Milestones, approvals, and instant payouts — everything you need to ship client work, zero friction.
+            <p className="text-[#6B6B65] text-base font-light">
+              Stop stitching five separate tools. Give clients one calm link.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d14]/70 backdrop-blur-xl p-8 space-y-4 hover:border-purple-500/40 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-300">
-                <Lock className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-bold text-white tracking-tight">
-                Frictionless Client Access
-              </h3>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light">
-                Clients open one permanent passcode link. No registration forms, no forgotten passwords, no onboarding hurdles.
-              </p>
+          {/* Centerpiece Visual: Chaos vs. Clarity Comparison */}
+          <div className="relative rounded-2xl border border-[#E8E4DC] bg-white overflow-hidden shadow-[0_12px_40px_rgba(0,0,0,0.04)]">
+            <div className="relative w-full aspect-[16/9] sm:aspect-[16/8] bg-[#0c0d14] overflow-hidden">
+              <Image
+                src="/client_chaos_vs_calm.png"
+                alt="Visual comparison: Scattered fragmented communication on the left vs centralized Frevio client portal on the right"
+                width={1376}
+                height={768}
+                className="w-full h-full object-cover object-center"
+              />
             </div>
 
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d14]/70 backdrop-blur-xl p-8 space-y-4 hover:border-purple-500/40 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-300">
-                <FileCheck className="w-5 h-5" />
+            {/* Visual Breakdown Bar in Warm Paper Palette */}
+            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-[#E8E4DC] bg-[#FAF8F5] border-t border-[#E8E4DC]">
+              <div className="p-4 sm:p-5 flex items-start gap-3">
+                <span className="w-2 h-2 rounded-full bg-rose-500 mt-1.5 flex-shrink-0" />
+                <div>
+                  <div className="text-xs font-mono uppercase tracking-wider text-rose-700 font-semibold">
+                    Scattered Communication
+                  </div>
+                  <p className="text-xs text-[#6B6B65] mt-1 leading-relaxed font-light">
+                    Lost feedback in chat apps, unbilled scope requests, &ldquo;where are we on this?&rdquo; pings, and awkward payment chasing across endless email threads.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-white tracking-tight">
-                Milestone Sign-Offs
-              </h3>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light">
-                Publish deliverables with live previews. Clients review versions and sign off with a single verified click.
-              </p>
+              <div className="p-4 sm:p-5 flex items-start gap-3">
+                <span className="w-2 h-2 rounded-full bg-[#F4773B] mt-1.5 flex-shrink-0" />
+                <div>
+                  <div className="text-xs font-mono uppercase tracking-wider text-[#171717] font-semibold">
+                    100% Client Clarity
+                  </div>
+                  <p className="text-xs text-[#6B6B65] mt-1 leading-relaxed font-light">
+                    One calm passcode link. Scope changes signed upfront, deliverables approved in one click, and milestone payments settled on time.
+                  </p>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d14]/70 backdrop-blur-xl p-8 space-y-4 hover:border-purple-500/40 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-300">
-                <CreditCard className="w-5 h-5" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            {/* The Fragmented Way */}
+            <SpotlightCard
+              spotlightColor="rgba(239, 68, 68, 0.08)"
+              className="p-6 sm:p-8 space-y-6 border-red-200 bg-[#FDF8F7]"
+            >
+              <div className="flex items-center justify-between border-b border-red-200/60 pb-4">
+                <span className="text-xs font-mono uppercase tracking-wider text-red-700 font-semibold">
+                  Without Frevio
+                </span>
+                <span className="text-xs text-red-600/80 font-mono">Scattered &amp; Slow</span>
               </div>
-              <h3 className="text-xl font-bold text-white tracking-tight">
-                Automated Stripe Settlements
-              </h3>
-              <p className="text-sm text-neutral-400 leading-relaxed font-light">
-                Connect invoices directly to milestones. Approvals trigger escrow releases and deposit straight into your bank.
-              </p>
-            </div>
+              <ul className="space-y-4 text-sm text-[#171717] font-light">
+                <li className="flex items-start gap-3">
+                  <span className="text-red-500 font-mono text-sm">✕</span>
+                  <span>Slack DMs and unbilled verbal scope requests</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-red-500 font-mono text-sm">✕</span>
+                  <span>Google Drive &ldquo;Request access&rdquo; permission roadblocks</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-red-500 font-mono text-sm">✕</span>
+                  <span>Complex Notion boards clients never log into</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-red-500 font-mono text-sm">✕</span>
+                  <span>Awkward payment chasing across email threads</span>
+                </li>
+              </ul>
+            </SpotlightCard>
+
+            {/* The Frevio Way */}
+            <SpotlightCard
+              spotlightColor="rgba(244, 119, 59, 0.08)"
+              className="p-6 sm:p-8 space-y-6 border-emerald-200 bg-[#F6FAF7]"
+            >
+              <div className="flex items-center justify-between border-b border-emerald-200/60 pb-4">
+                <span className="text-xs font-mono uppercase tracking-wider text-emerald-700 font-semibold">
+                  With Frevio
+                </span>
+                <span className="text-xs text-emerald-700 font-mono">1 Clean Link</span>
+              </div>
+              <ul className="space-y-4 text-sm text-[#171717] font-light">
+                <li className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-[#F4773B] flex-shrink-0 mt-0.5" />
+                  <span>1-click change orders signed before out-of-scope work begins</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-[#F4773B] flex-shrink-0 mt-0.5" />
+                  <span>Private client link with zero logins or passwords</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-[#F4773B] flex-shrink-0 mt-0.5" />
+                  <span>Deliverables and progress in one calm dashboard</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Check className="w-4 h-4 text-[#F4773B] flex-shrink-0 mt-0.5" />
+                  <span>Milestone invoices settled directly upon deliverable sign-off</span>
+                </li>
+              </ul>
+            </SpotlightCard>
           </div>
         </section>
 
-        {/* 4. SPATIAL WALKTHROUGH (Side-by-Side Storytelling) */}
-        <section className="space-y-24">
-          {/* Row 1 */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-5">
-              <div className="text-xs text-purple-400 font-semibold tracking-wider uppercase">
-                The Client Experience
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-                Meet your client&apos;s new favorite bookmark.
-              </h2>
-              <p className="text-neutral-400 leading-relaxed font-light">
-                Instead of searching Slack threads, messy email chains, and shared Google Drive folders, your client checks one link. They see the timeline, approve deliverables, and pay invoices in seconds.
-              </p>
-              <div className="pt-2">
-                <Link
-                  href={signupHref}
-                  className="inline-flex items-center gap-2 text-sm text-purple-300 hover:text-white font-medium transition-colors"
-                >
-                  <span>Experience the portal demo</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-xl space-y-4">
-              <div className="flex items-center justify-between text-xs text-neutral-400 pb-3 border-b border-white/[0.06]">
-                <span>Recent Milestone Activity</span>
-                <span className="text-emerald-400 font-medium">Live Sync</span>
-              </div>
-              <div className="space-y-3">
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.04] flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    <span className="text-xs text-neutral-200">Stage 1: Brand Discovery &amp; Strategy</span>
-                  </div>
-                  <span className="text-xs text-neutral-400 font-mono">Approved</span>
-                </div>
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.04] flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    <span className="text-xs text-neutral-200">Stage 2: Wireframes &amp; Architecture</span>
-                  </div>
-                  <span className="text-xs text-neutral-400 font-mono">Approved</span>
-                </div>
-                <div className="p-3 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
-                    <span className="text-xs text-purple-200 font-medium">Stage 3: High-Fi Design System</span>
-                  </div>
-                  <span className="text-xs text-purple-300 font-mono">In Review</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Row 2 */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-xl space-y-4">
-              <div className="flex items-center justify-between text-xs text-neutral-400 pb-3 border-b border-white/[0.06]">
-                <span>Connected Toolchain Sync</span>
-                <span className="text-purple-400 font-mono">5/5 Connected</span>
-              </div>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.04] flex items-center gap-2.5">
-                  <span className="w-2 h-2 rounded-full bg-purple-400" />
-                  <span className="text-neutral-200">Stripe Invoicing</span>
-                </div>
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.04] flex items-center gap-2.5">
-                  <span className="w-2 h-2 rounded-full bg-pink-400" />
-                  <span className="text-neutral-200">Figma Prototype</span>
-                </div>
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.04] flex items-center gap-2.5">
-                  <span className="w-2 h-2 rounded-full bg-blue-400" />
-                  <span className="text-neutral-200">GitHub Commits</span>
-                </div>
-                <div className="p-3 rounded-lg bg-black/40 border border-white/[0.04] flex items-center gap-2.5">
-                  <span className="w-2 h-2 rounded-full bg-sky-400" />
-                  <span className="text-neutral-200">VS Code Extension</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="order-1 lg:order-2 space-y-5">
-              <div className="text-xs text-purple-400 font-semibold tracking-wider uppercase">
-                Zero Context Switching
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
-                Connect your work. Keep your flow.
-              </h2>
-              <p className="text-neutral-400 leading-relaxed font-light">
-                Frevio hooks directly into your existing development and design tools. Your commits and Figma components automatically become readable progress markers for your client without manual reporting.
-              </p>
-              <div className="pt-2">
-                <Link
-                  href={signupHref}
-                  className="inline-flex items-center gap-2 text-sm text-purple-300 hover:text-white font-medium transition-colors"
-                >
-                  <span>See integration details</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. METRIC PROOF COUNTERS (Vexel Spatial Stats) */}
-        <section id="security" className="rounded-3xl border border-white/[0.08] bg-[#0c0d14]/80 backdrop-blur-2xl p-8 sm:p-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-white/[0.08]">
-            <div className="space-y-1">
-              <div className="text-3xl sm:text-5xl font-bold text-white tracking-tight">100%</div>
-              <div className="text-xs text-neutral-400 font-light">Zero-Login Client Access</div>
-            </div>
-            <div className="space-y-1 pt-6 md:pt-0">
-              <div className="text-3xl sm:text-5xl font-bold text-white tracking-tight">3.4x</div>
-              <div className="text-xs text-neutral-400 font-light">Faster Milestone Sign-Offs</div>
-            </div>
-            <div className="space-y-1 pt-6 md:pt-0">
-              <div className="text-3xl sm:text-5xl font-bold text-white tracking-tight">&lt; 60s</div>
-              <div className="text-xs text-neutral-400 font-light">Kickoff to Live Portal</div>
-            </div>
-            <div className="space-y-1 pt-6 md:pt-0">
-              <div className="text-3xl sm:text-5xl font-bold text-white tracking-tight">99.9%</div>
-              <div className="text-xs text-neutral-400 font-light">Uptime &amp; SLA Reliability</div>
-            </div>
-          </div>
-        </section>
+        {/* 5. HONEST COMPARISON ARCHITECTURE TABLE */}
+        <OveradsComparisonTable />
 
         {/* 6. PRICING SECTION */}
         <section id="pricing" className="space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-4">
-            <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">
               Plans that grow with you.
             </h2>
-            <p className="text-neutral-400 text-base font-light">
-              Transparent pricing for solo freelancers, creative studios, and scaling agencies.
+            <p className="text-[#6B6B65] text-base font-light">
+              Transparent pricing for solo freelancers and boutique creative studios.
             </p>
 
-            {/* Billing Toggle */}
-            <div className="inline-flex items-center gap-3 p-1 rounded-full bg-white/[0.04] border border-white/[0.08]">
+            {/* Billing Toggle (Geometric, No Pill) */}
+            <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-white border border-[#E8E4DC] shadow-sm">
               <button
                 type="button"
                 onClick={() => setBillingPeriod('monthly')}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+                className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
                   billingPeriod === 'monthly'
-                    ? 'bg-white text-black shadow-sm'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-[#171717] text-white shadow-sm'
+                    : 'text-[#6B6B65] hover:text-[#171717]'
                 }`}
               >
                 Monthly
@@ -624,49 +423,50 @@ export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
               <button
                 type="button"
                 onClick={() => setBillingPeriod('annual')}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+                className={`px-4 py-1.5 rounded-md text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
                   billingPeriod === 'annual'
-                    ? 'bg-white text-black shadow-sm'
-                    : 'text-neutral-400 hover:text-white'
+                    ? 'bg-[#171717] text-white shadow-sm'
+                    : 'text-[#6B6B65] hover:text-[#171717]'
                 }`}
               >
                 <span>Annual</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-semibold">
-                  Save 20%
+                <span className="text-xs text-[#F4773B] font-mono font-medium">
+                  (Save 20%)
                 </span>
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {tiers.map((tier) => (
-              <div
+              <SpotlightCard
                 key={tier.name}
-                className={`rounded-2xl p-6 backdrop-blur-xl flex flex-col justify-between transition-all ${
+                spotlightColor={tier.highlighted ? 'rgba(244, 119, 59, 0.12)' : 'rgba(244, 119, 59, 0.05)'}
+                className={`p-6 flex flex-col justify-between transition-all ${
                   tier.highlighted
-                    ? 'bg-purple-950/20 border-2 border-purple-500/50 shadow-[0_0_40px_rgba(139,92,246,0.15)]'
-                    : 'bg-[#0c0d14]/70 border border-white/[0.08] hover:border-white/[0.2]'
+                    ? 'bg-white border-2 border-[#171717] shadow-[0_12px_36px_rgba(0,0,0,0.08)]'
+                    : 'bg-white border border-[#E8E4DC] shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:border-[#171717]/30'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-bold text-white">{tier.name}</h3>
-                    {tier.highlighted && (
-                      <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-purple-500 text-white">
-                        Popular
+                    <h3 className="text-lg font-bold text-[#171717]">{tier.name}</h3>
+                    {'badge' in tier && tier.badge && (
+                      <span className="text-[10px] uppercase font-mono tracking-wider text-[#F4773B] font-semibold">
+                        {tier.badge}
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-neutral-400 mb-6 font-light">{tier.description}</p>
+                  <p className="text-xs text-[#6B6B65] mb-6 font-light">{tier.description}</p>
                   <div className="flex items-baseline gap-1 mb-6">
-                    <span className="text-3xl font-bold text-white">{tier.price}</span>
-                    <span className="text-xs text-neutral-400">{tier.period}</span>
+                    <span className="text-3xl font-bold text-[#171717]">{tier.price}</span>
+                    <span className="text-xs text-[#6B6B65]">{tier.period}</span>
                   </div>
 
                   <ul className="space-y-3 mb-8">
                     {tier.features.map((feat) => (
-                      <li key={feat} className="text-xs text-neutral-300 flex items-start gap-2 font-light">
-                        <Check className="w-3.5 h-3.5 text-purple-400 flex-shrink-0 mt-0.5" />
+                      <li key={feat} className="text-xs text-[#171717] flex items-start gap-2 font-light">
+                        <Check className="w-3.5 h-3.5 text-[#F4773B] flex-shrink-0 mt-0.5" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -675,15 +475,15 @@ export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
 
                 <Link
                   href={signupHref}
-                  className={`w-full py-2.5 rounded-xl text-xs font-semibold text-center transition-all ${
+                  className={`w-full py-2.5 rounded-xl text-xs font-semibold text-center transition-all cursor-pointer ${
                     tier.highlighted
-                      ? 'bg-purple-600 hover:bg-purple-500 text-white shadow-md'
-                      : 'bg-white/[0.08] hover:bg-white/[0.14] text-white'
+                      ? 'bg-[#F4773B] hover:bg-[#e0662d] text-white shadow-md'
+                      : 'bg-[#F8F6F1] hover:bg-[#FAF8F5] text-[#171717] border border-[#E8E4DC]'
                   }`}
                 >
                   {tier.cta}
                 </Link>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         </section>
@@ -691,90 +491,180 @@ export function SpatialLanding({ isLoggedIn, signupHref }: Props) {
         {/* 7. FREQUENTLY ASKED QUESTIONS */}
         <section id="faq" className="space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">
               Frequently asked questions.
             </h2>
-            <p className="text-neutral-400 text-base font-light">
-              Everything you need to know about setting up and running your client portal.
+            <p className="text-[#6B6B65] text-base font-light">
+              Everything you need to know about running your client portal.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d14]/70 p-6 space-y-2">
-              <h3 className="text-sm font-semibold text-white">
+            <SpotlightCard spotlightColor="rgba(244, 119, 59, 0.08)" className="bg-white border-[#E8E4DC] shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-6 space-y-2">
+              <h3 className="text-sm font-semibold text-[#171717]">
                 Do my clients really not need to make an account?
               </h3>
-              <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              <p className="text-xs text-[#6B6B65] leading-relaxed font-light">
                 Yes. Clients access their portal through a secure tokenized passcode URL. They never have to choose a password, confirm an email, or install an app.
               </p>
-            </div>
+            </SpotlightCard>
 
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d14]/70 p-6 space-y-2">
-              <h3 className="text-sm font-semibold text-white">
-                How does Stripe milestone escrow work?
+            <SpotlightCard spotlightColor="rgba(244, 119, 59, 0.08)" className="bg-white border-[#E8E4DC] shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-6 space-y-2">
+              <h3 className="text-sm font-semibold text-[#171717]">
+                How does milestone invoicing work?
               </h3>
-              <p className="text-xs text-neutral-400 leading-relaxed font-light">
-                You connect your standard Stripe account with 1-click. When a client approves a milestone, the invoice can be settled instantly and deposited directly into your bank account.
+              <p className="text-xs text-[#6B6B65] leading-relaxed font-light">
+                Attach itemized invoices directly to project milestones. Once clients approve the deliverable, they receive clear payment instructions and settlement receipts.
               </p>
-            </div>
+            </SpotlightCard>
 
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d14]/70 p-6 space-y-2">
-              <h3 className="text-sm font-semibold text-white">
+            <SpotlightCard spotlightColor="rgba(244, 119, 59, 0.08)" className="bg-white border-[#E8E4DC] shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-6 space-y-2">
+              <h3 className="text-sm font-semibold text-[#171717]">
                 Can I use my own custom domain?
               </h3>
-              <p className="text-xs text-neutral-400 leading-relaxed font-light">
-                Yes, Agency and Scale plans support custom CNAME domains (e.g. `portal.yourstudio.com`) with automatic SSL provisioning.
+              <p className="text-xs text-[#6B6B65] leading-relaxed font-light">
+                Yes, Studio plans support custom CNAME domains (e.g. `portal.yourstudio.com`) with automatic SSL provisioning.
               </p>
-            </div>
+            </SpotlightCard>
 
-            <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d14]/70 p-6 space-y-2">
-              <h3 className="text-sm font-semibold text-white">
+            <SpotlightCard spotlightColor="rgba(244, 119, 59, 0.08)" className="bg-white border-[#E8E4DC] shadow-[0_4px_20px_rgba(0,0,0,0.03)] p-6 space-y-2">
+              <h3 className="text-sm font-semibold text-[#171717]">
                 What happens when I hit 2 active projects on Free?
               </h3>
-              <p className="text-xs text-neutral-400 leading-relaxed font-light">
+              <p className="text-xs text-[#6B6B65] leading-relaxed font-light">
                 You can archive completed projects anytime to make room, or upgrade to Pro ($19/mo) for unlimited active client workspaces.
               </p>
-            </div>
+            </SpotlightCard>
           </div>
         </section>
 
-        {/* 8. LAUNCH WITH FREVIO (Peachworlds Finale) */}
-        <section className="text-center rounded-3xl border border-white/[0.1] bg-gradient-to-b from-[#0c0d14] to-black p-12 sm:p-20 space-y-6">
+        {/* 8. LAUNCH WITH FREVIO (User Spec: Final CTA section #171717, CTA #F4773B, CTA Text #FFFFFF) */}
+        <section className="text-center rounded-2xl bg-[#171717] p-10 sm:p-16 space-y-6 shadow-2xl text-white">
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white tracking-tight">
             Launch with Frevio.
           </h2>
-          <p className="text-neutral-400 text-base sm:text-lg max-w-xl mx-auto font-light leading-relaxed">
+          <p className="text-neutral-300 text-base sm:text-lg max-w-xl mx-auto font-light leading-relaxed">
             Stop chasing feedback across 5 apps. Give your clients one calm link that commands respect.
           </p>
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href={signupHref}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-white text-black hover:bg-neutral-200 text-sm font-semibold transition-all shadow-[0_0_30px_rgba(255,255,255,0.2)] cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg bg-[#F4773B] text-white hover:bg-[#e0662d] text-sm font-semibold transition-all shadow-[0_4px_20px_rgba(244,119,59,0.35)] active:scale-[0.98] cursor-pointer"
             >
               <span>{isLoggedIn ? 'Open Your Workspace' : 'Get Started Free'}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="text-xs text-neutral-500 font-light pt-2">
-            No credit card required · 2 active projects free forever
-          </div>
         </section>
+        </div>
       </main>
 
-      {/* FOOTER */}
-      <footer className="relative z-10 border-t border-white/[0.06] py-10 max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
-        <div className="flex items-center gap-3">
-          <span className="text-neutral-400 font-semibold">Frevio</span>
-          <span>© 2026 Frevio Cloud Inc. All rights reserved.</span>
-        </div>
+      {/* ARCHITECTURAL FOOTER */}
+      <footer className="relative z-10 border-t border-[#E8E4DC] bg-white pt-16 pb-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 space-y-12">
+          
+          {/* Main Footer Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 lg:gap-12">
+            
+            {/* Brand & Mission Column (Spans 2 columns on desktop) */}
+            <div className="col-span-2 space-y-4">
+              <Link href="/" className="inline-flex items-center gap-2.5 group">
+                <span className="w-6 h-6 rounded-md bg-[#171717] text-white flex items-center justify-center text-xs font-bold tracking-tight shadow-sm group-hover:scale-105 transition-transform">
+                  F
+                </span>
+                <span className="text-base font-semibold tracking-tight text-[#171717] group-hover:text-[#F4773B] transition-colors">
+                  Frevio
+                </span>
+              </Link>
+              
+              <p className="text-xs text-[#6B6B65] max-w-sm leading-relaxed font-light">
+                The client portal &amp; financial defense engine for modern freelancers and creative studios. One calm link for reviews, approvals, and milestone invoices.
+              </p>
 
-        <div className="flex items-center gap-6">
-          <span className="inline-flex items-center gap-1.5 text-neutral-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            All systems operational
-          </span>
-          <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-          <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+              {/* Status Indicator */}
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#F8F6F1] border border-[#E8E4DC] text-[11px] text-[#6B6B65] font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>All systems operational</span>
+              </div>
+            </div>
+
+            {/* Column 1: Product */}
+            <div className="space-y-3">
+              <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#171717]">
+                Product
+              </div>
+              <ul className="space-y-2 text-xs text-[#6B6B65] font-light">
+                <li><a href="#why-frevio" className="hover:text-[#171717] transition-colors">Client Portal</a></li>
+                <li><a href="#why-frevio" className="hover:text-[#171717] transition-colors">Milestone Sign-Offs</a></li>
+                <li><a href="#why-frevio" className="hover:text-[#171717] transition-colors">Itemized Invoicing</a></li>
+                <li><a href="#why-frevio" className="hover:text-[#171717] transition-colors">Scope Change Orders</a></li>
+                <li><a href="#pricing" className="hover:text-[#171717] transition-colors">Pricing Plans</a></li>
+              </ul>
+            </div>
+
+            {/* Column 2: Free Tools */}
+            <div className="space-y-3">
+              <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#171717]">
+                Free Tools
+              </div>
+              <ul className="space-y-2 text-xs text-[#6B6B65] font-light">
+                <li><Link href="/calculator" className="hover:text-[#171717] transition-colors">Rate Calculator</Link></li>
+                <li><Link href="/calculator/scope-creep" className="hover:text-[#171717] transition-colors">Scope Creep Calculator</Link></li>
+                <li><Link href="/calculator/invoice-generator" className="hover:text-[#171717] transition-colors">Invoice Generator</Link></li>
+                <li><Link href="/roadmap" className="hover:text-[#171717] transition-colors">Public Roadmap</Link></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Legal & Security */}
+            <div className="space-y-3">
+              <div className="text-[11px] font-mono font-semibold uppercase tracking-wider text-[#171717]">
+                Trust &amp; Legal
+              </div>
+              <ul className="space-y-2 text-xs text-[#6B6B65] font-light">
+                <li><Link href="/privacy" className="hover:text-[#171717] transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-[#171717] transition-colors">Terms of Service</Link></li>
+                <li><a href="#security" className="hover:text-[#171717] transition-colors">Security Architecture</a></li>
+                <li><a href="#faq" className="hover:text-[#171717] transition-colors">FAQ</a></li>
+              </ul>
+            </div>
+
+          </div>
+
+          {/* Sub-footer Bottom Bar */}
+          <div className="border-t border-[#E8E4DC] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#6B6B65] font-light">
+            <div className="flex items-center gap-2">
+              <span>© 2026 Frevio Cloud Inc.</span>
+              <span>·</span>
+              <span>Zero-login client architecture</span>
+            </div>
+            <div className="flex items-center gap-6">
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#171717] transition-colors"
+              >
+                Twitter / X
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#171717] transition-colors"
+              >
+                LinkedIn
+              </a>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#171717] transition-colors"
+              >
+                GitHub
+              </a>
+            </div>
+          </div>
+
         </div>
       </footer>
     </div>

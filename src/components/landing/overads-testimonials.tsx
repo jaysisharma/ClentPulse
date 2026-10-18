@@ -94,11 +94,11 @@ const TESTIMONIALS: Testimonial[] = [
     initials: "SL",
     avatarBg: "from-cyan-500 to-blue-600",
     metric: "$14.5k Upfront",
-    metricLabel: "Frictionless deposit escrow",
+    metricLabel: "Upfront kickoff deposit",
     metricIcon: DollarSign,
     rating: 5,
     type: "client",
-    highlight: "Fast e-sign and integrated Stripe card deposit."
+    highlight: "Fast e-sign and upfront milestone deposit."
   },
   {
     id: '6',

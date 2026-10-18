@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   const body = await request.json().catch(() => ({}))
   const billing: 'monthly' | 'annual' = body.billing === 'annual' ? 'annual' : 'monthly'
-  const rawTier: string = body.planTier || 'pro'
+  const rawTier: string = body.planTier || body.plan || 'pro'
   const normalizedTier = normalizePlan(rawTier)
   const orgId: string | null = body.orgId || null
 
@@ -24,24 +24,21 @@ export async function POST(request: Request) {
       : (process.env.STRIPE_SCALE_PRICE_ID || process.env.STRIPE_SCALE_MONTHLY_PRICE_ID || process.env.STRIPE_AGENCY_SCALE_PRICE_ID)
   } else if (normalizedTier === 'agency') {
     priceId = billing === 'annual'
-      ? (process.env.STRIPE_AGENCY_ANNUAL_PRICE_ID || process.env.STRIPE_AGENCY_STARTER_ANNUAL_PRICE_ID)
-      : (process.env.STRIPE_AGENCY_PRICE_ID || process.env.STRIPE_AGENCY_MONTHLY_PRICE_ID || process.env.STRIPE_AGENCY_STARTER_PRICE_ID)
+      ? (process.env.STRIPE_STUDIO_ANNUAL_PRICE_ID || process.env.STRIPE_AGENCY_ANNUAL_PRICE_ID || process.env.STRIPE_AGENCY_STARTER_ANNUAL_PRICE_ID)
+      : (process.env.STRIPE_STUDIO_PRICE_ID || process.env.STRIPE_STUDIO_MONTHLY_PRICE_ID || process.env.STRIPE_AGENCY_PRICE_ID || process.env.STRIPE_AGENCY_MONTHLY_PRICE_ID || process.env.STRIPE_AGENCY_STARTER_PRICE_ID)
+  } else if (normalizedTier === 'pro') {
+    priceId = billing === 'annual'
+      ? process.env.STRIPE_PRO_ANNUAL_PRICE_ID
+      : (process.env.STRIPE_PRO_PRICE_ID || process.env.STRIPE_PRO_MONTHLY_PRICE_ID)
   } else {
-    // Pro tier fallback
-    priceId = billing === 'annual'
-      ? process.env.STRIPE_PRO_ANNUAL_PRICE_ID
-      : (process.env.STRIPE_PRO_PRICE_ID || process.env.STRIPE_PRO_MONTHLY_PRICE_ID)
+    return NextResponse.json({ error: `Invalid or unbillable plan tier: ${rawTier}` }, { status: 400 })
   }
 
-  // Final fallback to default Pro price if specific agency tier env var is omitted in test environments
+  // Fail-closed: Never silently replace a missing tier's price with another plan's price
   if (!priceId) {
-    priceId = billing === 'annual'
-      ? process.env.STRIPE_PRO_ANNUAL_PRICE_ID
-      : (process.env.STRIPE_PRO_PRICE_ID || process.env.STRIPE_PRO_MONTHLY_PRICE_ID)
-  }
-
-  if (!priceId) {
-    return NextResponse.json({ error: `Missing price ID for ${billing} billing` }, { status: 500 })
+    return NextResponse.json({
+      error: `Missing configured Stripe price ID for ${normalizedTier} (${billing}). Please configure the price ID in environment variables.`,
+    }, { status: 500 })
   }
 
   const { data: profile, error: profileError } = await supabase

@@ -290,7 +290,7 @@ export default function FreelanceRateCalculatorPage() {
       {/* Footer */}
       <footer className="w-full border-t border-white/5 py-6 px-6 text-center text-xs text-slate-400">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span>&copy; {new Date().getFullYear()} Frevio Technologies Inc. Built for independent software engineers & design studios.</span>
+          <span>&copy; {new Date().getFullYear()} Frevio. Built for independent software engineers & design studios.</span>
           <div className="flex items-center gap-4">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link>

@@ -13,10 +13,10 @@ interface RowItem {
 const COMPARISON_ROWS: RowItem[] = [
   {
     id: '01',
-    title: 'Content & deliverable briefs',
-    frevio: { text: 'Built-in AI synthesis', status: 'yes' },
-    stack: { text: 'Separate AI sub', status: 'partial' },
-    traditional: { text: 'Manual typing', status: 'no' },
+    title: 'Deliverable briefs & updates',
+    frevio: { text: 'Automated client summaries', status: 'yes' },
+    stack: { text: 'Another subscription', status: 'partial' },
+    traditional: { text: 'Manual emails', status: 'no' },
   },
   {
     id: '02',
@@ -35,7 +35,7 @@ const COMPARISON_ROWS: RowItem[] = [
   {
     id: '04',
     title: 'Milestone invoicing',
-    frevio: { text: 'Stripe Rails, built-in', status: 'yes' },
+    frevio: { text: 'Itemized invoices & receipts', status: 'yes' },
     stack: { text: 'Harvest / QuickBooks', status: 'partial' },
     traditional: { text: 'PDF export & chasing', status: 'no' },
   },
@@ -64,114 +64,109 @@ const COMPARISON_ROWS: RowItem[] = [
 
 export function OveradsComparisonTable() {
   return (
-    <section id="comparison" className="w-full py-20 md:py-28 relative isolate overflow-hidden bg-[#08090a] border-t border-white/5">
-      <div className="mx-auto w-full max-w-6xl px-6">
-        {/* Section Header */}
-        <div className="mb-12 max-w-2xl space-y-4 md:mb-16">
-          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
-            <span>Honest comparison</span>
+    <section id="comparison" className="space-y-12">
+      {/* Section Header */}
+      <div className="text-center max-w-2xl mx-auto space-y-3">
+        <h2 className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">
+          Everything in one place.
+        </h2>
+        <p className="text-[#6B6B65] text-base font-light">
+          Zero scattered subscriptions. Free forever for up to 2 active client projects.
+        </p>
+      </div>
+
+      {/* Desktop Comparison Table */}
+      <div className="relative hidden overflow-hidden rounded-2xl bg-white border border-[#E8E4DC] md:block shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+        {/* Header Row */}
+        <div className="grid items-end gap-x-2 border-b border-[#E8E4DC] px-4 pb-5 pt-6 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)] bg-[#FAF8F5]">
+          <div aria-hidden="true" />
+          <div className="text-[11px] uppercase tracking-wider font-mono text-[#6B6B65] font-semibold">Key capabilities</div>
+          <div className="flex items-center justify-center">
+            <span className="inline-flex h-8 items-center gap-2 rounded-lg bg-[#F4773B] text-white font-bold px-4 text-xs font-mono shadow-sm">
+              Frevio
+            </span>
           </div>
-          <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-            Everything in one place, zero scattered subscriptions
-          </h2>
-          <p className="text-sm leading-relaxed text-slate-400 md:text-base font-light">
-            Free forever for up to 2 active client projects. Upgrade to Pro only when your roster grows.
-          </p>
+          <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-[#6B6B65]">A stack of tools</div>
+          <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-[#6B6B65]">Traditional way</div>
         </div>
 
-        {/* Desktop Comparison Table */}
-        <div className="relative hidden overflow-hidden rounded-3xl bg-[#0B0C12] ring-1 ring-white/10 md:block shadow-2xl">
-          {/* Header Row */}
-          <div className="grid items-end gap-x-2 border-b border-white/10 px-4 pb-5 pt-6 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)] bg-white/[0.02]">
-            <div aria-hidden="true" />
-            <div className="text-[11px] uppercase tracking-wider font-mono text-slate-400 font-semibold">Key capabilities</div>
-            <div className="flex items-center justify-center">
-              <span className="inline-flex h-8 items-center gap-2 rounded-full bg-white text-slate-950 font-bold px-4 text-xs font-mono">
-                Frevio
-              </span>
-            </div>
-            <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-slate-400">A stack of tools</div>
-            <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-slate-400">Traditional way</div>
-          </div>
-
-          {/* Table Data Rows */}
-          <div>
-            {COMPARISON_ROWS.map((row) => (
-              <div
-                key={row.id}
-                className="grid items-stretch gap-x-2 border-b border-white/[0.05] px-4 transition-colors last:border-b-0 hover:bg-white/[0.02] md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)]"
-              >
-                <div className="flex items-center justify-end py-5 text-right font-mono text-xs tabular-nums text-slate-500">
-                  {row.id}
-                </div>
-                <div className="flex items-center py-5 text-sm leading-snug text-white font-medium">
-                  {row.title}
-                </div>
-
-                {/* Frevio Column (Featured with light background) */}
-                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center bg-white/[0.03] border-x border-white/[0.04]">
-                  <Check className="size-4 text-emerald-400" />
-                  <span className="text-xs font-semibold text-white">{row.frevio.text}</span>
-                </div>
-
-                {/* Stack of Tools Column */}
-                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-slate-400">
-                  {row.stack.status === 'partial' ? (
-                    <Minus className="size-4 text-slate-500" />
-                  ) : (
-                    <X className="size-4 text-rose-500" />
-                  )}
-                  <span className="text-xs text-slate-400">{row.stack.text}</span>
-                </div>
-
-                {/* Traditional Freelancing Column */}
-                <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-slate-400">
-                  {row.traditional.status === 'no' ? (
-                    <X className="size-4 text-rose-500" />
-                  ) : (
-                    <Minus className="size-4 text-slate-500" />
-                  )}
-                  <span className="text-xs text-slate-400">{row.traditional.text}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Mobile View Cards */}
-        <div className="space-y-4 md:hidden">
+        {/* Table Data Rows */}
+        <div>
           {COMPARISON_ROWS.map((row) => (
-            <div key={row.id} className="overflow-hidden rounded-2xl bg-[#0B0C12] border border-white/10 p-5 space-y-3">
-              <div className="flex items-baseline gap-2.5">
-                <span className="font-mono text-[11px] tabular-nums text-indigo-400 font-bold">{row.id}</span>
-                <h3 className="text-sm font-semibold text-white">{row.title}</h3>
+            <div
+              key={row.id}
+              className="grid items-stretch gap-x-2 border-b border-[#E8E4DC] px-4 transition-colors last:border-b-0 hover:bg-[#FAF8F5]/60 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)]"
+            >
+              <div className="flex items-center justify-end py-5 text-right font-mono text-xs tabular-nums text-[#6B6B65]">
+                {row.id}
               </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-3 rounded-xl p-3 bg-white/[0.04] border border-white/10">
-                  <Check className="size-4 text-emerald-400 flex-shrink-0" />
-                  <div>
-                    <div className="text-[10px] uppercase font-mono text-indigo-400 font-bold">Frevio</div>
-                    <div className="text-xs font-semibold text-white">{row.frevio.text}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 rounded-xl p-3 bg-white/[0.015] border border-white/[0.04] text-slate-400">
-                  <Minus className="size-4 text-slate-500 flex-shrink-0" />
-                  <div>
-                    <div className="text-[10px] uppercase font-mono text-slate-500">A stack of tools</div>
-                    <div className="text-xs text-slate-400">{row.stack.text}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 rounded-xl p-3 bg-white/[0.015] border border-white/[0.04] text-slate-400">
-                  <X className="size-4 text-rose-500 flex-shrink-0" />
-                  <div>
-                    <div className="text-[10px] uppercase font-mono text-slate-500">Traditional way</div>
-                    <div className="text-xs text-slate-400">{row.traditional.text}</div>
-                  </div>
-                </div>
+              <div className="flex items-center py-5 text-sm leading-snug text-[#171717] font-medium">
+                {row.title}
+              </div>
+
+              {/* Frevio Column (Featured with warm background) */}
+              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center bg-[#FAF8F5]/70 border-x border-[#E8E4DC]">
+                <Check className="size-4 text-[#F4773B]" />
+                <span className="text-xs font-semibold text-[#171717]">{row.frevio.text}</span>
+              </div>
+
+              {/* Stack of Tools Column */}
+              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-[#6B6B65]">
+                {row.stack.status === 'partial' ? (
+                  <Minus className="size-4 text-[#6B6B65]" />
+                ) : (
+                  <X className="size-4 text-rose-500" />
+                )}
+                <span className="text-xs text-[#6B6B65]">{row.stack.text}</span>
+              </div>
+
+              {/* Traditional Freelancing Column */}
+              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-[#6B6B65]">
+                {row.traditional.status === 'no' ? (
+                  <X className="size-4 text-rose-500" />
+                ) : (
+                  <Minus className="size-4 text-[#6B6B65]" />
+                )}
+                <span className="text-xs text-[#6B6B65]">{row.traditional.text}</span>
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Mobile View Cards */}
+      <div className="space-y-4 md:hidden">
+        {COMPARISON_ROWS.map((row) => (
+          <div key={row.id} className="overflow-hidden rounded-2xl bg-white border border-[#E8E4DC] p-5 space-y-3 shadow-sm">
+            <div className="flex items-baseline gap-2.5">
+              <span className="font-mono text-[11px] tabular-nums text-[#F4773B] font-bold">{row.id}</span>
+              <h3 className="text-sm font-semibold text-[#171717]">{row.title}</h3>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 rounded-xl p-3 bg-[#FAF8F5] border border-[#E8E4DC]">
+                <Check className="size-4 text-[#F4773B] flex-shrink-0" />
+                <div>
+                  <div className="text-[10px] uppercase font-mono text-[#F4773B] font-bold">Frevio</div>
+                  <div className="text-xs font-semibold text-[#171717]">{row.frevio.text}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl p-3 bg-[#F8F6F1] border border-[#E8E4DC] text-[#6B6B65]">
+                <Minus className="size-4 text-[#6B6B65] flex-shrink-0" />
+                <div>
+                  <div className="text-[10px] uppercase font-mono text-[#6B6B65]">A stack of tools</div>
+                  <div className="text-xs text-[#6B6B65]">{row.stack.text}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 rounded-xl p-3 bg-[#F8F6F1] border border-[#E8E4DC] text-[#6B6B65]">
+                <X className="size-4 text-rose-500 flex-shrink-0" />
+                <div>
+                  <div className="text-[10px] uppercase font-mono text-[#6B6B65]">Traditional way</div>
+                  <div className="text-xs text-[#6B6B65]">{row.traditional.text}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   )

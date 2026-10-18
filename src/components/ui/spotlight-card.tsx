@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useRef, useState, useCallback } from 'react'
+import { cn } from '@/lib/utils'
 
 interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
@@ -15,7 +16,7 @@ interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
 export function SpotlightCard({
   children,
   className = '',
-  spotlightColor = 'rgba(94, 106, 210, 0.16)',
+  spotlightColor = 'rgba(244, 119, 59, 0.08)',
   ...props
 }: SpotlightCardProps) {
   const divRef = useRef<HTMLDivElement>(null)
@@ -42,11 +43,14 @@ export function SpotlightCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0E1013] transition-all duration-300 hover:border-white/[0.18] shadow-[0_4px_24px_rgba(0,0,0,0.5)] ${className}`}
+      className={cn(
+        'relative overflow-hidden rounded-2xl border border-[#E8E4DC] bg-white transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.03)]',
+        className
+      )}
       {...props}
     >
-      {/* Top 1px subtle glass highlight */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.15] to-transparent" />
+      {/* Top 1px subtle highlight */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-black/[0.04] to-transparent" />
 
       {/* Spotlight overlay */}
       <div

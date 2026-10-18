@@ -107,7 +107,8 @@ export default function UpgradePage() {
       }),
     })
     if (!res.ok) {
-      setError('Something went wrong. Please try again.')
+      const errData = await res.json().catch(() => ({}))
+      setError(errData.error || 'Something went wrong. Please try again.')
       setLoading(null)
       return
     }
@@ -320,12 +321,12 @@ export default function UpgradePage() {
           {/* Category: Agency Tier Cards */}
           {tierCategory === 'agency' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 items-stretch">
-              {/* Agency */}
+              {/* Studio / Agency */}
               <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-7 flex flex-col justify-between backdrop-blur-md shadow-xs dark:shadow-none">
                 <div>
                   <div className="mb-6 pb-6 border-b border-slate-100 dark:border-white/5">
                     <div className="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">
-                      Agency
+                      Studio
                     </div>
                     <div className="flex items-baseline gap-1.5">
                       <span className="text-4xl font-light tracking-tight text-slate-900 dark:text-white font-mono">
@@ -361,7 +362,7 @@ export default function UpgradePage() {
                   ) : (
                     <Building2 className="w-3.5 h-3.5" />
                   )}
-                  {currentPlan === 'agency' ? 'Current Plan' : 'Start 14-Day Agency Trial ($79/mo)'}
+                  {currentPlan === 'agency' ? 'Current Plan' : `Start 14-Day Studio Trial ($${agencyMonthly}/mo)`}
                 </button>
               </div>
 

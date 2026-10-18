@@ -218,6 +218,14 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
     .eq('project_id', project.id)
     .order('created_at', { ascending: false })
 
+  // Fetch active app builds for this project
+  const { data: appBuilds } = await supabase
+    .from('app_builds')
+    .select('*')
+    .eq('project_id', project.id)
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+
   // Calculated Progress & Milestone metrics
   const totalMilestones = milestones?.length ?? 0
   const completedMilestones = (milestones ?? []).filter(m => m.done).length
@@ -379,6 +387,7 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
           isDepositPending={isDepositPending}
           depositInvoice={depositInvoice}
           changeOrders={(changeOrders as any[]) ?? []}
+          appBuilds={(appBuilds as any[]) ?? []}
         />
 
         {/* ── Footer Referral Branding ─────────────────────────────── */}

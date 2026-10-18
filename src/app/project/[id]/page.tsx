@@ -8,7 +8,7 @@ import Link from 'next/link'
 import {
   ArrowLeft, Plus, Link2, Check, Send,
   Clock, AlertTriangle, FileSignature, CheckCircle2, ChevronRight,
-  BarChart3, Globe, Sparkles, ExternalLink, Layout, ShieldAlert, Eye,
+  BarChart3, Globe, Sparkles, ExternalLink, Layout, ShieldAlert, Eye, Smartphone,
 } from 'lucide-react'
 import { parseCanvasEmbedUrl } from '@/lib/canvas-embed'
 import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
@@ -17,6 +17,7 @@ import { StatusToggle } from './status-toggle'
 import { UpdateActions } from './update-actions'
 import { ApprovalsSection } from './approvals-section'
 import { ChangeOrdersSection } from './change-orders-section'
+import { AppBuildsSection } from '@/components/project/app-builds-section'
 import { MilestonesWidget } from './milestones-widget'
 import { KickoffChecklist } from './kickoff-checklist'
 import { ProjectActionsMenu } from './project-actions-menu'
@@ -63,6 +64,7 @@ export default async function ProjectPage({
     { data: clientFeedback },
     { data: teamMembers },
     { data: changeOrders },
+    { data: appBuilds },
   ] = await Promise.all([
     supabase.from('projects').select('*').eq('id', id).single(),
     supabase.from('updates').select('*').eq('project_id', id).order('created_at', { ascending: false }),
@@ -75,6 +77,7 @@ export default async function ProjectPage({
     supabase.from('feedback').select('*').eq('project_id', id).order('created_at', { ascending: false }),
     supabase.from('project_team_members').select('id, project_id, user_id, role_title, created_at, user:users(id, name, email, logo_url, last_heartbeat_at, active_focus_area)').eq('project_id', id),
     supabase.from('change_orders').select('*').eq('project_id', id).order('created_at', { ascending: false }),
+    supabase.from('app_builds').select('*').eq('project_id', id).order('created_at', { ascending: false }),
   ])
 
   if (!project) notFound()
@@ -421,6 +424,23 @@ export default async function ProjectPage({
               </div>
             )}
 
+            {/* Mobile App Builds & APKs */}
+            <div id="app-builds" className="scroll-mt-6">
+              <CollapsibleSection
+                title="App Builds & APKs"
+                count={appBuilds?.length ?? 0}
+                defaultOpen={Boolean(appBuilds && appBuilds.length > 0)}
+              >
+                <AppBuildsSection
+                  projectId={project.id}
+                  projectName={project.project_name}
+                  clientEmail={project.client_email}
+                  initialBuilds={(appBuilds as any[]) ?? []}
+                  canManage={canManageTeam}
+                />
+              </CollapsibleSection>
+            </div>
+
             {/* Client Feedback */}
             <CollapsibleSection
               title="Client Feedback"
@@ -555,6 +575,20 @@ export default async function ProjectPage({
                       <span className="text-xs font-semibold text-slate-500 group-hover:text-slate-900 dark:text-slate-400 dark:group-hover:text-white inline-flex items-center gap-1 transition-colors">Embed <ChevronRight className="w-3 h-3" /></span>
                     )}
                   </Link>
+
+                  <a href="#app-builds" className="border-t border-slate-100 dark:border-white/5 pt-4 flex items-center justify-between group">
+                    <div className="flex items-center gap-2">
+                      <Smartphone className="w-4 h-4 text-slate-400" />
+                      <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">Android APKs</span>
+                    </div>
+                    {appBuilds && appBuilds.length > 0 ? (
+                      <span className="text-[10px] font-mono font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                        {appBuilds[0].version_name}
+                      </span>
+                    ) : (
+                      <span className="text-xs font-semibold text-slate-500 group-hover:text-slate-900 dark:text-slate-400 dark:group-hover:text-white inline-flex items-center gap-1 transition-colors">Add <ChevronRight className="w-3 h-3" /></span>
+                    )}
+                  </a>
                 </div>
               </CollapsibleCard>
             )}

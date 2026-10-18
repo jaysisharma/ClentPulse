@@ -22,10 +22,21 @@ export const LAUNCH_PROMO_CAP = 50
 export const ANNUAL_MONTHLY_EQUIV = Math.round((PRICING.annual / 12) * 100) / 100 // 15.83
 export const ANNUAL_DISCOUNT_PCT = Math.round((1 - PRICING.annual / (PRICING.monthly * 12)) * 100) // 17%
 
+export const STUDIO_PRICING = {
+  monthly: 49,
+  annual: 490,
+  seats: 5,
+} as const
+
 export const AGENCY_PRICING = {
   agency: {
-    monthly: 79,
-    annual: 790,
+    monthly: 49,
+    annual: 490,
+    seats: 5,
+  },
+  studio: {
+    monthly: 49,
+    annual: 490,
     seats: 5,
   },
   scale: {
@@ -35,8 +46,8 @@ export const AGENCY_PRICING = {
   },
   // Backward compatibility alias for legacy code
   starter: {
-    monthly: 79,
-    annual: 790,
+    monthly: 49,
+    annual: 490,
     seats: 5,
   },
 } as const
@@ -83,6 +94,7 @@ export const AGENCY_FEATURES = [
 
 // Backward-compatible alias
 export const AGENCY_STARTER_FEATURES = AGENCY_FEATURES
+export const STUDIO_FEATURES = AGENCY_FEATURES
 
 export const AGENCY_SCALE_FEATURES = [
   'Up to 25 team members',
@@ -101,19 +113,19 @@ export const AGENCY_SCALE_FEATURES = [
 export const PLAN_BLURB: Record<PlanTier, string> = {
   free: 'Up to 2 active projects, client portal, and invoicing.',
   pro: 'Unlimited projects, automated emails, and custom branding.',
-  agency: 'Up to 5 team members, shared agency workspace, and team pods.',
+  agency: 'Up to 5 team members, shared studio workspace, and team pods.',
   agency_scale: 'Up to 25 team members, custom CNAME domain, 100% white-label, and Executive Radar.',
 } as const
 
 /**
- * Normalizes legacy plan strings (e.g. 'freelancer', 'agency_starter', 'starter', 'agency_pro')
+ * Normalizes legacy plan strings (e.g. 'freelancer', 'agency_starter', 'starter', 'studio', 'agency_pro')
  * to standard PlanTier: 'free' | 'pro' | 'agency' | 'agency_scale'.
  */
 export function normalizePlan(plan: string | null | undefined): PlanTier {
   if (!plan) return 'free'
   const p = plan.trim().toLowerCase()
   if (p === 'pro' || p === 'freelancer') return 'pro'
-  if (p === 'agency' || p === 'agency_starter' || p === 'starter') return 'agency'
+  if (p === 'agency' || p === 'agency_starter' || p === 'starter' || p === 'studio') return 'agency'
   if (p === 'agency_scale' || p === 'scale' || p === 'agency_pro' || p === 'enterprise') return 'agency_scale'
   return 'free'
 }

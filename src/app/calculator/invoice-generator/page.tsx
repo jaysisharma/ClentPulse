@@ -574,7 +574,7 @@ export default function FreeInvoiceGeneratorPage() {
 
       {/* Footer */}
       <footer className="print:hidden border-t border-white/5 py-8 px-6 text-center text-xs text-slate-500 font-mono">
-        <p>© {new Date().getFullYear()} Frevio Inc. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Frevio. All rights reserved.</p>
       </footer>
 
     </div>

@@ -22,6 +22,7 @@ const eslintConfig = defineConfig([
     "extension/dist/**",
     "extension/out/**",
     "next-env.d.ts",
+    ".agents/**",
   ]),
 ]);
 

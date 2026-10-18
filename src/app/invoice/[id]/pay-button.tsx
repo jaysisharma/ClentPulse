@@ -33,27 +33,30 @@ export function PayNowButton({ invoiceId, total, accentColor, currency = 'USD' }
   }
 
   return (
-    <div className="mt-6 space-y-2.5">
+    <div className="mt-6 space-y-3">
+      <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-center">
+        <p className="text-xs font-semibold text-amber-800 dark:text-amber-300">
+          Direct Settlement Required
+        </p>
+        <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+          Online card settlement is temporarily disabled while studio direct payouts are configured. Please settle {fmt} directly with the studio via bank transfer or their designated invoicing details.
+        </p>
+      </div>
+
       <button
         onClick={handlePay}
         disabled={loading}
-        className="w-full h-12 flex items-center justify-center gap-2.5 rounded-full text-white font-semibold text-xs sm:text-sm uppercase tracking-wider transition-all hover:opacity-95 active:scale-[0.99] disabled:opacity-60 shadow-md cursor-pointer"
-        style={{ backgroundColor: accentColor }}
+        className="w-full h-11 flex items-center justify-center gap-2 rounded-full text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 font-medium text-xs tracking-wide transition-all hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-60 cursor-pointer"
       >
-        {loading
-          ? <Loader2 className="w-4 h-4 animate-spin" />
-          : <CreditCard className="w-4 h-4" />
-        }
-        {loading ? 'Redirecting to checkout…' : `Pay ${fmt} Securely`}
+        {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CreditCard className="w-3.5 h-3.5 text-slate-400" />}
+        <span>Check Online Payment Availability</span>
       </button>
+
       {error && (
-        <p className="text-xs text-rose-600 dark:text-rose-400 text-center font-medium">{error}</p>
+        <p className="text-xs text-amber-700 dark:text-amber-300 text-center font-medium bg-amber-50 dark:bg-amber-950/30 p-2.5 rounded-lg border border-amber-200 dark:border-amber-800/40">
+          {error}
+        </p>
       )}
-      <p className="text-[11px] text-center text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1.5">
-        <span>Powered by Stripe</span>
-        <span>·</span>
-        <span>256-bit SSL Encrypted</span>
-      </p>
     </div>
   )
 }

@@ -302,4 +302,23 @@ export interface ChangeOrder {
   created_at: string
 }
 
+export interface AppBuild {
+  id: string
+  project_id: string
+  user_id: string
+  version_name: string
+  build_number?: string | null
+  platform: 'android' | 'ios' | 'universal'
+  environment: 'staging' | 'internal_beta' | 'client_review' | 'production'
+  file_url: string
+  file_size_bytes?: number | null
+  min_os_version?: string | null
+  changelog?: string | null
+  is_active: boolean
+  download_count: number
+  created_at: string
+  updated_at: string
+}
+
+
 

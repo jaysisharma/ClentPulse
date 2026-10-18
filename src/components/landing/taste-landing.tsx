@@ -35,7 +35,6 @@ export function TasteLanding({ isLoggedIn, signupHref }: Props) {
 
   const proPrice = annual ? Math.round(PRICING.annual / 12) : PRICING.monthly
   const agencyPrice = annual ? Math.round(AGENCY_PRICING.agency.annual / 12) : AGENCY_PRICING.agency.monthly
-  const scalePrice = annual ? Math.round(AGENCY_PRICING.scale.annual / 12) : AGENCY_PRICING.scale.monthly
 
   return (
     <div className="min-h-[100dvh] bg-[#07080b] text-slate-100 antialiased selection:bg-white/20 selection:text-white">
@@ -240,7 +239,7 @@ export function TasteLanding({ isLoggedIn, signupHref }: Props) {
                         </div>
                         <div className="text-3xl font-medium text-white">$3,500.00</div>
                         <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                          Tied directly to Sprint 3 sign-off. Settled via Stripe directly to studio bank account.
+                          Tied directly to Sprint 3 sign-off. Itemized invoice ready for client review and settlement.
                         </p>
                       </div>
 
@@ -379,7 +378,7 @@ export function TasteLanding({ isLoggedIn, signupHref }: Props) {
             <div className="rounded-xl bg-[#0f111a] p-5 text-center space-y-3">
               <StripeIcon className="w-6 h-6 mx-auto" />
               <div className="text-xs font-medium text-white">Stripe</div>
-              <div className="text-[11px] text-slate-400">Direct payouts</div>
+              <div className="text-[11px] text-slate-400">Payment links</div>
             </div>
 
             <div className="rounded-xl bg-[#0f111a] p-5 text-center space-y-3">
@@ -441,7 +440,7 @@ export function TasteLanding({ isLoggedIn, signupHref }: Props) {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
             {/* Free */}
             <div className="rounded-2xl bg-[#0d0f17] p-6 flex flex-col justify-between space-y-6">
               <div>
@@ -454,7 +453,7 @@ export function TasteLanding({ isLoggedIn, signupHref }: Props) {
                   <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Up to 2 active projects</li>
                   <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Client portal link</li>
                   <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Deliverable approvals</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Stripe checkout invoices</li>
+                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Direct invoice generation</li>
                 </ul>
               </div>
 
@@ -495,10 +494,10 @@ export function TasteLanding({ isLoggedIn, signupHref }: Props) {
               </Link>
             </div>
 
-            {/* Agency */}
+            {/* Studio */}
             <div className="rounded-2xl bg-[#0d0f17] p-6 flex flex-col justify-between space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-white">Agency</h3>
+                <h3 className="text-lg font-medium text-white">Studio</h3>
                 <div className="text-xs text-slate-400 mt-1">Creative teams &amp; studios</div>
                 <div className="text-3xl font-medium text-white mt-4">${agencyPrice}</div>
                 <div className="text-xs text-slate-400">{annual ? 'per month billed annually' : 'per month'}</div>
@@ -515,31 +514,7 @@ export function TasteLanding({ isLoggedIn, signupHref }: Props) {
                 href={signupHref}
                 className="w-full py-2.5 rounded-lg bg-[#1a1d2b] text-white text-xs font-semibold text-center hover:bg-[#222638] transition-colors"
               >
-                Start Agency
-              </Link>
-            </div>
-
-            {/* Scale */}
-            <div className="rounded-2xl bg-[#0d0f17] p-6 flex flex-col justify-between space-y-6">
-              <div>
-                <h3 className="text-lg font-medium text-white">Scale</h3>
-                <div className="text-xs text-slate-400 mt-1">High volume agencies</div>
-                <div className="text-3xl font-medium text-white mt-4">${scalePrice}</div>
-                <div className="text-xs text-slate-400">{annual ? 'per month billed annually' : 'per month'}</div>
-
-                <ul className="space-y-2.5 text-xs text-slate-300 font-light mt-6">
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Up to 25 team members</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Custom domain CNAME</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Complete white-label</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Radar dashboard alerts</li>
-                </ul>
-              </div>
-
-              <Link
-                href={signupHref}
-                className="w-full py-2.5 rounded-lg bg-[#1a1d2b] text-white text-xs font-semibold text-center hover:bg-[#222638] transition-colors"
-              >
-                Start Scale
+                Start Studio
               </Link>
             </div>
           </div>
@@ -620,7 +595,7 @@ export function TasteLanding({ isLoggedIn, signupHref }: Props) {
           <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
           <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
           <span className="text-slate-600">·</span>
-          <span>© {new Date().getFullYear()} Frevio Inc.</span>
+          <span>© {new Date().getFullYear()} Frevio. All rights reserved.</span>
         </div>
       </footer>
     </div>

@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import {
   Zap, FolderOpen, FileText, ArrowRight, Clock, FileSignature,
-  AlertCircle, CheckCircle2, Wallet,
+  AlertCircle, CheckCircle2, Wallet, Smartphone,
 } from 'lucide-react'
 import { SignOutButton } from '@/components/ui/sign-out-button'
 import { ApprovalCard } from '@/app/p/[slug]/approval-actions'
@@ -30,7 +30,7 @@ export default async function ClientDashboardPage() {
   const [{ data: projects }, { data: invoices }] = await Promise.all([
     supabase
       .from('projects')
-      .select('id,project_name,client_name,slug,color,status,hide_approvals,updates(id,bullets,sent_at,created_at),approvals(id,title,url,status,feedback),contracts(id,title,signed_at)')
+      .select('id,project_name,client_name,slug,color,status,hide_approvals,updates(id,bullets,sent_at,created_at),approvals(id,title,url,status,feedback),contracts(id,title,signed_at),app_builds(id,version_name,build_number,environment,file_url,is_active)')
       .eq('client_email', user.email)
       .order('created_at', { ascending: false }),
     supabase
@@ -43,7 +43,8 @@ export default async function ClientDashboardPage() {
   type Update = { id: string; bullets: string[]; sent_at: string | null; created_at: string }
   type Approval = { id: string; title: string; url: string | null; status: string; feedback: string | null }
   type Contract = { id: string; title: string; signed_at: string | null }
-  type Project = { id: string; project_name: string; client_name: string; slug: string; color: string; status: string; hide_approvals: boolean; updates: Update[]; approvals: Approval[]; contracts: Contract[] }
+  type AppBuildSnippet = { id: string; version_name: string; build_number: string | null; environment: string; file_url: string; is_active: boolean }
+  type Project = { id: string; project_name: string; client_name: string; slug: string; color: string; status: string; hide_approvals: boolean; updates: Update[]; approvals: Approval[]; contracts: Contract[]; app_builds?: AppBuildSnippet[] }
   type Invoice = { id: string; invoice_number: string; status: string; items: { amount: number }[]; due_date: string | null }
 
   const allProjects = (projects ?? []) as Project[]
@@ -278,6 +279,15 @@ export default async function ClientDashboardPage() {
                                 <span className="text-xs text-slate-400 dark:text-slate-500 capitalize">{p.status}</span>
                                 <span className="text-slate-300 dark:text-slate-600">·</span>
                                 <span className="text-xs text-slate-400 dark:text-slate-500 font-mono">{p.updates.filter(u => u.sent_at).length} updates</span>
+                                {p.app_builds && p.app_builds.filter(b => b.is_active).length > 0 && (
+                                  <>
+                                    <span className="text-slate-300 dark:text-slate-600">·</span>
+                                    <span className="inline-flex items-center gap-1 text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
+                                      <Smartphone className="w-3 h-3 text-emerald-500" />
+                                      {p.app_builds.filter(b => b.is_active)[0].version_name} APK
+                                    </span>
+                                  </>
+                                )}
                               </div>
                             </div>
                           </div>

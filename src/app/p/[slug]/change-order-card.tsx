@@ -33,27 +33,18 @@ export function ChangeOrderCard({
     setLoading(true)
     setError(null)
     try {
-      if (order.requires_payment && order.amount > 0) {
-        // Launch Stripe Checkout directly
-        const res = await fetch(`/api/change-orders/${order.id}/checkout`, { method: 'POST' })
-        const data = await res.json()
-        if (data.url) {
-          window.location.href = data.url
-          return
-        }
-        throw new Error(data.error || 'Failed to initiate checkout')
+      // 1-click approve scope change directly
+      const res = await fetch(`/api/change-orders/${order.id}/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'approve' }),
+      })
+      const data = await res.json()
+      if (data.changeOrder) {
+        setOrder(data.changeOrder)
+        onStatusChange?.(data.changeOrder)
       } else {
-        // Simple 1-click approve
-        const res = await fetch(`/api/change-orders/${order.id}/review`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'approve' }),
-        })
-        const data = await res.json()
-        if (data.changeOrder) {
-          setOrder(data.changeOrder)
-          onStatusChange?.(data.changeOrder)
-        }
+        throw new Error(data.error || 'Failed to record approval')
       }
     } catch (err: any) {
       setError(err.message || 'Error processing approval')
@@ -220,14 +211,12 @@ export function ChangeOrderCard({
             >
               {loading ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : order.requires_payment && order.amount > 0 ? (
-                <CreditCard className="w-3.5 h-3.5" />
               ) : (
                 <Check className="w-3.5 h-3.5" />
               )}
               <span>
-                {order.requires_payment && order.amount > 0
-                  ? `Approve & Pay (${fmtCurrency(order.amount, order.currency || 'USD')})`
+                {order.amount > 0
+                  ? `Approve Scope Change (+${fmtCurrency(order.amount, order.currency || 'USD')})`
                   : 'Approve Scope Change'}
               </span>
             </button>
@@ -235,23 +224,12 @@ export function ChangeOrderCard({
         </div>
       )}
 
-      {/* Approved but payment pending */}
+      {/* Approved scope notice */}
       {isApproved && order.amount > 0 && !isPaid && (
         <div className="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between gap-3">
           <span className="text-xs text-slate-500 dark:text-slate-400">
-            Scope approved. Payment can be finalized now via Stripe.
+            Scope approved (+{fmtCurrency(order.amount, order.currency || 'USD')}). Please arrange settlement directly with the studio.
           </span>
-          <button
-            type="button"
-            disabled={loading}
-            onClick={handleApproveAndPay}
-            className="px-4 py-1.5 rounded-full text-white text-xs font-semibold transition-all shadow-xs cursor-pointer flex items-center gap-1.5"
-            style={{ backgroundColor: accentColor }}
-          >
-            {loading && <Loader2 className="w-3 h-3 animate-spin" />}
-            <CreditCard className="w-3 h-3" />
-            <span>Pay {fmtCurrency(order.amount, order.currency || 'USD')}</span>
-          </button>
         </div>
       )}
     </div>

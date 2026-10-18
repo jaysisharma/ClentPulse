@@ -110,4 +110,35 @@ describe('POST /api/create-checkout', () => {
     const json = await res.json()
     expect(json).toEqual({ url: 'https://checkout.stripe.com/test' })
   })
+
+  it('supports studio/agency plan checkout when price ID is configured', async () => {
+    process.env.STRIPE_STUDIO_PRICE_ID = 'price_studio_monthly'
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest({ billing: 'monthly', plan: 'studio' }))
+    expect(res.status).toBe(200)
+    expect(mockCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        line_items: [{ price: 'price_studio_monthly', quantity: 1 }],
+      })
+    )
+  })
+
+  it('fails closed with 500 when studio price ID is missing (never silently falls back to pro)', async () => {
+    delete process.env.STRIPE_STUDIO_PRICE_ID
+    delete process.env.STRIPE_AGENCY_PRICE_ID
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest({ billing: 'monthly', plan: 'studio' }))
+    expect(res.status).toBe(500)
+    const json = await res.json()
+    expect(json.error).toContain('Missing configured Stripe price ID')
+    expect(mockCheckoutCreate).not.toHaveBeenCalled()
+  })
+
+  it('returns 400 for invalid plan tiers', async () => {
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest({ billing: 'monthly', plan: 'unsupported_tier' }))
+    expect(res.status).toBe(400)
+    const json = await res.json()
+    expect(json.error).toContain('Invalid or unbillable plan tier')
+  })
 })
