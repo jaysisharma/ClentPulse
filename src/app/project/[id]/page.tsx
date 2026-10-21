@@ -20,6 +20,7 @@ import { ChangeOrdersSection } from './change-orders-section'
 import { AppBuildsSection } from '@/components/project/app-builds-section'
 import { MilestonesWidget } from './milestones-widget'
 import { KickoffChecklist } from './kickoff-checklist'
+import { PortalCanvasEmbed } from '@/components/portal/portal-canvas-embed'
 import { ProjectActionsMenu } from './project-actions-menu'
 import { CollapsibleSection } from './collapsible-section'
 import { CollapsibleCard } from './collapsible-card'
@@ -392,33 +393,19 @@ export default async function ProjectPage({
                       <span className="text-xs text-slate-500 dark:text-slate-400 font-light">
                         Live interactive board shared with {project.client_name} on their client portal.
                       </span>
-                      <div className="flex items-center gap-3">
-                        <a
-                          href={project.canvas_embed_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white inline-flex items-center gap-1 font-medium transition-colors"
-                        >
-                          <span>Open full board</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                        <Link
-                          href={`/project/${project.id}/settings?tab=portal`}
-                          className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
-                        >
-                          Configure board →
-                        </Link>
-                      </div>
+                      <Link
+                        href={`/project/${project.id}/settings?tab=portal`}
+                        className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                      >
+                        Configure board →
+                      </Link>
                     </div>
-                    <div className="w-full h-[320px] sm:h-[420px] lg:h-[520px] rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-black/40 shadow-xs">
-                      <iframe
-                        src={parseCanvasEmbedUrl(project.canvas_embed_url)?.embedUrl || project.canvas_embed_url}
-                        title={project.canvas_embed_title || 'Visual Strategy Canvas'}
-                        className="w-full h-full border-0"
-                        allowFullScreen
-                        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                      />
-                    </div>
+                    <PortalCanvasEmbed
+                      embedUrl={parseCanvasEmbedUrl(project.canvas_embed_url)?.embedUrl || project.canvas_embed_url}
+                      originalUrl={parseCanvasEmbedUrl(project.canvas_embed_url)?.originalUrl || project.canvas_embed_url}
+                      title={project.canvas_embed_title}
+                      platformName={parseCanvasEmbedUrl(project.canvas_embed_url)?.platformName || 'Interactive Canvas'}
+                    />
                   </div>
                 </CollapsibleSection>
               </div>

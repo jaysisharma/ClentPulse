@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import {
-  Zap, Bell, Clock, Building2, Mail
+  Zap, Bell, Clock, Building2, Mail, Sparkles, CheckCircle2
 } from 'lucide-react'
 import Link from 'next/link'
 import { CompletedProjectPopup } from '@/components/project/completed-project-popup'
@@ -243,161 +243,33 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
   const leadSpecialistName = orgData?.name || owner?.name || 'Studio Specialist'
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-white relative selection:bg-slate-900 selection:text-white dark:selection:bg-white dark:selection:text-slate-900 font-sans transition-colors duration-200">
-      {/* Ambient background illumination */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-96 blur-3xl opacity-30 dark:opacity-20 -z-10"
-        style={{
-          background: `radial-gradient(ellipse 60% 40% at 50% 0%, ${accentColor} 0%, transparent 80%)`,
-        }}
+    <div className="min-h-screen bg-[#07080d] text-white relative selection:bg-indigo-600 selection:text-white font-sans">
+      <ClientPortalView
+        project={project}
+        updates={updates}
+        milestones={milestones}
+        checklistItems={checklistItems}
+        approvals={approvals}
+        projectResources={projectResources}
+        projectInvoices={projectInvoices}
+        teamMembers={teamMembers}
+        allComments={allComments}
+        owner={owner}
+        orgData={orgData}
+        accentColor={accentColor}
+        hoursLabel={hoursLabel}
+        totalHours={totalHours}
+        totalMilestones={totalMilestones}
+        completedMilestones={completedMilestones}
+        progressPercent={progressPercent}
+        targetLaunchDate={targetLaunchDate}
+        contactEmail={contactEmail}
+        leadSpecialistName={leadSpecialistName}
+        isDepositPending={isDepositPending}
+        depositInvoice={depositInvoice}
+        changeOrders={(changeOrders as any[]) ?? []}
+        appBuilds={(appBuilds as any[]) ?? []}
       />
-
-      {/* ── Sticky Top Navigation Header ─────────────────────────── */}
-      <header className="border-b border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c0d12]/80 backdrop-blur-md sticky top-0 z-30 transition-colors">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
-          {/* Studio / Org Branding & Project Identifier */}
-          <div className="flex items-center gap-3 min-w-0">
-            {orgData?.logo_url ? (
-              <img src={orgData.logo_url} alt={orgData.name} className="h-8 w-auto max-w-[120px] object-contain rounded" />
-            ) : isPaidPlan(owner?.plan) && owner?.logo_url ? (
-              <img src={owner.logo_url} alt="Logo" className="h-8 w-auto max-w-[120px] object-contain rounded" />
-            ) : (
-              <div
-                className="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs flex-shrink-0"
-                style={{ backgroundColor: accentColor }}
-              >
-                {orgData ? <Building2 className="w-4 h-4" /> : <Zap className="w-4 h-4" />}
-              </div>
-            )}
-            <div className="min-w-0">
-              <div className="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm tracking-tight truncate flex items-center gap-1.5">
-                <span className="truncate">{project.project_name}</span>
-                {orgData && (
-                  <span className="hidden sm:inline-flex text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400">
-                    {orgData.name}
-                  </span>
-                )}
-              </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light truncate">
-                Client: <span className="font-medium text-slate-700 dark:text-slate-300">{project.client_name}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Realtime sync & Actions */}
-          <div className="flex items-center gap-2 sm:gap-2.5 flex-shrink-0">
-            <PortalRealtimeSubscriber
-              projectId={project.id}
-              clientName={project.client_name}
-              accentColor={accentColor}
-            />
-
-            {/* Status Pill */}
-            <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/[0.03] text-[11px] font-medium">
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ backgroundColor: project.status === 'active' ? '#22c55e' : '#94a3b8' }}
-              />
-              <span className="text-slate-600 dark:text-slate-300 capitalize text-xs">
-                {project.status}
-              </span>
-            </div>
-
-            {/* Quick Contact Specialist Button */}
-            {contactEmail && (
-              <a
-                href={`mailto:${contactEmail}?subject=${encodeURIComponent(`Question on ${project.project_name}`)}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 px-3 py-1.5 text-xs font-semibold transition-colors shadow-2xs"
-                title={`Contact ${leadSpecialistName}`}
-              >
-                <Mail className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400" />
-                <span className="hidden sm:inline">Contact</span>
-              </a>
-            )}
-
-            {/* Subscribe Action */}
-            <Link
-              href={`/p/${project.slug}/subscribe`}
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 px-3 py-1.5 text-xs font-semibold transition-colors shadow-2xs cursor-pointer"
-            >
-              <Bell className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400" />
-              <span className="hidden xs:inline">Subscribe</span>
-            </Link>
-
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
-      {/* ── Main Container (Clean 2-column layout) ───────────────── */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-20 space-y-6 relative z-10">
-
-        {/* ── Header Title Row ─────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/80 dark:border-white/10">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 font-medium">
-                Client Portal
-              </span>
-              {project.show_live_presence !== false && (
-                <PresenceBadge
-                  projectId={project.id}
-                  initialHeartbeatAt={project.last_heartbeat_at ?? null}
-                  initialFocusArea={project.active_focus_area ?? null}
-                  mode="client"
-                />
-              )}
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
-              {project.project_name}
-            </h1>
-          </div>
-
-          {targetLaunchDate && (
-            <div className="text-left sm:text-right">
-              <div className="text-[10px] uppercase tracking-wider text-slate-400 font-medium">Target Launch</div>
-              <div className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white font-mono">{targetLaunchDate}</div>
-            </div>
-          )}
-        </div>
-
-        {/* ── 2-Column Feed + Sidebar View ─────────────────────────── */}
-        <ClientPortalView
-          project={project}
-          updates={updates}
-          milestones={milestones}
-          checklistItems={checklistItems}
-          approvals={approvals}
-          projectResources={projectResources}
-          projectInvoices={projectInvoices}
-          teamMembers={teamMembers}
-          allComments={allComments}
-          owner={owner}
-          orgData={orgData}
-          accentColor={accentColor}
-          hoursLabel={hoursLabel}
-          totalHours={totalHours}
-          totalMilestones={totalMilestones}
-          completedMilestones={completedMilestones}
-          progressPercent={progressPercent}
-          targetLaunchDate={targetLaunchDate}
-          contactEmail={contactEmail}
-          leadSpecialistName={leadSpecialistName}
-          isDepositPending={isDepositPending}
-          depositInvoice={depositInvoice}
-          changeOrders={(changeOrders as any[]) ?? []}
-          appBuilds={(appBuilds as any[]) ?? []}
-        />
-
-        {/* ── Footer Referral Branding ─────────────────────────────── */}
-        <PoweredByReferral
-          refHandle={owner?.username || owner?.id}
-          isWhiteLabel={Boolean(orgData?.white_label || isPaidPlan(owner?.plan))}
-          className="pt-6 text-center"
-        />
-
-      </main>
 
       {project.status === 'completed' && !hasTestimonial && (
         <CompletedProjectPopup
@@ -409,3 +281,4 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
     </div>
   )
 }
+
