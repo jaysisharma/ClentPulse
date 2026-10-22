@@ -2,9 +2,9 @@ import { Clock, Mail } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Reveal } from './reveal'
 import { SectionHeading } from './section-heading'
-import { card, heading, muted, section, well } from './styles'
+import { card, ember, heading, muted, section, well } from './styles'
 
-const mockCard = cn(card, 'w-full p-5 shadow-sm sm:p-6 dark:shadow-none')
+const mockCard = cn(card, 'w-full p-5 sm:p-6')
 
 function UpdateMock() {
   return (
@@ -16,12 +16,12 @@ function UpdateMock() {
       <ul className="mt-4 space-y-2.5 text-sm">
         {['Logo system v3 approved', 'Brand guidelines started, draft due Wed', 'Nothing needed from you this week'].map((l) => (
           <li key={l} className="flex gap-2.5">
-            <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-slate-400" />
+            <span className="mt-2 h-1 w-1 flex-shrink-0 rounded-full bg-ink-muted" />
             {l}
           </li>
         ))}
       </ul>
-      <p className={cn('mt-5 border-t border-slate-200 pt-3 text-xs dark:border-white/10', muted)}>
+      <p className={cn('mt-5 border-t border-line pt-3 text-xs', muted)}>
         Sent automatically from your project timeline
       </p>
     </div>
@@ -33,12 +33,12 @@ function ContractMock() {
     <div className={mockCard}>
       <p className={cn('text-xs', muted)}>Change order #3</p>
       <p className="mt-1 text-base font-semibold">Add a landing page: $900, +6 days</p>
-      <div className="mt-6 border-b border-slate-300 pb-1 dark:border-white/20">
+      <div className="mt-6 border-b border-line-strong pb-1">
         <span className="font-[family-name:var(--font-caveat)] text-3xl">Maya Chen</span>
       </div>
       <div className={cn('mt-2 flex items-center justify-between text-xs', muted)}>
         <span>Signed by client</span>
-        <span className="text-emerald-700 dark:text-emerald-400">Today, 14:05 ✓</span>
+        <span className="text-positive">Today, 14:05 ✓</span>
       </div>
     </div>
   )
@@ -46,12 +46,12 @@ function ContractMock() {
 
 function InvoiceMock() {
   const rows = [
-    { n: '#0012', label: 'Logo system', amt: '$1,800', status: 'Paid', tone: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400' },
-    { n: '#0013', label: 'Guidelines', amt: '$1,400', status: 'Due Fri', tone: 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400' },
-    { n: '#0014', label: 'Landing page', amt: '$900', status: 'Draft', tone: 'border-slate-200 bg-slate-100 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-400' },
+    { n: '#0012', label: 'Logo system', amt: '$1,800', status: 'Paid', tone: 'border-positive/20 bg-positive/10 text-positive' },
+    { n: '#0013', label: 'Guidelines', amt: '$1,400', status: 'Due Fri', tone: 'border-attention/20 bg-attention/10 text-attention' },
+    { n: '#0014', label: 'Landing page', amt: '$900', status: 'Draft', tone: 'border-line bg-sunken text-ink-muted' },
   ]
   return (
-    <div className={cn(card, 'w-full divide-y divide-slate-200 p-2 shadow-sm dark:divide-white/10 dark:shadow-none')}>
+    <div className={cn(card, 'w-full divide-y divide-line p-2')}>
       {rows.map((r) => (
         <div key={r.n} className="flex items-center gap-3 px-3 py-3.5 text-sm">
           <span className={cn('font-mono text-xs', muted)}>{r.n}</span>
@@ -70,11 +70,11 @@ function BudgetMock() {
       <div className="flex items-baseline justify-between">
         <p className="text-sm font-semibold">Budget</p>
         <p className={cn('text-sm tabular-nums', muted)}>
-          <span className="text-slate-900 dark:text-white">$3,450</span> of $5,400
+          <span className="text-ink">$3,450</span> of $5,400
         </p>
       </div>
-      <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-white/10">
-        <div className="h-full w-[64%] rounded-full bg-slate-900 dark:bg-white" />
+      <div className="mt-3 h-2 overflow-hidden rounded-full bg-sunken">
+        <div className="h-full w-[64%] rounded-full bg-ink" />
       </div>
       <div className="mt-5 grid grid-cols-2 gap-2 text-sm">
         <div className={cn(well, 'p-3')}>
@@ -92,29 +92,36 @@ function BudgetMock() {
   )
 }
 
-const FEATURES = [
+const TILES = [
   {
     title: 'Updates that send themselves.',
     body: 'Post progress as you work. Frevio turns it into a clear weekly email, so clients stop asking “any updates?”.',
     mock: <UpdateMock />,
+    dark: true,
+    span: 'md:col-span-7',
   },
   {
     title: 'Scope changes, signed first.',
     body: '“One more thing” becomes a change order the client signs in one click, before you start the extra work.',
     mock: <ContractMock />,
+    span: 'md:col-span-5',
   },
   {
     title: 'Invoices tied to milestones.',
-    body: 'Each invoice belongs to the work it pays for. Clients see it right after they approve, while the value is fresh.',
+    body: 'Each invoice belongs to the work it pays for. Clients see it right after they approve.',
     mock: <InvoiceMock />,
+    span: 'md:col-span-5',
   },
   {
     title: 'Know your real rate.',
-    body: 'Track hours against the budget and see your effective hourly rate before a project quietly turns unprofitable.',
+    body: 'Track hours against the budget and see your effective rate before a project quietly turns unprofitable.',
     mock: <BudgetMock />,
+    dark: true,
+    span: 'md:col-span-7',
   },
 ]
 
+/** Bento of the four jobs behind the link: dark ember tiles alternate with paper ones. */
 export function Features() {
   return (
     <section className={section}>
@@ -122,24 +129,24 @@ export function Features() {
         label="Behind the link"
         title={
           <>
-            The rest of the client job,{' '}
-            <span className="text-slate-500">handled in the same place.</span>
+            The rest of the client job, <span className="text-ink-muted">in the same place.</span>
           </>
         }
       />
 
-      <div className="mt-16 space-y-20 sm:space-y-28">
-        {FEATURES.map((f, i) => (
-          <div key={f.title} className="grid items-center gap-8 md:grid-cols-2 md:gap-16">
-            <Reveal className={cn(i % 2 === 1 && 'md:order-2')}>
-              <p className={cn('font-mono text-xs', muted)}>0{i + 1}</p>
-              <h3 className={cn(heading, 'mt-3 text-2xl sm:text-3xl')}>{f.title}</h3>
-              <p className={cn('mt-3 max-w-md text-base leading-relaxed', muted)}>{f.body}</p>
-            </Reveal>
-            <Reveal delay={100} className={cn('mx-auto w-full max-w-md', i % 2 === 1 && 'md:order-1')}>
-              {f.mock}
-            </Reveal>
-          </div>
+      <div className="mt-10 grid gap-3 md:grid-cols-12">
+        {TILES.map((t, i) => (
+          <Reveal
+            key={t.title}
+            delay={(i % 2) * 80}
+            className={cn(t.span, t.dark ? ember : card, 'flex flex-col gap-8 p-6 sm:p-8')}
+          >
+            <div className="max-w-md">
+              <h3 className={cn(heading, 'text-2xl leading-tight md:text-[1.75rem]', t.dark && 'text-white')}>{t.title}</h3>
+              <p className={cn('mt-3 text-sm leading-relaxed', t.dark ? 'text-white/65' : muted)}>{t.body}</p>
+            </div>
+            <div className={cn('mt-auto w-full', t.dark ? 'max-w-md self-end' : '')}>{t.mock}</div>
+          </Reveal>
         ))}
       </div>
     </section>

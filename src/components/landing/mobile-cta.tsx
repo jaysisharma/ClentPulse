@@ -20,7 +20,7 @@ export function MobileCta({ href, label }: { href: string; label: string }) {
   return (
     <div
       className={cn(
-        'fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-slate-50/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md transition-transform duration-300 md:hidden dark:border-white/10 dark:bg-[#08090a]/90',
+        'fixed inset-x-0 bottom-0 z-40 border-t border-line bg-canvas/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-md transition-transform duration-300 md:hidden',
         show ? 'translate-y-0' : 'translate-y-full'
       )}
     >

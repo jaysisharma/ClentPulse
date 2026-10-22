@@ -1,27 +1,84 @@
+import { Check, Copy, Link2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SectionHeading } from './section-heading'
-import { heading, muted, section } from './styles'
+import { card, ember, muted, section, well } from './styles'
+
+function CreateMock() {
+  return (
+    <div className="space-y-2 text-xs">
+      <div className={cn(well, 'px-3 py-2')}>
+        <p className={muted}>Project</p>
+        <p className="mt-0.5 text-sm">Brand refresh</p>
+      </div>
+      <div className={cn(well, 'px-3 py-2')}>
+        <p className={muted}>Client</p>
+        <p className="mt-0.5 text-sm">maya@northwind.co</p>
+      </div>
+    </div>
+  )
+}
+
+function LinkMock() {
+  return (
+    <div className="space-y-2 text-xs">
+      <div className={cn(well, 'flex items-center gap-2 px-3 py-2.5 font-mono')}>
+        <Link2 className="h-3.5 w-3.5 flex-shrink-0 text-accent" />
+        <span className="truncate">frevio.app/p/northwind</span>
+        <Copy className={cn('ml-auto h-3.5 w-3.5 flex-shrink-0', muted)} />
+      </div>
+      <p className={cn('px-1', muted)}>No account, no password. Optional passcode.</p>
+    </div>
+  )
+}
+
+function PaidMock() {
+  return (
+    <div className="space-y-2 text-xs">
+      {[
+        ['Logo system v3', 'Approved'],
+        ['Invoice #0012, $1,800', 'Paid'],
+      ].map(([label, state]) => (
+        <div key={label} className={cn(well, 'flex items-center justify-between gap-2 px-3 py-2.5')}>
+          <span className="truncate text-sm">{label}</span>
+          <span className="inline-flex flex-shrink-0 items-center gap-1 rounded-full bg-positive/10 px-2 py-0.5 font-medium text-positive">
+            <Check className="h-3 w-3" strokeWidth={3} /> {state}
+          </span>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 const STEPS = [
-  { title: 'Create the project', body: 'Name it, add your client’s email and set milestones. Add a contract if you want one.' },
-  { title: 'Send one link', body: 'Your client gets a private portal. No account to create, no password to forget.' },
-  { title: 'Get approved and paid', body: 'Post updates as you go. Clients approve and pay the milestone from the same page.' },
+  { tag: 'Set up', title: 'Create the project', body: 'Name it, add your client’s email and set milestones.', mock: <CreateMock /> },
+  { tag: 'Share', title: 'Send one link', body: 'Your client gets a private portal that opens anywhere.', mock: <LinkMock /> },
+  { tag: 'Done', title: 'Get approved and paid', body: 'They approve the milestone and pay it on the same page.', mock: <PaidMock /> },
 ]
 
 export function HowItWorks() {
   return (
     <section id="how-it-works" className={cn(section, 'scroll-mt-24')}>
-      <SectionHeading label="How it works" title="Live in under a minute." />
+      <SectionHeading
+        align="center"
+        label="How it works"
+        title="Live in under a minute."
+        sub="Three steps, and the last one is your client’s. Add a contract up front if you want one."
+      />
 
-      <ol className="mt-12 divide-y divide-slate-200 border-y border-slate-200 dark:divide-white/10 dark:border-white/10">
-        {STEPS.map((s, i) => (
-          <li key={s.title} className="grid gap-2 py-7 sm:grid-cols-[4rem_1fr_1.4fr] sm:items-baseline sm:gap-8">
-            <span className={cn('font-mono text-sm', muted)}>0{i + 1}</span>
-            <h3 className={cn(heading, 'text-xl sm:text-2xl')}>{s.title}</h3>
-            <p className={cn('text-base leading-relaxed', muted)}>{s.body}</p>
-          </li>
-        ))}
-      </ol>
+      <div className={cn(ember, 'mt-12 p-3 sm:p-8 lg:p-12')}>
+        <ol className="grid gap-3 md:grid-cols-3">
+          {STEPS.map((s, i) => (
+            <li key={s.title} className={cn(card, 'flex flex-col p-5')}>
+              <p className={cn('flex items-center gap-2 text-xs', muted)}>
+                <span className="font-mono">0{i + 1}</span> {s.tag}
+              </p>
+              <h3 className="mt-3 text-lg font-medium tracking-tight text-ink">{s.title}</h3>
+              <p className={cn('mt-1 mb-5 text-sm leading-relaxed', muted)}>{s.body}</p>
+              <div className="mt-auto">{s.mock}</div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   )
 }

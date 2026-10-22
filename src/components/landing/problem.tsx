@@ -40,7 +40,7 @@ export function Problem() {
         title={
           <>
             Clients don&apos;t ignore you.{' '}
-            <span className="text-slate-500">They lose you between five apps.</span>
+            <span className="text-ink-muted">They lose you between five apps.</span>
           </>
         }
       />
@@ -51,7 +51,7 @@ export function Problem() {
             key={m.text}
             className={cn(
               well,
-              'absolute w-[min(85%,300px)] bg-white px-4 py-3 shadow-sm dark:bg-[#111218]',
+              'absolute w-[min(85%,300px)] bg-surface px-4 py-3 shadow-sm',
               'left-[var(--xm)] top-[var(--y)] sm:left-[var(--x)]',
               'transition-[left,top,transform,opacity] duration-700 ease-[cubic-bezier(0.65,0,0.35,1)]'
             )}
@@ -66,26 +66,26 @@ export function Problem() {
               } as React.CSSProperties
             }
           >
-            <p className="text-xs font-medium uppercase tracking-wider text-rose-600 dark:text-rose-400">{m.from}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-danger">{m.from}</p>
             <p className="mt-0.5 text-sm">{m.text}</p>
           </div>
         ))}
 
         <div
           className={cn(
-            'absolute left-1/2 top-1/2 w-[min(90%,400px)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-xl dark:border-white/10 dark:bg-[#111218] dark:shadow-none',
+            'absolute left-1/2 top-1/2 w-[min(90%,400px)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-line bg-surface p-6 text-center shadow-xl',
             'transition-[opacity,transform] duration-500 ease-out',
             converged ? 'scale-100 opacity-100 delay-700' : 'pointer-events-none scale-90 opacity-0'
           )}
         >
           <div className={cn(well, 'mx-auto flex w-fit items-center gap-2 px-3 py-2 font-mono text-sm')}>
-            <Link2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            <Link2 className="h-4 w-4 text-positive" />
             frevio.app/p/northwind
           </div>
           <p className="mt-4 text-base">One link. Every update, approval and invoice.</p>
           <button
             onClick={replay}
-            className={cn('mt-2 inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-3 text-xs transition-colors hover:text-slate-900 dark:hover:text-white', muted)}
+            className={cn('mt-2 inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-3 text-xs transition-colors hover:text-ink', muted)}
           >
             <RotateCcw className="h-3 w-3" /> Replay
           </button>

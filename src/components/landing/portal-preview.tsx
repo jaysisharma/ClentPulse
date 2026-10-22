@@ -56,14 +56,14 @@ export function PortalPreview() {
       aria-hidden="true"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className={cn(card, 'overflow-hidden shadow-xl dark:shadow-none')}
+      className={cn(card, 'overflow-hidden shadow-xl')}
     >
       {/* Browser chrome */}
-      <div className="flex items-center gap-3 border-b border-slate-200 px-4 py-3 dark:border-white/10">
+      <div className="flex items-center gap-3 border-b border-line px-4 py-3">
         <div className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-slate-200 dark:bg-white/10" />
-          <span className="h-2.5 w-2.5 rounded-full bg-slate-200 dark:bg-white/10" />
-          <span className="h-2.5 w-2.5 rounded-full bg-slate-200 dark:bg-white/10" />
+          <span className="h-2.5 w-2.5 rounded-full bg-line" />
+          <span className="h-2.5 w-2.5 rounded-full bg-line" />
+          <span className="h-2.5 w-2.5 rounded-full bg-line" />
         </div>
         <div className={cn(well, 'mx-auto flex min-w-0 items-center gap-1.5 rounded-md px-3 py-1 font-mono text-xs', muted)}>
           <Lock className="h-3 w-3 flex-shrink-0" />
@@ -76,9 +76,9 @@ export function PortalPreview() {
           <p className={cn('text-xs', muted)}>Studio Ash · for Northwind Coffee</p>
           <h3 className="mt-1 text-lg font-semibold tracking-tight">Brand refresh</h3>
           <div className="mt-3 flex items-center gap-3">
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-white/10">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sunken">
               <div
-                className="h-full rounded-full bg-slate-900 transition-[width] duration-700 ease-out dark:bg-white"
+                className="h-full rounded-full bg-ink transition-[width] duration-700 ease-out"
                 style={{ width: approved ? '78%' : '52%' }}
               />
             </div>
@@ -90,7 +90,7 @@ export function PortalPreview() {
         <div className={cn(well, 'p-4')}>
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3">
-              <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white dark:border-white/10 dark:bg-white/5">
+              <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-line bg-surface">
                 <FileText className="h-4 w-4" />
               </span>
               <div>
@@ -102,8 +102,8 @@ export function PortalPreview() {
               className={cn(
                 'whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium transition-colors duration-300',
                 approved
-                  ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
-                  : 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                  ? 'border-positive/20 bg-positive/10 text-positive'
+                  : 'border-attention/20 bg-attention/10 text-attention'
               )}
             >
               {approved ? 'Approved' : 'Awaiting you'}
@@ -113,20 +113,20 @@ export function PortalPreview() {
           <div className="mt-4 h-9">
             {approved ? (
               <p className={cn('flex h-full items-center gap-2 text-sm animate-fade-in', muted)}>
-                <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                <Check className="h-4 w-4 text-positive" />
                 Approved by Maya · Today, 10:42
               </p>
             ) : (
               <div className="flex gap-2">
                 <span
                   className={cn(
-                    'inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white transition-transform duration-150 dark:bg-white dark:text-slate-900',
-                    p === 1 && 'scale-95 ring-4 ring-slate-900/15 dark:ring-white/20'
+                    'inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-2 text-xs font-semibold text-white transition-transform duration-150',
+                    p === 1 && 'scale-95 ring-4 ring-ink/15'
                   )}
                 >
                   <Check className="h-3.5 w-3.5" /> Approve
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-3.5 py-2 text-xs font-medium dark:border-white/10">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-3.5 py-2 text-xs font-medium">
                   <MessageSquare className="h-3.5 w-3.5" /> Request changes
                 </span>
               </div>
@@ -147,14 +147,14 @@ export function PortalPreview() {
             <p className="mt-0.5 text-xl font-semibold tabular-nums">$1,800</p>
           </div>
           {!invoiceShown ? null : paid ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-positive/20 bg-positive/10 px-3 py-1.5 text-xs font-semibold text-positive">
               <Check className="h-3.5 w-3.5" /> Paid
             </span>
           ) : (
             <span
               className={cn(
-                'rounded-full bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-white transition-transform duration-150 dark:bg-white dark:text-slate-900',
-                p === 4 && 'scale-95 ring-4 ring-slate-900/15 dark:ring-white/20'
+                'rounded-full bg-ink px-3.5 py-1.5 text-xs font-semibold text-white transition-transform duration-150',
+                p === 4 && 'scale-95 ring-4 ring-ink/15'
               )}
             >
               Pay now

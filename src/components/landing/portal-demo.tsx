@@ -36,15 +36,15 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
           sub="Click through it. Review, approve, pay. That's the whole job for them, and nothing to sign up for."
         />
 
-        <div className={cn(card, 'overflow-hidden shadow-xl dark:shadow-none')}>
-          <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3 dark:border-white/10 sm:px-6">
+        <div className={cn(card, 'overflow-hidden shadow-xl')}>
+          <div className="flex items-center justify-between border-b border-line px-5 py-3 sm:px-6">
             <div>
               <p className={cn('text-xs', muted)}>Northwind Coffee · Brand refresh</p>
               <p className="text-sm font-semibold">Logo system, v3</p>
             </div>
             <button
               onClick={reset}
-              className={cn('inline-flex min-h-11 cursor-pointer items-center gap-1 rounded-md px-3 text-xs transition-colors hover:text-slate-900 dark:hover:text-white', muted)}
+              className={cn('inline-flex min-h-11 cursor-pointer items-center gap-1 rounded-md px-3 text-xs transition-colors hover:text-ink', muted)}
             >
               <RotateCcw className="h-3 w-3" /> Reset
             </button>
@@ -59,7 +59,7 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
                 ].map((u) => (
                   <div key={u.text} className={cn(well, 'p-4')}>
                     <p className={cn('text-xs', muted)}>
-                      <span className="font-semibold text-slate-900 dark:text-white">Studio Ash</span> · {u.when}
+                      <span className="font-semibold text-ink">Studio Ash</span> · {u.when}
                     </p>
                     <p className="mt-1 text-sm">{u.text}</p>
                   </div>
@@ -85,8 +85,8 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
                 </div>
                 {approved ? (
                   <>
-                    <div className="flex items-center gap-3 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm animate-fade-in">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500 text-white">
+                    <div className="flex items-center gap-3 rounded-xl border border-positive/20 bg-positive/10 p-4 text-sm animate-fade-in">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-positive text-white">
                         <Check className="h-4 w-4" strokeWidth={3} />
                       </span>
                       <div>
@@ -120,8 +120,8 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
                       className={cn(
                         'rounded-full border px-2 py-0.5 text-xs font-medium',
                         paid
-                          ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
-                          : 'border-amber-500/20 bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                          ? 'border-positive/20 bg-positive/10 text-positive'
+                          : 'border-attention/20 bg-attention/10 text-attention'
                       )}
                     >
                       {paid ? 'Paid' : 'Due in 7 days'}
@@ -136,7 +136,7 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
                       <dt className={muted}>Extra revision round (signed change order)</dt>
                       <dd className="tabular-nums">$200</dd>
                     </div>
-                    <div className="flex justify-between gap-4 border-t border-slate-200 pt-2 font-semibold dark:border-white/10">
+                    <div className="flex justify-between gap-4 border-t border-line pt-2 font-semibold">
                       <dt>Total</dt>
                       <dd className="tabular-nums">$1,800</dd>
                     </div>
@@ -159,7 +159,7 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
           </div>
 
           {/* Steps double as tabs */}
-          <div role="tablist" aria-label="Client portal steps" className="grid grid-cols-3 border-t border-slate-200 dark:border-white/10">
+          <div role="tablist" aria-label="Client portal steps" className="grid grid-cols-3 border-t border-line">
             {STEPS.map((s, i) => {
               const active = s.id === step
               return (
@@ -171,14 +171,14 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
                   onClick={() => setStep(s.id)}
                   className={cn(
                     'relative min-h-11 cursor-pointer px-3 py-3 text-left transition-colors sm:px-5',
-                    i > 0 && 'border-l border-slate-200 dark:border-white/10',
-                    active ? 'bg-slate-50 dark:bg-white/[0.04]' : 'hover:bg-slate-50 dark:hover:bg-white/[0.03]'
+                    i > 0 && 'border-l border-line',
+                    active ? 'bg-sunken' : 'hover:bg-sunken'
                   )}
                 >
                   <span
                     className={cn(
                       'absolute inset-x-0 top-0 h-0.5 transition-colors',
-                      i <= stepIndex ? 'bg-slate-900 dark:bg-white' : 'bg-transparent'
+                      i <= stepIndex ? 'bg-ink' : 'bg-transparent'
                     )}
                   />
                   <p className="text-xs">

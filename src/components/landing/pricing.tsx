@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SectionHeading } from './section-heading'
-import { card, muted, primaryBtn, secondaryBtn, section } from './styles'
+import { card, ember, lightBtn, muted, primaryBtn, secondaryBtn, section } from './styles'
 
 type Billing = 'monthly' | 'annual'
 
@@ -48,15 +48,19 @@ export function Pricing({ signupHref }: { signupHref: string }) {
 
   return (
     <section id="pricing" className={cn(section, 'scroll-mt-24')}>
-      <SectionHeading align="center" label="Pricing" title="Start free. Upgrade when you grow." />
+      <SectionHeading
+        align="center"
+        size="lg"
+        label="Pricing"
+        title={
+          <>
+            Start free. <span className="text-ink-muted">Upgrade when you grow.</span>
+          </>
+        }
+      />
 
-      {/* Segmented switcher, same pattern as the login page's Sign up / Sign in tabs */}
       <div className="mt-8 flex justify-center">
-        <div
-          role="radiogroup"
-          aria-label="Billing period"
-          className="flex items-center gap-1 rounded-xl border border-slate-200/80 bg-slate-100 p-1 dark:border-white/10 dark:bg-white/[0.05]"
-        >
+        <div role="radiogroup" aria-label="Billing period" className="flex items-center gap-1 rounded-full border border-line bg-surface p-1">
           {(['monthly', 'annual'] as const).map((b) => (
             <button
               key={b}
@@ -64,55 +68,49 @@ export function Pricing({ signupHref }: { signupHref: string }) {
               aria-checked={billing === b}
               onClick={() => setBilling(b)}
               className={cn(
-                'min-h-11 cursor-pointer rounded-lg px-5 text-xs font-semibold transition-all',
-                billing === b
-                  ? 'bg-white text-slate-900 shadow-xs dark:bg-white/15 dark:text-white'
-                  : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+                'min-h-11 cursor-pointer rounded-full px-5 text-xs font-medium transition-colors',
+                billing === b ? 'bg-ink text-canvas' : 'text-ink-muted hover:text-ink'
               )}
             >
-              {b === 'monthly' ? 'Monthly' : 'Annual · save 20%'}
+              {b === 'monthly' ? 'Monthly' : 'Annual, save 20%'}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="mx-auto mt-10 grid max-w-5xl gap-5 md:grid-cols-3">
-        {TIERS.map((t) => (
-          <div
-            key={t.name}
-            className={cn(
-              card,
-              'flex flex-col p-7',
-              t.highlighted && 'border-slate-900 ring-slate-900/10 dark:border-white/40 dark:ring-white/10'
-            )}
-          >
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">{t.name}</h3>
-              {t.badge && (
-                <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400">
-                  {t.badge}
-                </span>
-              )}
+      <div className="mx-auto mt-10 grid max-w-5xl gap-3 md:grid-cols-3">
+        {TIERS.map((t) => {
+          const dark = t.highlighted
+          return (
+            <div key={t.name} className={cn(dark ? ember : card, 'flex flex-col p-7')}>
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-medium">{t.name}</h3>
+                {t.badge && (
+                  <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-white">
+                    {t.badge}
+                  </span>
+                )}
+              </div>
+              <p className={cn('mt-2 text-sm', dark ? 'text-white/65' : muted)}>{t.description}</p>
+              <p className="mt-8 flex items-baseline gap-1">
+                <span className="text-5xl font-light tracking-[-0.03em] tabular-nums">{t.price[billing]}</span>
+                <span className={cn('text-sm', dark ? 'text-white/65' : muted)}>{t.period}</span>
+              </p>
+              <ul className={cn('mt-6 flex-1 space-y-3 border-t pt-6', dark ? 'border-white/10' : 'border-line')}>
+                {t.features.map((f) => (
+                  <li key={f} className={cn('flex items-start gap-2.5 text-sm', dark ? 'text-white/85' : 'text-ink')}>
+                    <Check className={cn('mt-0.5 h-4 w-4 flex-shrink-0', dark ? 'text-white' : 'text-accent')} />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link href={signupHref} className={cn(dark ? lightBtn : t.name === 'Free' ? primaryBtn : secondaryBtn, 'mt-8 w-full')}>
+                {t.cta}
+              </Link>
+              <p className={cn('mt-3 text-center text-xs', dark ? 'text-white/60' : muted)}>{t.note}</p>
             </div>
-            <p className={cn('mt-2 text-sm', muted)}>{t.description}</p>
-            <p className="mt-6 flex items-baseline gap-1">
-              <span className="text-5xl font-light tracking-tight tabular-nums">{t.price[billing]}</span>
-              <span className={cn('text-sm', muted)}>{t.period}</span>
-            </p>
-            <ul className="mt-6 flex-1 space-y-3">
-              {t.features.map((f) => (
-                <li key={f} className="flex items-start gap-2.5 text-sm text-slate-700 dark:text-slate-300">
-                  <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-600 dark:text-emerald-400" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link href={signupHref} className={cn(t.highlighted ? primaryBtn : secondaryBtn, 'mt-8 w-full')}>
-              {t.cta}
-            </Link>
-            <p className={cn('mt-3 text-center text-xs', muted)}>{t.note}</p>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </section>
   )

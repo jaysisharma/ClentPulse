@@ -127,6 +127,26 @@ html:has(.theme-dark),
   color-scheme: light;
 }
 
+/* A light-pinned page (the marketing page) keeps light chrome even when the
+   visitor's stored preference put `dark` on <html>. */
+html:has(.theme-light) {
+  color-scheme: light;
+}
+html:has(.theme-light) body {
+  background: #f8f6f1;
+}
+
+/* "Ember" panel for the marketing page: near-black ink lit from two corners
+   (violet top-right, ember bottom-left), with a black wash so text stays on ink. */
+.ember {
+  background-color: #0b0b0c;
+  background-image:
+    radial-gradient(70% 80% at 28% 22%, #0b0b0c 0%, rgb(11 11 12 / 0.92) 30%, rgb(11 11 12 / 0.4) 60%, transparent 85%),
+    radial-gradient(55% 75% at 100% 0%, rgb(124 58 237 / 0.7), transparent 70%),
+    radial-gradient(45% 65% at 0% 100%, rgb(192 30 6 / 0.65), transparent 72%),
+    linear-gradient(to top right, #4a1410 0%, #4a1834 35%, #3b1c63 70%, #24123f 100%);
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

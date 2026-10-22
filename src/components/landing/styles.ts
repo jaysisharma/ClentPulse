@@ -1,25 +1,34 @@
-// Class vocabulary shared by the landing sections. Mirrors /auth/login so the
-// marketing page and the sign-in flow read as one product (light + dark).
+// Class vocabulary shared by the landing sections. Light paper page, ink type,
+// near-black "ember" panels (see `.ember` in globals.css). Tokens per DESIGN.md.
 
-export const page = 'bg-slate-50 text-slate-900 dark:bg-[#08090a] dark:text-white'
+export const page = 'theme-light bg-canvas text-ink'
 
-export const card =
-  'rounded-3xl border border-slate-200 bg-white ring-1 ring-slate-950/5 dark:border-white/10 dark:bg-[#0c0d12] dark:ring-white/5'
+export const card = 'rounded-[20px] border border-line bg-surface text-ink'
 
-export const well = 'rounded-xl border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.03]'
+export const well = 'rounded-xl border border-line bg-sunken text-ink'
 
-export const muted = 'text-slate-500 dark:text-slate-400'
+export const muted = 'text-ink-muted'
 
-export const heading = 'text-balance font-light tracking-tight text-slate-900 dark:text-white'
+export const heading = 'text-balance font-light tracking-[-0.03em] text-ink'
 
-export const eyebrow =
-  'inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100/70 px-3 py-1 text-xs font-medium uppercase tracking-widest text-slate-500 dark:border-white/10 dark:bg-white/[0.03] dark:text-slate-400'
+/** Plain label above a section title. */
+export const eyebrow = 'text-sm text-ink-muted'
+
+/** Dark panel with the violet/ember glow. Pair with white text. */
+export const ember = 'ember relative isolate overflow-hidden rounded-[20px] text-white'
 
 const focus =
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50 dark:focus-visible:ring-offset-[#08090a]'
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-strong focus-visible:ring-offset-2 focus-visible:ring-offset-canvas'
 
-export const primaryBtn = `inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-slate-900 px-6 text-sm font-semibold text-white transition-colors hover:bg-slate-800 active:scale-[0.99] dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 ${focus}`
+export const primaryBtn = `inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-ink px-6 text-sm font-medium text-canvas transition-colors hover:bg-ink/85 active:scale-[0.99] ${focus}`
 
-export const secondaryBtn = `inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 text-sm font-semibold text-slate-800 transition-colors hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10 ${focus}`
+export const secondaryBtn = `inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border border-line bg-surface px-6 text-sm font-medium text-ink transition-colors hover:bg-sunken ${focus}`
 
-export const section = 'mx-auto max-w-6xl px-4 sm:px-6'
+/** White pill for use on an ember panel. */
+export const lightBtn =
+  'inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-6 text-sm font-medium text-ink transition-colors hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black'
+
+export const textLink =
+  'inline-flex min-h-11 items-center gap-1.5 text-sm text-ink underline-offset-4 transition-colors hover:underline'
+
+export const section = 'mx-auto max-w-6xl px-5 sm:px-8'
