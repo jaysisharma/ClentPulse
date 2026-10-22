@@ -29,11 +29,11 @@ export function LaunchPromoBanner({ className = '' }: { className?: string }) {
   return (
     <div
       className={
-        'inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 ' +
-        'px-3.5 py-1.5 text-sm font-medium text-accent-strong ' + className
+        'inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 ' +
+        'px-3.5 py-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-400 ' + className
       }
     >
-      <span aria-hidden="true" className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent" />
+      <span aria-hidden="true" className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-emerald-500" />
       <span>
         <span className="font-bold">First 50:</span> get Pro free for 1 month — only{' '}
         <span className="font-bold">{remaining}</span> spot{remaining === 1 ? '' : 's'} left

@@ -65,7 +65,9 @@ Eyebrow labels `text-xs font-bold uppercase tracking-wider text-ink-muted`.
 
 ## Migration status
 - ✅ Tokens, `Button`, `Logo`, favicon, theme-color.
-- `/` has no marketing page; it redirects to `/dashboard` or `/auth/login`.
+- Marketing page (`/`, `src/components/landing/`) follows the login page, not the tokens:
+  slate neutrals, light + dark with the theme toggle, black/white pill buttons, emerald ✓ pills.
+  Shared classes live in `src/components/landing/styles.ts`.
 - ⏳ App (`/dashboard`, `/project`, `/settings`, portal) still uses raw `indigo-*`,
   `slate-*` and ad-hoc near-blacks (`#0c0d12`, `#08090a`, …). Migrate by mapping
   indigo → `accent`, slate text → `ink`/`ink-muted`, slate borders → `line`,
