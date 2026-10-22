@@ -76,7 +76,7 @@ export function Pricing({ signupHref }: { signupHref: string }) {
             className={cn(
               'flex flex-col rounded-[28px] bg-surface p-7',
               t.highlighted
-                ? 'shadow-[0_0_0_1.5px_var(--accent),0_30px_80px_-30px_color-mix(in_srgb,var(--accent)_45%,transparent)]'
+                ? 'shadow-[0_0_0_1.5px_var(--accent)]'
                 : 'shadow-[0_0_0_1px_var(--line)]'
             )}
           >

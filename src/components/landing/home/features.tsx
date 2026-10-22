@@ -108,7 +108,7 @@ export function Features() {
       <SectionHeading align="left" label="Also included" title="The rest of the client job," muted="behind the same link." className="px-1" />
 
       <div className="mt-10 grid gap-3 lg:grid-cols-5">
-        {/* Big gradient card */}
+        {/* Big violet card */}
         <Reveal className="lg:col-span-3 lg:row-span-2">
           <Stage tone="plum" className="h-full">
             <div className="flex h-full flex-col gap-8 p-6 sm:p-9">

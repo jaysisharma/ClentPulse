@@ -34,8 +34,8 @@ token class needs no `dark:` twin.
 | accent-strong | `text-accent-strong` `ring-accent-strong` | `#6D28D9` | `#A78BFA` | accent as text, links, focus rings |
 
 **Marketing page rule:** the main call to action is a white pill
-(`bg-ink text-canvas` in dark), not an accent fill. Color comes from the
-violet→magenta gradient "stages" in
+(`bg-ink text-canvas` in dark), not an accent fill. Color comes from flat
+violet "stages" (no gradients) in
 [`stage.tsx`](src/components/landing/home/stage.tsx).
 
 ### Status (state only — never a brand or action color)

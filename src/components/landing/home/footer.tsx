@@ -34,11 +34,6 @@ const COLUMNS = [
 export function Footer() {
   return (
     <footer className="relative overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{ background: 'radial-gradient(70% 60% at 85% 100%, rgb(109 40 217 / 0.35), transparent 70%), radial-gradient(60% 60% at 10% 30%, rgb(76 17 48 / 0.45), transparent 70%)' }}
-      />
       <div className="relative mx-auto max-w-6xl px-5 pt-16 sm:px-8 sm:pt-20">
         <div className="flex flex-col gap-6 border-b border-white/10 pb-10 sm:flex-row sm:items-center sm:justify-between">
           <Link href="/" className="inline-flex items-center gap-2.5">

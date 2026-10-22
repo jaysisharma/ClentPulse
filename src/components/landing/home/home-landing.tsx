@@ -19,7 +19,7 @@ interface HomeLandingProps {
 
 /**
  * Marketing page (`/`). Dark-only via `.theme-dark` (see DESIGN.md).
- * Layout: a rounded "sheet" floating on a black frame, gradient stages for
+ * Layout: a rounded "sheet" floating on a black frame, solid violet stages for
  * product UI, footer with a giant wordmark on the frame.
  */
 export function HomeLanding({ isLoggedIn, signupHref }: HomeLandingProps) {
