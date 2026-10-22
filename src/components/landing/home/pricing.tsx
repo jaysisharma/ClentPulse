@@ -74,7 +74,7 @@ export function Pricing({ signupHref }: { signupHref: string }) {
           <div
             key={t.name}
             className={cn(
-              'flex flex-col rounded-[28px] bg-surface p-7',
+              'flex flex-col rounded-[20px] bg-surface p-7',
               t.highlighted
                 ? 'shadow-[0_0_0_1.5px_var(--accent)]'
                 : 'shadow-[0_0_0_1px_var(--line)]'

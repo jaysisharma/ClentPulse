@@ -125,17 +125,17 @@ export function Features() {
           </Stage>
         </Reveal>
 
-        <Reveal delay={80} className="flex flex-col gap-6 rounded-[28px] bg-surface p-6 lg:col-span-2 sm:p-8">
+        <Reveal delay={80} className="flex flex-col gap-6 rounded-[20px] bg-surface p-6 lg:col-span-2 sm:p-8">
           <CardText label="Scope" title="Scope changes, signed first." body="“One more thing” becomes a change order the client signs before you start." />
           <ContractMock />
         </Reveal>
 
-        <Reveal delay={160} className="flex flex-col gap-6 rounded-[28px] bg-surface p-6 lg:col-span-2 sm:p-8">
+        <Reveal delay={160} className="flex flex-col gap-6 rounded-[20px] bg-surface p-6 lg:col-span-2 sm:p-8">
           <CardText label="Invoices" title="Invoices tied to milestones." body="Clients see the invoice right after they approve, while the value is fresh." />
           <InvoiceMock />
         </Reveal>
 
-        <Reveal delay={80} className="grid items-center gap-6 rounded-[28px] bg-surface p-6 sm:p-8 lg:col-span-5 lg:grid-cols-2 lg:gap-12">
+        <Reveal delay={80} className="grid items-center gap-6 rounded-[20px] bg-surface p-6 sm:p-8 lg:col-span-5 lg:grid-cols-2 lg:gap-12">
           <CardText
             label="Time & budget"
             title="Know your real rate."

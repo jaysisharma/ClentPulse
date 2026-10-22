@@ -43,7 +43,7 @@ export function Faq() {
         </p>
       </div>
 
-      <div className="mt-10 divide-y divide-line overflow-hidden rounded-[28px] bg-surface">
+      <div className="mt-10 divide-y divide-line overflow-hidden rounded-[20px] bg-surface">
         {FAQS.map((f) => (
           <details key={f.q} className="group px-5 sm:px-7">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-base font-medium text-ink [&::-webkit-details-marker]:hidden">
