@@ -41,10 +41,10 @@ const mockFrom = vi.fn((table: string) => {
   }
 })
 
-vi.mock('@/lib/supabase/server', () => ({
-  createClient: vi.fn().mockResolvedValue({
+vi.mock('@/lib/supabase/admin', () => ({
+  createAdminClient: vi.fn(() => ({
     from: mockFrom,
-  }),
+  })),
 }))
 
 function makeRequest(body: object): Request {
@@ -105,7 +105,7 @@ describe('POST /api/change-orders/[id]/checkout', () => {
     expect(mockCheckoutCreate).not.toHaveBeenCalled()
   })
 
-  it('creates Stripe checkout session with destination charge and 0 fee when owner is onboarded', async () => {
+  it('creates Stripe checkout session with direct charge on connected account when owner is onboarded', async () => {
     const { POST } = await import('./route')
     const res = await POST(makeRequest({}), { params: Promise.resolve({ id: 'co_123' }) })
     expect(res.status).toBe(200)
@@ -114,13 +114,12 @@ describe('POST /api/change-orders/[id]/checkout', () => {
     expect(mockCheckoutCreate).toHaveBeenCalledWith(
       expect.objectContaining({
         mode: 'payment',
-        payment_intent_data: expect.objectContaining({
-          application_fee_amount: 0,
-          transfer_data: {
-            destination: 'acct_owner123',
-          },
+        metadata: expect.objectContaining({
+          changeOrderId: 'co_123',
+          ownerStripeAccountId: 'acct_owner123',
         }),
-      })
+      }),
+      { stripeAccount: 'acct_owner123' }
     )
   })
 

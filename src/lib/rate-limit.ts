@@ -1,6 +1,10 @@
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
+
 /**
- * In-memory sliding window rate limiter for serverless route handlers.
- * Protects checkout and payment endpoints against automated rapid-fire abuse.
+ * Distributed rate limiter with in-memory fallback.
+ * Uses Upstash Redis when UPSTASH_REDIS_REST_URL is configured,
+ * otherwise falls back to a sliding-window memory store.
  */
 
 interface RateLimitRecord {
@@ -9,7 +13,7 @@ interface RateLimitRecord {
 
 const rateLimitStore = new Map<string, RateLimitRecord>()
 
-// Periodically clean up stale entries (every 5 minutes)
+// Periodically clean up stale in-memory entries (every 5 minutes)
 if (typeof setInterval !== 'undefined') {
   setInterval(() => {
     const now = Date.now()
@@ -22,13 +26,32 @@ if (typeof setInterval !== 'undefined') {
   }, 300_000)
 }
 
+let upstashLimiter: Ratelimit | null = null
+
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  try {
+    const redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+    upstashLimiter = new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(10, '60 s'),
+      prefix: 'frevio_rl',
+      analytics: false,
+    })
+  } catch (err) {
+    console.warn('[RateLimit] Upstash initialization failed, using in-memory fallback:', err)
+  }
+}
+
 export interface RateLimitResult {
   allowed: boolean
   remaining: number
   retryAfterSeconds: number
 }
 
-export function checkRateLimit(
+export function checkRateLimitMemory(
   key: string,
   limit: number = 10,
   windowSeconds: number = 60
@@ -42,7 +65,6 @@ export function checkRateLimit(
     rateLimitStore.set(key, record)
   }
 
-  // Filter timestamps within the current window
   record.timestamps = record.timestamps.filter(t => now - t < windowMs)
 
   if (record.timestamps.length >= limit) {
@@ -63,15 +85,38 @@ export function checkRateLimit(
   }
 }
 
-export function rateLimit(
+export async function rateLimit(
   key: string,
   limit: number = 10,
   windowMs: number = 60_000
-): { success: boolean; remaining: number; resetIn: number } {
-  const result = checkRateLimit(key, limit, Math.ceil(windowMs / 1000))
-  return {
-    success: result.allowed,
-    remaining: result.remaining,
-    resetIn: result.retryAfterSeconds * 1000,
+): Promise<{ success: boolean; remaining: number; resetIn: number }> {
+  if (upstashLimiter) {
+    try {
+      const res = await upstashLimiter.limit(key)
+      const resetInMs = Math.max(0, res.reset - Date.now())
+      return {
+        success: res.success,
+        remaining: res.remaining,
+        resetIn: resetInMs,
+      }
+    } catch (err) {
+      console.warn('[RateLimit] Upstash limit call failed, falling back to memory:', err)
+    }
   }
+
+  const mem = checkRateLimitMemory(key, limit, Math.ceil(windowMs / 1000))
+  return {
+    success: mem.allowed,
+    remaining: mem.remaining,
+    resetIn: mem.retryAfterSeconds * 1000,
+  }
+}
+
+// Synchronous compatibility helper
+export function checkRateLimit(
+  key: string,
+  limit: number = 10,
+  windowSeconds: number = 60
+): RateLimitResult {
+  return checkRateLimitMemory(key, limit, windowSeconds)
 }

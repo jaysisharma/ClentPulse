@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { stripe } from '@/lib/stripe'
 import { rateLimit } from '@/lib/rate-limit'
 import { NextResponse } from 'next/server'
@@ -8,9 +8,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    // Rate limit: 10 requests per minute per IP
+    // Rate limit: 10 requests per minute per IP (Upstash distributed with in-memory fallback)
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'anonymous'
-    const rl = rateLimit(`change-order-checkout:${ip}`, 10, 60_000)
+    const rl = await rateLimit(`change-order-checkout:${ip}`, 10, 60_000)
     if (!rl.success) {
       return NextResponse.json(
         { error: 'Too many requests. Please try again shortly.' },
@@ -19,7 +19,7 @@ export async function POST(
     }
 
     const { id } = await params
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     const { data: changeOrder, error: coError } = await supabase
       .from('change_orders')
@@ -68,6 +68,7 @@ export async function POST(
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://clientpulse-one.vercel.app').replace(/\/+$/, '')
     const currency = (changeOrder.currency || 'usd').toLowerCase()
 
+    // DIRECT CHARGE: Created directly on the connected account
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: project?.client_email || undefined,
@@ -84,25 +85,19 @@ export async function POST(
           quantity: 1,
         },
       ],
-      payment_intent_data: {
-        application_fee_amount: 0, // Zero Frevio platform fee
-        transfer_data: {
-          destination: owner.stripe_account_id,
-        },
-        metadata: {
-          changeOrderId: changeOrder.id,
-          projectId: changeOrder.project_id,
-          userId: changeOrder.user_id,
-        },
-      },
       metadata: {
         changeOrderId: changeOrder.id,
         projectId: changeOrder.project_id,
         userId: changeOrder.user_id,
+        ownerStripeAccountId: owner.stripe_account_id,
+        expectedAmountCents: String(totalCents),
+        expectedCurrency: currency,
         type: 'change_order_payment',
       },
       success_url: `${appUrl}/portal/${project?.slug || 'project'}?co_paid=${changeOrder.id}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/portal/${project?.slug || 'project'}?co_canceled=${changeOrder.id}`,
+    }, {
+      stripeAccount: owner.stripe_account_id,
     })
 
     return NextResponse.json({ url: session.url, sessionId: session.id })

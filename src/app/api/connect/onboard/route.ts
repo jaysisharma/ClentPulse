@@ -31,8 +31,9 @@ export async function POST() {
       type: 'standard',
       email: user.email,
       business_profile: {
-        name: profile?.name || undefined,
+        name: profile?.name || user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'Freelance Studio'),
         product_description: 'Freelance & Studio Client Services via Frevio',
+        url: 'https://frevio.cloud',
       },
       metadata: {
         supabase_user_id: user.id,

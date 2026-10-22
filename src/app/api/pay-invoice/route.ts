@@ -1,12 +1,12 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { stripe } from '@/lib/stripe'
 import { rateLimit } from '@/lib/rate-limit'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
-  // Rate limit: 10 requests per minute per IP
+  // Rate limit: 10 requests per minute per IP (Upstash distributed with in-memory fallback)
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'anonymous'
-  const rl = rateLimit(`pay-invoice:${ip}`, 10, 60_000)
+  const rl = await rateLimit(`pay-invoice:${ip}`, 10, 60_000)
   if (!rl.success) {
     return NextResponse.json(
       { error: 'Too many requests. Please try again shortly.' },
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
   const { invoiceId } = body
   if (!invoiceId) return NextResponse.json({ error: 'Missing invoiceId' }, { status: 400 })
 
-  const supabase = await createClient()
+  const supabase = createAdminClient()
   const { data: invoice } = await supabase
     .from('invoices')
     .select('id, invoice_number, client_name, client_email, items, status, user_id, currency, tax_rate, is_deposit, project_id')
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invoice owner not found' }, { status: 404 })
   }
 
-  // Ensure owner is onboarded with Stripe Connect destination charges enabled
+  // Ensure owner is onboarded with Stripe Connect direct charges enabled
   if (!owner.stripe_account_id || !owner.stripe_charges_enabled) {
     return NextResponse.json({
       error: 'The creator or agency has not activated Stripe Direct Payouts yet. Please pay via direct bank transfer or contact them directly.',
@@ -64,6 +64,9 @@ export async function POST(request: Request) {
   const currency = (invoice.currency || 'usd').toLowerCase()
 
   try {
+    // DIRECT CHARGE: Created directly on the connected account via stripeAccount header.
+    // The connected account is Merchant of Record, pays standard Stripe fees directly,
+    // and absorbs disputes with 0 liability and 0 transaction fee to Frevio.
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: invoice.client_email || undefined,
@@ -80,27 +83,21 @@ export async function POST(request: Request) {
           quantity: 1,
         },
       ],
-      payment_intent_data: {
-        application_fee_amount: 0, // Zero Frevio platform fee
-        transfer_data: {
-          destination: owner.stripe_account_id,
-        },
-        metadata: {
-          invoiceId: invoice.id,
-          invoiceNumber: invoice.invoice_number,
-          projectId: invoice.project_id || '',
-          userId: invoice.user_id,
-        },
-      },
       metadata: {
         invoiceId: invoice.id,
         invoiceNumber: invoice.invoice_number,
         projectId: invoice.project_id || '',
         userId: invoice.user_id,
+        ownerStripeAccountId: owner.stripe_account_id,
+        expectedAmountCents: String(totalCents),
+        expectedCurrency: currency,
+        isDeposit: invoice.is_deposit ? 'true' : 'false',
         type: 'invoice_payment',
       },
       success_url: `${appUrl}/portal/invoices/${invoice.id}?paid=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/portal/invoices/${invoice.id}?canceled=true`,
+    }, {
+      stripeAccount: owner.stripe_account_id,
     })
 
     return NextResponse.json({ url: session.url, sessionId: session.id })
