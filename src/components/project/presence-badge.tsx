@@ -95,11 +95,11 @@ export function PresenceBadge({
           )}
           <span className={`relative inline-flex rounded-full h-2 w-2 ${presence.isLive ? 'bg-emerald-500' : 'bg-slate-400 dark:bg-slate-600'}`} />
         </span>
-        <span className={`font-medium ${presence.isLive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}`}>
+        <span className={`font-medium whitespace-nowrap ${presence.isLive ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300'}`}>
           {presence.label}
         </span>
         {presence.detail && (
-          <span className="text-slate-400 dark:text-slate-500 border-l border-slate-200 dark:border-white/10 pl-2">
+          <span className="hidden sm:inline text-slate-400 dark:text-slate-500 border-l border-slate-200 dark:border-white/10 pl-2">
             {presence.detail}
           </span>
         )}

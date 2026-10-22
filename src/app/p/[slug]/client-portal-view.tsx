@@ -19,10 +19,12 @@ import { ClientChecklist } from './client-checklist'
 import { UpdateCommentForm } from './update-comment-form'
 import { PortalResources } from '@/components/integrations/portal-resources'
 import { PortalAppBuilds } from '@/components/portal/portal-app-builds'
+import { PortalClientFiles } from '@/components/portal/portal-client-files'
 import { PortalLivePreview } from '@/components/portal/portal-live-preview'
 import { PortalCanvasEmbed } from '@/components/portal/portal-canvas-embed'
 import { FeedbackWidget } from './feedback-widget'
 import { KpiSnapshotStrip } from '@/components/project/kpi-snapshot-strip'
+import { PresenceBadge } from '@/components/project/presence-badge'
 import { VideoEmbed } from '@/components/ui/video-embed'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { PortalRealtimeSubscriber } from './portal-realtime'
@@ -53,6 +55,7 @@ interface ClientPortalViewProps {
   depositInvoice: any
   changeOrders?: ChangeOrder[]
   appBuilds?: AppBuild[]
+  isDemo?: boolean
 }
 
 type MainNavTab = 'overview' | 'milestones' | 'deliverables' | 'feedback' | 'files'
@@ -82,6 +85,7 @@ export function ClientPortalView({
   depositInvoice,
   changeOrders = [],
   appBuilds = [],
+  isDemo = false,
 }: ClientPortalViewProps) {
   const [activeNav, setActiveNav] = useState<MainNavTab>('overview')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -372,6 +376,17 @@ export function ClientPortalView({
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                     <span className="capitalize">{project.status === 'active' ? 'In Progress' : project.status}</span>
                   </span>
+                  {project.show_live_presence !== false && (
+                    // Portal is always dark; scope the badge's dark: styles to match
+                    <span className="dark">
+                      <PresenceBadge
+                        projectId={project.id}
+                        initialHeartbeatAt={project.last_heartbeat_at ?? null}
+                        initialFocusArea={project.active_focus_area ?? null}
+                        mode="client"
+                      />
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -400,6 +415,28 @@ export function ClientPortalView({
               )}
             </div>
           </div>
+
+          {/* ── Waiting on Client Banner ── */}
+          {project.waiting_on_client && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border border-amber-500/25 bg-amber-500/[0.07]">
+              <div className="flex items-start gap-3 min-w-0">
+                <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-amber-200">Your team is waiting on you</div>
+                  <p className="text-xs text-amber-100/80 mt-1 leading-relaxed">
+                    {project.waiting_reason || 'Something is needed from you before work can continue.'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveNav('files')}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-amber-400 text-slate-950 hover:bg-amber-300 transition-colors flex-shrink-0 cursor-pointer"
+              >
+                <span>Upload files</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
 
           {/* ══════════════════════════════════════════════════════════════
               VIEW 1: OVERVIEW DASHBOARD (Senior Studio Architecture)
@@ -1092,11 +1129,16 @@ export function ClientPortalView({
             <div className="space-y-6 animate-fade-in max-w-4xl">
               <div>
                 <h2 className="text-lg font-bold text-white tracking-tight">Shared Assets &amp; Invoices</h2>
-                <p className="text-xs text-slate-400">Access project documents, brand assets and payment receipts.</p>
+                <p className="text-xs text-slate-400">Send files to your team, and access project documents and payment receipts.</p>
               </div>
 
+              <PortalClientFiles slug={project.slug} accentColor={accentColor} isDemo={isDemo} />
+
               {/* Shared Files List */}
-              {projectResources && projectResources.length > 0 ? (
+              {projectResources && projectResources.length > 0 && (
+                <div className="text-xs font-semibold text-white pt-2">Shared by your team</div>
+              )}
+              {projectResources && projectResources.length > 0 && (
                 <div className="rounded-2xl border border-white/[0.08] bg-[#0f111a] divide-y divide-white/[0.06] overflow-hidden">
                   {projectResources.map(res => (
                     <a
@@ -1113,10 +1155,6 @@ export function ClientPortalView({
                       <ExternalLink className="w-4 h-4 text-slate-500 group-hover:text-white transition-colors" />
                     </a>
                   ))}
-                </div>
-              ) : (
-                <div className="p-8 rounded-2xl border border-white/[0.08] bg-[#0f111a] text-center text-xs text-slate-400">
-                  No files uploaded yet.
                 </div>
               )}
 

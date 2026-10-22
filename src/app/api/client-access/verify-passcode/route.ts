@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { rateLimit } from '@/lib/rate-limit'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { timingSafeCompare, createPasscodeTicket } from '@/lib/passcode-crypto'
@@ -10,8 +11,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing slug or passcode' }, { status: 400 })
     }
 
-    const supabase = await createClient()
-    const { data: projectRows } = await supabase
+    // Throttle guessing: 10 attempts per 10 minutes per IP and portal
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'anonymous'
+    const rl = await rateLimit(`verify-passcode:${ip}:${slug}`, 10, 10 * 60_000)
+    if (!rl.success) {
+      return NextResponse.json({ error: 'Too many attempts. Please try again in a few minutes.' }, { status: 429 })
+    }
+
+    // Service role: the RPC returns the passcode, so it must never be callable by anon
+    const { data: projectRows } = await createAdminClient()
       .rpc('get_project_by_slug', { p_slug: slug })
 
     const project = projectRows?.[0] ?? null

@@ -140,6 +140,73 @@ export async function notifyFreelancerOfComment({
 }
 
 /**
+ * Notify freelancer when a client uploads files from their portal (one email per batch).
+ */
+export async function notifyFreelancerOfClientFiles({
+  projectId,
+  fileNames,
+}: {
+  projectId: string
+  fileNames: string[]
+}) {
+  try {
+    if (!process.env.RESEND_API_KEY || fileNames.length === 0) return
+    const admin = createAdminClient()
+
+    const { data: project } = await admin
+      .from('projects')
+      .select('project_name, client_name, user_id')
+      .eq('id', projectId)
+      .single()
+
+    if (!project) return
+
+    const { data: owner } = await admin
+      .from('users')
+      .select('name, email, accent_color')
+      .eq('id', project.user_id)
+      .single()
+
+    if (!owner?.email) return
+
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
+    const projectUrl = `${appUrl}/project/${projectId}#client-files`
+    const accent = owner.accent_color || '#6366F1'
+    const clientName = project.client_name || 'Your client'
+    const label = fileNames.length === 1 ? 'a file' : `${fileNames.length} files`
+
+    const bodyHtml = `
+      <p style="font-size:15px;color:#334155;margin-top:0">
+        Hi ${esc(owner.name || 'there')},
+      </p>
+      <p style="font-size:15px;color:#334155;line-height:1.5">
+        <strong>${esc(clientName)}</strong> uploaded ${label} to <strong>${esc(project.project_name)}</strong>:
+      </p>
+      <ul style="background:#f8fafc;border-left:3px solid ${accent};border-radius:4px;padding:14px 16px 14px 32px;margin:18px 0;font-size:14px;color:#334155;line-height:1.6">
+        ${fileNames.slice(0, 10).map(name => `<li>${esc(name)}</li>`).join('')}
+        ${fileNames.length > 10 ? `<li>and ${fileNames.length - 10} more</li>` : ''}
+      </ul>
+    `
+
+    await resend.emails.send({
+      from: 'Frevio <notifications@frevio.cloud>',
+      to: [owner.email],
+      subject: `[${project.project_name}] ${clientName} uploaded ${label}`,
+      html: emailLayout({
+        title: project.project_name,
+        subtitle: 'New Client Files',
+        accentColor: accent,
+        bodyHtml,
+        ctaText: 'View Files',
+        ctaUrl: projectUrl,
+      }),
+    })
+  } catch (err) {
+    console.error('Error sending client files notification email:', err)
+  }
+}
+
+/**
  * Notify freelancer when a client submits status feedback (thumbs up/down or message).
  */
 export async function notifyFreelancerOfFeedback({

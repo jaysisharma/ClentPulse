@@ -3,12 +3,11 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import {
-  Sparkles, ArrowRight, ShieldCheck, Zap,
-  CheckCircle2, Bell, Radio, Eye, Building2,
+  Sparkles, ShieldCheck, Zap,
+  CheckCircle2, Bell, Radio, Eye,
   ExternalLink, ArrowUpRight
 } from 'lucide-react'
 import { ClientPortalView } from '@/app/p/[slug]/client-portal-view'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { Logo } from '@/components/ui/logo'
 
 export function DemoPortalClient() {
@@ -59,7 +58,7 @@ export function DemoPortalClient() {
     deposit_paid: true,
     show_time_logged: true,
     waiting_on_client: true,
-    blocker_reason: 'Waiting for Meta Pixel ID & Production DNS CNAME records',
+    waiting_reason: 'Waiting for Meta Pixel ID & Production DNS CNAME records',
     last_heartbeat_at: new Date().toISOString(),
     active_focus_area: 'Payment Gateway (Stripe) & Webhooks',
     report_embed_url: 'https://lookerstudio.google.com/embed/reporting/demo',
@@ -264,8 +263,8 @@ export function DemoPortalClient() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-white relative selection:bg-slate-900 selection:text-white dark:selection:bg-white dark:selection:text-slate-900 font-sans transition-colors duration-200">
       
-      {/* ── Sticky Demo Header Bar ── */}
-      <div className="bg-indigo-600 text-white px-4 py-2.5 shadow-md sticky top-0 z-50 transition-all">
+      {/* ── Demo Bar (fixed to the bottom so the portal's own sidebar and top bar stay unobstructed) ── */}
+      <div className="bg-indigo-600 text-white px-4 py-2.5 shadow-[0_-8px_30px_rgba(0,0,0,0.35)] fixed bottom-0 inset-x-0 z-[60] transition-all">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs">
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 relative flex-shrink-0">
@@ -299,7 +298,7 @@ export function DemoPortalClient() {
 
       {/* Floating Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-28 sm:bottom-20 right-6 z-[70] animate-in fade-in slide-in-from-bottom-3 duration-200">
           <div className="bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 dark:border-slate-200 text-xs font-medium flex items-center gap-2.5">
             <Sparkles className="w-4 h-4 text-amber-400" />
             <span>{toastMessage}</span>
@@ -316,57 +315,8 @@ export function DemoPortalClient() {
         }}
       />
 
-      {/* ── Client Portal Navigation Header ─────────────────────────── */}
-      <header className="border-b border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c0d12]/80 backdrop-blur-md sticky top-10 z-30 transition-colors">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center text-white shadow-xs flex-shrink-0"
-              style={{ backgroundColor: accentColor }}
-            >
-              <Building2 className="w-4 h-4" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate">
-                {orgData.name}
-              </div>
-              <h1 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white truncate">
-                {project.project_name}
-              </h1>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-            {/* Live Developer Telemetry Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 shadow-2xs text-xs">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-              </span>
-              <span className="font-medium text-emerald-700 dark:text-emerald-400">
-                Currently working on this
-              </span>
-              <span className="text-slate-400 dark:text-slate-500 border-l border-slate-200 dark:border-white/10 pl-2 hidden sm:inline">
-                Focus: {project.active_focus_area}
-              </span>
-            </div>
-
-            <ThemeToggle className="rounded-full w-8 h-8 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-white/10" />
-
-            <Link
-              href="/auth/login?mode=signup"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white shadow-xs transition-transform hover:scale-105"
-              style={{ backgroundColor: accentColor }}
-            >
-              <span>Get Started</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-      </header>
-
       {/* ── Main Portal Body View ─────────────────────────────────── */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <main className="pb-28 sm:pb-16">
         <ClientPortalView
           project={project}
           updates={updates}
@@ -390,6 +340,7 @@ export function DemoPortalClient() {
           leadSpecialistName="Alex Chen"
           isDepositPending={false}
           depositInvoice={projectInvoices[0]}
+          isDemo
         />
       </main>
 

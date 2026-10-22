@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import {
   Zap, Bell, Clock, Building2, Mail, Sparkles, CheckCircle2
@@ -23,7 +24,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const supabase = await createClient()
-  const { data: projectRows } = await supabase
+  // Service role: the RPC returns the passcode, so it must never be callable by anon
+  const { data: projectRows } = await createAdminClient()
     .rpc('get_project_by_slug', { p_slug: slug })
   const project = projectRows?.[0] ?? null
 
@@ -77,7 +79,8 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
   const { slug } = await params
   const supabase = await createClient()
 
-  const { data: projectRows } = await supabase
+  // Service role: the RPC returns the passcode, so it must never be callable by anon
+  const { data: projectRows } = await createAdminClient()
     .rpc('get_project_by_slug', { p_slug: slug })
 
   const project = projectRows?.[0] ?? null

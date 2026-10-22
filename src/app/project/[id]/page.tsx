@@ -18,6 +18,7 @@ import { UpdateActions } from './update-actions'
 import { ApprovalsSection } from './approvals-section'
 import { ChangeOrdersSection } from './change-orders-section'
 import { AppBuildsSection } from '@/components/project/app-builds-section'
+import { ClientFilesSection } from '@/components/project/client-files-section'
 import { MilestonesWidget } from './milestones-widget'
 import { KickoffChecklist } from './kickoff-checklist'
 import { PortalCanvasEmbed } from '@/components/portal/portal-canvas-embed'
@@ -410,6 +411,13 @@ export default async function ProjectPage({
                 </CollapsibleSection>
               </div>
             )}
+
+            {/* Files uploaded by the client from their portal */}
+            <div id="client-files" className="scroll-mt-6">
+              <CollapsibleSection title="Client Uploads" defaultOpen={Boolean(project.waiting_on_client)}>
+                <ClientFilesSection projectId={project.id} canManage={canManageTeam} />
+              </CollapsibleSection>
+            </div>
 
             {/* Mobile App Builds & APKs */}
             <div id="app-builds" className="scroll-mt-6">
