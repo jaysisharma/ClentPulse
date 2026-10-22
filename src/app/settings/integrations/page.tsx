@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import { AppLayout } from '@/components/layout/app-layout'
 import { DarkShell } from '@/components/layout/dark-shell'
 import { IntegrationCard } from '@/components/integrations/integration-card'
-import { CheckCircle2, AlertCircle } from 'lucide-react'
+import { CheckCircle2, AlertCircle, Loader2, ArrowUpRight, ShieldCheck, Banknote } from 'lucide-react'
 import Link from 'next/link'
 import {
   GoogleDriveIcon,
@@ -15,36 +15,17 @@ import {
 } from '@/components/ui/brand-icons'
 
 // ---------------------------------------------------------------------------
-// Provider logo SVGs (inline, no external dependency)
+// Provider logo SVGs
 // ---------------------------------------------------------------------------
 
-function GoogleLogo() {
+function StripeLogo() {
   return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden="true">
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-    </svg>
-  )
-}
-
-function GitHubLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5 text-slate-900 dark:text-white" fill="currentColor" aria-hidden="true">
-      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2z"/>
-    </svg>
-  )
-}
-
-function FigmaLogo() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden="true">
-      <path fill="#F24E1E" d="M8 24c2.2 0 4-1.8 4-4v-4H8c-2.2 0-4 1.8-4 4s1.8 4 4 4z"/>
-      <path fill="#FF7262" d="M4 12c0-2.2 1.8-4 4-4h4v8H8c-2.2 0-4-1.8-4-4z"/>
-      <path fill="#A259FF" d="M4 4c0-2.2 1.8-4 4-4h4v8H8C5.8 8 4 6.2 4 4z"/>
-      <path fill="#1ABCFE" d="M12 0h4c2.2 0 4 1.8 4 4s-1.8 4-4 4h-4V0z"/>
-      <path fill="#0ACF83" d="M20 12c0 2.2-1.8 4-4 4s-4-1.8-4-4 1.8-4 4-4 4 1.8 4 4z"/>
+    <svg viewBox="0 0 40 40" className="w-5 h-5" fill="none" aria-hidden="true">
+      <rect width="40" height="40" rx="8" fill="#635BFF" />
+      <path
+        d="M19.7 16.5c0-1.2 1-1.7 2.6-1.7 2.3 0 5.2.7 7.5 2V12c-2.4-1-5-1.4-7.5-1.4-6.2 0-10.4 3.2-10.4 8.7 0 8.5 11.6 7.1 11.6 10.8 0 1.4-1.2 1.9-2.9 1.9-2.6 0-5.9-1.1-8.5-2.5v4.9c2.8 1.2 5.7 1.7 8.5 1.7 6.4 0 10.8-3.1 10.8-8.7 0-9.2-11.7-7.5-11.7-10.9z"
+        fill="white"
+      />
     </svg>
   )
 }
@@ -57,6 +38,15 @@ type ConnStatus = {
   connected: boolean
   status: 'active' | 'expired' | 'revoked' | null
   email: string | null
+}
+
+type ConnectStatus = {
+  connected: boolean
+  charges_enabled: boolean
+  payouts_enabled: boolean
+  details_submitted?: boolean
+  stripe_account_id?: string | null
+  status?: string
 }
 
 type StatusMap = {
@@ -85,7 +75,9 @@ export default function IntegrationsPage() {
   const router = useRouter()
 
   const [statuses, setStatuses] = useState<StatusMap>({ google: null, github: null, figma: null })
+  const [connectStatus, setConnectStatus] = useState<ConnectStatus | null>(null)
   const [loading, setLoading] = useState(true)
+  const [connectingStripe, setConnectingStripe] = useState(false)
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null)
 
   // Read URL params for post-OAuth feedback
@@ -93,7 +85,10 @@ export default function IntegrationsPage() {
   const errorParam = searchParams.get('error')
 
   useEffect(() => {
-    if (connected) {
+    if (connected === 'stripe') {
+      setToast({ type: 'success', message: 'Stripe Direct Payouts onboarding updated.' })
+      router.replace('/settings/integrations')
+    } else if (connected) {
       setToast({ type: 'success', message: `${connected.charAt(0).toUpperCase() + connected.slice(1)} connected successfully.` })
       router.replace('/settings/integrations')
     } else if (errorParam) {
@@ -118,14 +113,16 @@ export default function IntegrationsPage() {
   const fetchStatuses = useCallback(async () => {
     setLoading(true)
     try {
-      const [g, gh, fig] = await Promise.all([
+      const [g, gh, fig, conn] = await Promise.all([
         fetch('/api/integrations/google/status').then(r => r.ok ? r.json() : null),
         fetch('/api/integrations/github/status').then(r => r.ok ? r.json() : null),
         fetch('/api/integrations/figma/status').then(r => r.ok ? r.json() : null),
+        fetch('/api/connect/status').then(r => r.ok ? r.json() : null),
       ])
       setStatuses({ google: g, github: gh, figma: fig })
+      if (conn) setConnectStatus(conn)
     } catch {
-      // Non-fatal — statuses stay null (idle)
+      // Non-fatal
     } finally {
       setLoading(false)
     }
@@ -142,6 +139,22 @@ export default function IntegrationsPage() {
     if (!res.ok) throw new Error('Failed to disconnect')
     setStatuses(prev => ({ ...prev, [provider]: { connected: false, status: 'revoked', email: null } }))
     setToast({ type: 'success', message: `${provider.charAt(0).toUpperCase() + provider.slice(1)} disconnected.` })
+  }
+
+  const handleStripeConnect = async () => {
+    try {
+      setConnectingStripe(true)
+      const res = await fetch('/api/connect/onboard', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Failed to start Stripe onboarding')
+      }
+      window.location.href = data.url
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to connect Stripe'
+      setToast({ type: 'error', message: msg })
+      setConnectingStripe(false)
+    }
   }
 
   const CATEGORIES = [
@@ -191,8 +204,10 @@ export default function IntegrationsPage() {
     },
   ]
 
-  // Deduplicate Google (shown in both Files and Calendar categories)
   const renderedKeys = new Set<string>()
+
+  const isStripeActive = Boolean(connectStatus?.charges_enabled && connectStatus?.payouts_enabled)
+  const isStripePending = Boolean(connectStatus?.connected && !isStripeActive)
 
   return (
     <AppLayout>
@@ -207,9 +222,9 @@ export default function IntegrationsPage() {
               <span>/</span>
               <span className="text-slate-700 dark:text-white">Integrations</span>
             </div>
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">Integrations</h1>
+            <h1 className="text-xl font-bold text-slate-900 dark:text-white">Integrations & Payouts</h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-              Connect the tools you already use. Frevio becomes the client-facing workspace.
+              Connect payment payouts and creative workflow tools to your client-facing portal.
             </p>
           </div>
 
@@ -232,13 +247,85 @@ export default function IntegrationsPage() {
             </div>
           )}
 
+          {/* Direct Payouts Section */}
+          <section aria-labelledby="cat-payouts" className="mb-8">
+            <h2
+              id="cat-payouts"
+              className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3"
+            >
+              Client Payments & Bank Payouts
+            </h2>
+            <div className="rounded-2xl border bg-white dark:bg-[#0c0d12] p-5 border-slate-200 dark:border-white/10 shadow-xs">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-[#635BFF]/10">
+                  <StripeLogo />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-slate-900 dark:text-white">Stripe Direct Payouts</span>
+                      {loading ? (
+                        <Loader2 className="w-3.5 h-3.5 text-slate-400 animate-spin" />
+                      ) : isStripeActive ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          Payouts Active
+                        </span>
+                      ) : isStripePending ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
+                          <AlertCircle className="w-3 h-3" />
+                          Action Required
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                    Direct-to-bank settlement for milestone invoices and scope changes. No Frevio transaction fee taken — 100% of your earnings route to your bank via Stripe Connect.
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-3">
+                    {isStripeActive ? (
+                      <button
+                        type="button"
+                        onClick={handleStripeConnect}
+                        disabled={connectingStripe}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/15 transition-all cursor-pointer"
+                      >
+                        {connectingStripe ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />}
+                        <span>Stripe Account Dashboard</span>
+                        <ArrowUpRight className="w-3 h-3 text-slate-400" />
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={handleStripeConnect}
+                        disabled={connectingStripe || loading}
+                        className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-full bg-[#635BFF] hover:bg-[#5349e4] text-white transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                      >
+                        {connectingStripe ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Banknote className="w-3.5 h-3.5" />}
+                        <span>{isStripePending ? 'Complete Stripe Verification' : 'Connect Stripe Payouts'}</span>
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Fallback note for unsupported countries */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/5">
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-normal">
+                      <strong>Country not supported by Stripe Connect?</strong> Frevio does not lock you out. You can still create invoices, attach manual bank or wire transfer instructions, and mark payments as received offline with one click.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Integration categories */}
           <div className="space-y-8">
             {CATEGORIES.map(category => {
               const cards = category.providers.filter(p => {
                 const dedupKey = p.key
                 if (renderedKeys.has(dedupKey)) return false
-                // For Google, only show in the first category it appears in
                 renderedKeys.add(dedupKey)
                 return true
               })

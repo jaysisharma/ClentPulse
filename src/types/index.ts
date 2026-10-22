@@ -16,6 +16,10 @@ export interface User {
   logo_url: string | null
   accent_color: string
   stripe_customer_id: string | null
+  stripe_account_id?: string | null
+  stripe_charges_enabled?: boolean
+  stripe_payouts_enabled?: boolean
+  stripe_connect_onboarded?: boolean
   plan: 'free' | 'pro'
   craft?: UserCraft | null
   enabled_modules?: WorkspaceModules | null

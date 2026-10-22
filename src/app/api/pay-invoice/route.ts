@@ -1,11 +1,21 @@
 import { createClient } from '@/lib/supabase/server'
-import Stripe from 'stripe'
+import { stripe } from '@/lib/stripe'
+import { rateLimit } from '@/lib/rate-limit'
 import { NextResponse } from 'next/server'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
-
 export async function POST(request: Request) {
-  const { invoiceId } = await request.json()
+  // Rate limit: 10 requests per minute per IP
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'anonymous'
+  const rl = rateLimit(`pay-invoice:${ip}`, 10, 60_000)
+  if (!rl.success) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again shortly.' },
+      { status: 429, headers: { 'Retry-After': String(Math.ceil(rl.resetIn / 1000)) } }
+    )
+  }
+
+  const body = await request.json().catch(() => ({}))
+  const { invoiceId } = body
   if (!invoiceId) return NextResponse.json({ error: 'Missing invoiceId' }, { status: 400 })
 
   const supabase = await createClient()
@@ -16,31 +26,87 @@ export async function POST(request: Request) {
     .single()
 
   if (!invoice) return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
-  if (invoice.status === 'paid') return NextResponse.json({ error: 'Already paid' }, { status: 400 })
+  if (invoice.status === 'paid') return NextResponse.json({ error: 'Invoice has already been paid' }, { status: 400 })
 
   const { data: owner } = await supabase
     .from('users')
-    .select('name')
+    .select('id, name, stripe_account_id, stripe_charges_enabled')
     .eq('id', invoice.user_id)
     .single()
 
-  const subtotal = (invoice.items ?? []).reduce((s: number, i: { amount: number }) => s + (i.amount ?? 0), 0)
+  if (!owner) {
+    return NextResponse.json({ error: 'Invoice owner not found' }, { status: 404 })
+  }
+
+  // Ensure owner is onboarded with Stripe Connect destination charges enabled
+  if (!owner.stripe_account_id || !owner.stripe_charges_enabled) {
+    return NextResponse.json({
+      error: 'The creator or agency has not activated Stripe Direct Payouts yet. Please pay via direct bank transfer or contact them directly.',
+      code: 'STRIPE_CONNECT_INCOMPLETE',
+    }, { status: 400 })
+  }
+
+  // Calculate totals strictly on the server
+  const subtotal = (invoice.items ?? []).reduce(
+    (s: number, i: { amount: number }) => s + (Number(i.amount) || 0),
+    0
+  )
   const taxRate = Number(invoice.tax_rate ?? 0)
   const taxAmount = Math.round(subtotal * (taxRate / 100) * 100) / 100
   const total = subtotal + taxAmount
   const totalCents = Math.round(total * 100)
 
-  if (totalCents < 50) return NextResponse.json({ error: 'Invoice total too small to process' }, { status: 400 })
+  if (totalCents < 50) {
+    return NextResponse.json({ error: 'Invoice total must be at least $0.50 to process online' }, { status: 400 })
+  }
 
-  // SAFETY GUARD (Phase 2):
-  // Direct online card payments for client invoices are temporarily disabled because
-  // Frevio does not yet route funds via verified Stripe Connect destination charges.
-  // Creating a platform checkout session would hold client funds in the platform's
-  // Stripe account without an automated payout mechanism, posing critical regulatory
-  // and money-transmission risks.
-  return NextResponse.json({
-    error: 'Direct online card processing for client invoices is temporarily disabled pending studio direct payout (Stripe Connect) integration. Please settle directly with the freelancer/studio via bank transfer or their preferred payment method.',
-    code: 'PAYMENTS_UNAVAILABLE',
-    disabled: true,
-  }, { status: 503 })
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL || 'https://clientpulse-one.vercel.app').replace(/\/+$/, '')
+  const currency = (invoice.currency || 'usd').toLowerCase()
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
+      customer_email: invoice.client_email || undefined,
+      line_items: [
+        {
+          price_data: {
+            currency,
+            product_data: {
+              name: `Invoice #${invoice.invoice_number}`,
+              description: `Payment for ${owner.name || 'Creative Services'} (Invoice ${invoice.invoice_number})`,
+            },
+            unit_amount: totalCents,
+          },
+          quantity: 1,
+        },
+      ],
+      payment_intent_data: {
+        application_fee_amount: 0, // Zero Frevio platform fee
+        transfer_data: {
+          destination: owner.stripe_account_id,
+        },
+        metadata: {
+          invoiceId: invoice.id,
+          invoiceNumber: invoice.invoice_number,
+          projectId: invoice.project_id || '',
+          userId: invoice.user_id,
+        },
+      },
+      metadata: {
+        invoiceId: invoice.id,
+        invoiceNumber: invoice.invoice_number,
+        projectId: invoice.project_id || '',
+        userId: invoice.user_id,
+        type: 'invoice_payment',
+      },
+      success_url: `${appUrl}/portal/invoices/${invoice.id}?paid=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/portal/invoices/${invoice.id}?canceled=true`,
+    })
+
+    return NextResponse.json({ url: session.url, sessionId: session.id })
+  } catch (err: unknown) {
+    console.error('Error creating invoice Stripe checkout session:', err)
+    const msg = err instanceof Error ? err.message : 'Failed to create payment session'
+    return NextResponse.json({ error: msg }, { status: 500 })
+  }
 }

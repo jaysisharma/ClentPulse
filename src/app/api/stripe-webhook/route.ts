@@ -1,11 +1,11 @@
 import { createAdminClient } from '@/lib/supabase/admin'
+import { stripe } from '@/lib/stripe'
 import Stripe from 'stripe'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { normalizePlan } from '@/lib/plans'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 function esc(str: string | null | undefined): string {
@@ -20,19 +20,24 @@ function esc(str: string | null | undefined): string {
 export async function POST(request: Request) {
   const body = await request.text()
   const headersList = await headers()
-  const sig = headersList.get('stripe-signature')!
+  const sig = headersList.get('stripe-signature')
+
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing stripe-signature header' }, { status: 400 })
+  }
 
   let event: Stripe.Event
   try {
     event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
-  } catch {
-    return NextResponse.json({ error: 'Webhook signature verification failed' }, { status: 400 })
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Webhook signature verification failed'
+    console.error('Webhook signature verification error:', msg)
+    return NextResponse.json({ error: msg }, { status: 400 })
   }
 
   // Stripe verifies the request via the signature check above; this handler has no
   // user session, so it must use the service-role admin client to bypass RLS and
-  // write plan/invoice state for arbitrary customers. The anon client silently
-  // matches 0 rows here (RLS requires auth.uid() = id, which is null for webhooks).
+  // write plan/invoice state for arbitrary customers.
   const supabase = createAdminClient()
 
   // Webhook event idempotency guard
@@ -41,7 +46,7 @@ export async function POST(request: Request) {
     .insert({ event_id: event.id })
 
   if (idempotencyError) {
-    // Unique violation error code (23505) in postgres/postgrest means this event was already processed
+    // Unique violation error code (23505) in postgres means this event was already processed
     if (idempotencyError.code === '23505') {
       console.log(`Stripe Webhook event already processed: ${event.id}`)
       return NextResponse.json({ received: true, duplicate: true })
@@ -50,11 +55,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to verify event idempotency' }, { status: 500 })
   }
 
+  // 1. Checkout Session Completed
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
 
     if (session.metadata?.type === 'change_order_payment') {
-      const changeOrderId = session.metadata.change_order_id
+      const changeOrderId = session.metadata.changeOrderId || session.metadata.change_order_id
 
       if (changeOrderId) {
         const { error: coError } = await supabase
@@ -74,9 +80,9 @@ export async function POST(request: Request) {
 
       return NextResponse.json({ received: true })
     } else if (session.metadata?.type === 'invoice_payment') {
-      const invoiceId = session.metadata.invoice_id
-      const projectId = session.metadata.project_id
-      const isDeposit = session.metadata.is_deposit === 'true'
+      const invoiceId = session.metadata.invoiceId || session.metadata.invoice_id
+      const projectId = session.metadata.projectId || session.metadata.project_id
+      const isDeposit = session.metadata.isDeposit === 'true' || session.metadata.is_deposit === 'true'
 
       if (invoiceId) {
         const { error } = await supabase
@@ -99,6 +105,7 @@ export async function POST(request: Request) {
         }
       }
     } else {
+      // Platform subscription checkout
       const customerId = session.customer as string
       const userId = session.client_reference_id || session.metadata?.supabase_user_id
       const rawTier = session.metadata?.plan_tier || 'pro'
@@ -131,7 +138,6 @@ export async function POST(request: Request) {
 
       let userUpdated = false
       if (userId) {
-        // If we have user ID, update their plan, clear promo_pro, backfill customer ID, and track timestamp
         const { data, error } = await supabase
           .from('users')
           .update({
@@ -147,8 +153,7 @@ export async function POST(request: Request) {
         }
       }
 
-      if (!userUpdated) {
-        // Fallback: match by stripe_customer_id
+      if (!userUpdated && customerId) {
         const { error } = await supabase
           .from('users')
           .update({
@@ -174,43 +179,91 @@ export async function POST(request: Request) {
     }
   }
 
-  if (event.type === 'customer.subscription.deleted') {
-    const subscription = event.data.object as Stripe.Subscription
-    const customerId = subscription.customer as string
-    const eventCreated = event.created
+  // 2. Payment Intent Succeeded (Direct or Destination Charges)
+  if (event.type === 'payment_intent.succeeded') {
+    const paymentIntent = event.data.object as Stripe.PaymentIntent
+    const invoiceId = paymentIntent.metadata?.invoiceId || paymentIntent.metadata?.invoice_id
+    const changeOrderId = paymentIntent.metadata?.changeOrderId || paymentIntent.metadata?.change_order_id
+    const projectId = paymentIntent.metadata?.projectId || paymentIntent.metadata?.project_id
+    const isDeposit = paymentIntent.metadata?.isDeposit === 'true' || paymentIntent.metadata?.is_deposit === 'true'
 
-    // Ordering guard
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id, stripe_event_created_at')
-      .eq('stripe_customer_id', customerId)
-      .maybeSingle()
-
-    if (existingUser?.stripe_event_created_at && eventCreated && eventCreated < existingUser.stripe_event_created_at) {
-      console.warn(`Stripe event ${event.id} is stale on subscription delete (${eventCreated} < ${existingUser.stripe_event_created_at})`)
-      return NextResponse.json({ received: true, stale: true })
+    if (invoiceId) {
+      await supabase
+        .from('invoices')
+        .update({ status: 'paid', paid_at: new Date().toISOString() })
+        .eq('id', invoiceId)
     }
 
-    const { error } = await supabase
-      .from('users')
-      .update({
-        plan: 'free',
-        ...(eventCreated ? { stripe_event_created_at: eventCreated } : {}),
-      })
-      .eq('stripe_customer_id', customerId)
-    if (error) {
-      console.error('Failed to update user plan on subscription delete:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+    if (isDeposit && projectId) {
+      await supabase
+        .from('projects')
+        .update({ deposit_paid: true, status: 'active' })
+        .eq('id', projectId)
     }
 
-    // Downgrade any organization tied to this customer
-    await supabase
-      .from('organizations')
-      .update({ billing_plan: 'free' })
-      .eq('stripe_customer_id', customerId)
+    if (changeOrderId) {
+      await supabase
+        .from('change_orders')
+        .update({
+          status: 'paid',
+          paid_at: new Date().toISOString(),
+          approved_at: new Date().toISOString(),
+        })
+        .eq('id', changeOrderId)
+    }
   }
 
-  if (event.type === 'customer.subscription.updated') {
+  // 3. Charge Refunded
+  if (event.type === 'charge.refunded') {
+    const charge = event.data.object as Stripe.Charge
+    const invoiceId = charge.metadata?.invoiceId || charge.metadata?.invoice_id
+    const changeOrderId = charge.metadata?.changeOrderId || charge.metadata?.change_order_id
+
+    if (invoiceId) {
+      await supabase
+        .from('invoices')
+        .update({ status: 'refunded' })
+        .eq('id', invoiceId)
+    }
+
+    if (changeOrderId) {
+      await supabase
+        .from('change_orders')
+        .update({ status: 'refunded' })
+        .eq('id', changeOrderId)
+    }
+  }
+
+  // 4. Connect Account Updated
+  if (event.type === 'account.updated') {
+    const account = event.data.object as Stripe.Account
+    const chargesEnabled = Boolean(account.charges_enabled)
+    const payoutsEnabled = Boolean(account.payouts_enabled)
+    const isOnboarded = Boolean(account.details_submitted && chargesEnabled)
+
+    await supabase
+      .from('users')
+      .update({
+        stripe_charges_enabled: chargesEnabled,
+        stripe_payouts_enabled: payoutsEnabled,
+        stripe_connect_onboarded: isOnboarded,
+      })
+      .eq('stripe_account_id', account.id)
+
+    await supabase
+      .from('organizations')
+      .update({
+        stripe_charges_enabled: chargesEnabled,
+        stripe_payouts_enabled: payoutsEnabled,
+        stripe_connect_onboarded: isOnboarded,
+      })
+      .eq('stripe_account_id', account.id)
+
+    console.log(`Connect account updated: ${account.id} (charges: ${chargesEnabled}, payouts: ${payoutsEnabled})`)
+  }
+
+  // 5. Subscription Created / Updated / Deleted
+  if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
     const subscription = event.data.object as Stripe.Subscription
     const customerId = subscription.customer as string
     const eventCreated = event.created
@@ -246,14 +299,10 @@ export async function POST(request: Request) {
 
     const subPriceId = subscription.items?.data?.[0]?.price?.id
     if (knownPrices.length > 0 && subPriceId && !knownPrices.includes(subPriceId)) {
-      console.warn(`subscription.updated: price ${subPriceId} does not match any recognized plan price`)
+      console.warn(`subscription: price ${subPriceId} does not match any recognized plan price`)
       return NextResponse.json({ received: true, ignored: 'unrecognized_price' })
     }
 
-    // Entitlement statuses: a paying customer keeps their plan while active, in trial, or
-    // in the card-retry grace window (past_due). Only customer.subscription.deleted
-    // (or a terminal status) revokes — flipping to free on a transient past_due would
-    // strip access mid-cycle from someone whose renewal is simply being retried.
     const entitled = ['active', 'trialing', 'past_due']
     const isEntitled = entitled.includes(subscription.status)
 
@@ -274,7 +323,6 @@ export async function POST(request: Request) {
         .update({ billing_plan: 'free' })
         .eq('stripe_customer_id', customerId)
     } else {
-      // Retain or refresh paid entitlement preserving specific plan tier
       const rawTier = subscription.metadata?.plan_tier
       const orgId = subscription.metadata?.org_id
       
@@ -308,16 +356,75 @@ export async function POST(request: Request) {
     }
   }
 
+  if (event.type === 'customer.subscription.deleted') {
+    const subscription = event.data.object as Stripe.Subscription
+    const customerId = subscription.customer as string
+    const eventCreated = event.created
+
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id, stripe_event_created_at')
+      .eq('stripe_customer_id', customerId)
+      .maybeSingle()
+
+    if (existingUser?.stripe_event_created_at && eventCreated && eventCreated < existingUser.stripe_event_created_at) {
+      console.warn(`Stripe event ${event.id} is stale on subscription delete (${eventCreated} < ${existingUser.stripe_event_created_at})`)
+      return NextResponse.json({ received: true, stale: true })
+    }
+
+    const { error } = await supabase
+      .from('users')
+      .update({
+        plan: 'free',
+        ...(eventCreated ? { stripe_event_created_at: eventCreated } : {}),
+      })
+      .eq('stripe_customer_id', customerId)
+    if (error) {
+      console.error('Failed to update user plan on subscription delete:', error)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    await supabase
+      .from('organizations')
+      .update({ billing_plan: 'free' })
+      .eq('stripe_customer_id', customerId)
+  }
+
+  // 6. Invoice Paid (Subscription renewal or direct invoice)
+  if (event.type === 'invoice.paid') {
+    const invoice = event.data.object as Stripe.Invoice
+    const customerId = invoice.customer as string
+    const invoiceObj = event.data.object as unknown as Record<string, unknown>
+    const subId = invoiceObj.subscription || (invoiceObj.parent as Record<string, unknown> | undefined)?.subscription_details
+    
+    // Check if this invoice is for a subscription renewal
+    if (subId && customerId) {
+      const { data: user } = await supabase
+        .from('users')
+        .select('id, plan')
+        .eq('stripe_customer_id', customerId)
+        .maybeSingle()
+
+      if (user && user.plan === 'free') {
+        await supabase
+          .from('users')
+          .update({ plan: 'pro' })
+          .eq('id', user.id)
+      }
+    }
+  }
+
+  // 7. Invoice Payment Failed (Dunning emails)
   if (event.type === 'invoice.payment_failed') {
     const invoice = event.data.object as Stripe.Invoice
     const customerId = invoice.customer as string
 
-    // 1. Skip dunning email for initial signup payment attempt (handled in Checkout UI)
+    // Skip dunning email for initial signup payment attempt (handled in Checkout UI)
     if (invoice.billing_reason === 'subscription_create') {
       return NextResponse.json({ received: true, dunning_skipped: 'subscription_create' })
     }
 
-    // 2. Dedup dunning emails across retries: only notify on first failure or final failure
+    // Dedup dunning emails across retries
     const attemptCount = typeof invoice.attempt_count === 'number' ? invoice.attempt_count : 1
     const isFirstAttempt = attemptCount === 1
     const isFinalAttempt = invoice.next_payment_attempt === null

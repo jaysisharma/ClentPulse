@@ -1,5 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+const mockCheckoutCreate = vi.fn().mockResolvedValue({ url: 'https://checkout.stripe.com/test_co', id: 'cs_test_co' })
+
+vi.mock('@/lib/stripe', () => ({
+  stripe: {
+    checkout: { sessions: { create: mockCheckoutCreate } },
+  },
+}))
+
 const mockChangeOrderSingle = vi.fn()
 const mockProjectSingle = vi.fn()
 const mockUserSingle = vi.fn()
@@ -56,7 +64,8 @@ describe('POST /api/change-orders/[id]/checkout', () => {
         status: 'pending',
         amount: 500,
         currency: 'USD',
-        description: 'Extra scope',
+        title: 'Extra scope',
+        description: 'Extra scope item',
         project_id: 'proj_abc',
         user_id: 'usr_owner',
       },
@@ -71,18 +80,48 @@ describe('POST /api/change-orders/[id]/checkout', () => {
     })
     mockUserSingle.mockResolvedValue({
       data: {
+        id: 'usr_owner',
         name: 'Studio Owner',
+        stripe_account_id: 'acct_owner123',
+        stripe_charges_enabled: true,
       },
     })
   })
 
-  it('fails closed with 503 PAYMENTS_UNAVAILABLE to prevent collecting funds into platform account without Connect', async () => {
+  it('returns 400 STRIPE_CONNECT_INCOMPLETE when creator has not onboarded Stripe Connect', async () => {
+    mockUserSingle.mockResolvedValue({
+      data: {
+        id: 'usr_owner',
+        name: 'Studio Owner',
+        stripe_account_id: null,
+        stripe_charges_enabled: false,
+      },
+    })
     const { POST } = await import('./route')
     const res = await POST(makeRequest({}), { params: Promise.resolve({ id: 'co_123' }) })
-    expect(res.status).toBe(503)
+    expect(res.status).toBe(400)
     const json = await res.json()
-    expect(json.code).toBe('PAYMENTS_UNAVAILABLE')
-    expect(json.disabled).toBe(true)
+    expect(json.code).toBe('STRIPE_CONNECT_INCOMPLETE')
+    expect(mockCheckoutCreate).not.toHaveBeenCalled()
+  })
+
+  it('creates Stripe checkout session with destination charge and 0 fee when owner is onboarded', async () => {
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest({}), { params: Promise.resolve({ id: 'co_123' }) })
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json.url).toBe('https://checkout.stripe.com/test_co')
+    expect(mockCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: 'payment',
+        payment_intent_data: expect.objectContaining({
+          application_fee_amount: 0,
+          transfer_data: {
+            destination: 'acct_owner123',
+          },
+        }),
+      })
+    )
   })
 
   it('returns 404 when change order is not found', async () => {

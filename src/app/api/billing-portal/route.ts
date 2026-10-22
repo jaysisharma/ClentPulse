@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
 
@@ -8,6 +9,14 @@ export async function POST() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const rateLimit = checkRateLimit(`portal_${user.id}`, 10, 60)
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: `Too many requests. Please wait ${rateLimit.retryAfterSeconds} seconds.` },
+      { status: 429 }
+    )
+  }
 
   const { data: profile } = await supabase
     .from('users')

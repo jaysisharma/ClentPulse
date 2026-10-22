@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
 import { normalizePlan } from '@/lib/plans'
+import { checkRateLimit } from '@/lib/rate-limit'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-05-27.dahlia' as const })
 
@@ -10,11 +11,37 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  // Rate limit: 10 checkout creations per minute per user
+  const rateLimit = checkRateLimit(`checkout_${user.id}`, 10, 60)
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: `Too many checkout requests. Please wait ${rateLimit.retryAfterSeconds} seconds.` },
+      { status: 429 }
+    )
+  }
+
   const body = await request.json().catch(() => ({}))
   const billing: 'monthly' | 'annual' = body.billing === 'annual' ? 'annual' : 'monthly'
   const rawTier: string = body.planTier || body.plan || 'pro'
   const normalizedTier = normalizePlan(rawTier)
   const orgId: string | null = body.orgId || null
+
+  // Authorization check on orgId
+  if (orgId) {
+    const { data: member } = await supabase
+      .from('organization_members')
+      .select('role')
+      .eq('org_id', orgId)
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    if (!member || !['owner', 'admin'].includes(member.role)) {
+      return NextResponse.json(
+        { error: 'Forbidden: You do not have permission to manage billing for this organization' },
+        { status: 403 }
+      )
+    }
+  }
 
   let priceId: string | undefined
 
@@ -75,7 +102,6 @@ export async function POST(request: Request) {
     customer: customerId,
     client_reference_id: user.id,
     mode: 'subscription',
-    payment_method_types: ['card'],
     line_items: [{
       price: priceId,
       quantity: 1,

@@ -1,15 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-const mockCheckoutCreate = vi.fn().mockResolvedValue({ url: 'https://checkout.stripe.com/test_invoice' })
+const mockCheckoutCreate = vi.fn().mockResolvedValue({ url: 'https://checkout.stripe.com/test_invoice', id: 'cs_test_123' })
 
-vi.mock('stripe', () => {
-  const MockStripe = function MockStripe() {
-    return {
-      checkout: { sessions: { create: mockCheckoutCreate } },
-    }
-  }
-  return { default: MockStripe }
-})
+vi.mock('@/lib/stripe', () => ({
+  stripe: {
+    checkout: { sessions: { create: mockCheckoutCreate } },
+  },
+}))
 
 const mockInvoiceSingle = vi.fn()
 const mockOwnerSingle = vi.fn()
@@ -54,7 +51,14 @@ describe('POST /api/pay-invoice', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000'
-    mockOwnerSingle.mockResolvedValue({ data: { name: 'Studio One' } })
+    mockOwnerSingle.mockResolvedValue({
+      data: {
+        id: 'usr_1',
+        name: 'Studio One',
+        stripe_account_id: 'acct_test123',
+        stripe_charges_enabled: true,
+      },
+    })
     mockInvoiceSingle.mockResolvedValue({
       data: {
         id: 'inv_123',
@@ -99,16 +103,42 @@ describe('POST /api/pay-invoice', () => {
     const res = await POST(makeRequest({ invoiceId: 'inv_paid' }))
     expect(res.status).toBe(400)
     const data = await res.json()
-    expect(data.error).toBe('Already paid')
+    expect(data.error).toContain('already been paid')
   })
 
-  it('fails closed with 503 PAYMENTS_UNAVAILABLE to prevent collecting client funds into platform account without Connect', async () => {
+  it('returns 400 STRIPE_CONNECT_INCOMPLETE when creator has not onboarded Stripe Connect', async () => {
+    mockOwnerSingle.mockResolvedValue({
+      data: {
+        id: 'usr_1',
+        name: 'Studio One',
+        stripe_account_id: null,
+        stripe_charges_enabled: false,
+      },
+    })
     const { POST } = await import('./route')
     const res = await POST(makeRequest({ invoiceId: 'inv_123' }))
-    expect(res.status).toBe(503)
+    expect(res.status).toBe(400)
     const data = await res.json()
-    expect(data.code).toBe('PAYMENTS_UNAVAILABLE')
-    expect(data.disabled).toBe(true)
+    expect(data.code).toBe('STRIPE_CONNECT_INCOMPLETE')
     expect(mockCheckoutCreate).not.toHaveBeenCalled()
+  })
+
+  it('creates Stripe checkout session with destination charge and 0 fee when owner is onboarded', async () => {
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest({ invoiceId: 'inv_123' }))
+    expect(res.status).toBe(200)
+    const data = await res.json()
+    expect(data.url).toBe('https://checkout.stripe.com/test_invoice')
+    expect(mockCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: 'payment',
+        payment_intent_data: expect.objectContaining({
+          application_fee_amount: 0,
+          transfer_data: {
+            destination: 'acct_test123',
+          },
+        }),
+      })
+    )
   })
 })
