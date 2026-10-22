@@ -163,7 +163,7 @@ export default function FreeInvoiceGeneratorPage() {
               Sign in
             </Link>
             <Link
-              href="/auth/signup"
+              href="/auth/login?mode=signup"
               className="px-4 py-2 rounded-full text-xs font-semibold bg-white text-slate-950 hover:bg-slate-100 transition-all shadow-sm"
             >
               Start free
@@ -561,7 +561,7 @@ export default function FreeInvoiceGeneratorPage() {
           </p>
           <div className="pt-2">
             <Link
-              href="/auth/signup"
+              href="/auth/login?mode=signup"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-slate-950 font-semibold text-xs hover:bg-slate-100 transition-all hover:scale-[1.02] shadow-lg shadow-white/10"
             >
               <span>Create Free Frevio Workspace</span>

@@ -74,7 +74,7 @@ export default function FreelanceRateCalculatorPage() {
               Sign in
             </Link>
             <Link
-              href="/auth/signup"
+              href="/auth/login?mode=signup"
               className="px-4 py-2 rounded-full text-xs font-semibold bg-white text-slate-950 hover:bg-slate-100 transition-all shadow-sm"
             >
               Start free
@@ -262,7 +262,7 @@ export default function FreelanceRateCalculatorPage() {
 
               {/* Action Button */}
               <Link
-                href="/auth/signup"
+                href="/auth/login?mode=signup"
                 className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-950 transition-all hover:bg-slate-100 hover:scale-[1.01] shadow-lg cursor-pointer"
               >
                 <span>Lock In Your Rates With Frevio</span>
@@ -294,7 +294,7 @@ export default function FreelanceRateCalculatorPage() {
           <div className="flex items-center gap-4">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
             <Link href="/#pricing" className="hover:text-white transition-colors">Pricing</Link>
-            <Link href="/auth/signup" className="text-indigo-400 hover:underline">Get started free</Link>
+            <Link href="/auth/login?mode=signup" className="text-indigo-400 hover:underline">Get started free</Link>
           </div>
         </div>
       </footer>
