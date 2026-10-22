@@ -33,11 +33,6 @@ token class needs no `dark:` twin.
 | on-accent | `text-on-accent` | `#FFFFFF` | `#0A0A0A` | text/icons **on** an accent fill |
 | accent-strong | `text-accent-strong` `ring-accent-strong` | `#6D28D9` | `#A78BFA` | accent as text, links, focus rings |
 
-**Marketing page rule:** the main call to action is a white pill
-(`bg-ink text-canvas` in dark), not an accent fill. Color comes from flat
-violet "stages" (no gradients) in
-[`stage.tsx`](src/components/landing/home/stage.tsx).
-
 ### Status (state only — never a brand or action color)
 
 | Token | Utility | Light | Dark | Use for |
@@ -51,8 +46,7 @@ Tints use opacity (`bg-positive/10`).
 ### Scoping
 
 `.theme-dark` pins a subtree to dark values (and `html:has(.theme-dark)` makes the
-document chrome follow). The marketing page (`/`) is dark-only. `.theme-light`
-does the reverse.
+document chrome follow). `.theme-light` does the reverse.
 
 ## Type
 Inter `font-sans`. Page titles `text-2xl font-bold text-ink`.
@@ -70,7 +64,8 @@ Eyebrow labels `text-xs font-bold uppercase tracking-wider text-ink-muted`.
 - **Status badge:** positive / attention / ink-muted by state.
 
 ## Migration status
-- ✅ Tokens, `Button`, `Logo`, favicon, theme-color, marketing page (`/`, in `src/components/landing/home/`).
+- ✅ Tokens, `Button`, `Logo`, favicon, theme-color.
+- `/` has no marketing page; it redirects to `/dashboard` or `/auth/login`.
 - ⏳ App (`/dashboard`, `/project`, `/settings`, portal) still uses raw `indigo-*`,
   `slate-*` and ad-hoc near-blacks (`#0c0d12`, `#08090a`, …). Migrate by mapping
   indigo → `accent`, slate text → `ink`/`ink-muted`, slate borders → `line`,

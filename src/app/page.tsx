@@ -1,19 +1,12 @@
-import type { Viewport } from 'next'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { HomeLanding } from '@/components/landing/home/home-landing'
 
-export const viewport: Viewport = {
-  themeColor: '#0B0B0C',
-  colorScheme: 'dark',
-}
-
-export default async function LandingPage() {
+// No marketing page for now: send visitors straight into the app.
+export default async function HomePage() {
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
-  const isLoggedIn = !!user
-  const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
-  return <HomeLanding isLoggedIn={isLoggedIn} signupHref={signupHref} />
+  redirect(user ? '/dashboard' : '/auth/login')
 }
