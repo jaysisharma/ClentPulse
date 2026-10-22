@@ -34,28 +34,27 @@ export async function sendWelcomeEmail({
         <span style="font-size: 20px; font-weight: 700; color: #0f172a; margin-left: 8px; vertical-align: middle;">Frevio</span>
       </div>
 
-      <h1 style="font-size: 22px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 12px;">Welcome to Frevio, ${esc(firstName)}</h1>
-      <p style="font-size: 15px; line-height: 24px; color: #475569; margin-top: 0; margin-bottom: 20px;">
-        Frevio replaces manual client status emails with a clean, branded project portal where clients track deliverables, approve milestones, and pay invoices without back-and-forth.
+      <h1 style="font-size: 22px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 12px;">Hi ${esc(firstName)}, thanks for signing up</h1>
+      <p style="font-size: 15px; line-height: 24px; color: #475569; margin-top: 0; margin-bottom: 16px;">
+        I'm Jaysi, and I build Frevio. The fastest way to see if it's useful is to try it on one real client:
       </p>
-
-      <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-        <div style="font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 10px;">Quick start checklist:</div>
-        <ul style="font-size: 14px; line-height: 22px; color: #334155; margin: 0; padding-left: 20px;">
-          <li>Create your first project</li>
-          <li>Post a quick progress update</li>
-          <li>Share the live status link with your client</li>
-        </ul>
-      </div>
+      <ol style="font-size: 15px; line-height: 26px; color: #334155; margin: 0 0 20px; padding-left: 20px;">
+        <li>Create a project for a client you're working with now.</li>
+        <li>Post a short update on what you did this week.</li>
+        <li>Send them the link.</li>
+      </ol>
+      <p style="font-size: 15px; line-height: 24px; color: #475569; margin-top: 0; margin-bottom: 24px;">
+        It takes about five minutes, and your client doesn't need to sign up for anything.
+      </p>
 
       <div style="text-align: center; margin-bottom: 24px;">
         <a href="${esc(appUrl)}/dashboard" style="display: inline-block; background-color: #0f172a; color: #ffffff; padding: 12px 28px; border-radius: 9999px; text-decoration: none; font-size: 14px; font-weight: 600;">
-          Open your workspace &rarr;
+          Create your first project &rarr;
         </a>
       </div>
 
       <p style="font-size: 12px; color: #94a3b8; line-height: 18px; margin: 0; border-top: 1px dashed #e2e8f0; padding-top: 16px;">
-        Need help? Simply reply to this email to reach our team directly.
+        Stuck, or something missing for how you work? Just reply. This comes straight to me, and I read every one.
       </p>
     </div>
   `
@@ -65,6 +64,7 @@ export async function sendWelcomeEmail({
       from: fromEmail,
       to: [email],
       subject: 'Welcome to Frevio',
+      replyTo: 'jaysi@frevio.cloud',
       html,
     })
 
@@ -90,6 +90,7 @@ export async function sendClientPortalInviteEmail({
   portalUrl,
   hasPasscode = false,
   customMessage,
+  replyTo,
 }: {
   clientEmail: string
   projectName: string
@@ -97,6 +98,7 @@ export async function sendClientPortalInviteEmail({
   portalUrl: string
   hasPasscode?: boolean
   customMessage?: string | null
+  replyTo?: string | null
 }) {
   if (!process.env.RESEND_API_KEY) return { success: false, error: 'RESEND_API_KEY missing' }
 
@@ -108,9 +110,9 @@ export async function sendClientPortalInviteEmail({
         <span style="font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: #6366F1;">Client Portal</span>
       </div>
 
-      <h1 style="font-size: 22px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 12px;">${esc(projectName)} Workspace</h1>
+      <h1 style="font-size: 22px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 12px;">${esc(projectName)}</h1>
       <p style="font-size: 15px; line-height: 24px; color: #475569; margin-top: 0; margin-bottom: 16px;">
-        <strong>${esc(freelancerName)}</strong> has invited you to view the real-time project portal for <strong>${esc(projectName)}</strong>.
+        <strong>${esc(freelancerName)}</strong> set up a page for this project. You'll find the latest updates there, anything waiting for your approval, and any invoices.
       </p>
 
       ${
@@ -123,20 +125,20 @@ export async function sendClientPortalInviteEmail({
 
       <div style="text-align: center; margin: 28px 0;">
         <a href="${esc(portalUrl)}" style="display: inline-block; background-color: #6366F1; color: #ffffff; padding: 12px 30px; border-radius: 9999px; text-decoration: none; font-size: 14px; font-weight: 600;">
-          Open Project Portal &rarr;
+          Open the project page &rarr;
         </a>
       </div>
 
       ${
         hasPasscode
           ? `<div style="background-color: #fefce8; border: 1px solid #fef08a; border-radius: 8px; padding: 12px; margin-bottom: 20px; font-size: 12px; color: #854d0e;">
-              🔒 <strong>Passcode Protected:</strong> This portal requires a PIN. ${esc(freelancerName)} will provide you with the access code directly.
+              🔒 This page is protected with a passcode. ${esc(freelancerName)} will send it to you separately.
             </div>`
           : ''
       }
 
       <p style="font-size: 12px; color: #94a3b8; line-height: 18px; margin: 0; border-top: 1px dashed #e2e8f0; padding-top: 16px;">
-        No account or password is required. You can bookmark the portal link to review deliverable updates, milestones, and invoices at any time.
+        You don't need an account. Bookmark the link and check back whenever you like. Questions? Reply to this email and it goes to ${esc(freelancerName)}.
       </p>
     </div>
   `
@@ -145,7 +147,8 @@ export async function sendClientPortalInviteEmail({
     const { error } = await resend.emails.send({
       from: fromEmail,
       to: [clientEmail],
-      subject: `Project Portal: ${projectName} (${freelancerName})`,
+      replyTo: replyTo || undefined,
+      subject: `${projectName}: your project page from ${freelancerName}`,
       html,
     })
 

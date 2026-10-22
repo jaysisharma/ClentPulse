@@ -11,10 +11,10 @@ import {
 import gsap from 'gsap'
 
 const WORKFLOW_PROMPTS = [
-  "Broadcast live coding status: 'Payment webhook refactor'...",
-  "Draft this week's progress update for Acme Corp in 1-click...",
-  "Convert 16.5 logged VS Code hours into a Stripe invoice...",
-  "Send contract agreement for client sign-off with 50% deposit...",
+  "Post this week's update for Acme...",
+  "Send the homepage mockup to Northwind for sign-off...",
+  "Invoice Acme for 16.5 logged hours...",
+  "Ask Voxel Labs for their logo files...",
 ]
 
 interface HeroProps {
@@ -323,7 +323,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
-          <span className="tracking-tight text-emerald-200">Built for Freelancers & Independent Studios</span>
+          <span className="tracking-tight text-emerald-200">For freelancers and small studios</span>
         </div>
 
         {/* Hero Title (Overads.io light uppercase signature) */}
@@ -341,7 +341,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
           ref={subtitleRef}
           className="mt-6 max-w-2xl text-balance text-sm font-light leading-relaxed text-slate-300 md:text-base"
         >
-          Clients don&rsquo;t ignore you. They lose you between five apps. Share one link where they see progress, approve deliverables and pay invoices through Stripe, with no client passwords and no Frevio fees. Developers can sync status straight from VS Code. Free for your first 2 active projects.
+          Clients don&rsquo;t ignore you. They lose you between five apps. Give each one a single link where they can see what you did this week, sign off on work and pay your invoice. They don&rsquo;t need an account, and Frevio takes no cut of your payments.
         </p>
 
         {/* Interactive Live Command Terminal Box */}
@@ -394,7 +394,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
         {/* Core Integration Flow Strip */}
         <div className="mt-12 flex flex-col items-center gap-4 px-6">
           <p className="text-center text-[10px] font-medium uppercase tracking-[0.14em] text-slate-400 sm:text-[11px] sm:tracking-[0.18em]">
-            Built-in native workflow
+            Works with
           </p>
           <ul className="mx-auto flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-slate-300 text-xs font-mono">
             <li className="flex items-center gap-1.5"><Terminal className="w-3.5 h-3.5 text-emerald-400" /> VS Code</li>
@@ -555,17 +555,17 @@ export function OveradsHero({ signupHref }: HeroProps) {
                 <div className="md:col-span-5 space-y-3">
                   <div className="inline-flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-md border border-emerald-500/20">
                     <Terminal className="w-3.5 h-3.5" />
-                    <span>Step 1: Editor Telemetry</span>
+                    <span>Step 1: You do the work</span>
                   </div>
                   <h3 className="text-xl font-light text-white tracking-tight">
-                    Your code logs the work. You never open a timesheet.
+                    Your editor keeps the timesheet.
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    VS Code extension transmits heartbeats while you write code. Inactive periods auto-pause after 5 minutes so no phantom hours are ever recorded.
+                    The VS Code extension notices when you&apos;re working in a linked project. Step away for 5 minutes and it stops counting, so you don&apos;t bill for the coffee break.
                   </p>
                   <div className="text-[11px] font-mono text-slate-400 flex items-center gap-2 pt-2 border-t border-white/5">
                     <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span>3.4h logged today · Staged for Milestone 2</span>
+                    <span>3.4h logged today</span>
                   </div>
                 </div>
 
@@ -579,8 +579,8 @@ export function OveradsHero({ signupHref }: HeroProps) {
                   </div>
                   <div className="text-slate-400 text-[11px] space-y-1">
                     <p className="text-emerald-300">✓ git commit -m &quot;feat(stripe): verified payout webhook handlers&quot;</p>
-                    <p className="text-slate-300">→ Telemetry event: 42 mins focused coding</p>
-                    <p className="text-slate-300">→ Progress synced to Acme Studio client portal</p>
+                    <p className="text-slate-300">→ 42 min logged to Acme Studio</p>
+                    <p className="text-slate-300">→ Acme&apos;s portal shows you&apos;re working on it</p>
                     <p className="text-indigo-400">→ Milestone 2 reached: 100% complete</p>
                   </div>
                 </div>
@@ -593,16 +593,16 @@ export function OveradsHero({ signupHref }: HeroProps) {
                 <div className="md:col-span-5 space-y-3">
                   <div className="inline-flex items-center gap-2 text-xs font-mono text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded-md border border-indigo-500/20">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Step 2: Password-Free Portal</span>
+                    <span>Step 2: Your client checks in</span>
                   </div>
                   <h3 className="text-xl font-light text-white tracking-tight">
-                    One clean link. Instant milestone review.
+                    They open a link. That&apos;s it.
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Clients never register an account or remember a password. They open their private secure link, test deliverables, and approve with a single click.
+                    No account and no password to forget. Your client reads the latest update, clicks through to staging and approves it from their phone.
                   </p>
                   <div className="text-[11px] font-mono text-indigo-300 flex items-center gap-2 pt-2 border-t border-white/5">
-                    <span>100% password-free · Tokenized link security</span>
+                    <span>No client login · Optional passcode</span>
                   </div>
                 </div>
 
@@ -640,16 +640,16 @@ export function OveradsHero({ signupHref }: HeroProps) {
                 <div className="md:col-span-5 space-y-3">
                   <div className="inline-flex items-center gap-2 text-xs font-mono text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md border border-amber-500/20">
                     <CreditCard className="w-3.5 h-3.5" />
-                    <span>Step 3: Direct Stripe Settlement</span>
+                    <span>Step 3: You get paid</span>
                   </div>
                   <h3 className="text-xl font-light text-white tracking-tight">
-                    Invoice sent. Paid straight to your bank.
+                    Send the invoice. Get paid by card.
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Turn logged hours or a milestone into an invoice in a few clicks. Clients pay by card through Stripe, and funds go to your connected Stripe account with zero Frevio transaction fees.
+                    Pull your logged hours or a milestone into an invoice. Your client pays on a Stripe page and the money lands in your own Stripe account. Frevio doesn&apos;t take a percentage.
                   </p>
                   <div className="text-[11px] font-mono text-emerald-400 flex items-center gap-2 pt-2 border-t border-white/5">
-                    <span>Direct Stripe payout · No Frevio cuts</span>
+                    <span>Paid to your Stripe account · 0% Frevio fee</span>
                   </div>
                 </div>
 

@@ -68,6 +68,7 @@ export async function POST(
       portalUrl,
       hasPasscode: Boolean(project.passcode),
       customMessage,
+      replyTo: user.email,
     })
 
     if (!emailResult.success) {

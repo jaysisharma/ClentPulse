@@ -104,7 +104,7 @@ export function LandingPricing() {
                 <span className="text-xs text-slate-400">/ forever</span>
               </div>
               <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
-                Run your first client projects end to end with zero cost.
+                Everything you need for your first two clients.
               </p>
             </div>
 
@@ -161,7 +161,7 @@ export function LandingPricing() {
             <div className="flex items-center justify-between gap-2 mb-4">
               <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400">Pro</span>
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">
-                Solo Studio
+                For solo freelancers
               </span>
             </div>
 
@@ -192,7 +192,7 @@ export function LandingPricing() {
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                <span>Automated client emails via Resend</span>
+                <span>Updates emailed to clients automatically</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
@@ -214,7 +214,7 @@ export function LandingPricing() {
           </div>
 
           <div className="pt-6 mt-6 border-t border-white/5 text-[11px] text-indigo-300/80">
-            Priority technical support
+            Priority support
           </div>
         </div>
 
@@ -263,21 +263,21 @@ export function LandingPricing() {
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                <span>Staffed project team pods</span>
+                <span>Assign people to projects</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                <span>Update staging & PM review workflow</span>
+                <span>Review updates before clients see them</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                <span>Internal notes & agency audit log</span>
+                <span>Internal notes and an activity log</span>
               </div>
             </div>
           </div>
 
           <div className="pt-6 mt-6 border-t border-white/5 text-[11px] text-slate-500">
-            Agency operations dashboard
+            Team dashboard
           </div>
         </div>
 
@@ -322,19 +322,19 @@ export function LandingPricing() {
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                <span>100% white-label client portal</span>
+                <span>Fully white-labeled client pages</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                <span>Custom agency favicon & portal URL</span>
+                <span>Your own favicon and portal URL</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                <span>Executive Radar & blockers</span>
+                <span>Overview of projects at risk</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
-                <span>Blocked cash & cashflow pipeline</span>
+                <span>See money waiting on clients</span>
               </div>
             </div>
           </div>
@@ -349,7 +349,7 @@ export function LandingPricing() {
       {/* Security note */}
       <div className="mt-12 flex items-center justify-center gap-2 text-center text-xs text-slate-500">
         <ShieldCheck className="w-4 h-4 text-slate-500" />
-        <span>Encrypted Stripe checkout. Instant activation across your projects and workspace.</span>
+        <span>Payments are handled by Stripe. Your plan is active as soon as checkout finishes, and you can cancel any time.</span>
       </div>
     </div>
   )

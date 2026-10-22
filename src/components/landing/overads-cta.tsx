@@ -79,10 +79,10 @@ export function OveradsCta({ signupHref }: Props) {
           <span>Get Started</span>
         </div>
         <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[1.05] max-w-3xl mx-auto">
-          One private page where clients review, approve and pay. Free for your first 2 active projects.
+          Send your next client one link instead of five emails.
         </h2>
         <p className="max-w-xl mx-auto text-sm sm:text-base text-slate-400 font-light leading-relaxed">
-          Set up your first project in five minutes. Connect your VS Code editor, give clients a calm password-free portal, and settle via Stripe with no Frevio transaction fees. Free for your first 2 active projects.
+          Your first project takes about five minutes to set up. Free for 2 projects, no card needed.
         </p>
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link

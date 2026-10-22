@@ -77,7 +77,7 @@ export default async function LandingPage({
                 <span>Pricing</span>
               </div>
               <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-                Simple plans. Predictable growth.
+                Start free. Pay when it&apos;s worth it.
               </h2>
               <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
                 Start completely free for 2 active projects. Upgrade to Pro or Agency as your studio scales.
@@ -91,8 +91,8 @@ export default async function LandingPage({
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">No Credit Card Needed</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Start free forever with 2 active projects</div>
+                  <div className="text-sm font-semibold text-white">No card needed</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Free for 2 active projects</div>
                 </div>
               </div>
 
@@ -101,8 +101,8 @@ export default async function LandingPage({
                   <Zap className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">Live in 60 Seconds</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Zero complex setup, plug &amp; play instantly</div>
+                  <div className="text-sm font-semibold text-white">Set up in minutes</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Create a project, copy the link, send it</div>
                 </div>
               </div>
 
@@ -111,8 +111,8 @@ export default async function LandingPage({
                   <Globe className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-white">1 Permanent Portal</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Replaces messy Slack, emails &amp; Notion threads</div>
+                  <div className="text-sm font-semibold text-white">One link per client</div>
+                  <div className="text-xs text-slate-400 mt-0.5">Instead of email threads and shared folders</div>
                 </div>
               </div>
             </div>
@@ -129,10 +129,10 @@ export default async function LandingPage({
                 <span>FAQ</span>
               </div>
               <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-                Frequently answered
+                Questions
               </h2>
               <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
-                Everything you need to know about the client operating system.
+                Anything not covered here? Email jaysi@frevio.cloud and I&apos;ll answer.
               </p>
             </div>
 
@@ -152,7 +152,7 @@ export default async function LandingPage({
             <Logo className="w-5 h-5 text-white" />
             <span className="font-bold text-white text-sm tracking-tight font-mono">Frevio</span>
             <span className="text-slate-700">/</span>
-            <span className="text-slate-400 font-light">The client operating system for modern studios</span>
+            <span className="text-slate-400 font-light">Client pages for freelancers and small studios</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-6 text-slate-400 font-mono text-[11px]">

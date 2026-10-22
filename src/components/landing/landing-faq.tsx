@@ -12,31 +12,31 @@ if (typeof window !== 'undefined') {
 const FAQS = [
   {
     q: 'Do my clients need to create an account?',
-    a: 'No. Clients open their portal from a secure link in their email — no password to remember. Everything they need lives on one clean page.',
+    a: "No. You send them a link and they open it. There's no account to create and no password to forget. If a project needs to stay private, add a passcode to it.",
   },
   {
     q: 'Is Frevio really free?',
-    a: 'Yes. The Free plan runs up to 2 active projects forever, with the client portal, updates, approvals, and invoicing included. Upgrade to Pro or Agency only when you outgrow it.',
+    a: "Yes, for 2 active projects, with no time limit. That includes the client page, updates, approvals and invoicing. You'd upgrade when you have more clients than that, or want your own branding.",
   },
   {
-    q: 'Do you offer plans for agencies and creative teams?',
-    a: 'Yes. Our Agency ($49/mo, 5 seats) and Agency Scale ($199/mo, 25 seats) plans include multi-tenant team workspaces, project pods, PM update reviews, activity audit trails, custom CNAME domain routing (status.youragency.com), and Executive Radar.',
+    q: 'I run a small team. Does it work for us?',
+    a: 'Yes. Agency ($49/mo) covers 5 people: a shared workspace, assigning people to projects, internal notes, and a review step before an update goes to the client. Agency Scale ($199/mo) covers 25 people and adds your own domain (status.youragency.com), full white-label and an overview of projects at risk.',
   },
   {
     q: 'Can I use my own branding?',
-    a: 'On Pro, every portal and email carries your logo and accent color — so it feels like a native part of your studio, not a third-party tool.',
+    a: 'On Pro, client pages and emails use your logo and accent color, so your clients see your studio and not ours.',
   },
   {
     q: 'How do clients get notified of updates?',
-    a: 'On Pro, posting an update sends the client a branded email automatically. On Free, you get a ready-to-paste email with their portal link. Either way, one click takes them straight to their portal.',
+    a: 'On Pro, posting an update emails your client automatically. On Free, you get the email text with their link ready to paste into your own email. Either way, one click takes them to their page.',
   },
   {
-    q: 'How do payments work and which countries are supported?',
-    a: 'Invoices are powered by Stripe Connect across 46+ supported countries (US, UK, EU, India, Canada, Australia, etc.) with card, Apple Pay, and bank transfer. Frevio charges 0% transaction fees (standard Stripe processing fees apply). If you are in a country where Stripe Connect is unavailable (such as Nepal), you can still generate itemized invoices, share direct payment instructions (Wise, PayPal, or wire), and mark milestones paid with one click.',
+    q: 'How do payments work? Is my country supported?',
+    a: "Your client pays by card through Stripe, and the money goes to your own Stripe account. Frevio takes 0%; Stripe's usual processing fee still applies. Stripe Connect works in 46+ countries, including the US, UK, EU, India, Canada and Australia. If yours isn't covered (Nepal, for example), you can still send invoices with your Wise, PayPal or bank details and mark them paid yourself.",
   },
   {
     q: 'Can I cancel anytime?',
-    a: 'Always. There are no contracts — cancel in a click and keep access until the end of your billing period.',
+    a: "Yes. There's no contract. Cancel from settings and you keep your plan until the end of the period you've paid for.",
   },
 ]
 

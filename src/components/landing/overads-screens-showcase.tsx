@@ -10,10 +10,10 @@ if (typeof window !== 'undefined') {
 }
 
 const TABS = [
-  { id: 'presence', label: 'Live Presence', icon: Radio },
-  { id: 'status', label: 'Client Status Page', icon: Globe },
-  { id: 'invoice', label: 'Stripe Invoicing', icon: CreditCard },
-  { id: 'approvals', label: 'Deliverable Approvals', icon: CheckCircle2 },
+  { id: 'presence', label: 'Time tracking', icon: Radio },
+  { id: 'status', label: 'Client page', icon: Globe },
+  { id: 'invoice', label: 'Invoicing', icon: CreditCard },
+  { id: 'approvals', label: 'Approvals', icon: CheckCircle2 },
 ] as const
 
 type TabId = typeof TABS[number]['id']
@@ -116,10 +116,10 @@ export function OveradsScreensShowcase() {
             <span>Inside Frevio</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-            Three screens. That is the whole job.
+            Three screens. That&apos;s most of the job.
           </h2>
           <p className="text-sm sm:text-base leading-relaxed text-slate-400 font-light max-w-2xl mx-auto">
-            Where your time went, what your clients see, and how you get paid. No bloat, no spreadsheets.
+            Where your time went, what your client sees, and how you get paid.
           </p>
         </div>
 
@@ -168,26 +168,26 @@ export function OveradsScreensShowcase() {
             <div className="grid gap-8 lg:grid-cols-12 items-center">
               <div className="lg:col-span-5 space-y-5">
                 <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs text-emerald-400">
-                  <Radio className="w-3 h-3 animate-pulse" /> Live Coding Activity
+                  <Radio className="w-3 h-3 animate-pulse" /> Time tracking
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
-                  Editor-connected heartbeat. Zero ghost hours.
+                  Time tracking you don&apos;t have to remember.
                 </h3>
                 <p className="text-sm leading-relaxed text-slate-400">
-                  Frevio detects active development in VS Code and sends encrypted heartbeats. If you step away for 5 minutes, it automatically pauses so you never log accidental phantom time.
+                  Install the VS Code extension and link a folder to a project. It logs time while you&apos;re actually working and pauses after 5 minutes idle. It sends the project name and a rough focus area like &ldquo;Frontend&rdquo;, never your code.
                 </p>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300">
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>Real-time presence badge on client&apos;s public status page</span>
+                    <span>Optional &ldquo;working on this now&rdquo; badge on your client&apos;s page</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>Focus area detection from active files and workspace</span>
+                    <span>Focus area guessed from the files you have open</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                    <span>Session consolidation into clean, billable invoice rows</span>
+                    <span>Sessions merged into tidy time entries you can invoice</span>
                   </li>
                 </ul>
               </div>
@@ -222,10 +222,10 @@ export function OveradsScreensShowcase() {
                   </div>
 
                   <div className="p-3 rounded-xl bg-black/40 border border-white/5 space-y-2 text-[11px] text-slate-400">
-                    <div className="text-slate-300 font-medium">Recent Heartbeat Events:</div>
-                    <div className="flex justify-between"><span>14:48:12 · Keystroke active</span><span className="text-emerald-400">+120s logged</span></div>
-                    <div className="flex justify-between"><span>14:46:12 · Keystroke active</span><span className="text-emerald-400">+120s logged</span></div>
-                    <div className="flex justify-between text-slate-500"><span>14:41:00 · Smart Idle Pause</span><span>Heartbeats suspended</span></div>
+                    <div className="text-slate-300 font-medium">Recent activity:</div>
+                    <div className="flex justify-between"><span>14:48:12 · Editing</span><span className="text-emerald-400">+120s logged</span></div>
+                    <div className="flex justify-between"><span>14:46:12 · Editing</span><span className="text-emerald-400">+120s logged</span></div>
+                    <div className="flex justify-between text-slate-500"><span>14:41:00 · Idle for 5 min</span><span>Paused</span></div>
                   </div>
                 </div>
 
@@ -242,10 +242,10 @@ export function OveradsScreensShowcase() {
             <div className="grid gap-8 lg:grid-cols-12 items-center">
               <div className="lg:col-span-5 space-y-5">
                 <div className="inline-flex items-center gap-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 text-xs text-indigo-400">
-                  <Globe className="w-3 h-3" /> Client Experience
+                  <Globe className="w-3 h-3" /> What your client sees
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
-                  Passcode-locked live client link. Zero logins.
+                  One link per client. No logins.
                 </h3>
                 <p className="text-sm leading-relaxed text-slate-400">
                   Clients visit a sleek, bespoke URL like <code className="text-indigo-300">frevio.cloud/p/acme-app</code>. They enter a passcode to view milestones, read weekly bullet updates, and reply directly.
@@ -253,15 +253,15 @@ export function OveradsScreensShowcase() {
                 <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300">
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-indigo-400 flex-shrink-0" />
-                    <span>Interactive milestone checklist with completion percentage</span>
+                    <span>Milestones with a progress bar</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-indigo-400 flex-shrink-0" />
-                    <span>Real-time presence badge shows when you&apos;re coding</span>
+                    <span>Shows when you&apos;re working on their project, if you want it to</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-indigo-400 flex-shrink-0" />
-                    <span>Immediate feedback widget (👍, ⚠️, or questions)</span>
+                    <span>Quick reactions and questions that land in your inbox</span>
                   </li>
                 </ul>
               </div>
@@ -304,7 +304,7 @@ export function OveradsScreensShowcase() {
                 </div>
 
                 <div className="pt-3 border-t border-slate-200 flex items-center justify-between text-xs text-slate-400">
-                  <span>Protected by 6-digit passcode</span>
+                  <span>Optional passcode</span>
                   <span className="text-indigo-600 font-semibold">frevio.cloud/p/acme-app</span>
                 </div>
               </div>
@@ -316,26 +316,26 @@ export function OveradsScreensShowcase() {
             <div className="grid gap-8 lg:grid-cols-12 items-center">
               <div className="lg:col-span-5 space-y-5">
                 <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/10 border border-amber-500/20 px-3 py-1 text-xs text-amber-400">
-                  <CreditCard className="w-3 h-3" /> Seamless Payments
+                  <CreditCard className="w-3 h-3" /> Invoicing
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
-                  Turn logged coding time into paid invoices.
+                  Bill the hours you already tracked.
                 </h3>
                 <p className="text-sm leading-relaxed text-slate-400">
-                  Stop compiling hours by hand. Frevio lets you convert tracked VS Code time into an itemized Stripe invoice with one click. Clients pay via card or Apple Pay, and status updates instantly.
+                  Logged hours drop into the invoice as line items, so you&apos;re not rebuilding a timesheet at the end of the month. Your client pays by card on a Stripe page and the invoice marks itself paid.
                 </p>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300">
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                    <span>Direct Stripe Checkout with Apple Pay and credit cards</span>
+                    <span>Stripe checkout, paid into your own Stripe account</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                    <span>Automated overdue reminder emails via Resend</span>
+                    <span>One-click reminder when an invoice is overdue</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-amber-400 flex-shrink-0" />
-                    <span>Real-time webhook marks invoices as paid automatically</span>
+                    <span>Marked paid automatically when Stripe confirms</span>
                   </li>
                 </ul>
               </div>
@@ -382,26 +382,26 @@ export function OveradsScreensShowcase() {
             <div className="grid gap-8 lg:grid-cols-12 items-center">
               <div className="lg:col-span-5 space-y-5">
                 <div className="inline-flex items-center gap-2 rounded-full bg-violet-500/10 border border-violet-500/20 px-3 py-1 text-xs text-violet-400">
-                  <CheckCircle2 className="w-3 h-3" /> Scope Protection
+                  <CheckCircle2 className="w-3 h-3" /> Approvals
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-light text-white tracking-tight">
-                  Clear milestone sign-offs. No endless revisions.
+                  Get a clear yes before you move on.
                 </h3>
                 <p className="text-sm leading-relaxed text-slate-400">
-                  Post deliverables for formal approval with preview links. Clients can approve with one click or request specific changes. You get immediate email alerts the second they respond.
+                  Share a staging link, Figma file or pull request and ask for sign-off. Your client approves or asks for specific changes, and you get an email either way. When someone says &ldquo;we never agreed to that&rdquo; three weeks later, you have the record.
                 </p>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300">
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-violet-400 flex-shrink-0" />
-                    <span>Explicit approval logs eliminate revision disputes</span>
+                    <span>A dated record of every approval</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-violet-400 flex-shrink-0" />
-                    <span>Instant freelancer email notification on client response</span>
+                    <span>An email the moment your client responds</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <Check className="w-4 h-4 text-violet-400 flex-shrink-0" />
-                    <span>Attached digital agreements and contract signing</span>
+                    <span>Contracts your client can sign in the browser</span>
                   </li>
                 </ul>
               </div>

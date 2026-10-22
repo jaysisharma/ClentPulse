@@ -82,8 +82,8 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, launchPl
                           <Radio className="w-3.5 h-3.5" />
                         </div>
                         <div>
-                          <div className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors">Live Presence</div>
-                          <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Real-time VS Code pulse</div>
+                          <div className="text-xs font-semibold text-white group-hover:text-emerald-300 transition-colors">Time tracking</div>
+                          <div className="text-[11px] text-slate-400 leading-tight mt-0.5">From your VS Code editor</div>
                         </div>
                       </Link>
 
@@ -95,8 +95,8 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, launchPl
                           <Globe className="w-3.5 h-3.5" />
                         </div>
                         <div>
-                          <div className="text-xs font-semibold text-white group-hover:text-indigo-300 transition-colors">Client Portal</div>
-                          <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Passcode status pages</div>
+                          <div className="text-xs font-semibold text-white group-hover:text-indigo-300 transition-colors">Client page</div>
+                          <div className="text-[11px] text-slate-400 leading-tight mt-0.5">One link per client</div>
                         </div>
                       </Link>
 
@@ -108,8 +108,8 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, launchPl
                           <CreditCard className="w-3.5 h-3.5" />
                         </div>
                         <div>
-                          <div className="text-xs font-semibold text-white group-hover:text-amber-300 transition-colors">Stripe Invoicing</div>
-                          <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Instant online payment</div>
+                          <div className="text-xs font-semibold text-white group-hover:text-amber-300 transition-colors">Invoicing</div>
+                          <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Clients pay by card</div>
                         </div>
                       </Link>
 
@@ -121,8 +121,8 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, launchPl
                           <CheckCircle2 className="w-3.5 h-3.5" />
                         </div>
                         <div>
-                          <div className="text-xs font-semibold text-white group-hover:text-violet-300 transition-colors">Approvals & Sign</div>
-                          <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Deliverable sign-offs</div>
+                          <div className="text-xs font-semibold text-white group-hover:text-violet-300 transition-colors">Approvals</div>
+                          <div className="text-[11px] text-slate-400 leading-tight mt-0.5">Sign-off on deliverables</div>
                         </div>
                       </Link>
                     </div>

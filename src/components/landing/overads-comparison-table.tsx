@@ -13,52 +13,52 @@ interface RowItem {
 const COMPARISON_ROWS: RowItem[] = [
   {
     id: '01',
-    title: 'Work & milestone updates',
-    frevio: { text: 'Automated telemetry sync', status: 'yes' },
+    title: 'Weekly updates',
+    frevio: { text: 'Posted to their page in minutes', status: 'yes' },
     stack: { text: 'Manual copy-paste', status: 'partial' },
     traditional: { text: 'Scattered emails', status: 'no' },
   },
   {
     id: '02',
-    title: 'Encrypted client portal',
-    frevio: { text: '1 permanent link', status: 'yes' },
-    stack: { text: 'Another login / sub', status: 'partial' },
+    title: 'Where clients look',
+    frevio: { text: 'One link that stays the same', status: 'yes' },
+    stack: { text: 'Another login to remember', status: 'partial' },
     traditional: { text: 'Scattered email links', status: 'no' },
   },
   {
     id: '03',
     title: 'Deliverable approvals',
-    frevio: { text: '1-click mobile sign-off', status: 'yes' },
+    frevio: { text: 'Approve from their phone', status: 'yes' },
     stack: { text: 'Trello / Notion comment', status: 'partial' },
     traditional: { text: 'Vague Slack replies', status: 'no' },
   },
   {
     id: '04',
-    title: 'Milestone invoicing',
-    frevio: { text: 'Stripe Rails, built-in', status: 'yes' },
+    title: 'Getting paid',
+    frevio: { text: 'Stripe, built in', status: 'yes' },
     stack: { text: 'Harvest / QuickBooks', status: 'partial' },
-    traditional: { text: 'PDF export & chasing', status: 'no' },
+    traditional: { text: 'PDF invoice and a follow-up email', status: 'no' },
   },
   {
     id: '05',
-    title: 'Coding & focus presence',
-    frevio: { text: 'VS Code pulse extension', status: 'yes' },
+    title: 'Time tracking',
+    frevio: { text: 'VS Code extension', status: 'yes' },
     stack: { text: 'Manual timer app', status: 'partial' },
-    traditional: { text: 'Guessing hours', status: 'no' },
+    traditional: { text: 'Guessing on Friday', status: 'no' },
   },
   {
     id: '06',
-    title: 'Client seats & portals',
-    frevio: { text: 'Unlimited viewers (Free: 2 projects)', status: 'yes' },
+    title: 'Who can view',
+    frevio: { text: 'Anyone with the link', status: 'yes' },
     stack: { text: 'Per-seat pricing', status: 'partial' },
-    traditional: { text: 'Manual friction', status: 'partial' },
+    traditional: { text: 'Forwarded emails', status: 'partial' },
   },
   {
     id: '07',
     title: 'What it costs',
     frevio: { text: 'Free for 2 projects', status: 'yes' },
     stack: { text: 'Multiple subscriptions', status: 'partial' },
-    traditional: { text: 'Lost hours & late fees', status: 'no' },
+    traditional: { text: 'Hours you forgot to bill', status: 'no' },
   },
 ]
 
@@ -72,10 +72,10 @@ export function OveradsComparisonTable() {
             <span>Honest comparison</span>
           </div>
           <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-            The whole studio’s work, or four tools and chasing
+            One link, or four tools and a lot of chasing
           </h2>
           <p className="text-sm leading-relaxed text-slate-400 md:text-base font-light">
-            Every job a modern independent studio does, in one login, free. The same jobs split across point tools bill per seat and never quite talk to each other; traditional freelancing leaves you chasing invoices.
+            Most freelancers piece this together from email, a shared folder, a time tracker and an invoicing app. It works, but your client has to look in four places and you end up doing the chasing.
           </p>
         </div>
 

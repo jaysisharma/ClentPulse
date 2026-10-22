@@ -135,27 +135,27 @@ export function OveradsIntegrations() {
           {/* Left Column: Description */}
           <div ref={leftColRef} className="lg:col-span-5 space-y-6">
             <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
-              <span>Connected Toolchain</span>
+              <span>Integrations</span>
             </div>
             <h2 className="text-3xl sm:text-5xl lg:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-              Plugs into the tools you already use daily.
+              Works with the tools you already use.
             </h2>
             <p className="text-sm sm:text-base leading-relaxed text-slate-400 font-light">
-              Connect your VS Code editor, GitHub repository, and Stripe account. Your active work status, code progress, and milestone invoices stay synchronized effortlessly.
+              Connect VS Code, GitHub and Stripe. Your time, pull requests and invoices show up in the right project without copying anything over.
             </p>
 
             <dl className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-white/10">
               <div>
                 <dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Connect</dt>
-                <dd className="mt-1 text-xs text-white font-medium">1-command token setup</dd>
+                <dd className="mt-1 text-xs text-white font-medium">Paste one token</dd>
               </div>
               <div>
                 <dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Real-time</dt>
-                <dd className="mt-1 text-xs text-white font-medium">Sub-second WebSocket</dd>
+                <dd className="mt-1 text-xs text-white font-medium">Updates live</dd>
               </div>
               <div>
                 <dt className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Security</dt>
-                <dd className="mt-1 text-xs text-white font-medium">SHA-256 hashed keys</dd>
+                <dd className="mt-1 text-xs text-white font-medium">Tokens stored hashed</dd>
               </div>
             </dl>
           </div>
@@ -170,7 +170,7 @@ export function OveradsIntegrations() {
                   <Terminal className="w-5 h-5" />
                 </div>
                 <div className="text-xs font-semibold text-white">VS Code & CLI</div>
-                <div className="text-[10px] text-slate-400">Heartbeat pulses</div>
+                <div className="text-[10px] text-slate-400">Time and status</div>
               </div>
 
               {/* Connecting Line / Arrow */}
@@ -183,8 +183,8 @@ export function OveradsIntegrations() {
                 <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
                   F
                 </div>
-                <div className="text-xs font-bold text-white">Frevio Engine</div>
-                <div className="text-[10px] text-indigo-300">Time consolidation & presence</div>
+                <div className="text-xs font-bold text-white">Frevio</div>
+                <div className="text-[10px] text-indigo-300">Time entries and status</div>
               </div>
 
               {/* Connecting Line / Arrow */}
@@ -214,7 +214,7 @@ export function OveradsIntegrations() {
             <div className="mt-6 pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 font-mono">
               <span className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                Live toolchain connection
+                Connected
               </span>
               <span>Encrypted in transit and at rest</span>
             </div>
