@@ -16,12 +16,6 @@ const SCATTERED = [
   { from: 'Email', text: 'Reminder: invoice #0011 is 14 days overdue', x: 47, xm: 50, y: 85, r: 1.5 },
 ]
 
-const CALM = [
-  { n: '01', title: 'One timeline', body: 'Every update, file and decision in one place.' },
-  { n: '02', title: 'Timestamped approvals', body: 'Not “looks good 👍” buried in chat.' },
-  { n: '03', title: 'Signed scope changes', body: 'Agreed before the extra work starts.' },
-  { n: '04', title: 'Invoices on milestones', body: 'Paid right after the work is approved.' },
-]
 
 export function BeforeAfter() {
   const [ref, inView] = useInView<HTMLDivElement>(0.45)
@@ -92,15 +86,6 @@ export function BeforeAfter() {
         </div>
       </Stage>
 
-      <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {CALM.map((c) => (
-          <li key={c.n} className="rounded-2xl bg-surface p-5">
-            <p className="text-xs text-ink-muted">{c.n}</p>
-            <p className="mt-2 text-base font-medium text-ink">{c.title}</p>
-            <p className="mt-1 text-sm text-ink-muted">{c.body}</p>
-          </li>
-        ))}
-      </ul>
     </section>
   )
 }
