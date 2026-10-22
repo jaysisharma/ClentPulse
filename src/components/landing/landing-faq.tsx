@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: 'Do you offer plans for agencies and creative teams?',
-    a: 'Yes. Our Agency ($79/mo, 5 seats) and Agency Scale ($199/mo, 25 seats) plans include multi-tenant team workspaces, project pods, PM update reviews, activity audit trails, custom CNAME domain routing (status.youragency.com), and Executive Radar.',
+    a: 'Yes. Our Agency ($49/mo, 5 seats) and Agency Scale ($199/mo, 25 seats) plans include multi-tenant team workspaces, project pods, PM update reviews, activity audit trails, custom CNAME domain routing (status.youragency.com), and Executive Radar.',
   },
   {
     q: 'Can I use my own branding?',
@@ -31,8 +31,8 @@ const FAQS = [
     a: 'Whenever you post an update, Frevio sends a branded HTML email automatically. One click takes the client straight to their portal.',
   },
   {
-    q: 'How do payments work?',
-    a: 'Invoices are paid online through Stripe Checkout. Frevio never touches card details, and your dashboard updates the moment a client pays.',
+    q: 'How do payments work and which countries are supported?',
+    a: 'Invoices are powered by Stripe Connect across 46+ supported countries (US, UK, EU, India, Canada, Australia, etc.) with card, Apple Pay, and bank transfer. Frevio charges 0% transaction fees (standard Stripe processing fees apply). If you are in a country where Stripe Connect is unavailable (such as Nepal), you can still generate itemized invoices, share direct payment instructions (Wise, PayPal, or wire), and mark milestones paid with one click.',
   },
   {
     q: 'Can I cancel anytime?',

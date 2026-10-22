@@ -174,7 +174,7 @@ export function OveradsScreensShowcase() {
                   Editor-connected heartbeat. Zero ghost hours.
                 </h3>
                 <p className="text-sm leading-relaxed text-slate-400">
-                  Frevio detects keystrokes in VS Code or Antigravity and sends encrypted heartbeats. If you step away for 5 minutes, it automatically pauses so you never log accidental phantom time.
+                  Frevio detects active development in VS Code and sends encrypted heartbeats. If you step away for 5 minutes, it automatically pauses so you never log accidental phantom time.
                 </p>
                 <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300">
                   <li className="flex items-center gap-2.5">

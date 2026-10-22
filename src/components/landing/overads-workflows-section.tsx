@@ -29,7 +29,7 @@ const WORKFLOWS: WorkflowTab[] = [
     do2Title: 'Prepare Stripe invoice & notify client',
     do2Sub: 'Your encrypted portal',
     watchNote: 'Frevio noticed: Acme Rebrand reached 16.5 billable hours. Milestone 2 threshold reached.',
-    checkNote: 'All Figma specifications and Git commits finalized for Sprint 4. Not a draft.',
+    checkNote: 'All deliverables and Git commits finalized for Milestone 2. Not a draft.',
     suggestNote: 'Publish review & issue Milestone 2 invoice for $3,200.00. That secures payment before weekend.',
   },
   {
@@ -37,11 +37,11 @@ const WORKFLOWS: WorkflowTab[] = [
     title: 'Write my Monday update',
     whenTitle: 'Every Monday at 9:00 AM',
     whenSub: 'Scheduled weekly cadence',
-    do1Title: 'Synthesize Git & Figma changes',
+    do1Title: 'Synthesize Git commits & milestone progress',
     do1Sub: 'AI drafted summary',
     do2Title: 'Publish brief to client portal',
     do2Sub: 'Waits for your yes',
-    watchNote: 'Frevio noticed: 14 commits merged and 3 Figma prototypes updated since Friday.',
+    watchNote: 'Frevio noticed: 14 commits merged and milestone deliverables completed since Friday.',
     checkNote: 'Changes analyzed in your studio brand voice. Key highlights and blockers isolated.',
     suggestNote: 'Send 3-point briefing to Claire at Acme. Shows clear momentum without writing an email.',
   },
@@ -56,11 +56,11 @@ const WORKFLOWS: WorkflowTab[] = [
     do2Sub: 'Waits for your yes',
     watchNote: 'Frevio noticed: Client approved Milestone 2: Design Architecture at 12:43 PM.',
     checkNote: 'Exact contract rate ($150/hr × 21.3 hrs + $3,200 fixed fee). Deposit already deducted.',
-    suggestNote: 'Dispatch Stripe invoice INV-2026-084. Direct bank settlement in 48 hours.',
+    suggestNote: 'Dispatch Stripe invoice INV-2026-084. Direct Stripe payout in 48 hours.',
   },
   {
     id: 'sync',
-    title: 'Sync Figma & GitHub',
+    title: 'Sync Git & VS Code',
     whenTitle: 'New commit tagged `v2.0-release`',
     whenSub: 'Repository event',
     do1Title: 'Attach preview specs & live links',
@@ -68,7 +68,7 @@ const WORKFLOWS: WorkflowTab[] = [
     do2Title: 'Update live portal timeline',
     do2Sub: 'Waits for your yes',
     watchNote: 'Frevio noticed: Production build deployed to staging environment.',
-    checkNote: 'Staging URL verified active. 4 design deliverables linked with zero broken files.',
+    checkNote: 'Staging URL verified active. Deliverables linked with zero broken files.',
     suggestNote: 'Post deliverable link directly to client timeline. Ready for stakeholder sign-off.',
   },
 ]
@@ -218,7 +218,7 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
                 <span className="min-w-0">
                   <span className="block text-[14px] font-medium text-white">It watches</span>
                   <span className="mt-0.5 block text-[12px] leading-snug text-slate-400">
-                    Your code, your Figma files and your hours.
+                    Your code, your commits and your hours.
                   </span>
                 </span>
               </div>
@@ -347,7 +347,7 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
           <div className="border-t border-white/10 pt-5">
             <dt className="font-heading text-base font-medium text-white">Knows your whole desk</dt>
             <dd className="mt-1.5 text-sm leading-relaxed text-slate-400 font-light">
-              It reads your code commits, your Figma files and your hours. Add a Google Drive folder and it syncs that too.
+              It reads your code commits, active editor sessions, and logged hours. Everything connects cleanly to client milestones.
             </dd>
           </div>
           <div className="border-t border-white/10 pt-5">

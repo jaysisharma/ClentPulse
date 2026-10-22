@@ -141,7 +141,7 @@ export function OveradsIntegrations() {
               Plugs into the tools you already use daily.
             </h2>
             <p className="text-sm sm:text-base leading-relaxed text-slate-400 font-light">
-              Connect Google Drive, Calendar, GitHub, Figma, or your VS Code editor. Your active work status, shared assets, and milestone invoices stay synchronized effortlessly.
+              Connect your VS Code editor, GitHub repository, and Stripe account. Your active work status, code progress, and milestone invoices stay synchronized effortlessly.
             </p>
 
             <dl className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-white/10">

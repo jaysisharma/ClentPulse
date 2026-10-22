@@ -6,7 +6,7 @@ import { OveradsWorkflowsSection } from '@/components/landing/overads-workflows-
 import { OveradsScreensShowcase } from '@/components/landing/overads-screens-showcase'
 import { OveradsComparisonTable } from '@/components/landing/overads-comparison-table'
 import { OveradsIntegrations } from '@/components/landing/overads-integrations'
-import { OveradsTestimonials } from '@/components/landing/overads-testimonials'
+import { OveradsFounderSection } from '@/components/landing/overads-founder-section'
 import { LandingPricing } from '@/components/landing/landing-pricing'
 import { LandingFaq } from '@/components/landing/landing-faq'
 import { OveradsCta } from '@/components/landing/overads-cta'
@@ -26,7 +26,7 @@ export default async function LandingPage() {
       <OveradsNavbar
         isLoggedIn={isLoggedIn}
         signupHref={signupHref}
-        promoRemaining={17}
+        promoRemaining={null}
       />
 
       <main className="flex-1">
@@ -43,11 +43,11 @@ export default async function LandingPage() {
         {/* ── 4. Honest Comparison Table (7 Capabilities vs Stack of Tools vs Traditional) ── */}
         <OveradsComparisonTable />
 
-        {/* ── 5. Connected Toolchain (VS Code, GitHub, Figma, Drive, Stripe Pipeline) ── */}
+        {/* ── 5. Connected Toolchain (VS Code, GitHub, Stripe Pipeline) ── */}
         <OveradsIntegrations />
 
-        {/* ── 6. Testimonials: Verified Client & Specialist Outcomes ── */}
-        <OveradsTestimonials />
+        {/* ── 6. Real Early Results & Founder Trust Section ── */}
+        <OveradsFounderSection />
 
         {/* ── 7. Pricing: Simple Plans. Predictable Growth. ── */}
         <section id="pricing" className="py-24 lg:py-32 px-4 sm:px-6 bg-[#08090a] border-t border-white/5">
@@ -149,7 +149,7 @@ export default async function LandingPage() {
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>All systems operational</span>
             <span className="text-slate-700">·</span>
-            <span>© {new Date().getFullYear()} Frevio Inc.</span>
+            <span>© {new Date().getFullYear()} Frevio</span>
           </div>
         </div>
       </footer>

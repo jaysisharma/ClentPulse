@@ -28,26 +28,25 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props)
   return (
     <>
       {/* ── Top Announcement Banner ── */}
-      {promoRemaining !== null && promoRemaining > 0 && (
-        <div className="relative z-50 bg-[#08090a] text-slate-200 border-b border-white/5 text-xs py-2 px-4">
-          <div className="max-w-6xl mx-auto flex items-center justify-center gap-x-3 text-center flex-wrap gap-y-1">
-            <span className="inline-flex items-center gap-1.5 font-normal text-slate-300">
-              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-              First 50 users get <strong className="text-white font-semibold">1 Month of Frevio Pro FREE</strong> ({promoRemaining} left).
-            </span>
-            <button
-              onClick={copyCoupon}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-white/15 bg-white/5 font-mono text-[11px] text-white hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              {copiedCoupon ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-slate-400" />}
-              EARLY50
-            </button>
-            <Link href={signupHref} className="inline-flex items-center gap-0.5 text-white font-medium underline underline-offset-4 hover:text-amber-200 transition-colors">
-              Claim <ArrowUpRight className="w-3 h-3" />
-            </Link>
-          </div>
+      <div className="relative z-50 bg-[#08090a] text-slate-200 border-b border-white/5 text-xs py-2 px-4">
+        <div className="max-w-6xl mx-auto flex items-center justify-center gap-x-3 text-center flex-wrap gap-y-1">
+          <span className="inline-flex items-center gap-1.5 font-normal text-slate-300">
+            <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+            Early access launch offer: Get <strong className="text-white font-semibold">1 Month of Frevio Pro FREE</strong> with code
+          </span>
+          <button
+            onClick={copyCoupon}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-white/15 bg-white/5 font-mono text-[11px] text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title="Click to copy coupon code"
+          >
+            {copiedCoupon ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-slate-400" />}
+            EARLY50
+          </button>
+          <Link href={signupHref} className="inline-flex items-center gap-0.5 text-white font-medium underline underline-offset-4 hover:text-amber-200 transition-colors">
+            Claim <ArrowUpRight className="w-3 h-3" />
+          </Link>
         </div>
-      )}
+      </div>
 
       {/* ── Floating Header ── */}
       <header className="sticky top-4 z-40 w-full px-4 sm:px-6 pointer-events-none">

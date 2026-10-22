@@ -49,15 +49,15 @@ const COMPARISON_ROWS: RowItem[] = [
   {
     id: '06',
     title: 'Client seats & portals',
-    frevio: { text: 'Unlimited', status: 'yes' },
+    frevio: { text: 'Unlimited viewers (Free: 2 projects)', status: 'yes' },
     stack: { text: 'Per-seat pricing', status: 'partial' },
     traditional: { text: 'Manual friction', status: 'partial' },
   },
   {
     id: '07',
     title: 'What it costs',
-    frevio: { text: 'Free, everything included', status: 'yes' },
-    stack: { text: '~$180/mo combined', status: 'partial' },
+    frevio: { text: 'Free for 2 projects', status: 'yes' },
+    stack: { text: 'Multiple subscriptions', status: 'partial' },
     traditional: { text: 'Lost hours & late fees', status: 'no' },
   },
 ]

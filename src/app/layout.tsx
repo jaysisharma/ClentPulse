@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     default: "Frevio — Client Portal & Operating System for Freelancers & Studios",
     template: "%s | Frevio",
   },
-  description: "The modern client operating system. Automate weekly status updates, streamline milestone approvals, and settle invoices with zero fees via Stripe.",
+  description: "The modern client operating system. Automate weekly status updates, streamline milestone approvals, and settle invoices directly via Stripe with no Frevio transaction fees.",
   keywords: [
     "freelancer client portal",
     "client operating system",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Frevio — Client Portal & Operating System for Freelancers & Studios",
-    description: "One unified link for weekly updates, milestone approvals, contracts, and zero-fee Stripe settlements.",
+    description: "One unified link for weekly updates, milestone approvals, contracts, and direct Stripe settlements with no Frevio transaction fees.",
     url: "https://frevio.cloud",
     siteName: "Frevio",
     locale: "en_US",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Frevio — Client Portal & Operating System for Freelancers & Studios",
-    description: "One unified link for weekly updates, milestone approvals, contracts, and zero-fee Stripe settlements.",
+    description: "One unified link for weekly updates, milestone approvals, contracts, and direct Stripe settlements with no Frevio transaction fees.",
     images: ["/og-image.png"],
     creator: "@frevioapp",
   },
