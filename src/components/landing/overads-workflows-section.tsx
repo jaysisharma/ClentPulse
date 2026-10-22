@@ -38,11 +38,11 @@ const WORKFLOWS: WorkflowTab[] = [
     whenTitle: 'Every Monday at 9:00 AM',
     whenSub: 'Scheduled weekly cadence',
     do1Title: 'Synthesize Git commits & milestone progress',
-    do1Sub: 'AI drafted summary',
+    do1Sub: 'Git commit summary',
     do2Title: 'Publish brief to client portal',
     do2Sub: 'Waits for your yes',
     watchNote: 'Frevio noticed: 14 commits merged and milestone deliverables completed since Friday.',
-    checkNote: 'Changes analyzed in your studio brand voice. Key highlights and blockers isolated.',
+    checkNote: 'Changes synthesized from active branches. Key deliverable progress isolated.',
     suggestNote: 'Send 3-point briefing to Claire at Acme. Shows clear momentum without writing an email.',
   },
   {
@@ -91,7 +91,7 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
             Tell it once. It does it every week.
           </h2>
           <p className="mx-auto max-w-2xl text-balance text-sm leading-relaxed text-slate-400 md:text-base font-light">
-            Client automation in plain English. A dashboard shows you the problem and leaves the work to you. Frevio does the work, then hands it to you to approve. Pick one and watch.
+            Automated milestone guardrails. A dashboard shows you the problem and leaves the work to you. Frevio monitors milestone thresholds, prepares deliverables, and hands them to you to approve. Pick one and watch.
           </p>
         </div>
 
@@ -353,7 +353,7 @@ export function OveradsWorkflowsSection({ signupHref }: { signupHref: string }) 
           <div className="border-t border-white/10 pt-5">
             <dt className="font-heading text-base font-medium text-white">Yours in a minute</dt>
             <dd className="mt-1.5 text-sm leading-relaxed text-slate-400 font-light">
-              Switch on a ready-made template, or describe your own workflow and edit every step.
+              Switch on a ready-made template, or customize triggers and thresholds for every step.
             </dd>
           </div>
         </dl>

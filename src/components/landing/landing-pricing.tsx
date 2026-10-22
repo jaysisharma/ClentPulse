@@ -340,7 +340,7 @@ export function LandingPricing() {
           </div>
 
           <div className="pt-6 mt-6 border-t border-white/5 text-[11px] text-slate-400">
-            Priority 24/7 dedicated agency support
+            Priority email support
           </div>
         </div>
 

@@ -13,10 +13,10 @@ interface RowItem {
 const COMPARISON_ROWS: RowItem[] = [
   {
     id: '01',
-    title: 'Content & deliverable briefs',
-    frevio: { text: 'Built-in AI synthesis', status: 'yes' },
-    stack: { text: 'Separate AI sub', status: 'partial' },
-    traditional: { text: 'Manual typing', status: 'no' },
+    title: 'Work & milestone updates',
+    frevio: { text: 'Automated telemetry sync', status: 'yes' },
+    stack: { text: 'Manual copy-paste', status: 'partial' },
+    traditional: { text: 'Scattered emails', status: 'no' },
   },
   {
     id: '02',

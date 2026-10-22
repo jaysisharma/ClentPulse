@@ -26,7 +26,7 @@ const FAQS = [
   },
   {
     q: 'Can I try it before sending it to a real client?',
-    a: 'Yes. Open the live demo to click through exactly what your client sees, then create your first project for free.',
+    a: 'Yes. Create your first project for free and preview your client portal in seconds with no card required.',
   },
 ]
 

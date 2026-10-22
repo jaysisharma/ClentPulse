@@ -213,10 +213,10 @@ export function OveradsIntegrations() {
             {/* Bottom Status Ticker */}
             <div className="mt-6 pt-4 border-t border-white/5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 font-mono">
               <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                All systems operational
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                Live toolchain connection
               </span>
-              <span>Encrypted end-to-end</span>
+              <span>Encrypted in transit and at rest</span>
             </div>
           </div>
 

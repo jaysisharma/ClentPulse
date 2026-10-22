@@ -292,7 +292,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold text-indigo-400">
             <Zap className="w-3.5 h-3.5 text-amber-400" />
-            <span>Stripe Instant Settlement</span>
+            <span>Stripe Payout</span>
           </div>
           <span className="font-mono text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-md font-semibold">
             Paid
@@ -756,7 +756,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
                     <span className="text-xs text-slate-400">Northstar</span>
                   </div>
                   <p className="text-xs text-indigo-200/80">
-                    AI Weekly Digest #3 ready for staging sign-off
+                    Weekly Milestone Digest #3 ready for staging sign-off
                   </p>
                 </div>
 
@@ -812,21 +812,21 @@ export function OveradsHero({ signupHref }: HeroProps) {
         )}
       </div>
 
-      {/* ── 5. TRUST METRIC ROW (Overads.io signature) ── */}
+      {/* ── 5. CORE VALUE STRIP (Verified product facts) ── */}
       <div className="relative z-10 mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs sm:text-sm text-slate-400 font-mono text-center px-4">
         <span className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          40+ hours saved a month
+          Live VS Code sync
         </span>
         <span className="hidden sm:inline text-white/20">·</span>
         <span className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-indigo-400" />
-          Set up in five minutes
+          Direct Stripe payouts
         </span>
         <span className="hidden sm:inline text-white/20">·</span>
         <span className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-purple-400" />
-          Free for your first 2 active projects
+          Free for 2 active projects
         </span>
       </div>
 

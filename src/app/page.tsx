@@ -120,7 +120,7 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* ── 9. Final CTA: "Your client work runs itself. You just approve." ── */}
+        {/* ── 9. Final CTA ── */}
         <OveradsCta signupHref={signupHref} />
 
       </main>
@@ -140,15 +140,13 @@ export default async function LandingPage() {
             <a href="#screens" className="hover:text-white transition-colors">Inside</a>
             <a href="#comparison" className="hover:text-white transition-colors">Comparison</a>
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+            <a href="#about" className="hover:text-white transition-colors">About</a>
             <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
           </div>
 
           <div className="flex items-center gap-2 text-slate-500 font-mono text-[11px]">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>All systems operational</span>
-            <span className="text-slate-700">·</span>
             <span>© {new Date().getFullYear()} Frevio</span>
           </div>
         </div>

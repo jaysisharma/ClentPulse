@@ -106,7 +106,7 @@ export const AGENCY_SCALE_FEATURES = [
   'Blocked cash & cashflow pipeline',
   'At-risk client account alerts',
   'Team workload & capacity analytics',
-  'Priority 24/7 onboarding & agency support',
+  'Priority email support',
 ]
 
 // One-liners for compact surfaces (e.g. the settings billing card)
