@@ -118,7 +118,7 @@ export function Features() {
                 title="Updates that send themselves."
                 body="Post progress as you work. Frevio turns it into a clear weekly email, so clients stop asking “any updates?”."
               />
-              <div className="mt-auto sm:px-6">
+              <div className="flex flex-1 items-center sm:px-6">
                 <UpdateMock />
               </div>
             </div>

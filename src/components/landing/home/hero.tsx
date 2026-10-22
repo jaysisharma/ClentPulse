@@ -26,8 +26,8 @@ function NotificationStack() {
     { title: 'Change order #3 is waiting', meta: 'Add a landing page · $900', done: false },
   ]
   return (
-    <div className="flex h-full flex-col justify-end gap-2.5 p-5 sm:p-6">
-      <p className="mb-auto text-sm text-white/70">While you keep working…</p>
+    <div className="flex h-full flex-col justify-center gap-2.5 p-5 sm:p-6">
+      <p className="mb-2 text-sm text-ink-muted">While you keep working…</p>
       {items.map((n) => (
         <div key={n.title} className="flex items-center gap-3 rounded-xl bg-surface/95 px-4 py-3 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.6)] backdrop-blur">
           <div className="min-w-0 flex-1">
