@@ -30,9 +30,19 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : 'Webhook signature verification failed'
-    console.error('Webhook signature verification error:', msg)
-    return NextResponse.json({ error: msg }, { status: 400 })
+    if (process.env.STRIPE_CONNECT_WEBHOOK_SECRET) {
+      try {
+        event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_CONNECT_WEBHOOK_SECRET)
+      } catch (err2: unknown) {
+        const msg = err2 instanceof Error ? err2.message : 'Webhook signature verification failed'
+        console.error('Connect webhook signature verification error:', msg)
+        return NextResponse.json({ error: msg }, { status: 400 })
+      }
+    } else {
+      const msg = err instanceof Error ? err.message : 'Webhook signature verification failed'
+      console.error('Webhook signature verification error:', msg)
+      return NextResponse.json({ error: msg }, { status: 400 })
+    }
   }
 
   // Stripe verifies the request via the signature check above; this handler has no
@@ -260,6 +270,54 @@ export async function POST(request: Request) {
       .eq('stripe_account_id', account.id)
 
     console.log(`Connect account updated: ${account.id} (charges: ${chargesEnabled}, payouts: ${payoutsEnabled})`)
+  }
+
+  // 4b. Connect Application Deauthorized (Studio disconnected Frevio in Stripe dashboard)
+  if (event.type === 'account.application.deauthorized') {
+    const accountId = event.account || (event.data?.object as { id?: string })?.id
+    if (accountId) {
+      await supabase
+        .from('users')
+        .update({
+          stripe_charges_enabled: false,
+          stripe_payouts_enabled: false,
+          stripe_connect_onboarded: false,
+          stripe_account_id: null,
+        })
+        .eq('stripe_account_id', accountId)
+
+      await supabase
+        .from('organizations')
+        .update({
+          stripe_charges_enabled: false,
+          stripe_payouts_enabled: false,
+          stripe_connect_onboarded: false,
+          stripe_account_id: null,
+        })
+        .eq('stripe_account_id', accountId)
+
+      console.log(`Connect account deauthorized: ${accountId}`)
+    }
+  }
+
+  // 4c. Dispute Created
+  if (event.type === 'charge.dispute.created') {
+    const dispute = event.data.object as Stripe.Dispute
+    const chargeId = typeof dispute.charge === 'string' ? dispute.charge : dispute.charge?.id
+    if (chargeId) {
+      console.warn(`Dispute opened on charge: ${chargeId}, amount: ${dispute.amount}`)
+      // Flag invoice or change order as disputed if matched
+      const { data: matchedInvoices } = await supabase
+        .from('invoices')
+        .select('id')
+        .eq('stripe_charge_id', chargeId)
+
+      if (matchedInvoices && matchedInvoices.length > 0) {
+        for (const inv of matchedInvoices) {
+          await supabase.from('invoices').update({ status: 'disputed' }).eq('id', inv.id)
+        }
+      }
+    }
   }
 
   // 5. Subscription Created / Updated / Deleted
