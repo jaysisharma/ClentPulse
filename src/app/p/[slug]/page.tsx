@@ -272,6 +272,14 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
         depositInvoice={depositInvoice}
         changeOrders={(changeOrders as any[]) ?? []}
         appBuilds={(appBuilds as any[]) ?? []}
+        footer={
+          // Free-plan portals carry the referral badge; paid and white-label portals stay unbranded
+          <PoweredByReferral
+            refHandle={owner?.username || owner?.id}
+            isWhiteLabel={Boolean(orgData?.white_label || isPaidPlan(owner?.plan))}
+            className="pt-6 text-center"
+          />
+        }
       />
 
       {project.status === 'completed' && !hasTestimonial && (

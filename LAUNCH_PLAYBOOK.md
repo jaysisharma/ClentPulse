@@ -14,23 +14,74 @@
 * **Name:** Frevio
 * **Tagline (≤60 chars):** One private page where clients review, approve & pay
 * **Description:** Clients don't ignore you. They lose you between five apps. Frevio gives each project one private link where clients see progress, approve deliverables and pay Stripe invoices, with no client passwords and no Frevio transaction fees. Free for 2 active projects.
-* **Gallery order:**
-  1. Client portal with the "Waiting on you" blocker banner and deposit gate
-  2. Deliverable approval card (Figma / staging preview → Approve)
-  3. Invoice paid via Stripe
-  4. Freelancer dashboard (attention strip)
-  5. 45s video (below)
-* **Primary link:** https://frevio.cloud/demo (no signup needed)
+* **Thumbnail:** `public/logo.png` (square)
+* **Gallery order** (ready in `~/Desktop/frevio-launch-assets/`, 1270×760 @2x):
+  1. `00-social-card-1200x630.png`: headline + portal
+  2. `01-client-portal-waiting-on-you.png`
+  3. `02-deliverable-approvals.png`
+  4. `03-client-uploads-and-invoices.png`
+  5. `04-milestones.png`
+  6. 45s video (below)
+* **Product link:** https://frevio.cloud/?ref=producthunt (shows "Welcome, Product Hunt 👋" and records the source on signup)
+* **Demo link (put in the maker comment):** https://frevio.cloud/demo?ref=producthunt
 * **Maker comment:**
 > Hey Product Hunt 👋 I'm Jaysi. I built Frevio because my clients kept asking "any updates?" while the answer was buried across email, Slack, Figma and a PDF invoice.
 >
 > Frevio gives each client one private page: progress updates, deliverables to approve, a checklist of what you're waiting on from them, and invoices they can pay by card. Clients never create an account.
 >
-> Free for 2 active projects, and the first 50 signups get a month of Pro on us. You can click through the client view without signing up: https://frevio.cloud/demo
+> Free for 2 active projects, and the first 50 signups get a month of Pro on us. You can click through the client view without signing up: https://frevio.cloud/demo?ref=producthunt
 >
 > I'd love brutal feedback, especially on what's missing for your workflow.
 
 * **Do not claim:** that approvals auto-generate invoices, or that Frevio runs workflows on its own. Neither exists yet.
+
+---
+
+## 🗺️ 0b. Multi-Platform Launch Plan
+
+### Always use a tagged link
+Every link you post should carry `?ref=<platform>`. The homepage then greets the visitor by name, and the platform is saved on their account at signup. Compare platforms in **Admin → Marketing**, under signups by source.
+
+| Platform | Link to post | Angle |
+|---|---|---|
+| Product Hunt | `https://frevio.cloud/?ref=producthunt` | Client portal (section 0) |
+| DevHunt | `https://frevio.cloud/?ref=devhunt` | Developers: VS Code presence + portal |
+| Hacker News (Show HN) | `https://frevio.cloud/?ref=hackernews` | Technical write-up (section 2C) |
+| Indie Hackers | `https://frevio.cloud/?ref=indiehackers` | Build-in-public story + launch numbers |
+| Reddit | `https://frevio.cloud/?ref=reddit` | Lead with the free calculators, not the product |
+| Peerlist | `https://frevio.cloud/?ref=peerlist` | Launchpad, same copy as Product Hunt |
+| Uneed / Fazier / Microlaunch | `?ref=uneed` / `?ref=fazier` / `?ref=microlaunch` | Short directory listing |
+| BetaList | `https://frevio.cloud/?ref=betalist` | Early-access listing |
+| X / LinkedIn | `?utm_source=x` / `?utm_source=linkedin` | Thread / founder post |
+
+### DevHunt copy (developer audience)
+* **Tagline:** Client portal that updates itself from VS Code
+* **Description:** Frevio gives each client one private page with progress, deliverable approvals and Stripe invoices. The optional VS Code extension shows clients a live "currently working on this" pulse with a high-level focus area (like "Backend & API"). It never sends code, file contents or keystrokes. Next.js 16, Supabase Realtime, Stripe Connect. Free for 2 projects.
+* **First comment:** what's sent by the extension (focus category + heartbeat only), the 5-minute idle auto-pause, and that presence can be turned off per project.
+
+### Short directory copy (Uneed, Fazier, Microlaunch, BetaList, SaaSHub, AlternativeTo)
+* **One-liner:** One private page where clients review, approve & pay.
+* **50 words:** Frevio replaces the email-Slack-PDF shuffle with one private link per client. Post progress updates, get deliverables approved, collect files and get paid through Stripe, with no client passwords and no Frevio transaction fees. Free for 2 active projects.
+* **Categories:** Freelance, Client Portal, Invoicing, Productivity
+* **Alternatives to list against:** HoneyBook, Bonsai, Dubsado, Moxie, Notion client portals
+
+### Schedule
+| When | What |
+|---|---|
+| Week before | Submit to BetaList, Uneed, Fazier, Microlaunch, SaaSHub, AlternativeTo (some have queues). Line up 20–30 supporters with a "launching Tuesday" DM. |
+| Launch day (Tue–Thu, 12:01 AM PT) | Product Hunt + Peerlist. Maker comment immediately. Post on X/LinkedIn with the video. Reply to every comment within the hour. |
+| Same day, afternoon | Indie Hackers post: "Launched today, here's the stack and the first numbers". |
+| +2 days | DevHunt (developer angle). |
+| +3–5 days | Show HN (technical post), r/webdev (architecture), r/freelance (lead with the free scope creep calculator). |
+| +7 days | Indie Hackers follow-up with real numbers by source from the admin dashboard. |
+
+### Things that move signups more than upvotes
+1. **Reply fast and personally.** Every Product Hunt/DevHunt comment gets a real answer, and every feature request gets "added to the roadmap" with a link to `/roadmap`.
+2. **Email the launch-day signups yourself.** A personal 3-line email from jaysi@frevio.cloud on day 1 ("what made you sign up? what's missing?") turns signups into active users and gives you testimonials.
+3. **Reddit: give before you ask.** Post the free calculators (`/calculator`, `/calculator/scope-creep`, `/calculator/invoice-generator`) as free tools. Never lead with "check out my SaaS". Link with `?ref=reddit`.
+4. **Answer existing threads.** Search Reddit/X/Indie Hackers for "client portal", "HoneyBook alternative", "clients don't reply", "chasing invoices". Reply helpfully and mention Frevio only when it fits.
+5. **Every client portal is an ad.** Free-plan portals show "Powered by Frevio · Create your client portal". Each user you activate shows Frevio to their clients.
+6. **Post the numbers.** "Launched on 5 platforms, here's what converted" posts do well on Indie Hackers and X, and your admin dashboard now has the data.
 
 ---
 

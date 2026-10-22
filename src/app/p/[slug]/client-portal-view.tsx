@@ -56,6 +56,7 @@ interface ClientPortalViewProps {
   changeOrders?: ChangeOrder[]
   appBuilds?: AppBuild[]
   isDemo?: boolean
+  footer?: React.ReactNode
 }
 
 type MainNavTab = 'overview' | 'milestones' | 'deliverables' | 'feedback' | 'files'
@@ -86,6 +87,7 @@ export function ClientPortalView({
   changeOrders = [],
   appBuilds = [],
   isDemo = false,
+  footer = null,
 }: ClientPortalViewProps) {
   const [activeNav, setActiveNav] = useState<MainNavTab>('overview')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -1192,6 +1194,7 @@ export function ClientPortalView({
             </div>
           )}
 
+          {footer}
         </main>
       </div>
 

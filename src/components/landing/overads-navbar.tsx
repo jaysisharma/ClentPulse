@@ -12,22 +12,28 @@ interface Props {
   isLoggedIn: boolean
   signupHref: string
   promoRemaining: number | null
+  launchPlatform?: string | null
 }
 
-export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props) {
+export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining, launchPlatform = null }: Props) {
   const [productMenuOpen, setProductMenuOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <>
       {/* ── Top Announcement Banner (launch promo is granted automatically at signup) ── */}
-      {!isLoggedIn && promoRemaining !== null && promoRemaining > 0 && (
+      {!isLoggedIn && (launchPlatform || (promoRemaining !== null && promoRemaining > 0)) && (
         <div className="relative z-50 bg-[#08090a] text-slate-200 border-b border-white/5 text-xs py-2 px-4">
           <div className="max-w-6xl mx-auto flex items-center justify-center gap-x-3 text-center flex-wrap gap-y-1">
             <span className="inline-flex items-center gap-1.5 font-normal text-slate-300">
               <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
               <span>
-                Launch offer: the first 50 signups get <strong className="text-white font-semibold">1 month of Frevio Pro free</strong>. No code needed · {promoRemaining} left
+                {launchPlatform && <strong className="text-white font-semibold">Welcome, {launchPlatform} 👋 </strong>}
+                {promoRemaining !== null && promoRemaining > 0 ? (
+                  <>The first 50 signups get <strong className="text-white font-semibold">1 month of Frevio Pro free</strong>. No code needed · {promoRemaining} left</>
+                ) : (
+                  <>Free for your first 2 projects. No card needed.</>
+                )}
               </span>
             </span>
             <Link href={signupHref} className="inline-flex items-center gap-0.5 text-white font-medium underline underline-offset-4 hover:text-amber-200 transition-colors">

@@ -1,5 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { FIRST_TOUCH_COOKIE, parseSignupSource } from '@/lib/attribution'
 
 export async function POST(request: Request) {
   try {
@@ -88,7 +90,7 @@ export async function POST(request: Request) {
           supabase: supabaseAdmin,
           userId: newUser.user.id,
           eventName: 'signup_completed',
-          metadata: { auth_method: 'email_otp' }
+          metadata: { auth_method: 'email_otp', ...parseSignupSource((await cookies()).get(FIRST_TOUCH_COOKIE)?.value) }
         }).catch(() => {})
       }
     }

@@ -59,6 +59,16 @@ export default async function AdminPage({ searchParams }: PageProps) {
     console.error('[Admin Page] Fetch Events Error:', eventsError)
   }
 
+  // Signup attribution recorded at registration (first-touch source cookie)
+  const { data: signupEventsData, error: signupEventsError } = await adminClient
+    .from('activation_events')
+    .select('user_id, metadata')
+    .eq('event_name', 'signup_completed')
+
+  if (signupEventsError) {
+    console.error('[Admin Page] Fetch Signup Sources Error:', signupEventsError)
+  }
+
   // Fetch support and feedback requests
   const { data: feedbackData, error: feedbackError } = await adminClient
     .from('freelancer_feedback')
@@ -149,6 +159,7 @@ export default async function AdminPage({ searchParams }: PageProps) {
       stripeStats={stripeStats}
       initialEvents={eventsData || []}
       initialFeedback={feedbackData || []}
+      initialSignupSources={signupEventsData || []}
       serverTime={new Date().toISOString()}
     />
   )

@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse, type NextRequest } from 'next/server'
+import { FIRST_TOUCH_COOKIE, parseSignupSource } from '@/lib/attribution'
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
@@ -61,7 +62,7 @@ export async function GET(request: NextRequest) {
           supabase,
           userId: user.id,
           eventName: 'signup_completed',
-          metadata: { auth_method: 'google_oauth' }
+          metadata: { auth_method: 'google_oauth', ...parseSignupSource(request.cookies.get(FIRST_TOUCH_COOKIE)?.value) }
         }).catch(() => {})
 
         return NextResponse.redirect(`${origin}/onboarding`)

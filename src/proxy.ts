@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
+import { FIRST_TOUCH_COOKIE, firstTouchFromRequest, serializeSignupSource } from '@/lib/attribution'
 
 const SYSTEM_HOSTS = new Set([
   'localhost',
@@ -66,6 +67,19 @@ export async function proxy(request: NextRequest) {
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
     })
+  }
+
+  // First touch wins: only record the source if this browser has none yet
+  if (!request.cookies.get(FIRST_TOUCH_COOKIE)) {
+    const firstTouch = firstTouchFromRequest(request.nextUrl, request.headers.get('referer'))
+    if (firstTouch) {
+      response.cookies.set(FIRST_TOUCH_COOKIE, serializeSignupSource(firstTouch), {
+        path: '/',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+      })
+    }
   }
 
   return response

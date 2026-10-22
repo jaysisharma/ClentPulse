@@ -117,6 +117,7 @@ interface AdminDashboardProps {
   stripeStats: StripeStats
   initialEvents: ProductEvent[]
   initialFeedback: FreelancerFeedback[]
+  initialSignupSources: { user_id: string; metadata: any }[]
   serverTime: string
 }
 
@@ -225,8 +226,23 @@ const BROADCAST_TEMPLATES = [
   }
 ]
 
-export function AdminDashboard({ initialUsers, initialVisits, initialPromo, activeTab, stripeStats, initialEvents, initialFeedback, serverTime }: AdminDashboardProps) {
+export function AdminDashboard({ initialUsers, initialVisits, initialPromo, activeTab, stripeStats, initialEvents, initialFeedback, initialSignupSources, serverTime }: AdminDashboardProps) {
   const now = useMemo(() => new Date(serverTime).getTime(), [serverTime])
+
+  // Source captured at signup; more reliable than matching anonymous visits to users
+  const signupSourceByUser = useMemo(() => {
+    const map = new Map<string, { source: string; medium: string; campaign: string }>()
+    initialSignupSources.forEach(e => {
+      if (e.metadata?.source) {
+        map.set(e.user_id, {
+          source: e.metadata.source,
+          medium: e.metadata.medium || 'none',
+          campaign: e.metadata.campaign || 'none',
+        })
+      }
+    })
+    return map
+  }, [initialSignupSources])
 
   // Search and filters state
   const [userSearch, setUserSearch] = useState('')
@@ -338,6 +354,16 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
     })
 
     initialUsers.forEach(u => {
+      const signupSource = signupSourceByUser.get(u.id)
+      if (signupSource) {
+        const key = getCampaignKey(signupSource.source, signupSource.medium, signupSource.campaign)
+        if (!campaignMap.has(key)) {
+          campaignMap.set(key, { ...signupSource, visitors: new Set(), signups: new Set() })
+        }
+        campaignMap.get(key)!.signups.add(u.id)
+        return
+      }
+
       const firstVisit = sortedVisits.find(v => v.user_id === u.id)
       if (firstVisit) {
         const src = firstVisit.utm_source || 'organic'
@@ -378,7 +404,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
         conversionRate: r.visitors.size > 0 ? (r.signups.size / r.visitors.size) * 100 : 0
       })).sort((a, b) => b.visitorCount - a.visitorCount)
     }
-  }, [initialVisits, initialUsers])
+  }, [initialVisits, initialUsers, signupSourceByUser])
 
   // Geolocation breakdowns
   const geoBreakdown = useMemo(() => {
@@ -417,7 +443,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
 
       // Source attribution
       const firstVisit = [...userVisits].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())[0]
-      const utmSource = firstVisit?.utm_source || 'organic'
+      const utmSource = signupSourceByUser.get(u.id)?.source || firstVisit?.utm_source || 'organic'
       const referrer = firstVisit?.referrer ? parseReferrer(firstVisit.referrer) : 'Direct'
 
       // Registration Source
@@ -446,7 +472,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
         churnRisk
       }
     })
-  }, [initialUsers, initialVisits])
+  }, [initialUsers, initialVisits, signupSourceByUser])
 
   // Activity Feed chronologically aggregated events
   const activityFeed = useMemo(() => {

@@ -8,6 +8,7 @@ import {
   ExternalLink, ArrowUpRight
 } from 'lucide-react'
 import { ClientPortalView } from '@/app/p/[slug]/client-portal-view'
+import { PoweredByReferral } from '@/components/ui/powered-by-referral'
 import { Logo } from '@/components/ui/logo'
 
 export function DemoPortalClient() {
@@ -341,6 +342,7 @@ export function DemoPortalClient() {
           isDepositPending={false}
           depositInvoice={projectInvoices[0]}
           isDemo
+          footer={<PoweredByReferral refHandle="demo" className="pt-6 text-center" />}
         />
       </main>
 

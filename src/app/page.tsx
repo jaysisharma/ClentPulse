@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
+import { FIRST_TOUCH_COOKIE, launchPlatformName, parseSignupSource } from '@/lib/attribution'
 import { OveradsNavbar } from '@/components/landing/overads-navbar'
 import { OveradsHero } from '@/components/landing/overads-hero'
 import { OveradsScreensShowcase } from '@/components/landing/overads-screens-showcase'
@@ -11,8 +13,19 @@ import { LandingFaq } from '@/components/landing/landing-faq'
 import { OveradsCta } from '@/components/landing/overads-cta'
 import { Logo } from '@/components/ui/logo'
 import { ShieldCheck, Zap, Globe } from 'lucide-react'
+import type { Metadata } from 'next'
 
-export default async function LandingPage() {
+// Canonical lives here, not in the root layout, so other pages don't all point at the homepage
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+  openGraph: { url: '/' },
+}
+
+export default async function LandingPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ ref?: string; utm_source?: string }>
+}) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const isLoggedIn = !!user
@@ -22,6 +35,12 @@ export default async function LandingPage() {
   const { data: promo } = await supabase.from('launch_promo').select('claimed, cap').eq('id', 1).maybeSingle()
   const promoRemaining = promo ? Math.max(0, promo.cap - promo.claimed) : null
 
+  // Greet launch-platform visitors by name (URL first, then their first-touch cookie)
+  const params = await searchParams
+  const launchPlatform =
+    launchPlatformName(params.utm_source ?? params.ref) ??
+    launchPlatformName(parseSignupSource((await cookies()).get(FIRST_TOUCH_COOKIE)?.value).source)
+
   return (
     <div className="min-h-screen bg-[#08090a] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
 
@@ -30,6 +49,7 @@ export default async function LandingPage() {
         isLoggedIn={isLoggedIn}
         signupHref={signupHref}
         promoRemaining={promoRemaining}
+        launchPlatform={launchPlatform}
       />
 
       <main className="flex-1">

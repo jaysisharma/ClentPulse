@@ -22,10 +22,10 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Frevio — Client Portal & Operating System for Freelancers & Studios",
+    default: "Frevio — One private page where clients review, approve & pay",
     template: "%s | Frevio",
   },
-  description: "The modern client operating system. Automate weekly status updates, streamline milestone approvals, and settle invoices directly via Stripe with no Frevio transaction fees.",
+  description: "Give each client one private link to see progress, approve deliverables and pay Stripe invoices. No client passwords, no Frevio transaction fees. Free for 2 active projects.",
   keywords: [
     "freelancer client portal",
     "client operating system",
@@ -43,13 +43,9 @@ export const metadata: Metadata = {
   creator: "Frevio",
   publisher: "Frevio",
   metadataBase: new URL("https://frevio.cloud"),
-  alternates: {
-    canonical: "/",
-  },
   openGraph: {
-    title: "Frevio — Client Portal & Operating System for Freelancers & Studios",
-    description: "One unified link for weekly updates, milestone approvals, contracts, and direct Stripe settlements with no Frevio transaction fees.",
-    url: "https://frevio.cloud",
+    title: "Frevio — One private page where clients review, approve & pay",
+    description: "Clients don't ignore you. They lose you between five apps. Frevio gives each project one private link for progress, approvals and payments.",
     siteName: "Frevio",
     locale: "en_US",
     type: "website",
@@ -58,14 +54,14 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Frevio — Client Portal and Operating System",
+        alt: "Frevio client portal",
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Frevio — Client Portal & Operating System for Freelancers & Studios",
-    description: "One unified link for weekly updates, milestone approvals, contracts, and direct Stripe settlements with no Frevio transaction fees.",
+    title: "Frevio — One private page where clients review, approve & pay",
+    description: "Clients don't ignore you. They lose you between five apps. Frevio gives each project one private link for progress, approvals and payments.",
     images: ["/og-image.png"],
     creator: "@frevioapp",
   },
