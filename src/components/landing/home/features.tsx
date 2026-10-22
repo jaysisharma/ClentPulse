@@ -105,7 +105,7 @@ function BudgetMock() {
 export function Features() {
   return (
     <section className="mx-auto max-w-6xl px-3 sm:px-6">
-      <SectionHeading align="left" label="Also included" title="The rest of the client job," muted="behind the same link." className="px-1" />
+      <SectionHeading label="Also included" title="The rest of the client job," muted="behind the same link." className="px-1" />
 
       <div className="mt-10 grid gap-3 lg:grid-cols-5">
         {/* Big violet card */}

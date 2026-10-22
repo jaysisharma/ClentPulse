@@ -12,7 +12,7 @@ const FACTS = ['0 client passwords', '1-click sign-off', 'Live in under 60 secon
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="mx-auto max-w-6xl scroll-mt-20 px-4 sm:px-6">
-      <SectionHeading label="How it works" title="Live in a minute." muted="Calm for the whole project." />
+      <SectionHeading label="How it works" title="Live in a minute." muted="Calm for the whole project." stacked />
 
       <ol className="mt-16 grid gap-12 md:grid-cols-3 md:gap-10">
         {STEPS.map((s, i) => (
@@ -24,7 +24,7 @@ export function HowItWorks() {
         ))}
       </ol>
 
-      <p className="mt-16 text-center text-sm text-ink-muted">
+      <p className="mt-16 text-sm text-ink-muted">
         {FACTS.map((f, i) => (
           <span key={f} className="inline-block">
             <span className="text-ink">{f}</span>

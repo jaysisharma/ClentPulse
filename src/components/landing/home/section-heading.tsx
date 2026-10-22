@@ -12,7 +12,7 @@ interface SectionHeadingProps {
   className?: string
 }
 
-export function SectionHeading({ label, title, muted, sub, align = 'center', stacked, className }: SectionHeadingProps) {
+export function SectionHeading({ label, title, muted, sub, align = 'left', stacked, className }: SectionHeadingProps) {
   return (
     <div className={cn('max-w-3xl', align === 'center' && 'mx-auto text-center', className)}>
       <p className="text-sm text-ink-muted">{label}</p>

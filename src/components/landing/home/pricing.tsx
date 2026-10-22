@@ -47,7 +47,7 @@ export function Pricing({ signupHref }: { signupHref: string }) {
 
   return (
     <section id="pricing" className="mx-auto max-w-6xl scroll-mt-24 px-4 sm:px-6">
-      <SectionHeading label="Pricing" title="Start free." muted="Upgrade when you grow." />
+      <SectionHeading align="center" label="Pricing" title="Start free." muted="Upgrade when you grow." />
 
       <div className="mt-10 flex justify-center">
         <div role="radiogroup" aria-label="Billing period" className="inline-flex gap-1 rounded-full bg-surface p-1 shadow-[0_0_0_1px_var(--line)]">

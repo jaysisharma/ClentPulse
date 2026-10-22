@@ -33,7 +33,7 @@ export function Faq() {
   return (
     <section id="faq" className="mx-auto max-w-6xl scroll-mt-20 px-3 sm:px-6">
       <div className="flex flex-col gap-6 px-1 md:flex-row md:items-end md:justify-between">
-        <SectionHeading align="left" label="Common questions" title="Still deciding?" muted="Here's what people ask." stacked />
+        <SectionHeading label="Common questions" title="Still deciding?" muted="Here's what people ask." stacked />
         <p className="max-w-xs text-sm leading-relaxed text-ink-muted md:text-right">
           Can&apos;t find it? Email{' '}
           <a href="mailto:support@frevio.app" className="text-ink underline decoration-line-strong underline-offset-4 hover:decoration-accent">
