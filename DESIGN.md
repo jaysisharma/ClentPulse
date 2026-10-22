@@ -66,8 +66,10 @@ Eyebrow labels `text-xs font-bold uppercase tracking-wider text-ink-muted`.
 ## Migration status
 - ✅ Tokens, `Button`, `Logo`, favicon, theme-color.
 - Marketing page (`/`, `src/components/landing/`) is light-only (`.theme-light`) on the tokens:
-  paper canvas, light tight-tracked headlines, ink pill buttons, one flat ink `stage` behind the
-  hero product shot. No gradients, no dark feature tiles; colour comes only from status states.
+  paper canvas, light tight-tracked headlines, ink pill buttons, one flat ink `stage` holding the
+  hero's "five apps → one link" animation. Violet appears once, on that link. No gradients, no dark
+  feature tiles. Six sections: hero, client-view demo (features folded in), pricing, founder note,
+  FAQ, closing CTA.
   Shared classes live in `src/components/landing/styles.ts`.
 - ⏳ App (`/dashboard`, `/project`, `/settings`, portal) still uses raw `indigo-*`,
   `slate-*` and ad-hoc near-blacks (`#0c0d12`, `#08090a`, …). Migrate by mapping

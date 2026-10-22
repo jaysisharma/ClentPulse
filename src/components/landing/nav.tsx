@@ -8,8 +8,8 @@ import { primaryBtn } from './styles'
 
 const LINKS = [
   { href: '#portal', label: 'Product' },
-  { href: '#how-it-works', label: 'How it works' },
   { href: '#pricing', label: 'Pricing' },
+  { href: '#faq', label: 'FAQ' },
   { href: '/calculator', label: 'Free tools' },
 ]
 

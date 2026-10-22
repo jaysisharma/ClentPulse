@@ -9,6 +9,14 @@ import { card, muted, primaryBtn, secondaryBtn, section, well } from './styles'
 
 type Step = 'review' | 'approve' | 'pay'
 
+// Everything else Frevio does, folded in here instead of a separate features section.
+const ALSO = [
+  { title: 'Weekly updates, sent for you', body: 'Your progress notes become a clear Friday email.' },
+  { title: 'Change orders, signed first', body: '“One more thing” gets priced and signed before you start it.' },
+  { title: 'Invoices tied to milestones', body: 'The invoice appears the moment the work is approved.' },
+  { title: 'Your real hourly rate', body: 'Hours against budget, before a project turns unprofitable.' },
+]
+
 const STEPS: { id: Step; label: string; blurb: string }[] = [
   { id: 'review', label: 'Review', blurb: 'Progress, files and updates in one timeline.' },
   { id: 'approve', label: 'Approve', blurb: 'One tap, timestamped for the record.' },
@@ -29,14 +37,24 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
 
   return (
     <section id="portal" className={cn(section, 'scroll-mt-24')}>
-      <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-        <SectionHeading
-          label="Try it"
-          title="This is what your client sees."
-          sub="Click through it. Review, approve, pay. That's the whole job for them, and nothing to sign up for."
-        />
+      <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+        <div>
+          <SectionHeading
+            label="Try it"
+            title="This is what your client sees."
+            sub="Click through it. Review, approve, pay. That's the whole job for them, and nothing to sign up for."
+          />
+          <dl className="mt-10 max-w-md divide-y divide-line border-y border-line">
+            {ALSO.map((a) => (
+              <div key={a.title} className="py-4">
+                <dt className="text-sm font-medium">{a.title}</dt>
+                <dd className={cn('mt-0.5 text-sm', muted)}>{a.body}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
 
-        <div className={cn(card, 'overflow-hidden shadow-xl')}>
+        <div className={cn(card, 'overflow-hidden')}>
           <div className="flex items-center justify-between border-b border-line px-5 py-3 sm:px-6">
             <div>
               <p className={cn('text-xs', muted)}>Northwind Coffee · Brand refresh</p>
@@ -182,8 +200,7 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
                     )}
                   />
                   <p className="text-xs">
-                    <span className={muted}>0{i + 1}</span>{' '}
-                    <span className={cn('ml-1 font-medium', active ? '' : muted)}>{s.label}</span>
+                    <span className={cn('font-medium', active ? '' : muted)}>{s.label}</span>
                   </p>
                   <p className={cn('mt-1 hidden text-xs leading-relaxed sm:block', muted)}>{s.blurb}</p>
                 </button>

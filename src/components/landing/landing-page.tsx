@@ -1,10 +1,7 @@
 import { cn } from '@/lib/utils'
 import { Nav } from './nav'
 import { Hero } from './hero'
-import { Problem } from './problem'
 import { PortalDemo } from './portal-demo'
-import { Features } from './features'
-import { HowItWorks } from './how-it-works'
 import { Pricing } from './pricing'
 import { FounderNote } from './founder-note'
 import { Faq } from './faq'
@@ -26,10 +23,7 @@ export function LandingPage({ isLoggedIn, signupHref }: LandingPageProps) {
 
       <main className="space-y-24 pb-28 sm:space-y-32 sm:pb-36">
         <Hero isLoggedIn={isLoggedIn} signupHref={signupHref} />
-        <Problem />
-        <HowItWorks />
         <PortalDemo signupHref={signupHref} />
-        <Features />
         <Pricing signupHref={signupHref} />
         <FounderNote />
         <Faq />

@@ -22,7 +22,6 @@ const TIERS = [
   },
   {
     name: 'Pro',
-    badge: 'Most popular',
     price: { monthly: '$19', annual: '$15' },
     period: '/month',
     description: 'For full-time freelancers who want their brand on every link.',
@@ -79,11 +78,6 @@ export function Pricing({ signupHref }: { signupHref: string }) {
             <div key={t.name} className={cn(card, 'flex flex-col p-7', t.highlighted && 'border-ink')}>
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium">{t.name}</h3>
-                {t.badge && (
-                  <span className={cn('text-xs', muted)}>
-                    {t.badge}
-                  </span>
-                )}
               </div>
               <p className={cn('mt-2 text-sm', muted)}>{t.description}</p>
               <p className="mt-8 flex items-baseline gap-1">
