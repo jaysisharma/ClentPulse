@@ -77,7 +77,7 @@ export function Hero({ isLoggedIn, signupHref }: HeroProps) {
             {isLoggedIn ? 'Go to dashboard' : 'Start free'}
             <ArrowRight className="h-4 w-4" />
           </Link>
-          <Link href="/demo" className="text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 transition-colors hover:decoration-accent">
+          <Link href="/demo" className="py-3 text-sm font-medium text-ink underline decoration-line-strong underline-offset-4 transition-colors hover:decoration-accent">
             See what your client sees
           </Link>
         </div>

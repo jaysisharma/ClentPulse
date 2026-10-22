@@ -37,7 +37,7 @@ export function Comparison() {
                 </li>
               ))}
             </ul>
-            <a href="#pricing" className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">
+            <a href="#pricing" className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white">
               See pricing <ArrowRight className="h-3.5 w-3.5" />
             </a>
           </div>

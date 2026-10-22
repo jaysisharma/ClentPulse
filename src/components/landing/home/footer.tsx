@@ -47,13 +47,13 @@ export function Footer() {
           {COLUMNS.map((col) => (
             <div key={col.title}>
               <p className="text-xs font-medium uppercase tracking-widest text-white/60">{col.title}</p>
-              <ul className="mt-4 space-y-2.5 text-sm text-white/80">
+              <ul className="mt-2 text-sm text-white/80">
                 {col.links.map((l) => (
                   <li key={l.href}>
                     {l.href.startsWith('/') ? (
-                      <Link href={l.href} className="transition-colors hover:text-white">{l.label}</Link>
+                      <Link href={l.href} className="inline-flex min-h-11 items-center transition-colors hover:text-white">{l.label}</Link>
                     ) : (
-                      <a href={l.href} className="transition-colors hover:text-white">{l.label}</a>
+                      <a href={l.href} className="inline-flex min-h-11 items-center transition-colors hover:text-white">{l.label}</a>
                     )}
                   </li>
                 ))}

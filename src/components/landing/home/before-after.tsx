@@ -78,7 +78,7 @@ export function BeforeAfter() {
             <p className="mt-4 text-base text-ink">One link. Every update, approval and invoice.</p>
             <button
               onClick={replay}
-              className="mt-4 inline-flex items-center gap-1.5 text-xs text-ink-muted transition-colors hover:text-ink cursor-pointer"
+              className="mt-2 inline-flex min-h-11 items-center gap-1.5 px-3 text-xs text-ink-muted transition-colors hover:text-ink cursor-pointer"
             >
               <RotateCcw className="h-3 w-3" /> Replay
             </button>

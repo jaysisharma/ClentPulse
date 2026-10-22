@@ -53,7 +53,7 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
               </div>
               <button
                 onClick={reset}
-                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs text-ink-muted hover:bg-sunken hover:text-ink cursor-pointer"
+                className="inline-flex min-h-11 items-center gap-1 rounded-md px-3 text-xs text-ink-muted hover:bg-sunken hover:text-ink cursor-pointer"
               >
                 <RotateCcw className="h-3 w-3" /> Reset
               </button>
