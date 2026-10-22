@@ -27,7 +27,12 @@ export function useInView<T extends Element>(threshold = 0.2) {
   return [ref, inView] as const
 }
 
-/** Fades content up 16px on first view. Static for reduced-motion users (see .reveal in globals.css). */
+/**
+ * Fades content up 16px on first view. Server HTML is always visible: content
+ * is only hidden after hydration, and only if it starts below the fold, so
+ * crawlers, link previews and no-JS visitors never see blank sections.
+ * Static for reduced-motion users (see .reveal in globals.css).
+ */
 export function Reveal({
   children,
   delay = 0,
@@ -40,10 +45,17 @@ export function Reveal({
   as?: 'div' | 'li' | 'section'
 }) {
   const [ref, inView] = useInView<HTMLDivElement>(0.15)
+  const [armed, setArmed] = useState(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (el && el.getBoundingClientRect().top > window.innerHeight) setArmed(true)
+  }, [ref])
+
   return (
     <Tag
       ref={ref as React.Ref<never>}
-      data-shown={inView}
+      data-shown={armed ? inView : true}
       className={cn('reveal', className)}
       style={{ '--reveal-delay': `${delay}ms` } as React.CSSProperties}
     >
