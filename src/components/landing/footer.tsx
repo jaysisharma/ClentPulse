@@ -25,7 +25,7 @@ const COLUMNS = [
   {
     title: 'Company',
     links: [
-      { href: 'mailto:support@frevio.app', label: 'Contact' },
+      { href: 'mailto:support@frevio.cloud', label: 'Contact' },
       { href: '/privacy', label: 'Privacy policy' },
       { href: '/terms', label: 'Terms of service' },
     ],

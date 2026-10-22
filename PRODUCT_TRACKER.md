@@ -118,7 +118,7 @@
 - [x] **Custom Domain & CNAME Hostname Routing**:
   - Input field for custom domain (e.g. `status.youragency.com`) with format validation and reserved domain protections.
   - Next.js Edge proxy rewrite mapping custom hostnames directly to `/p/[slug]` with `x-custom-domain` header propagation.
-  - Interactive DNS CNAME instruction panel (`Type: CNAME`, `Host: status`, `Value: cname.frevio.app`) with 1-click copy.
+  - Interactive DNS CNAME instruction panel (`Type: CNAME`, `Host: status`, `Value: cname.frevio.cloud`) with 1-click copy.
   - Diagnostic DNS verification endpoint (`/api/organizations/[id]/domain-verify`) with live propagation check badge and test link.
 - [x] **Testing & Build Verification**:
   - 89/89 unit and integration tests passing in Vitest across 16 test suites.
@@ -168,7 +168,7 @@
   - Real-time pulse dot from VS Code telemetry (`Coding in auth/route.ts` vs `Idle`).
   - Dynamic capacity gauges: `● Available` (0-1 projects, <15 hrs), `● Optimal` (2-3 projects, 15-35 hrs), `● At Capacity` (4+ projects or >35 hrs).
 - [x] **Multi-Tier Monetization & Pricing**:
-  - Tier Switcher on `/upgrade` supporting **Solo Freelancer** ($15/mo), **Agency Starter** ($89/mo, 5 seats), and **Agency Scale** ($249/mo, 25 seats + custom CNAME + radar).
+  - Tier Switcher on `/upgrade` supporting **Pro** ($19/mo), **Agency** ($49/mo, 5 seats), and **Agency Scale** ($199/mo, 25 seats + custom CNAME + radar). Source of truth: `src/lib/plans.ts`.
   - Stripe Checkout support for agency plan subscriptions with `org_id` metadata.
 - [x] **Comprehensive Testing & Build**:
   - 98/98 unit & integration tests passing in Vitest across 19 test suites.

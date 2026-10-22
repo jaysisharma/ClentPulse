@@ -1,6 +1,36 @@
 # Frevio — Go-To-Market & Viral Acquisition Playbook (Phase 3)
 
-> **Goal:** Acquire your first 50 paying freelancers and 10 agency subscriptions ($49–$249/mo) within 30 days of launch.
+> **Goal:** Acquire your first 50 paying freelancers (Pro, $19/mo) and 10 agency subscriptions (Agency $49/mo, Agency Scale $199/mo) within 30 days of launch.
+>
+> **Prices:** always quote `src/lib/plans.ts`: Free (2 active projects) · Pro $19/mo or $190/yr · Agency $49/mo (5 seats) · Agency Scale $199/mo (25 seats).
+> **Launch promo:** the first 50 freelancer signups automatically get 1 month of Pro free. No code needed.
+
+---
+
+## 🐱 0. Product Hunt (and other general launch platforms)
+
+**One message only:** the client portal. Leave agency/white-label and the VS Code extension for separate launches (Show HN, r/webdev).
+
+* **Name:** Frevio
+* **Tagline (≤60 chars):** One private page where clients review, approve & pay
+* **Description:** Clients don't ignore you. They lose you between five apps. Frevio gives each project one private link where clients see progress, approve deliverables and pay Stripe invoices, with no client passwords and no Frevio transaction fees. Free for 2 active projects.
+* **Gallery order:**
+  1. Client portal with the "Waiting on you" blocker banner and deposit gate
+  2. Deliverable approval card (Figma / staging preview → Approve)
+  3. Invoice paid via Stripe
+  4. Freelancer dashboard (attention strip)
+  5. 45s video (below)
+* **Primary link:** https://frevio.cloud/demo (no signup needed)
+* **Maker comment:**
+> Hey Product Hunt 👋 I'm Jaysi. I built Frevio because my clients kept asking "any updates?" while the answer was buried across email, Slack, Figma and a PDF invoice.
+>
+> Frevio gives each client one private page: progress updates, deliverables to approve, a checklist of what you're waiting on from them, and invoices they can pay by card. Clients never create an account.
+>
+> Free for 2 active projects, and the first 50 signups get a month of Pro on us. You can click through the client view without signing up: https://frevio.cloud/demo
+>
+> I'd love brutal feedback, especially on what's missing for your workflow.
+
+* **Do not claim:** that approvals auto-generate invoices, or that Frevio runs workflows on its own. Neither exists yet.
 
 ---
 
@@ -10,9 +40,8 @@ The fastest way to convert engineers and studio founders is **visual proof**.
 
 ### 📐 Video Format
 * **Aspect Ratio:** 16:9 for desktop/X, 9:16 crop for TikTok/Reels/Shorts.
-* **Layout:** Split Screen.
-  * **Left Side (60%):** You coding in VS Code or Antigravity with the Frevio extension active.
-  * **Right Side (40%):** The live client portal (`/p/[slug]`) open in a browser.
+* **Layout:** Lead with the client portal (`/p/[slug]`) full screen. Cut to the split screen (VS Code left, portal right) only for the developer beat.
+* **Audience note:** For Product Hunt, show the portal flow first. For Show HN and r/webdev, open on the VS Code split screen instead.
 
 ### ⏱️ Storyboard & Script
 
@@ -33,12 +62,12 @@ The fastest way to convert engineers and studio founders is **visual proof**.
 **Tweet 1 (Hook + Video):**
 > Freelancers and agency owners: Stop answering "Any updates?" texts at 11 PM.
 >
-> I spent the last 4 months building Frevio — a client command center that connects your code editor directly to your client's portal.
+> I spent the last 4 months building Frevio: one private page per client where they see progress, approve deliverables and pay you.
 >
 > Here’s how it works (and why your clients will love you for it) 👇 [Attach 45s Video]
 
-**Tweet 2 (The Telemetry Wedge):**
-> 1. Real-time presence without surveillance.
+**Tweet 2 (For developers: the telemetry wedge):**
+> 1. Real-time presence without surveillance (optional, for devs).
 >
 > Freelancers hate writing status reports. Clients hate radio silence.
 >
@@ -62,7 +91,7 @@ The fastest way to convert engineers and studio founders is **visual proof**.
 > Try the live interactive client portal right now without signing up:
 > 🔗 https://frevio.cloud/demo
 >
-> We're offering free lifetime grandfathered Pro seats to the first 50 freelancers who give feedback. DM me or comment below!
+> The first 50 signups get a month of Pro free, automatically. Reply with feedback and I'll read every one.
 
 ---
 

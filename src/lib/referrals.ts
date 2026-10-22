@@ -8,7 +8,7 @@ export const REFERRAL_COOKIE_NAME = 'frevio_ref'
  * Builds a public referral URL for a given user handle or ID.
  */
 export function buildReferralUrl(refHandle?: string | null): string {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://frevio.app'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://frevio.cloud'
   if (!refHandle) return appUrl
   return `${appUrl}?ref=${encodeURIComponent(refHandle)}`
 }

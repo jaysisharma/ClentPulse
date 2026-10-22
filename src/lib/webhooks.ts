@@ -81,7 +81,7 @@ export async function dispatchWebhook(
 
     body = {
       username: 'Frevio Pulse',
-      avatar_url: 'https://frevio.app/icon.svg',
+      avatar_url: 'https://frevio.cloud/icon.svg',
       embeds: [
         {
           title: payload.title,

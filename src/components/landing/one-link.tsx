@@ -82,7 +82,7 @@ export function OneLink() {
       >
         <div className="mx-auto flex w-fit items-center gap-2 rounded-full bg-accent px-4 py-2 font-mono text-sm text-on-accent">
           <Link2 className="h-4 w-4" />
-          frevio.app/p/northwind
+          frevio.cloud/p/northwind
         </div>
         <p className="mt-5 text-lg font-light tracking-[-0.02em]">Every update, approval and invoice. One place.</p>
         <div className={cn(well, 'mx-auto mt-4 grid w-fit grid-cols-3 divide-x divide-line text-xs')}>

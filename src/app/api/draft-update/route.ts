@@ -1,15 +1,17 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { checkAndSyncPromoPlan, isPaidPlan } from '@/lib/plans'
+import { rateLimit } from '@/lib/rate-limit'
 
 // Drafts a weekly client update from the project's real activity:
 // logged time entries, milestones, and approval responses over the last 7 days.
 //
-// DISABLED: AI drafting is turned off for everyone for now. The endpoint
-// returns 404 so the feature is fully inert (no Anthropic calls, no surface).
-// To re-enable, remove the early return below and restore the UI in
-// src/app/project/[id]/update/page.tsx.
+// Claude drafting is for genuinely-paid plans (not free launch-promo Pro), capped per
+// user per day; everyone else, and anyone over the cap, gets the template synthesizer below. Set
+// AI_DRAFTING_ENABLED to false to turn the endpoint off entirely (404).
 const AI_DRAFTING_ENABLED: boolean = true
+const AI_DRAFTS_PER_DAY = 20
 
 export async function POST(request: Request) {
   if (!AI_DRAFTING_ENABLED) {
@@ -58,8 +60,17 @@ export async function POST(request: Request) {
   const openMilestones = (milestones ?? []).filter(m => !m.done).map(m => `${m.title}${m.due_date ? ` (due ${m.due_date})` : ''}`)
   const approvedItems = (approvals ?? []).filter(a => a.status === 'approved').map(a => a.title)
 
-  // If Anthropic API key is available, use Claude to craft the update.
-  if (process.env.ANTHROPIC_API_KEY) {
+  // Use Claude only for paid, non-promo plans within the daily cap; otherwise fall through to the template.
+  const { data: owner } = await supabase
+    .from('users')
+    .select('id, plan, promo_pro, created_at')
+    .eq('id', user.id)
+    .single()
+  const plan = await checkAndSyncPromoPlan(owner, supabase)
+  const canUseClaude = isPaidPlan(plan) && !owner?.promo_pro
+    && (await rateLimit(`draft-update:${user.id}`, AI_DRAFTS_PER_DAY, 24 * 60 * 60_000)).success
+
+  if (process.env.ANTHROPIC_API_KEY && canUseClaude) {
     try {
       const context = `Project: ${project.project_name}
 Client: ${project.client_name}
@@ -74,7 +85,7 @@ Approved deliverables: ${approvedItems.length ? approvedItems.join('; ') : 'none
 
       const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
       const message = await anthropic.messages.create({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-sonnet-5-5',
         max_tokens: 600,
         system:
           'You are a freelancer writing a brief, warm weekly status update for a client. ' +

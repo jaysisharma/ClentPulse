@@ -130,8 +130,8 @@ export default function PrivacyPage() {
             </h2>
             <p>
               You maintain the right to inspect, export, modify, or permanently expunge your personal records under applicable GDPR and CCPA statutes. For inquiries, contact our data protection team directly at{' '}
-              <a href="mailto:support@frevio.app" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
-                support@frevio.app
+              <a href="mailto:support@frevio.cloud" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                support@frevio.cloud
               </a>.
             </p>
           </section>

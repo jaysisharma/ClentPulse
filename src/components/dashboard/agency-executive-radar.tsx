@@ -21,6 +21,7 @@ import {
 } from 'lucide-react'
 import { Organization } from '@/types'
 import { formatDate } from '@/lib/utils'
+import { normalizePlan } from '@/lib/plans'
 
 interface RadarData {
   organization: Organization
@@ -111,7 +112,7 @@ export function AgencyExecutiveRadar({ data }: { data: RadarData }) {
               {organization?.name} Executive Radar
             </span>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full uppercase font-bold tracking-wider bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400">
-              {organization?.billing_plan === 'agency_pro' ? 'Agency Pro' : 'Agency Studio'}
+              {normalizePlan(organization?.billing_plan) === 'agency_scale' ? 'Agency Scale' : 'Agency'}
             </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">

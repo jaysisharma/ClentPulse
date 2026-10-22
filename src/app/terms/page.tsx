@@ -135,8 +135,8 @@ export default function TermsPage() {
             </h2>
             <p>
               For legal communications, terms clarifications, or compliance documentation, reach out to{' '}
-              <a href="mailto:support@frevio.app" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
-                support@frevio.app
+              <a href="mailto:support@frevio.cloud" className="font-medium text-indigo-600 dark:text-indigo-400 hover:underline">
+                support@frevio.cloud
               </a>.
             </p>
           </section>

@@ -22,7 +22,7 @@
 | Project detail | `/project/[id]` — updates, hours, budget, approvals |
 | Project settings — edit + delete | `/project/[id]/settings` — includes budget field |
 | Project status toggle | Dropdown: active → paused → completed |
-| Free plan enforcement | Max 3 projects for free users |
+| Free plan enforcement | Max 2 active projects for free users (`FREE_PROJECT_LIMIT`) |
 | Archive page | `/archive` — completed projects only |
 
 ### Updates
@@ -140,7 +140,7 @@
 | # | Feature | Status | Notes |
 |---|---|---|---|
 | 9 | **White-label Pro** — hide "Powered by Frevio" footer on status pages | ✅ Done | Conditionally rendered based on `owner.plan` on status page |
-| 10 | **Annual billing option** — Monthly $12 / Annual $99 toggle on upgrade page | ✅ Done | Toggle UI on upgrade page with savings callout |
+| 10 | **Annual billing option** — Monthly $19 / Annual $190 toggle (see `src/lib/plans.ts`) on upgrade page | ✅ Done | Toggle UI on upgrade page with savings callout |
 
 ### Batch 6 — Portfolio & docs
 | # | Feature | Status | Notes |

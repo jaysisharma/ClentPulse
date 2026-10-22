@@ -331,9 +331,9 @@ export function OveradsHero({ signupHref }: HeroProps) {
           ref={titleRef}
           className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light uppercase tracking-[-0.02em] leading-[1.02] max-w-4xl text-balance text-white"
         >
-          <span className="block text-slate-200">Your VS Code posts</span>
-          <span className="block text-white">the status update.</span>
-          <span className="block text-indigo-400">Approved milestones become paid invoices.</span>
+          <span className="block text-slate-200">One private page per client.</span>
+          <span className="block text-white">They review, approve</span>
+          <span className="block text-indigo-400">and pay you there.</span>
         </h1>
 
         {/* Subtitle */}
@@ -341,7 +341,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
           ref={subtitleRef}
           className="mt-6 max-w-2xl text-balance text-sm font-light leading-relaxed text-slate-300 md:text-base"
         >
-          Your editor tracks the work. Clients review progress in one calm link without passwords. Approved milestones trigger Stripe invoices straight to your bank. Free for your first 2 active projects.
+          Clients don&rsquo;t ignore you. They lose you between five apps. Share one link where they see progress, approve deliverables and pay invoices through Stripe, with no client passwords and no Frevio fees. Developers can sync status straight from VS Code. Free for your first 2 active projects.
         </p>
 
         {/* Interactive Live Command Terminal Box */}
@@ -373,7 +373,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
         {/* Primary Action Button */}
         <div
           ref={actionsRef}
-          className="mt-8 flex flex-col items-center justify-center gap-3.5 w-full sm:w-auto"
+          className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto"
         >
           <Link
             href={signupHref}
@@ -381,6 +381,13 @@ export function OveradsHero({ signupHref }: HeroProps) {
           >
             <span>Start free</span>
             <ArrowUpRight className="size-4" />
+          </Link>
+          <Link
+            href="/demo"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-7 text-sm font-medium text-white transition-all hover:bg-white/10 cursor-pointer"
+          >
+            <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Try the client view</span>
           </Link>
         </div>
 
@@ -411,7 +418,7 @@ export function OveradsHero({ signupHref }: HeroProps) {
             <div className="size-3 rounded-full bg-[#ffbd2e]/80" />
             <div className="size-3 rounded-full bg-[#27c93f]/80" />
             <span className="ml-2 font-mono text-[11px] text-slate-400 hidden sm:inline">
-              frevio.app · 30-second workflow
+              frevio.cloud · 30-second workflow
             </span>
           </div>
 
@@ -636,10 +643,10 @@ export function OveradsHero({ signupHref }: HeroProps) {
                     <span>Step 3: Direct Stripe Settlement</span>
                   </div>
                   <h3 className="text-xl font-light text-white tracking-tight">
-                    Milestone approved. Paid straight to your bank.
+                    Invoice sent. Paid straight to your bank.
                   </h3>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Client sign-off generates the final invoice automatically. Stripe transfers funds directly to your connected bank account with zero Frevio transaction fees.
+                    Turn logged hours or a milestone into an invoice in a few clicks. Clients pay by card through Stripe, and funds go to your connected Stripe account with zero Frevio transaction fees.
                   </p>
                   <div className="text-[11px] font-mono text-emerald-400 flex items-center gap-2 pt-2 border-t border-white/5">
                     <span>Direct Stripe payout · No Frevio cuts</span>

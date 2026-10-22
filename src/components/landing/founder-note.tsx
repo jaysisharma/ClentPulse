@@ -3,7 +3,7 @@ import { Reveal } from './reveal'
 import { eyebrow, muted, section } from './styles'
 
 // Real words from the founder. Stands in for testimonials until real quotes exist.
-const EMAIL = 'support@frevio.app'
+const EMAIL = 'support@frevio.cloud'
 
 export function FounderNote() {
   return (

@@ -16,7 +16,7 @@ const FAQS = [
   },
   {
     q: 'Is Frevio really free?',
-    a: 'Yes. The Free plan runs up to 2 active projects forever, with the client portal, updates, files, and invoicing included. Upgrade to Pro or Agency only when you outgrow it.',
+    a: 'Yes. The Free plan runs up to 2 active projects forever, with the client portal, updates, approvals, and invoicing included. Upgrade to Pro or Agency only when you outgrow it.',
   },
   {
     q: 'Do you offer plans for agencies and creative teams?',
@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     q: 'How do clients get notified of updates?',
-    a: 'Whenever you post an update, Frevio sends a branded HTML email automatically. One click takes the client straight to their portal.',
+    a: 'On Pro, posting an update sends the client a branded email automatically. On Free, you get a ready-to-paste email with their portal link. Either way, one click takes them straight to their portal.',
   },
   {
     q: 'How do payments work and which countries are supported?',

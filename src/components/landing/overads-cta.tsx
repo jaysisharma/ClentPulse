@@ -79,7 +79,7 @@ export function OveradsCta({ signupHref }: Props) {
           <span>Get Started</span>
         </div>
         <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[1.05] max-w-3xl mx-auto">
-          Your VS Code posts the status update. Approved milestones become paid invoices.
+          One private page where clients review, approve and pay. Free for your first 2 active projects.
         </h2>
         <p className="max-w-xl mx-auto text-sm sm:text-base text-slate-400 font-light leading-relaxed">
           Set up your first project in five minutes. Connect your VS Code editor, give clients a calm password-free portal, and settle via Stripe with no Frevio transaction fees. Free for your first 2 active projects.

@@ -180,7 +180,7 @@ const BROADCAST_TEMPLATES = [
     <p>We are thrilled to let you know that Frevio is officially live! You can now send beautiful project updates, client portals, and track deliverables with ease.</p>
     <p>To help you get started, we've prepared a brief onboarding checklist inside your workspace.</p>
     <div style="margin: 28px 0; text-align: center;">
-      <a href="https://frevio.app/dashboard" style="background: #ffffff; color: #08090a; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Open Studio</a>
+      <a href="https://frevio.cloud/dashboard" style="background: #ffffff; color: #08090a; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Open Studio</a>
     </div>
     <p style="color: #64748b; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 24px;">Frevio Team</p>
   </div>
@@ -198,7 +198,7 @@ const BROADCAST_TEMPLATES = [
     <p>We noticed your excellent studio work on the free plan. For a limited time, we are unlocking 3 months of Frevio Pro for free!</p>
     <p>Pro tier features include custom branding, unlimited client portals, ledger exports, contracts, and priority settlement integrations.</p>
     <div style="margin: 28px 0; text-align: center;">
-      <a href="https://frevio.app/upgrade" style="background: #f43f5e; color: white; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Claim Free Pro</a>
+      <a href="https://frevio.cloud/upgrade" style="background: #f43f5e; color: white; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Claim Free Pro</a>
     </div>
     <p style="color: #64748b; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 24px;">This offer expires in 7 days.</p>
   </div>
@@ -216,7 +216,7 @@ const BROADCAST_TEMPLATES = [
     <p>We are always striving to improve Frevio. Could you spare 2 minutes to tell us how you use the studio features, and what we should build next?</p>
     <p>Your feedback directly shapes our product roadmap!</p>
     <div style="margin: 28px 0; text-align: center;">
-      <a href="https://frevio.app/roadmap" style="background: #ffffff; color: #08090a; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Give Feedback</a>
+      <a href="https://frevio.cloud/roadmap" style="background: #ffffff; color: #08090a; padding: 12px 24px; text-decoration: none; border-radius: 9999px; font-weight: bold; display: inline-block;">Give Feedback</a>
     </div>
     <p style="color: #64748b; font-size: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 16px; margin-top: 24px;">Thank you for your support!</p>
   </div>
@@ -262,7 +262,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
   const [signupChartHover, setSignupChartHover] = useState<number | null>(null)
 
   // Marketing UTM Builder state
-  const [utmBase, setUtmBase] = useState('https://frevio.app')
+  const [utmBase, setUtmBase] = useState('https://frevio.cloud')
   const [utmSource, setUtmSource] = useState('twitter')
   const [utmMedium, setUtmMedium] = useState('social')
   const [utmCampaign, setUtmCampaign] = useState('launch-promo')

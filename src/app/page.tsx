@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { OveradsNavbar } from '@/components/landing/overads-navbar'
 import { OveradsHero } from '@/components/landing/overads-hero'
-import { OveradsWorkflowsSection } from '@/components/landing/overads-workflows-section'
 import { OveradsScreensShowcase } from '@/components/landing/overads-screens-showcase'
 import { OveradsComparisonTable } from '@/components/landing/overads-comparison-table'
 import { OveradsIntegrations } from '@/components/landing/overads-integrations'
@@ -19,6 +18,10 @@ export default async function LandingPage() {
   const isLoggedIn = !!user
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
+  // Public, anon-readable counter; a missing row just hides the promo banner
+  const { data: promo } = await supabase.from('launch_promo').select('claimed, cap').eq('id', 1).maybeSingle()
+  const promoRemaining = promo ? Math.max(0, promo.cap - promo.claimed) : null
+
   return (
     <div className="min-h-screen bg-[#08090a] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
 
@@ -26,16 +29,13 @@ export default async function LandingPage() {
       <OveradsNavbar
         isLoggedIn={isLoggedIn}
         signupHref={signupHref}
-        promoRemaining={null}
+        promoRemaining={promoRemaining}
       />
 
       <main className="flex-1">
 
         {/* ── 1. Hero: Light Uppercase Display + Rotating Prompts + Workspace Showcase ── */}
         <OveradsHero signupHref={signupHref} />
-
-        {/* ── 2. Workflows: Plain English Automation ("Tell it once. It does it every week.") ── */}
-        <OveradsWorkflowsSection signupHref={signupHref} />
 
         {/* ── 3. Screens: Inside Frevio ("Three screens. That is the whole job.") ── */}
         <OveradsScreensShowcase />
@@ -136,7 +136,7 @@ export default async function LandingPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-6 text-slate-400 font-mono text-[11px]">
-            <a href="#workflows" className="hover:text-white transition-colors">Workflows</a>
+            <Link href="/demo" className="hover:text-white transition-colors">Live demo</Link>
             <a href="#screens" className="hover:text-white transition-colors">Inside</a>
             <a href="#comparison" className="hover:text-white transition-colors">Comparison</a>
             <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>

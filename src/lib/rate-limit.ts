@@ -26,23 +26,36 @@ if (typeof setInterval !== 'undefined') {
   }, 300_000)
 }
 
-let upstashLimiter: Ratelimit | null = null
+let upstashRedis: Redis | null = null
 
 if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
   try {
-    const redis = new Redis({
+    upstashRedis = new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL,
       token: process.env.UPSTASH_REDIS_REST_TOKEN,
-    })
-    upstashLimiter = new Ratelimit({
-      redis,
-      limiter: Ratelimit.slidingWindow(10, '60 s'),
-      prefix: 'frevio_rl',
-      analytics: false,
     })
   } catch (err) {
     console.warn('[RateLimit] Upstash initialization failed, using in-memory fallback:', err)
   }
+}
+
+// One limiter per (limit, window) pair so callers' limits are honored under Upstash too
+const upstashLimiters = new Map<string, Ratelimit>()
+
+function getUpstashLimiter(limit: number, windowMs: number): Ratelimit | null {
+  if (!upstashRedis) return null
+  const id = `${limit}:${windowMs}`
+  let limiter = upstashLimiters.get(id)
+  if (!limiter) {
+    limiter = new Ratelimit({
+      redis: upstashRedis,
+      limiter: Ratelimit.slidingWindow(limit, `${Math.max(1, Math.ceil(windowMs / 1000))} s`),
+      prefix: `frevio_rl:${id}`,
+      analytics: false,
+    })
+    upstashLimiters.set(id, limiter)
+  }
+  return limiter
 }
 
 export interface RateLimitResult {
@@ -90,6 +103,7 @@ export async function rateLimit(
   limit: number = 10,
   windowMs: number = 60_000
 ): Promise<{ success: boolean; remaining: number; resetIn: number }> {
+  const upstashLimiter = getUpstashLimiter(limit, windowMs)
   if (upstashLimiter) {
     try {
       const res = await upstashLimiter.limit(key)
