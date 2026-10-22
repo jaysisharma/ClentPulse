@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import { Nav } from './nav'
 import { Hero } from './hero'
+import { DashboardShot } from './dashboard-shot'
 import { PortalDemo } from './portal-demo'
 import { Pricing } from './pricing'
 import { FounderNote } from './founder-note'
@@ -23,6 +24,7 @@ export function LandingPage({ isLoggedIn, signupHref }: LandingPageProps) {
 
       <main className="space-y-24 pb-28 sm:space-y-32 sm:pb-36">
         <Hero isLoggedIn={isLoggedIn} signupHref={signupHref} />
+        <DashboardShot />
         <PortalDemo signupHref={signupHref} />
         <Pricing signupHref={signupHref} />
         <FounderNote />
