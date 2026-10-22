@@ -5,7 +5,7 @@ import { LaunchPromoBanner } from '@/components/launch-promo-banner'
 export function FinalCta({ isLoggedIn, signupHref }: { isLoggedIn: boolean; signupHref: string }) {
   return (
     <section className="mx-auto max-w-3xl px-4 text-center sm:px-6">
-      <h2 className="text-balance text-[2.75rem] font-light leading-[1.04] tracking-[-0.04em] text-ink sm:text-7xl">
+      <h2 className="text-balance text-[2.75rem] font-light leading-[1.04] tracking-[-0.03em] text-ink sm:text-7xl">
         Send your first
         <br />
         <span className="text-ink-muted">client link today.</span>

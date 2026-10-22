@@ -16,7 +16,7 @@ export function SectionHeading({ label, title, muted, sub, align = 'center', sta
   return (
     <div className={cn('max-w-3xl', align === 'center' && 'mx-auto text-center', className)}>
       <p className="text-sm text-ink-muted">{label}</p>
-      <h2 className="mt-3 text-balance text-[2.1rem] font-light leading-[1.08] tracking-[-0.03em] text-ink sm:text-5xl md:text-[3.4rem]">
+      <h2 className="mt-3 text-balance text-[2.1rem] font-light leading-[1.08] tracking-[-0.02em] text-ink sm:text-5xl md:text-[3.4rem]">
         {title}
         {muted && (
           <>

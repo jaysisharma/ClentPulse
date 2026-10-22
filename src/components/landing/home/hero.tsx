@@ -59,7 +59,7 @@ export function Hero({ isLoggedIn, signupHref }: HeroProps) {
           </span>
         </a>
 
-        <h1 className="mt-7 text-balance text-[2.75rem] font-light leading-[1.02] tracking-[-0.045em] text-ink sm:text-7xl md:text-[5.5rem]">
+        <h1 className="mt-7 text-balance text-[2.75rem] font-light leading-[1.02] tracking-[-0.03em] text-ink sm:text-7xl md:text-[5.5rem]">
           Your clients, one link.
           <br />
           <span className="text-ink-muted">No more chasing.</span>

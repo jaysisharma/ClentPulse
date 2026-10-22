@@ -22,7 +22,7 @@ export function Comparison() {
         <div className="grid gap-12 p-6 sm:p-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
           <div>
             <p className="text-xs font-medium uppercase tracking-widest text-white/70">Why Frevio</p>
-            <h2 className="mt-4 text-balance text-4xl font-light leading-[1.08] tracking-[-0.03em] text-white sm:text-5xl">
+            <h2 className="mt-4 text-balance text-4xl font-light leading-[1.08] tracking-[-0.02em] text-white sm:text-5xl">
               One link instead of a stack of tools.
             </h2>
             <p className="mt-5 max-w-md text-base leading-relaxed text-white/75">

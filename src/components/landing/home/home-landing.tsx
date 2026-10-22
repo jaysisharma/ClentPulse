@@ -1,3 +1,5 @@
+import { Bricolage_Grotesque, Onest } from 'next/font/google'
+import { cn } from '@/lib/utils'
 import { Nav } from './nav'
 import { Hero } from './hero'
 import { BeforeAfter } from './before-after'
@@ -12,6 +14,10 @@ import { FinalCta } from './final-cta'
 import { Footer } from './footer'
 import { MobileCta } from './mobile-cta'
 
+// Two typefaces: Bricolage Grotesque (optical sizes) for headings, Onest for text.
+const display = Bricolage_Grotesque({ subsets: ['latin'], axes: ['opsz'], variable: '--font-display-face', display: 'swap' })
+const body = Onest({ subsets: ['latin'], variable: '--font-body-face', display: 'swap' })
+
 interface HomeLandingProps {
   isLoggedIn: boolean
   signupHref: string
@@ -24,7 +30,14 @@ interface HomeLandingProps {
  */
 export function HomeLanding({ isLoggedIn, signupHref }: HomeLandingProps) {
   return (
-    <div className="theme-dark min-h-screen bg-black font-sans text-ink selection:bg-accent/30">
+    <div
+      className={cn(
+        display.variable,
+        body.variable,
+        'theme-dark min-h-screen bg-black font-[family-name:var(--font-body-face)] text-ink selection:bg-accent/30',
+        '[&_h1]:font-[family-name:var(--font-display-face)] [&_h2]:font-[family-name:var(--font-display-face)]'
+      )}
+    >
       <div className="p-1.5 sm:p-3">
         <div className="relative overflow-clip rounded-[22px] bg-sunken sm:rounded-[32px]">
           <Nav isLoggedIn={isLoggedIn} signupHref={signupHref} />
