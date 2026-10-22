@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Sparkles } from 'lucide-react'
 
 /**
  * "First 50 freelancers get Pro free" banner. Reads the live count from the
@@ -34,7 +33,7 @@ export function LaunchPromoBanner({ className = '' }: { className?: string }) {
         'px-3.5 py-1.5 text-sm font-medium text-accent-strong ' + className
       }
     >
-      <Sparkles className="h-4 w-4 flex-shrink-0" />
+      <span aria-hidden="true" className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-accent" />
       <span>
         <span className="font-bold">First 50:</span> get Pro free for 1 month — only{' '}
         <span className="font-bold">{remaining}</span> spot{remaining === 1 ? '' : 's'} left
