@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
       'The client operating system for modern freelancers and boutique studios. Milestone approvals, client portals, and zero-fee Stripe settlements.',
     start_url: '/',
     display: 'standalone',
-    background_color: '#08090a',
-    theme_color: '#08090a',
+    background_color: '#F8F6F1',
+    theme_color: '#F8F6F1',
     icons: [
       {
         src: '/favicon.ico',

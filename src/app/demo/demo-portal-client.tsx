@@ -397,7 +397,7 @@ export function DemoPortalClient() {
       <footer className="border-t border-slate-200/80 dark:border-white/10 py-8 px-4 text-center">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-2">
-            <Logo className="w-4 h-4 text-indigo-600 dark:text-white" />
+            <Logo className="w-4 h-4 text-ink" />
             <span className="font-mono font-medium">Powered by Frevio · The Freelancer & Studio Operating System</span>
           </div>
 

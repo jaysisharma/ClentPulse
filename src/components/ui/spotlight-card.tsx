@@ -44,7 +44,7 @@ export function SpotlightCard({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        'relative overflow-hidden rounded-2xl border border-[#E8E4DC] bg-white transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.03)]',
+        'relative overflow-hidden rounded-2xl border border-line bg-surface transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.03)]',
         className
       )}
       {...props}

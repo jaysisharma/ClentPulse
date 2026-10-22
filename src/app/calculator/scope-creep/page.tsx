@@ -61,7 +61,7 @@ export default function ScopeCreepCalculatorPage() {
       <header className="w-full border-b border-white/5 py-4 px-6 sticky top-0 bg-[#08090a]/85 backdrop-blur-xl z-30">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <Logo className="w-6 h-6 transition-transform group-hover:scale-105" />
+            <Logo className="w-6 h-6 text-white transition-transform group-hover:scale-105" />
             <span className="font-bold text-sm tracking-tight text-white">Frevio</span>
             <span className="text-[11px] font-mono text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-full ml-1">
               Tools

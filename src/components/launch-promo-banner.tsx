@@ -31,7 +31,7 @@ export function LaunchPromoBanner({ className = '' }: { className?: string }) {
     <div
       className={
         'inline-flex items-center gap-2 rounded-full border border-accent/20 bg-accent/10 ' +
-        'px-3.5 py-1.5 text-sm font-medium text-accent ' + className
+        'px-3.5 py-1.5 text-sm font-medium text-accent-strong ' + className
       }
     >
       <Sparkles className="h-4 w-4 flex-shrink-0" />

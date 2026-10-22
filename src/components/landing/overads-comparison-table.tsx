@@ -67,27 +67,27 @@ export function OveradsComparisonTable() {
     <section id="comparison" className="space-y-12">
       {/* Section Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <h2 className="text-3xl sm:text-5xl font-bold text-[#171717] tracking-tight">
+        <h2 className="text-3xl sm:text-5xl font-bold text-ink tracking-tight">
           Everything in one place.
         </h2>
-        <p className="text-[#6B6B65] text-base font-light">
+        <p className="text-ink-muted text-base font-light">
           Zero scattered subscriptions. Free forever for up to 2 active client projects.
         </p>
       </div>
 
       {/* Desktop Comparison Table */}
-      <div className="relative hidden overflow-hidden rounded-2xl bg-white border border-[#E8E4DC] md:block shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+      <div className="relative hidden overflow-hidden rounded-2xl bg-surface border border-line md:block shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
         {/* Header Row */}
-        <div className="grid items-end gap-x-2 border-b border-[#E8E4DC] px-4 pb-5 pt-6 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)] bg-[#FAF8F5]">
+        <div className="grid items-end gap-x-2 border-b border-line px-4 pb-5 pt-6 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)] bg-sunken">
           <div aria-hidden="true" />
-          <div className="text-[11px] uppercase tracking-wider font-mono text-[#6B6B65] font-semibold">Key capabilities</div>
+          <div className="text-[11px] uppercase tracking-wider font-mono text-ink-muted font-semibold">Key capabilities</div>
           <div className="flex items-center justify-center">
-            <span className="inline-flex h-8 items-center gap-2 rounded-lg bg-[#F4773B] text-white font-bold px-4 text-xs font-mono shadow-sm">
+            <span className="inline-flex h-8 items-center gap-2 rounded-lg bg-accent text-on-accent font-bold px-4 text-xs font-mono shadow-sm">
               Frevio
             </span>
           </div>
-          <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-[#6B6B65]">A stack of tools</div>
-          <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-[#6B6B65]">Traditional way</div>
+          <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-ink-muted">A stack of tools</div>
+          <div className="px-2 text-center text-xs font-mono uppercase tracking-wider text-ink-muted">Traditional way</div>
         </div>
 
         {/* Table Data Rows */}
@@ -95,39 +95,39 @@ export function OveradsComparisonTable() {
           {COMPARISON_ROWS.map((row) => (
             <div
               key={row.id}
-              className="grid items-stretch gap-x-2 border-b border-[#E8E4DC] px-4 transition-colors last:border-b-0 hover:bg-[#FAF8F5]/60 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)]"
+              className="grid items-stretch gap-x-2 border-b border-line px-4 transition-colors last:border-b-0 hover:bg-sunken/60 md:px-6 grid-cols-[3rem_1.6fr_repeat(3,1fr)]"
             >
-              <div className="flex items-center justify-end py-5 text-right font-mono text-xs tabular-nums text-[#6B6B65]">
+              <div className="flex items-center justify-end py-5 text-right font-mono text-xs tabular-nums text-ink-muted">
                 {row.id}
               </div>
-              <div className="flex items-center py-5 text-sm leading-snug text-[#171717] font-medium">
+              <div className="flex items-center py-5 text-sm leading-snug text-ink font-medium">
                 {row.title}
               </div>
 
               {/* Frevio Column (Featured with warm background) */}
-              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center bg-[#FAF8F5]/70 border-x border-[#E8E4DC]">
-                <Check className="size-4 text-[#F4773B]" />
-                <span className="text-xs font-semibold text-[#171717]">{row.frevio.text}</span>
+              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center bg-sunken/70 border-x border-line">
+                <Check className="size-4 text-accent-strong" />
+                <span className="text-xs font-semibold text-ink">{row.frevio.text}</span>
               </div>
 
               {/* Stack of Tools Column */}
-              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-[#6B6B65]">
+              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-ink-muted">
                 {row.stack.status === 'partial' ? (
-                  <Minus className="size-4 text-[#6B6B65]" />
+                  <Minus className="size-4 text-ink-muted" />
                 ) : (
                   <X className="size-4 text-rose-500" />
                 )}
-                <span className="text-xs text-[#6B6B65]">{row.stack.text}</span>
+                <span className="text-xs text-ink-muted">{row.stack.text}</span>
               </div>
 
               {/* Traditional Freelancing Column */}
-              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-[#6B6B65]">
+              <div className="flex flex-col items-center justify-center gap-1.5 py-5 text-center text-ink-muted">
                 {row.traditional.status === 'no' ? (
                   <X className="size-4 text-rose-500" />
                 ) : (
-                  <Minus className="size-4 text-[#6B6B65]" />
+                  <Minus className="size-4 text-ink-muted" />
                 )}
-                <span className="text-xs text-[#6B6B65]">{row.traditional.text}</span>
+                <span className="text-xs text-ink-muted">{row.traditional.text}</span>
               </div>
             </div>
           ))}
@@ -137,31 +137,31 @@ export function OveradsComparisonTable() {
       {/* Mobile View Cards */}
       <div className="space-y-4 md:hidden">
         {COMPARISON_ROWS.map((row) => (
-          <div key={row.id} className="overflow-hidden rounded-2xl bg-white border border-[#E8E4DC] p-5 space-y-3 shadow-sm">
+          <div key={row.id} className="overflow-hidden rounded-2xl bg-surface border border-line p-5 space-y-3 shadow-sm">
             <div className="flex items-baseline gap-2.5">
-              <span className="font-mono text-[11px] tabular-nums text-[#F4773B] font-bold">{row.id}</span>
-              <h3 className="text-sm font-semibold text-[#171717]">{row.title}</h3>
+              <span className="font-mono text-[11px] tabular-nums text-accent-strong font-bold">{row.id}</span>
+              <h3 className="text-sm font-semibold text-ink">{row.title}</h3>
             </div>
             <div className="space-y-2">
-              <div className="flex items-center gap-3 rounded-xl p-3 bg-[#FAF8F5] border border-[#E8E4DC]">
-                <Check className="size-4 text-[#F4773B] flex-shrink-0" />
+              <div className="flex items-center gap-3 rounded-xl p-3 bg-sunken border border-line">
+                <Check className="size-4 text-accent-strong flex-shrink-0" />
                 <div>
-                  <div className="text-[10px] uppercase font-mono text-[#F4773B] font-bold">Frevio</div>
-                  <div className="text-xs font-semibold text-[#171717]">{row.frevio.text}</div>
+                  <div className="text-[10px] uppercase font-mono text-accent-strong font-bold">Frevio</div>
+                  <div className="text-xs font-semibold text-ink">{row.frevio.text}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-xl p-3 bg-[#F8F6F1] border border-[#E8E4DC] text-[#6B6B65]">
-                <Minus className="size-4 text-[#6B6B65] flex-shrink-0" />
+              <div className="flex items-center gap-3 rounded-xl p-3 bg-canvas border border-line text-ink-muted">
+                <Minus className="size-4 text-ink-muted flex-shrink-0" />
                 <div>
-                  <div className="text-[10px] uppercase font-mono text-[#6B6B65]">A stack of tools</div>
-                  <div className="text-xs text-[#6B6B65]">{row.stack.text}</div>
+                  <div className="text-[10px] uppercase font-mono text-ink-muted">A stack of tools</div>
+                  <div className="text-xs text-ink-muted">{row.stack.text}</div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 rounded-xl p-3 bg-[#F8F6F1] border border-[#E8E4DC] text-[#6B6B65]">
+              <div className="flex items-center gap-3 rounded-xl p-3 bg-canvas border border-line text-ink-muted">
                 <X className="size-4 text-rose-500 flex-shrink-0" />
                 <div>
-                  <div className="text-[10px] uppercase font-mono text-[#6B6B65]">Traditional way</div>
-                  <div className="text-xs text-[#6B6B65]">{row.traditional.text}</div>
+                  <div className="text-[10px] uppercase font-mono text-ink-muted">Traditional way</div>
+                  <div className="text-xs text-ink-muted">{row.traditional.text}</div>
                 </div>
               </div>
             </div>

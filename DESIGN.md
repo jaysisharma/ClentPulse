@@ -3,45 +3,75 @@
 The shared visual language for the app. New UI should follow this so the product
 stays consistent by default instead of drifting per-page.
 
-## Tokens (semantic, not literal)
+## Palette — "Ink & Ember"
 
-Defined in [`globals.css`](src/app/globals.css) under `@theme`. **Use the intent
-token, not the raw palette value**, so the brand accent is swappable in one place.
+One brand across marketing, app and client portal: warm linen surfaces, near-black
+ink, and a single ember accent. Defined in [`globals.css`](src/app/globals.css)
+as CSS variables exposed through `@theme inline`. **Use the token utility, never a
+raw hex or Tailwind palette literal.** Tokens switch automatically under
+`html.dark`, so a token class needs no `dark:` twin.
 
-| Token | Utility | Value | Use for |
-|---|---|---|---|
-| accent | `bg-accent` `text-accent` `ring-accent` | indigo-600 | primary actions, links, active nav |
-| accent-hover | `hover:bg-accent-hover` | indigo-700 | primary hover |
-| positive | `text-positive` | emerald-600 | paid, growth, net profit |
-| danger | `bg-danger` `text-danger` | rose-600 | money owed, destructive |
-| attention | `text-attention` | amber-600 | pending / needs-attention |
+### Surfaces & text
 
-Neutrals stay the Tailwind **`slate`** scale (text, surfaces, borders). Light
-accent tints use opacity (`bg-accent/10`) rather than a separate `-50` literal.
+| Token | Utility | Light | Dark | Use for |
+|---|---|---|---|---|
+| canvas | `bg-canvas` | `#F8F6F1` | `#0E0E0C` | page background |
+| surface | `bg-surface` | `#FFFFFF` | `#161614` | cards, nav, popovers |
+| sunken | `bg-sunken` | `#F1EEE7` | `#1F1F1C` | wells, table headers, hover rows |
+| line | `border-line` | `#E8E4DC` | `white/10` | dividers — decorative only |
+| line-strong | `border-line-strong` | `#8C877C` | `#6B6B67` | input / checkbox borders (≥3:1) |
+| ink | `text-ink` | `#171717` | `#F5F5F3` | primary text |
+| ink-muted | `text-ink-muted` | `#6B6B65` | `#A1A09A` | secondary text (≥4.5:1) |
+
+### Brand accent
+
+| Token | Utility | Light | Dark | Use for |
+|---|---|---|---|---|
+| accent | `bg-accent` | `#F4773B` | `#F4773B` | primary buttons, brand fills, highlights |
+| accent-hover | `hover:bg-accent-hover` | `#E0662D` | `#F68A55` | primary hover |
+| on-accent | `text-on-accent` | `#171717` | `#171717` | text/icons **on** an accent fill |
+| accent-strong | `text-accent-strong` `ring-accent-strong` | `#C2410C` | `#F4773B` | accent as text, links, focus rings |
+
+**Rule:** never put white text on ember — it is 2.78:1 and fails WCAG. Primary
+buttons are `bg-accent text-on-accent` (6.4:1). Ember as text on a light surface
+must be `text-accent-strong` (4.8:1).
+
+### Status (state only — never a brand or action color)
+
+| Token | Utility | Light | Dark | Use for |
+|---|---|---|---|---|
+| positive | `text-positive` | `#0E7A4E` | `#34D399` | paid, approved, growth |
+| danger | `bg-danger text-on-danger` / `text-danger` | `#C2253D` | `#FB7185` | money owed, destructive |
+| attention | `text-attention` | `#A16207` | `#FACC15` | pending, needs attention |
+
+Attention is deliberately **yellow, not amber/orange**, so a pending badge can never
+be mistaken for an ember action. Tints use opacity (`bg-positive/10`).
+
+### Scoping
+
+`.theme-light` pins a subtree to light values even when `html.dark` is set — the
+marketing page (`/`) uses it because it has no dark design.
 
 ## Type
-System / Inter `font-sans`. Page titles `text-2xl font-bold text-slate-900`.
-Eyebrow labels `text-xs font-bold uppercase tracking-wider`.
+Inter `font-sans`. Page titles `text-2xl font-bold text-ink`.
+Eyebrow labels `text-xs font-bold uppercase tracking-wider text-ink-muted`.
 
 ## Surfaces & primitives
-- **Card:** `bg-white rounded-xl border border-slate-200 shadow-sm`, padding `p-5`.
+- **Card:** `bg-surface rounded-xl border border-line shadow-sm`, padding `p-5`.
 - **[`StatCard`](src/components/ui/stat-card.tsx):** the canonical metric tile
   (label / value / optional sub, `tone="danger"` to flag money owed). Use it for
   any overview metric — don't hand-roll stat tiles.
-- **[`Button`](src/components/ui/button.tsx):** `primary` (accent) / `secondary`
-  / `ghost` / `danger`, sizes `sm | md | lg`.
-- **Status badge:** emerald / amber / slate by state.
-- **App chrome:** dark `slate-900` fixed sidebar + light `slate-50` canvas.
+- **[`Button`](src/components/ui/button.tsx):** `primary` (ember, ink text) /
+  `secondary` / `ghost` / `danger`, sizes `sm | md | lg`.
+- **[`Logo`](src/components/ui/logo.tsx):** stem follows `currentColor`, bar is
+  always ember. On an always-dark surface pass `text-white`.
+- **Status badge:** positive / attention / ink-muted by state.
 
-The dashboard ([`src/app/dashboard/page.tsx`](src/app/dashboard/page.tsx)) is the
-reference implementation of all of the above.
-
-## Theme & Canvas Architecture
-- **Marketing (`/`)**: GSAP scroll-triggered luxury dark/light mode with alternating sections and ambient spotlight glow.
-- **In-App Studio (`/dashboard`, `/project`, `/settings`)**: Full dark/light parity using `<DarkShell>` and `<AppLayout>`. In dark mode, uses deep obsidian `#08090a` canvas, `#0c0d12` surface cards, hairline glass borders (`border-white/10`), and monospace metrics. In light mode, uses crisp slate `#f8fafc` canvas, `#ffffff` cards, and `border-slate-200`.
-- **Client Portal (`/p/[slug]` & `/demo`)**: Dual-mode rendering honoring user/agency preference and white-labeling accent colors.
-
-## Semantic Tokens
-All pages use semantic tokens and adaptive classes:
-`bg-white dark:bg-[#0c0d12] border-slate-200 dark:border-white/10 text-slate-900 dark:text-white`
-
+## Migration status
+- ✅ Tokens, `Button`, `Logo`, favicon, theme-color, marketing page (`/`).
+- ⏳ App (`/dashboard`, `/project`, `/settings`, portal) still uses raw `indigo-*`,
+  `slate-*` and ad-hoc near-blacks (`#0c0d12`, `#08090a`, …). Migrate by mapping
+  indigo → `accent`, slate text → `ink`/`ink-muted`, slate borders → `line`,
+  near-blacks → `canvas`/`surface`/`sunken`. Don't add new raw literals.
+- ⏳ Raster icons (`favicon.ico`, `apple-icon.png`, `public/android-chrome-*.png`,
+  `public/logo.png`, `og-image.png`) still show the old gradient mark.
