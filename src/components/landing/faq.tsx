@@ -43,8 +43,8 @@ export function Faq() {
         </div>
         <p className={cn('max-w-xs text-sm leading-relaxed', muted)}>
           Can&apos;t find it? Email{' '}
-          <a href="mailto:support@frevio.cloud" className="text-ink underline underline-offset-4 hover:no-underline">
-            support@frevio.cloud
+          <a href="mailto:info@frevio.cloud" className="text-ink underline underline-offset-4 hover:no-underline">
+            info@frevio.cloud
           </a>{' '}
           and a human replies within a day.
         </p>
