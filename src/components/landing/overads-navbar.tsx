@@ -26,7 +26,9 @@ export function OveradsNavbar({ isLoggedIn, signupHref, promoRemaining }: Props)
           <div className="max-w-6xl mx-auto flex items-center justify-center gap-x-3 text-center flex-wrap gap-y-1">
             <span className="inline-flex items-center gap-1.5 font-normal text-slate-300">
               <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-              Launch offer: the first 50 signups get <strong className="text-white font-semibold">1 month of Frevio Pro free</strong>. No code needed · {promoRemaining} left
+              <span>
+                Launch offer: the first 50 signups get <strong className="text-white font-semibold">1 month of Frevio Pro free</strong>. No code needed · {promoRemaining} left
+              </span>
             </span>
             <Link href={signupHref} className="inline-flex items-center gap-0.5 text-white font-medium underline underline-offset-4 hover:text-amber-200 transition-colors">
               Claim <ArrowUpRight className="w-3 h-3" />

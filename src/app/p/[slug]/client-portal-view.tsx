@@ -151,7 +151,7 @@ export function ClientPortalView({
         {/* Top: Brand Logo & Title */}
         <div className="space-y-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3.5 min-w-0">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-md shadow-indigo-600/30 flex-shrink-0"
                 style={{ backgroundColor: accentColor || '#6366f1' }}
@@ -410,7 +410,7 @@ export function ClientPortalView({
               {/* Ambient Studio Lighting Glow */}
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[250px] bg-indigo-500/[0.06] blur-[100px] rounded-full"
+                className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] max-w-full h-[250px] bg-indigo-500/[0.06] blur-[100px] rounded-full"
               />
 
               {/* ── Top Grid: Current Phase Showcase (8 cols) + Info Sidebar (4 cols) ── */}
