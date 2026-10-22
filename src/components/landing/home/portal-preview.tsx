@@ -102,7 +102,7 @@ export function PortalPreview() {
                 </div>
                 <span
                   className={cn(
-                    'whitespace-nowrap rounded-full px-2 py-0.5 text-[11px] font-semibold transition-colors duration-300',
+                    'whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold transition-colors duration-300',
                     approved ? 'bg-positive/15 text-positive' : 'bg-attention/15 text-attention'
                   )}
                 >
@@ -168,7 +168,7 @@ export function PortalPreview() {
             >
               <div className="flex items-center justify-between">
                 <p className="text-xs text-ink-muted">Invoice #0012</p>
-                <span className={cn('text-[11px] font-semibold', paid ? 'text-positive' : 'text-ink-muted')}>
+                <span className={cn('text-xs font-semibold', paid ? 'text-positive' : 'text-ink-muted')}>
                   {paid ? 'Paid ✓' : 'Due in 7 days'}
                 </span>
               </div>

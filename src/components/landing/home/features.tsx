@@ -67,7 +67,7 @@ function InvoiceMock() {
           <span className="font-mono text-xs text-ink-muted">{r.n}</span>
           <span className="flex-1 truncate text-ink">{r.label}</span>
           <span className="tabular-nums text-ink">{r.amt}</span>
-          <span className={cn('w-16 rounded-full py-0.5 text-center text-[11px] font-semibold', r.tone)}>{r.status}</span>
+          <span className={cn('w-16 rounded-full py-0.5 text-center text-xs font-semibold', r.tone)}>{r.status}</span>
         </div>
       ))}
     </div>

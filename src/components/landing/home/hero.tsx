@@ -37,7 +37,7 @@ function NotificationStack() {
           {n.done ? (
             <Check className="h-4 w-4 flex-shrink-0 text-positive" />
           ) : (
-            <span className="flex-shrink-0 rounded-full bg-ink px-2.5 py-1 text-[11px] font-semibold text-canvas">Review</span>
+            <span className="flex-shrink-0 rounded-full bg-ink px-2.5 py-1 text-xs font-semibold text-canvas">Review</span>
           )}
         </div>
       ))}

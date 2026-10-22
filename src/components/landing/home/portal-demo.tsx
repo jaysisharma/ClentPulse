@@ -78,7 +78,7 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
                     {['Primary', 'Mono', 'Glyph'].map((f) => (
                       <div key={f} className={cn(well, 'flex aspect-[5/3] flex-col items-center justify-center gap-1 text-ink-muted')}>
                         <FileText className="h-4 w-4" />
-                        <span className="text-[11px]">{f}.svg</span>
+                        <span className="text-xs">{f}.svg</span>
                       </div>
                     ))}
                   </div>
@@ -130,7 +130,7 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
                       <span className="text-sm font-semibold text-ink">Invoice #0012</span>
                       <span
                         className={cn(
-                          'rounded-full px-2 py-0.5 text-[11px] font-semibold',
+                          'rounded-full px-2 py-0.5 text-xs font-semibold',
                           paid ? 'bg-positive/15 text-positive' : 'bg-attention/15 text-attention'
                         )}
                       >

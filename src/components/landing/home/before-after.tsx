@@ -58,7 +58,7 @@ export function BeforeAfter() {
                 } as React.CSSProperties
               }
             >
-              <p className="text-[11px] font-medium uppercase tracking-wider text-danger">{m.from}</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-danger">{m.from}</p>
               <p className="mt-0.5 text-sm text-ink">{m.text}</p>
             </div>
           ))}
