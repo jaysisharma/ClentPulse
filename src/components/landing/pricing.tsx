@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SectionHeading } from './section-heading'
-import { card, ember, lightBtn, muted, primaryBtn, secondaryBtn, section } from './styles'
+import { card, muted, primaryBtn, secondaryBtn, section } from './styles'
 
 type Billing = 'monthly' | 'annual'
 
@@ -50,13 +50,8 @@ export function Pricing({ signupHref }: { signupHref: string }) {
     <section id="pricing" className={cn(section, 'scroll-mt-24')}>
       <SectionHeading
         align="center"
-        size="lg"
         label="Pricing"
-        title={
-          <>
-            Start free. <span className="text-ink-muted">Upgrade when you grow.</span>
-          </>
-        }
+        title="Start free. Upgrade when you grow."
       />
 
       <div className="mt-8 flex justify-center">
@@ -80,34 +75,33 @@ export function Pricing({ signupHref }: { signupHref: string }) {
 
       <div className="mx-auto mt-10 grid max-w-5xl gap-3 md:grid-cols-3">
         {TIERS.map((t) => {
-          const dark = t.highlighted
           return (
-            <div key={t.name} className={cn(dark ? ember : card, 'flex flex-col p-7')}>
+            <div key={t.name} className={cn(card, 'flex flex-col p-7', t.highlighted && 'border-ink')}>
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium">{t.name}</h3>
                 {t.badge && (
-                  <span className="rounded-full border border-white/15 bg-white/10 px-2.5 py-0.5 text-xs font-medium text-white">
+                  <span className={cn('text-xs', muted)}>
                     {t.badge}
                   </span>
                 )}
               </div>
-              <p className={cn('mt-2 text-sm', dark ? 'text-white/65' : muted)}>{t.description}</p>
+              <p className={cn('mt-2 text-sm', muted)}>{t.description}</p>
               <p className="mt-8 flex items-baseline gap-1">
                 <span className="text-5xl font-light tracking-[-0.03em] tabular-nums">{t.price[billing]}</span>
-                <span className={cn('text-sm', dark ? 'text-white/65' : muted)}>{t.period}</span>
+                <span className={cn('text-sm', muted)}>{t.period}</span>
               </p>
-              <ul className={cn('mt-6 flex-1 space-y-3 border-t pt-6', dark ? 'border-white/10' : 'border-line')}>
+              <ul className={'mt-6 flex-1 space-y-3 border-t border-line pt-6'}>
                 {t.features.map((f) => (
-                  <li key={f} className={cn('flex items-start gap-2.5 text-sm', dark ? 'text-white/85' : 'text-ink')}>
-                    <Check className={cn('mt-0.5 h-4 w-4 flex-shrink-0', dark ? 'text-white' : 'text-accent')} />
+                  <li key={f} className={'flex items-start gap-2.5 text-sm'}>
+                    <Check className={'mt-0.5 h-4 w-4 flex-shrink-0 text-ink-muted'} />
                     {f}
                   </li>
                 ))}
               </ul>
-              <Link href={signupHref} className={cn(dark ? lightBtn : t.name === 'Free' ? primaryBtn : secondaryBtn, 'mt-8 w-full')}>
+              <Link href={signupHref} className={cn(t.highlighted ? primaryBtn : secondaryBtn, 'mt-8 w-full')}>
                 {t.cta}
               </Link>
-              <p className={cn('mt-3 text-center text-xs', dark ? 'text-white/60' : muted)}>{t.note}</p>
+              <p className={cn('mt-3 text-center text-xs', muted)}>{t.note}</p>
             </div>
           )
         })}

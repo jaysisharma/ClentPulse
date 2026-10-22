@@ -2,7 +2,7 @@ import { Clock, Mail } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Reveal } from './reveal'
 import { SectionHeading } from './section-heading'
-import { card, ember, heading, muted, section, well } from './styles'
+import { card, heading, muted, section, well } from './styles'
 
 const mockCard = cn(card, 'w-full p-5 sm:p-6')
 
@@ -97,31 +97,25 @@ const TILES = [
     title: 'Updates that send themselves.',
     body: 'Post progress as you work. Frevio turns it into a clear weekly email, so clients stop asking “any updates?”.',
     mock: <UpdateMock />,
-    dark: true,
-    span: 'md:col-span-7',
   },
   {
     title: 'Scope changes, signed first.',
     body: '“One more thing” becomes a change order the client signs in one click, before you start the extra work.',
     mock: <ContractMock />,
-    span: 'md:col-span-5',
   },
   {
     title: 'Invoices tied to milestones.',
     body: 'Each invoice belongs to the work it pays for. Clients see it right after they approve.',
     mock: <InvoiceMock />,
-    span: 'md:col-span-5',
   },
   {
     title: 'Know your real rate.',
     body: 'Track hours against the budget and see your effective rate before a project quietly turns unprofitable.',
     mock: <BudgetMock />,
-    dark: true,
-    span: 'md:col-span-7',
   },
 ]
 
-/** Bento of the four jobs behind the link: dark ember tiles alternate with paper ones. */
+/** The four jobs behind the link, each shown as the thing your client or you actually see. */
 export function Features() {
   return (
     <section className={section}>
@@ -129,23 +123,17 @@ export function Features() {
         label="Behind the link"
         title={
           <>
-            The rest of the client job, <span className="text-ink-muted">in the same place.</span>
+            The rest of the client job, in the same place.
           </>
         }
       />
 
-      <div className="mt-10 grid gap-3 md:grid-cols-12">
+      <div className="mt-10 grid gap-x-10 gap-y-14 md:grid-cols-2">
         {TILES.map((t, i) => (
-          <Reveal
-            key={t.title}
-            delay={(i % 2) * 80}
-            className={cn(t.span, t.dark ? ember : card, 'flex flex-col gap-8 p-6 sm:p-8')}
-          >
-            <div className="max-w-md">
-              <h3 className={cn(heading, 'text-2xl leading-tight md:text-[1.75rem]', t.dark && 'text-white')}>{t.title}</h3>
-              <p className={cn('mt-3 text-sm leading-relaxed', t.dark ? 'text-white/65' : muted)}>{t.body}</p>
-            </div>
-            <div className={cn('mt-auto w-full', t.dark ? 'max-w-md self-end' : '')}>{t.mock}</div>
+          <Reveal key={t.title} delay={(i % 2) * 80} className="flex flex-col">
+            <h3 className={cn(heading, 'text-2xl leading-tight')}>{t.title}</h3>
+            <p className={cn('mt-2 mb-6 max-w-md text-sm leading-relaxed', muted)}>{t.body}</p>
+            <div className="mt-auto rounded-[20px] bg-sunken p-4 sm:p-6">{t.mock}</div>
           </Reveal>
         ))}
       </div>

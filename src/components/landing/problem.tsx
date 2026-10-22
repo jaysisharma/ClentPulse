@@ -39,8 +39,7 @@ export function Problem() {
         label="The problem"
         title={
           <>
-            Clients don&apos;t ignore you.{' '}
-            <span className="text-ink-muted">They lose you between five apps.</span>
+            Clients don&apos;t ignore you. They lose you between five apps.
           </>
         }
       />

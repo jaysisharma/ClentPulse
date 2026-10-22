@@ -66,9 +66,9 @@ Eyebrow labels `text-xs font-bold uppercase tracking-wider text-ink-muted`.
 ## Migration status
 - ✅ Tokens, `Button`, `Logo`, favicon, theme-color.
 - Marketing page (`/`, `src/components/landing/`) is light-only (`.theme-light`) on the tokens:
-  paper canvas, light tight-tracked headlines, ink pill buttons, and near-black `.ember` panels
-  (violet + ember glow, see `globals.css`) holding light product cards. Shared classes live in
-  `src/components/landing/styles.ts`.
+  paper canvas, light tight-tracked headlines, ink pill buttons, one flat ink `stage` behind the
+  hero product shot. No gradients, no dark feature tiles; colour comes only from status states.
+  Shared classes live in `src/components/landing/styles.ts`.
 - ⏳ App (`/dashboard`, `/project`, `/settings`, portal) still uses raw `indigo-*`,
   `slate-*` and ad-hoc near-blacks (`#0c0d12`, `#08090a`, …). Migrate by mapping
   indigo → `accent`, slate text → `ink`/`ink-muted`, slate borders → `line`,

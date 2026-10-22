@@ -1,7 +1,7 @@
 import { Check, Copy, Link2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { SectionHeading } from './section-heading'
-import { card, ember, muted, section, well } from './styles'
+import { heading, muted, section, well } from './styles'
 
 function CreateMock() {
   return (
@@ -50,35 +50,27 @@ function PaidMock() {
 }
 
 const STEPS = [
-  { tag: 'Set up', title: 'Create the project', body: 'Name it, add your client’s email and set milestones.', mock: <CreateMock /> },
-  { tag: 'Share', title: 'Send one link', body: 'Your client gets a private portal that opens anywhere.', mock: <LinkMock /> },
-  { tag: 'Done', title: 'Get approved and paid', body: 'They approve the milestone and pay it on the same page.', mock: <PaidMock /> },
+  { title: 'Create the project', body: 'Name it, add your client’s email and set milestones.', mock: <CreateMock /> },
+  { title: 'Send one link', body: 'Your client gets a private portal that opens anywhere.', mock: <LinkMock /> },
+  { title: 'Get approved and paid', body: 'They approve the milestone and pay it on the same page.', mock: <PaidMock /> },
 ]
 
 export function HowItWorks() {
   return (
     <section id="how-it-works" className={cn(section, 'scroll-mt-24')}>
-      <SectionHeading
-        align="center"
-        label="How it works"
-        title="Live in under a minute."
-        sub="Three steps, and the last one is your client’s. Add a contract up front if you want one."
-      />
+      <SectionHeading label="How it works" title="Live in under a minute." />
 
-      <div className={cn(ember, 'mt-12 p-3 sm:p-8 lg:p-12')}>
-        <ol className="grid gap-3 md:grid-cols-3">
-          {STEPS.map((s, i) => (
-            <li key={s.title} className={cn(card, 'flex flex-col p-5')}>
-              <p className={cn('flex items-center gap-2 text-xs', muted)}>
-                <span className="font-mono">0{i + 1}</span> {s.tag}
-              </p>
-              <h3 className="mt-3 text-lg font-medium tracking-tight text-ink">{s.title}</h3>
-              <p className={cn('mt-1 mb-5 text-sm leading-relaxed', muted)}>{s.body}</p>
-              <div className="mt-auto">{s.mock}</div>
-            </li>
-          ))}
-        </ol>
-      </div>
+      <ol className="mt-10 grid border-t border-line md:grid-cols-3 md:divide-x md:divide-line">
+        {STEPS.map((s, i) => (
+          <li key={s.title} className="flex flex-col border-b border-line py-8 md:border-b-0 md:px-8 md:first:pl-0 md:last:pr-0">
+            <h3 className={cn(heading, 'text-xl')}>
+              <span className="text-ink-muted">{i + 1}.</span> {s.title}
+            </h3>
+            <p className={cn('mt-2 mb-6 text-sm leading-relaxed', muted)}>{s.body}</p>
+            <div className="mt-auto">{s.mock}</div>
+          </li>
+        ))}
+      </ol>
     </section>
   )
 }

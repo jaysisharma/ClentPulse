@@ -7,9 +7,8 @@ import { heading, muted, primaryBtn, section } from './styles'
 export function FinalCta({ isLoggedIn, signupHref }: { isLoggedIn: boolean; signupHref: string }) {
   return (
     <section className={cn(section, 'text-center')}>
-      <h2 className={cn(heading, 'text-5xl leading-[1.02] sm:text-6xl md:text-7xl')}>
-        Send your first
-        <span className="block text-ink-muted">client link today.</span>
+      <h2 className={cn(heading, 'mx-auto max-w-3xl text-4xl leading-[1.04] sm:text-5xl md:text-6xl')}>
+        Send your first client link today.
       </h2>
       <p className={cn('mx-auto mt-6 max-w-md text-base leading-relaxed', muted)}>
         Create a project, share the link, and let your client review, approve and pay in one place.
