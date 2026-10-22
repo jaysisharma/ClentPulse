@@ -1,8 +1,8 @@
 import { cn } from '@/lib/utils'
 
 /**
- * Ink & Ember mark. The stem uses `currentColor` so it follows the text color
- * (ink on light, linen on dark); the middle bar is always the ember accent.
+ * Brand mark. The stem uses `currentColor` so it follows the text color
+ * (ink on light, linen on dark); the middle bar is always the violet accent.
  */
 export function Logo({ className, alt = 'Frevio' }: { className?: string; alt?: string }) {
   return (
@@ -21,7 +21,7 @@ export function Logo({ className, alt = 'Frevio' }: { className?: string; alt?: 
       />
 
       {/* Middle Arm Layer */}
-      <rect x="35" y="46" width="28" height="14" rx="7" fill="var(--color-accent)" />
+      <rect x="35" y="46" width="28" height="14" rx="7" className="fill-accent" />
     </svg>
   )
 }

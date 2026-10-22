@@ -1,5 +1,11 @@
+import type { Viewport } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { SpatialLanding } from '@/components/landing/spatial-landing'
+import { HomeLanding } from '@/components/landing/home/home-landing'
+
+export const viewport: Viewport = {
+  themeColor: '#0B0B0C',
+  colorScheme: 'dark',
+}
 
 export default async function LandingPage() {
   const supabase = await createClient()
@@ -9,6 +15,5 @@ export default async function LandingPage() {
   const isLoggedIn = !!user
   const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
-  return <SpatialLanding isLoggedIn={isLoggedIn} signupHref={signupHref} />
+  return <HomeLanding isLoggedIn={isLoggedIn} signupHref={signupHref} />
 }
-
