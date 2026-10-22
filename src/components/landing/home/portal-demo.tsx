@@ -42,7 +42,7 @@ export function PortalDemo({ signupHref }: { signupHref: string }) {
         sub="Click through it. Review, approve, pay. That's the whole job for them."
       />
 
-      <Stage tone="vivid" className="mt-12">
+      <Stage className="mt-12">
         <div className="px-3 py-8 sm:px-10 sm:py-14">
           <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl bg-surface shadow-[0_40px_100px_-30px_rgba(0,0,0,0.85)]">
             {/* Card header */}

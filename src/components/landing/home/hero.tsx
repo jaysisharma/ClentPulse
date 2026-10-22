@@ -92,10 +92,10 @@ export function Hero({ isLoggedIn, signupHref }: HeroProps) {
 
       {/* Product stages */}
       <div className="mx-auto mt-14 grid max-w-6xl gap-3 sm:mt-20 lg:grid-cols-[1fr_2.1fr]">
-        <Stage tone="dusk" className="order-2 min-h-[300px] lg:order-1">
+        <Stage className="order-2 min-h-[300px] lg:order-1">
           <NotificationStack />
         </Stage>
-        <Stage tone="vivid" className="order-1 lg:order-2">
+        <Stage className="order-1 lg:order-2">
           <div className="p-3 sm:p-8">
             <PortalPreview />
           </div>

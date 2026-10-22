@@ -18,7 +18,7 @@ export function Comparison() {
   const max = Math.max(...BARS.map((b) => b.price))
   return (
     <section id="comparison" className="mx-auto max-w-6xl px-3 sm:px-6">
-      <Stage tone="plum">
+      <Stage>
         <div className="grid gap-12 p-6 sm:p-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
           <div>
             <p className="text-xs font-medium uppercase tracking-widest text-white/70">Why Frevio</p>

@@ -43,7 +43,7 @@ export function BeforeAfter() {
     <section className="mx-auto max-w-6xl px-3 sm:px-6">
       <SectionHeading label="The problem" title="Clients don't ignore you." muted="They lose you between five apps." stacked />
 
-      <Stage tone="dusk" className="mt-12">
+      <Stage className="mt-12">
         <div ref={ref} className="relative mx-auto h-[440px] max-w-4xl sm:h-[420px]">
           {SCATTERED.map((m, i) => (
             <div

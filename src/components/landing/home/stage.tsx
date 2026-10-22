@@ -1,21 +1,17 @@
 import { cn } from '@/lib/utils'
 
-// Flat fills only — no gradients. White text passes AA on all three.
-const TONES = {
-  vivid: 'bg-[#4c1d95]', // violet-900, the main product stage
-  dusk: 'bg-[#2e1065]', // violet-950, supporting panels
-  plum: 'bg-[#2e1065]', // violet-950, text-heavy cards
-} as const
-
-/** Solid violet panel that product cards float on (overads-style "stage"). */
-export function Stage({
-  children,
-  tone = 'vivid',
-  className,
-}: {
-  children: React.ReactNode
-  tone?: keyof typeof TONES
-  className?: string
-}) {
-  return <div className={cn('relative overflow-hidden rounded-[28px]', TONES[tone], className)}>{children}</div>
+/**
+ * Flat graphite panel that product cards float on (overads-style "stage").
+ * No gradients, no brand color: the product UI is the color. Cards inside get
+ * a lifted surface by re-scoping the surface tokens.
+ */
+export function Stage({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div
+      className={cn('relative overflow-hidden rounded-[20px] bg-[#1c1c1f] shadow-[inset_0_0_0_1px_rgb(255_255_255/0.06)]', className)}
+      style={{ '--surface': '#26262a', '--sunken': '#1c1c1f' } as React.CSSProperties}
+    >
+      {children}
+    </div>
+  )
 }
