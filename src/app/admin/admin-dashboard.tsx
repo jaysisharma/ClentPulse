@@ -35,6 +35,7 @@ import {
 import { StatCard } from '@/components/ui/stat-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useAdminTab } from './admin-context'
 
 type ProjectId = { id: string }
 
@@ -226,7 +227,9 @@ const BROADCAST_TEMPLATES = [
   }
 ]
 
-export function AdminDashboard({ initialUsers, initialVisits, initialPromo, activeTab, stripeStats, initialEvents, initialFeedback, initialSignupSources, serverTime }: AdminDashboardProps) {
+export function AdminDashboard({ initialUsers, initialVisits, initialPromo, activeTab: propActiveTab, stripeStats, initialEvents, initialFeedback, initialSignupSources, serverTime }: AdminDashboardProps) {
+  const adminContext = useAdminTab()
+  const activeTab = adminContext?.activeTab || propActiveTab || 'overview'
   const now = useMemo(() => new Date(serverTime).getTime(), [serverTime])
 
   // Source captured at signup; more reliable than matching anonymous visits to users

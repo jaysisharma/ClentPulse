@@ -2,13 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import {
   Activity,
   Users,
-  Mail,
-  Eye,
-  Settings,
   LogOut,
   Moon,
   Sun,
@@ -17,7 +14,6 @@ import {
   Shield,
   ArrowLeft,
   Megaphone,
-  CreditCard,
   Send,
   Zap,
   BarChart2,
@@ -25,10 +21,12 @@ import {
   Gauge,
   MessageSquare,
   ShieldAlert,
+  Loader2,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { createClient } from '@/lib/supabase/client'
 import { useTheme } from '@/components/theme-provider'
+import { useAdminTab } from './admin-context'
 
 interface AdminShellProps {
   children: React.ReactNode
@@ -36,51 +34,92 @@ interface AdminShellProps {
 }
 
 function NavLink({
+  tab,
   href,
   label,
   icon: Icon,
   active,
-  onNavigate,
+  loading,
+  onSelect,
 }: {
+  tab: string
   href: string
   label: string
   icon: React.ElementType
   active: boolean
-  onNavigate?: () => void
+  loading: boolean
+  onSelect: (tab: string) => void
 }) {
   return (
-    <Link
+    <a
       href={href}
-      onClick={onNavigate}
+      onClick={(e) => {
+        // If normal primary click without modifier keys, intercept for instantaneous client-side switch
+        if (!e.metaKey && !e.ctrlKey && !e.shiftKey && e.button === 0) {
+          e.preventDefault()
+          onSelect(tab)
+        }
+      }}
       className={cn(
-        'flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150',
+        'flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all duration-150 select-none cursor-pointer',
         active
           ? 'bg-rose-500/10 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 font-semibold border border-rose-500/20 dark:border-rose-500/20 shadow-xs'
           : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-white/[0.04]'
       )}
     >
-      <Icon className={cn("w-4 h-4 flex-shrink-0", active ? "text-rose-600 dark:text-rose-400" : "text-slate-400 dark:text-slate-500")} />
-      <span>{label}</span>
-      {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />}
-    </Link>
+      {loading ? (
+        <Loader2 className="w-4 h-4 flex-shrink-0 text-rose-500 animate-spin" />
+      ) : (
+        <Icon className={cn("w-4 h-4 flex-shrink-0", active ? "text-rose-600 dark:text-rose-400" : "text-slate-400 dark:text-slate-500")} />
+      )}
+      <span className="flex-1 truncate">{label}</span>
+      {loading ? (
+        <span className="text-[10px] text-rose-500 font-mono animate-pulse">loading...</span>
+      ) : active ? (
+        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+      ) : null}
+    </a>
   )
 }
 
 export function AdminShell({ children, user }: AdminShellProps) {
   const [open, setOpen] = useState(false)
-  const pathname = usePathname()
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { theme, toggleTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const [isSigningOut, setIsSigningOut] = useState(false)
 
-  const currentTab = searchParams.get('tab') || 'overview'
+  const adminContext = useAdminTab()
+  const activeTab = adminContext?.activeTab || 'overview'
+  const isNavigating = adminContext?.isNavigating || false
+  const navigatingTo = adminContext?.navigatingTo || null
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  const handleSelectTab = (tab: string) => {
+    setOpen(false)
+    if (adminContext?.setActiveTab) {
+      adminContext.setActiveTab(tab)
+    }
+  }
+
+  const handleBackToWorkspace = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (adminContext) {
+      adminContext.setIsNavigating(true)
+      adminContext.setNavigatingTo('/dashboard')
+    }
+    router.push('/dashboard')
+  }
+
   async function handleSignOut() {
+    setIsSigningOut(true)
+    if (adminContext) {
+      adminContext.setIsNavigating(true)
+      adminContext.setNavigatingTo('signout')
+    }
     const supabase = createClient()
     await supabase.auth.signOut()
     router.refresh()
@@ -162,9 +201,13 @@ export function AdminShell({ children, user }: AdminShellProps) {
             {group.items.map(item => (
               <NavLink
                 key={item.tab}
-                active={currentTab === item.tab}
-                onNavigate={() => setOpen(false)}
-                {...item}
+                tab={item.tab}
+                href={item.href}
+                label={item.label}
+                icon={item.icon}
+                active={activeTab === item.tab}
+                loading={isNavigating && navigatingTo === item.tab}
+                onSelect={handleSelectTab}
               />
             ))}
           </div>
@@ -173,14 +216,20 @@ export function AdminShell({ children, user }: AdminShellProps) {
 
       {/* Admin Actions */}
       <div className="px-3 py-3 border-t border-slate-200 dark:border-white/10 space-y-1">
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] transition-colors w-full text-left"
-        >
-          <ArrowLeft className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-          Back to Workspace
-        </Link>
         <button
+          type="button"
+          onClick={handleBackToWorkspace}
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] transition-colors w-full text-left cursor-pointer"
+        >
+          {navigatingTo === '/dashboard' ? (
+            <Loader2 className="w-4 h-4 text-slate-500 animate-spin" />
+          ) : (
+            <ArrowLeft className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+          )}
+          <span>{navigatingTo === '/dashboard' ? 'Loading Workspace...' : 'Back to Workspace'}</span>
+        </button>
+        <button
+          type="button"
           onClick={toggleTheme}
           className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-white/[0.04] transition-colors w-full text-left cursor-pointer"
         >
@@ -192,18 +241,31 @@ export function AdminShell({ children, user }: AdminShellProps) {
           {mounted && theme === 'dark' ? 'Light mode' : 'Dark mode'}
         </button>
         <button
+          type="button"
           onClick={handleSignOut}
-          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors w-full text-left cursor-pointer"
+          disabled={isSigningOut}
+          className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors w-full text-left cursor-pointer disabled:opacity-50"
         >
-          <LogOut className="w-4 h-4 text-rose-500" />
-          Sign out
+          {isSigningOut ? (
+            <Loader2 className="w-4 h-4 text-rose-500 animate-spin" />
+          ) : (
+            <LogOut className="w-4 h-4 text-rose-500" />
+          )}
+          <span>{isSigningOut ? 'Signing out...' : 'Sign out'}</span>
         </button>
       </div>
     </aside>
   )
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 relative">
+      {/* Top Global Loading Progress Bar */}
+      {isNavigating && (
+        <div className="fixed top-0 left-0 right-0 h-1 z-50 overflow-hidden bg-rose-500/20">
+          <div className="h-full bg-gradient-to-r from-rose-500 via-pink-500 to-amber-500 animate-admin-progress shadow-[0_0_10px_rgba(244,63,94,0.7)]" />
+        </div>
+      )}
+
       {/* Mobile overlay */}
       {open && (
         <div
@@ -237,7 +299,10 @@ export function AdminShell({ children, user }: AdminShellProps) {
       </div>
 
       {/* Main Content Area */}
-      <main className="flex-1 lg:ml-60 p-6 lg:p-8 pt-20 lg:pt-8 print:ml-0 print:p-0">
+      <main className={cn(
+        "flex-1 lg:ml-60 p-6 lg:p-8 pt-20 lg:pt-8 print:ml-0 print:p-0 transition-opacity duration-200",
+        isNavigating && "opacity-95"
+      )}>
         {children}
       </main>
     </div>

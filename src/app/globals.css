@@ -92,6 +92,16 @@ img, video, canvas, iframe {
   animation: slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@keyframes admin-progress {
+  0% { transform: translateX(-100%); width: 40%; }
+  50% { transform: translateX(50%); width: 70%; }
+  100% { transform: translateX(200%); width: 100%; }
+}
+
+.animate-admin-progress {
+  animation: admin-progress 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 /* Gentle float for the hero's floating cards */
 @keyframes float {
   0%, 100% { transform: translateY(0); }

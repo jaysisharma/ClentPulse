@@ -31,7 +31,7 @@ export default async function AdminPage({ searchParams }: PageProps) {
   // 1. Fetch all users, including their created projects array (to display project counts)
   const { data: usersData, error: usersError } = await adminClient
     .from('users')
-    .select('id, email, name, plan, promo_pro, onboarded, created_at, stripe_customer_id, projects(id)')
+    .select('id, email, name, plan, promo_pro, onboarded, created_at, stripe_customer_id, projects:projects!projects_user_id_fkey(id)')
     .order('created_at', { ascending: false })
 
   if (usersError) {

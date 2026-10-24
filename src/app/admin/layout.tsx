@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { AdminShell } from './admin-shell'
+import { AdminProvider } from './admin-context'
 
 export default async function AdminLayout({
   children,
@@ -28,8 +29,10 @@ export default async function AdminLayout({
   }
 
   return (
-    <AdminShell user={{ name: profile.name ?? null, plan: profile.plan as 'free' | 'pro' }}>
-      {children}
-    </AdminShell>
+    <AdminProvider>
+      <AdminShell user={{ name: profile.name ?? null, plan: profile.plan as 'free' | 'pro' }}>
+        {children}
+      </AdminShell>
+    </AdminProvider>
   )
 }

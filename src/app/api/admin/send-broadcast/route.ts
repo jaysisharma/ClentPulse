@@ -48,7 +48,9 @@ export async function POST(request: Request) {
       recipients = data || []
     } else if (target === 'leads') {
       // Users who haven't completed onboarding OR don't have projects
-      const { data: allUsers } = await admin.from('users').select('id, email, name, onboarded, projects(id)')
+      const { data: allUsers } = await admin
+        .from('users')
+        .select('id, email, name, onboarded, projects:projects!projects_user_id_fkey(id)')
       recipients = (allUsers || [])
         .filter(u => !u.onboarded || !u.projects || u.projects.length === 0)
         .map(u => ({ email: u.email, name: u.name }))
