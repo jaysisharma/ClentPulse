@@ -51,15 +51,15 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
       {/* Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         {/* Status segmented pill */}
-        <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full w-fit ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm">
+        <div className="flex items-center gap-1 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-1 rounded-full w-fit shadow-xs dark:shadow-sm">
           {FILTERS.map(f => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
               className={cn(
-                'px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer whitespace-nowrap',
+                'px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-all cursor-pointer whitespace-nowrap',
                 filter === f.key
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
+                  ? 'bg-accent hover:bg-accent-hover text-white shadow-xs font-semibold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5',
               )}
             >
@@ -75,32 +75,32 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search clients, emails, or projects…"
-            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all ring-1 ring-slate-950/5 dark:ring-white/5 font-light"
+            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all"
           />
         </div>
       </div>
 
       {/* Results Grid */}
       {clients.length === 0 ? (
-        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-14 px-6 text-center shadow-xs dark:shadow-sm">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
+        <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] py-14 px-6 text-center shadow-xs dark:shadow-sm">
+          <div className="w-12 h-12 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
             <Users className="w-6 h-6" />
           </div>
           <h3 className="text-base font-medium text-slate-900 dark:text-white">Your clients will appear here</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto font-light">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
             Create your first project to add a client and initialize their workspace.
           </p>
           <Link
             href="/project/new"
-            className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold px-4 py-2 text-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-xs"
+            className="bg-accent hover:bg-accent-hover mt-5 inline-flex items-center gap-1.5 rounded-md text-white font-semibold px-4 py-2 text-xs transition-all shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Create project</span>
           </Link>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-14 px-6 text-center shadow-xs dark:shadow-sm">
-          <div className="w-10 h-10 bg-slate-100 dark:bg-white/5 rounded-xl flex items-center justify-center mx-auto mb-3 text-slate-400">
+        <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] py-14 px-6 text-center shadow-xs dark:shadow-sm">
+          <div className="w-10 h-10 bg-slate-100 dark:bg-white/5 rounded-md flex items-center justify-center mx-auto mb-3 text-slate-400">
             <Users className="w-5 h-5" />
           </div>
           <p className="text-xs font-semibold text-slate-900 dark:text-white">No clients match</p>
@@ -111,14 +111,14 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
           {filtered.map(client => (
             <div
               key={client.key}
-              className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-5 hover:border-slate-300 dark:hover:border-white/20 transition-all shadow-xs dark:shadow-sm flex flex-col justify-between"
+              className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-5 hover:border-slate-300 dark:hover:border-white/20 transition-all shadow-xs dark:shadow-sm flex flex-col justify-between"
             >
               {/* Identity Header */}
               <div>
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white text-xs font-bold font-mono flex-shrink-0 shadow-inner"
+                      className="w-10 h-10 rounded-md flex items-center justify-center text-white text-xs font-bold font-mono flex-shrink-0 shadow-inner"
                       style={{ backgroundColor: client.avatarColor }}
                     >
                       {client.initials}
@@ -141,7 +141,7 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
                     'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium border flex-shrink-0',
                     client.hasPortal
                       ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20'
-                      : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/10'
+                      : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 border-[#eaecf2] dark:border-white/[0.08]'
                   )}>
                     {client.hasPortal ? <ShieldCheck className="w-3 h-3" /> : <ShieldOff className="w-3 h-3" />}
                     {client.hasPortal ? 'Portal enabled' : 'No portal login'}
@@ -149,8 +149,8 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
                 </div>
 
                 {/* Projects pill row */}
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/5">
-                  <div className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500 mb-2">
+                <div className="mt-4 pt-3 border-t border-[#f1f3f7] dark:border-white/[0.05]">
+                  <div className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mb-2">
                     Linked Projects ({client.projects.length})
                   </div>
                   <div className="flex flex-wrap gap-1.5">
@@ -158,7 +158,7 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
                       <Link
                         key={p.id}
                         href={`/project/${p.id}`}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 dark:bg-white/[0.04] border border-slate-200/80 dark:border-white/5 hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-100 dark:hover:bg-white/[0.08] text-xs text-slate-700 dark:text-slate-300 transition-colors"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-50 dark:bg-white/[0.04] border border-[#eaecf2] dark:border-white/[0.05] hover:border-slate-300 dark:hover:border-white/15 hover:bg-slate-100 dark:hover:bg-white/[0.08] text-xs text-slate-700 dark:text-slate-300 transition-colors"
                       >
                         <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color }} />
                         <span className="truncate max-w-[140px]">{p.project_name}</span>
@@ -170,7 +170,7 @@ export function ClientsView({ clients }: { clients: ClientCard[] }) {
               </div>
 
               {/* Bottom stats */}
-              <div className="mt-5 pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-mono">
+              <div className="mt-5 pt-3 border-t border-[#f1f3f7] dark:border-white/[0.05] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-mono">
                 <span>{client.activeProjects} active project{client.activeProjects !== 1 ? 's' : ''}</span>
                 <span>{client.sentUpdates} update{client.sentUpdates !== 1 ? 's' : ''} sent</span>
               </div>

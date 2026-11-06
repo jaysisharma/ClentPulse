@@ -22,8 +22,8 @@ export default function ClientsError({
     <AppLayout>
       <DarkShell>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/60 py-16 px-6 flex flex-col items-center text-center max-w-md">
-            <div className="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center">
+          <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-slate-800/60 py-16 px-6 flex flex-col items-center text-center max-w-md">
+            <div className="w-14 h-14 rounded-md bg-rose-50 flex items-center justify-center">
               <AlertTriangle className="w-6 h-6 text-rose-500" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-5">We couldn&apos;t load your clients</h2>

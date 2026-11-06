@@ -77,20 +77,19 @@ function NavLink({
       data-tour={tourId || label.toLowerCase()}
       aria-current={active ? 'page' : undefined}
       className={cn(
-        'group flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
+        'group flex items-center gap-3 px-3.5 py-2 rounded-md text-[13px] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent',
         active
-          ? 'bg-indigo-50/80 dark:bg-indigo-500/10 text-indigo-950 dark:text-indigo-200 font-semibold border border-indigo-200/50 dark:border-indigo-500/20 shadow-2xs'
-          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/[0.04]'
+          ? 'bg-indigo-50/70 dark:bg-indigo-500/20 text-accent dark:text-indigo-300 font-semibold shadow-2xs'
+          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.04]'
       )}
     >
       <Icon className={cn(
         'w-4 h-4 flex-shrink-0 transition-colors',
         active
-          ? 'text-indigo-600 dark:text-indigo-400'
-          : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
+          ? 'text-accent dark:text-indigo-300'
+          : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
       )} />
       <span className="truncate">{label}</span>
-      {active && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 flex-shrink-0" />}
     </Link>
   )
 }
@@ -127,10 +126,10 @@ function MoreSection({
       <button
         onClick={toggle}
         className={cn(
-          'group w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 cursor-pointer',
+          'group w-full flex items-center gap-3 px-3.5 py-2 rounded-md text-[13px] font-medium transition-all duration-150 cursor-pointer',
           isMoreActive && !open
-            ? 'text-indigo-700 dark:text-indigo-300'
-            : 'text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/[0.04]'
+            ? 'text-accent dark:text-indigo-300'
+            : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.04]'
         )}
         aria-expanded={open}
       >
@@ -155,7 +154,7 @@ function MoreSection({
           open ? 'max-h-96 opacity-100 mt-0.5' : 'max-h-0 opacity-0'
         )}
       >
-        <div className="space-y-0.5 pl-3 border-l border-slate-200/80 dark:border-white/[0.07] ml-5 mt-1">
+        <div className="space-y-0.5 pl-2 border-l border-[#eaecf2] dark:border-white/[0.08] ml-5 mt-1">
           {items.map(item => (
             <NavLink key={item.href} {...item} pathname={pathname} onNavigate={onNavigate} />
           ))}
@@ -219,14 +218,14 @@ export function Sidebar({
   }
 
   return (
-    <aside className="w-60 min-h-screen bg-white dark:bg-[#07080a] border-r border-slate-200 dark:border-white/10 flex flex-col fixed left-0 top-0 bottom-0 z-40 shadow-sm dark:shadow-2xl transition-colors print:hidden">
+    <aside className="w-60 min-h-screen bg-white dark:bg-[#0d0f15] border-r border-[#eaecf2] dark:border-white/[0.08] flex flex-col fixed left-0 top-0 bottom-0 z-40 transition-colors print:hidden">
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
-      <div className="px-4 h-14 flex items-center justify-between flex-shrink-0 border-b border-slate-200 dark:border-white/10">
+      <div className="px-5 h-16 flex items-center justify-between flex-shrink-0 border-b border-[#f1f3f7] dark:border-white/[0.08]">
         <Link href="/dashboard" className="flex items-center gap-2.5 group">
-          <Logo className="w-5 h-5 transition-transform group-hover:scale-105" />
+          <Logo className="w-7 h-7 text-slate-900 dark:text-white transition-transform group-hover:scale-105" />
           <div className="flex items-baseline gap-1.5">
-            <span className="text-slate-900 dark:text-white font-semibold text-sm tracking-tight">Frevio</span>
+            <span className="text-slate-900 dark:text-white font-extrabold text-[19px] tracking-tight">Frevio</span>
             <span className="text-[9px] text-slate-400 dark:text-slate-500 font-mono uppercase tracking-wider">
               {isAgency ? 'Agency' : 'Studio'}
             </span>
@@ -249,7 +248,7 @@ export function Sidebar({
         </div>
 
         {/* Divider */}
-        <div className="my-2 border-t border-slate-100 dark:border-white/[0.05]" />
+        <div className="my-2 border-t border-[#f1f3f7] dark:border-white/[0.06]" />
 
         {/* More — expandable */}
         <MoreSection
@@ -272,7 +271,7 @@ export function Sidebar({
           <div className="mt-2">
             <button
               onClick={onFeedbackOpen}
-              className="group flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 dark:text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100/80 dark:hover:bg-white/[0.04] transition-all duration-150 w-full text-left cursor-pointer"
+              className="group flex items-center gap-3 px-3.5 py-2 rounded-md text-[13px] font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-white/[0.04] transition-all duration-150 w-full text-left cursor-pointer"
             >
               <MessageSquare className="w-4 h-4 text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300 flex-shrink-0" />
               <span className="truncate">Feedback</span>
@@ -283,19 +282,19 @@ export function Sidebar({
       </nav>
 
       {/* ── Footer Profile Card ──────────────────────────────────────────── */}
-      <div className="p-3 border-t border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-[#050608]/70 flex items-center justify-between gap-2">
+      <div className="p-3 border-t border-[#f1f3f7] dark:border-white/[0.08] flex items-center justify-between gap-2">
         {userName ? (
           <Link
             href="/settings"
             onClick={onNavigate}
             title="Account Settings"
-            className="flex items-center gap-2.5 min-w-0 flex-1 p-1 -ml-1 rounded-lg hover:bg-slate-200/60 dark:hover:bg-white/[0.06] transition-colors group"
+            className="flex items-center gap-2.5 min-w-0 flex-1 p-1.5 -ml-1 rounded-md hover:bg-slate-50 dark:hover:bg-white/[0.04] transition-colors group"
           >
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xs font-bold flex-shrink-0 border border-indigo-400/20 font-mono">
+            <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-accent dark:text-indigo-300 flex items-center justify-center text-xs font-bold flex-shrink-0 border border-indigo-100 dark:border-indigo-900/50">
               {userName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
             </div>
             <div className="min-w-0 flex-1 text-left">
-              <div className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+              <div className="text-xs font-bold text-slate-900 dark:text-white truncate group-hover:text-accent dark:group-hover:text-indigo-300 transition-colors">
                 {userName}
               </div>
               <div className={cn(

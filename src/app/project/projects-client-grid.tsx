@@ -82,12 +82,12 @@ export function ProjectsClientGrid({ projects }: { projects: Project[] }) {
             placeholder="Search projects or clients..."
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-transparent transition-all"
+            className="w-full pl-9 pr-4 py-2 bg-white border border-[#eaecf2] rounded-md text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-transparent transition-all"
           />
         </div>
 
         {/* Status tabs */}
-        <div className="flex items-center gap-1 bg-slate-100 border border-slate-200/60 p-1 rounded-lg">
+        <div className="flex items-center gap-1 bg-slate-100 border border-[#eaecf2] p-1 rounded-md">
           {(['all', 'active', 'paused', 'completed'] as const).map(s => (
             <button
               key={s}
@@ -110,10 +110,10 @@ export function ProjectsClientGrid({ projects }: { projects: Project[] }) {
         {counts.attention > 0 && (
           <button
             onClick={() => setAttentionOnly(v => !v)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer border ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer border ${
               attentionOnly
                 ? 'bg-amber-500/15 text-amber-800 border-amber-500/30'
-                : 'bg-white text-slate-500 border-slate-200 hover:text-slate-950 shadow-sm'
+                : 'bg-white text-slate-500 border-[#eaecf2] hover:text-slate-950 shadow-sm'
             }`}
           >
             <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
@@ -125,7 +125,7 @@ export function ProjectsClientGrid({ projects }: { projects: Project[] }) {
 
       {/* Empty state */}
       {!filtered.length && (
-        <div className="rounded-2xl bg-white border border-slate-200 p-12 text-center shadow-sm">
+        <div className="rounded-md bg-white border border-[#eaecf2] p-12 text-center shadow-sm">
           <p className="text-sm text-slate-500 font-medium">No projects match your filters.</p>
         </div>
       )}
@@ -139,10 +139,10 @@ export function ProjectsClientGrid({ projects }: { projects: Project[] }) {
           return (
             <div
               key={project.id}
-              className={`bg-white rounded-2xl border flex flex-col overflow-hidden transition-all hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-0.5 ${
-                isActive    ? 'border-slate-200/80 shadow-sm'
-                : isCompleted ? 'border-slate-200/80 shadow-sm opacity-75 hover:opacity-100'
-                : 'border-slate-200/80 shadow-sm opacity-85 hover:opacity-100'
+              className={`bg-white rounded-md border flex flex-col overflow-hidden transition-all hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 hover:-translate-y-0.5 ${
+                isActive    ? 'border-[#eaecf2] shadow-sm'
+                : isCompleted ? 'border-[#eaecf2] shadow-sm opacity-75 hover:opacity-100'
+                : 'border-[#eaecf2] shadow-sm opacity-85 hover:opacity-100'
               }`}
             >
               {/* Top color strip */}
@@ -175,7 +175,7 @@ export function ProjectsClientGrid({ projects }: { projects: Project[] }) {
                 {/* Last update + overdue warning */}
                 <div className="flex items-center gap-2">
                   {project.isOverdue ? (
-                    <div className="flex items-center gap-1.5 text-xs text-amber-805 text-amber-800 bg-amber-50 border border-amber-200/60 px-2.5 py-1.5 rounded-lg font-medium">
+                    <div className="flex items-center gap-1.5 text-xs text-amber-805 text-amber-800 bg-amber-50 border border-amber-200/60 px-2.5 py-1.5 rounded-md font-medium">
                       <Clock className="w-3.5 h-3.5 flex-shrink-0 text-amber-600" />
                       No update in {daysAgo(project.latest?.sent_at ?? project.created_at)} days
                     </div>
@@ -190,7 +190,7 @@ export function ProjectsClientGrid({ projects }: { projects: Project[] }) {
                 </div>
 
                 {/* Stats row */}
-                <div className="flex items-center gap-4 pt-3 border-t border-slate-100">
+                <div className="flex items-center gap-4 pt-3 border-t border-[#f1f3f7]">
                   <div className="text-xs text-slate-500 font-medium">
                     <span className="font-bold text-slate-800">{project.sent.length}</span> updates
                   </div>
@@ -235,7 +235,7 @@ export function ProjectsClientGrid({ projects }: { projects: Project[] }) {
               )}
 
               {/* Footer actions */}
-              <div className="px-5 py-3 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between">
+              <div className="px-5 py-3 bg-slate-50/60 border-t border-[#f1f3f7] flex items-center justify-between">
                 <Link
                   href={`/project/${project.id}/update`}
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"

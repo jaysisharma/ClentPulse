@@ -233,7 +233,7 @@ export default function IntegrationsPage() {
             <div
               role="alert"
               aria-live="polite"
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm mb-6 ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-md text-sm mb-6 ${
                 toast.type === 'success'
                   ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-900/40'
                   : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/40'
@@ -251,13 +251,13 @@ export default function IntegrationsPage() {
           <section aria-labelledby="cat-payouts" className="mb-8">
             <h2
               id="cat-payouts"
-              className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3"
+              className="text-xs font-semibold text-slate-400 dark:text-slate-500 mb-3"
             >
               Client Payments & Bank Payouts
             </h2>
-            <div className="rounded-2xl border bg-white dark:bg-[#0c0d12] p-5 border-slate-200 dark:border-white/10 shadow-xs">
+            <div className="rounded-md border bg-white dark:bg-[#12141c] p-5 border-[#eaecf2] dark:border-white/[0.08] shadow-xs">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-[#635BFF]/10">
+                <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-md bg-[#635BFF]/10">
                   <StripeLogo />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -290,7 +290,7 @@ export default function IntegrationsPage() {
                         type="button"
                         onClick={handleStripeConnect}
                         disabled={connectingStripe}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/15 transition-all cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold px-3.5 py-1.5 rounded-md bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/15 transition-all cursor-pointer"
                       >
                         {connectingStripe ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />}
                         <span>Stripe Account Dashboard</span>
@@ -301,7 +301,7 @@ export default function IntegrationsPage() {
                         type="button"
                         onClick={handleStripeConnect}
                         disabled={connectingStripe || loading}
-                        className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-full bg-[#635BFF] hover:bg-[#5349e4] text-white transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                        className="inline-flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-md bg-[#635BFF] hover:bg-[#5349e4] text-white transition-all shadow-xs cursor-pointer disabled:opacity-50"
                       >
                         {connectingStripe ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Banknote className="w-3.5 h-3.5" />}
                         <span>{isStripePending ? 'Complete Stripe Verification' : 'Connect Stripe Payouts'}</span>
@@ -310,7 +310,7 @@ export default function IntegrationsPage() {
                   </div>
 
                   {/* Fallback note for unsupported countries */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/5">
+                  <div className="mt-4 pt-3 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                     <p className="text-[11px] text-slate-400 dark:text-slate-500 leading-normal">
                       <strong>Country not supported by Stripe Connect?</strong> Frevio does not lock you out. You can still create invoices, attach manual bank or wire transfer instructions, and mark payments as received offline with one click.
                     </p>
@@ -336,7 +336,7 @@ export default function IntegrationsPage() {
                 <section key={category.label} aria-labelledby={`cat-${category.label}`}>
                   <h2
                     id={`cat-${category.label}`}
-                    className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3"
+                    className="text-xs font-semibold text-slate-400 dark:text-slate-500 mb-3"
                   >
                     {category.label}
                   </h2>

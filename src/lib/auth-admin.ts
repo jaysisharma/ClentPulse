@@ -4,8 +4,9 @@ import { SupabaseClient, User } from '@supabase/supabase-js'
  * Checks if the given authenticated user has admin privileges.
  * Validates against:
  * 1. ADMIN_EMAILS environment variable (comma-separated list)
- * 2. user.user_metadata.is_admin
- * 3. users table `is_admin` column
+ * 2. users table `is_admin` column (users cannot change it — see protect_user_privileged_columns)
+ *
+ * Never trust user_metadata here: any signed-in user can set it via auth.updateUser().
  */
 export async function isUserAdmin(
   supabase: SupabaseClient,
@@ -23,12 +24,7 @@ export async function isUserAdmin(
     return true
   }
 
-  // 2. Check user_metadata.is_admin
-  if (user.user_metadata?.is_admin === true) {
-    return true
-  }
-
-  // 3. Check users table in Supabase
+  // 2. Check users table in Supabase
   try {
     const { data: profile, error } = await supabase
       .from('users')

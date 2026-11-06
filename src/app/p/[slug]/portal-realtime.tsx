@@ -27,6 +27,15 @@ export function PortalRealtimeSubscriber({
   const [lastEvent, setLastEvent] = useState<string | null>(null)
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Portal tables are not publicly readable, so logged-out visitors don't receive
+  // postgres_changes events. Poll while the tab is visible to pick up new content.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (document.visibilityState === 'visible') routerRef.current.refresh()
+    }, 45_000)
+    return () => clearInterval(interval)
+  }, [])
+
   useEffect(() => {
     const supabase = createClient()
     const channelName = `portal:${projectId}`

@@ -1,8 +1,8 @@
 # Frevio — Product Tracker & Roadmap
 
-> **Current Version:** v0.3.6 (Earnings Page Real-Time Settlement & Invoicing Data Fix Shipped!)  
-> **Next Milestone:** v0.4.0 (Enterprise Client Portal & Client Direct Messaging)  
-> **Last Updated:** September 2026
+> **Current Version:** v0.4.0 (Client Telemetry Read Receipts, Secrets Vault, AI Scope Defender & Webhooks Shipped!)  
+> **Next Milestone:** v0.5.0 (Retainer Subscriptions & Global Client Communications)  
+> **Last Updated:** November 2026
 
 ---
 
@@ -20,6 +20,7 @@
 | **Agency White-Labeling & Custom Domains** | ✅ **Complete** | 100% Shipped (Phase 3) |
 | **Internal Collaboration & Review Workflow** | ✅ **Complete** | 100% Shipped (Phase 4) |
 | **Executive Radar & Capacity Analytics** | ✅ **Complete** | 100% Shipped (Phase 5) |
+| **Client Telemetry, Vault & AI Scope Defender** | ✅ **Complete** | 100% Shipped (v0.4.0) |
 
 ---
 
@@ -256,6 +257,99 @@
   - Ready-to-post launch copy for X (Twitter thread), Reddit (`r/webdev`, `r/freelance`), and Hacker News (Show HN).
   - 1-on-1 boutique agency cold outreach email and DM templates.
 
+### 18. Client Telemetry Read Receipts, Secrets Vault & AI Scope Defender (v0.4.0 Shipped)
+- [x] **Client Telemetry & Read Receipts**:
+  - Live visitor telemetry endpoint `/api/telemetry/read-receipt` tracking client visits to `/p/[slug]`, `/invoice/[id]`, `/contract/[id]`, and `/doc/[id]`.
+  - Database schema: `client_activity_views` table with `project_id`, `entity_type`, `entity_id`, and client IP hashing.
+  - Read receipts rendered across dashboard (`ReadReceiptBadge` on `/project/[id]` and `/invoices` list: *"Client viewed 14m ago (3x)"* vs *"Unopened"*).
+- [x] **Encrypted Client Credential & Secret Vault**:
+  - AES-256-GCM authenticated encryption engine for project credentials (`src/lib/secrets-vault.ts`).
+  - Table `project_secrets` with category classification (*API Keys, Database, Credentials, Tokens, Other*).
+  - Clean UI card `ProjectSecretsVault` embedded in `/project/[id]` with 1-click reveal, copy, auto-hide, and delete.
+  - Endpoints: `GET/POST /api/projects/[id]/secrets`, `POST /reveal`, and `DELETE`.
+- [x] **AI Scope Defender & Weekly Digest Synthesizer**:
+  - Intelligent engine at `/api/ai/assistant`.
+  - **AI Scope Defender (`ScopeDefenderModal`)**: Translates out-of-scope client requests into polite, professional boundary responses and calculates itemized change orders with 1-click apply.
+  - **Weekly Digest Generator**: Synthesizes recent commits, completed checklist tasks, and milestones into crisp executive client updates.
+- [x] **Slack & Discord Webhooks**:
+  - Dedicated project settings panel in `/project/[id]/settings` under "Webhooks & Alerts".
+  - Test ping endpoint `/api/projects/[id]/webhook-test` with live Slack/Discord verification.
+  - Instant dispatch on deliverable approval decisions, client feedback, comments, and invoice settlements.
+- [x] **Financial Defense: Automated Overdue Deliverable Soft-Lock**:
+  - Automatically holds live staging previews in `/p/[slug]` when invoices pass their due date, presenting a polite financial defense notice with direct Stripe payment link.
+  - Configurable per-project toggle in Settings.
+- [x] **Passwordless 1-Click Client Magic Link Access**:
+  - Signed, tamper-proof magic access tokens (`src/lib/magic-token.ts`) and generator endpoint `/api/client-access/magic-link`.
+  - 1-Click Magic Link copy button in Project sidebar for seamless passwordless client onboarding.
+- [x] **Comprehensive Testing & Verification**:
+  - 365/365 unit & integration tests passing across 68 test suites in Vitest.
+  - Clean Next.js 16 production build across all routes with zero TypeScript errors.
+
+### 19. VS Code & Antigravity Editor Extension Pro Upgrade (Shipped)
+- [x] **AI Git Commit-to-Client-Update Generator (`frevio.aiDraftUpdate`)**:
+  - Parses local workspace git commit history (`git log -n 5 --oneline`) and calls `/api/extension/ai-draft`.
+  - Strips conventional commit noise and translates engineering shorthand into 3 crisp, polite client progress bullets.
+  - Interactive prompt allowing the developer to edit and review synthesized bullets and client note before broadcasting to client portal and sending branded email.
+- [x] **Encrypted Secret Vault In-Editor Quick-Access (`frevio.viewSecrets`)**:
+  - Direct bridge to `/api/extension/secrets` fetching project API keys, database URLs, and environment variables.
+  - QuickPick menu with masked previews and category tags.
+  - 1-Click "Copy to Clipboard" or "Insert at Cursor" directly into the active code file with audit log timestamping.
+- [x] **Real-Time Client Activity & Read Notifications (`frevio.enableEditorNotifications`)**:
+  - Heartbeat telemetry loop continuously checks for recent client approvals, change requests, and portal feedback comments.
+  - Displays instant native editor toasts with 1-click action to view the client status portal.
+- [x] **Live Billable Earnings & Hours in Status Bar (`frevio.showBillableInStatusBar`)**:
+  - Status bar widget automatically aggregates today's tracked hours and calculates billable revenue in real time: `Frevio: [Project] (3.5h · $350)`.
+  - Configurable in VS Code settings.
+- [x] **Multi-Platform Release Deployment (APK, IPA, ZIP, TAR.GZ)**:
+  - Context menu on explorer files matching `.(apk|ipa|zip|tar.gz)` triggers direct upload to Supabase storage via signed upload URLs (`/api/extension/builds/upload-url`).
+  - Automatic platform detection (`android`, `ios`, `universal`), version extraction, changelog authoring, and instant email dispatch to client.
+- [x] **Zero-Error Verification**:
+  - Extension TypeScript compiles cleanly with 0 errors via `npm --prefix extension run build`.
+  - Web app tests: 371/371 passing across 69 test files.
+
+### 21. Retainer Billing Cycles & Performance Analytics Suite (v0.5.0 Shipped)
+- [x] **Database Schema & Migrations Applied**:
+  - Live Supabase project migration [`deploy/v050-retainer-subscriptions-migration.sql`](file:///Users/jaysisharma/Desktop/Projects/Active/clientpulse/deploy/v050-retainer-subscriptions-migration.sql): Added `is_retainer`, `retainer_period` to `invoices`, and `is_retainer`, `retainer_amount`, `retainer_interval` to `projects`.
+- [x] **Client Portal Performance Scorecard (`/p/[slug]`)**:
+  - Live Campaign KPI metrics strip placed above the fold in `OverviewTab` rendering ROAS, CPA, Leads, Ad Spend, and positive/negative trend pills.
+- [x] **Embedded Interactive Performance Reports (Looker Studio & Sheets)**:
+  - Responsive embedded container in `OverviewTab` supporting Looker Studio, Google Sheets, Datastudio, DashThis, and strategy boards with device modes and full-screen view.
+- [x] **Ad Creative & Copy Deck Approval Previews**:
+  - Enhanced `ApprovalCard` in `/p/[slug]/approval-actions.tsx` to render rich Sponsored Ad Creative preview frames with image asset views and copy verification badges for client sign-off.
+- [x] **Recurring Retainer Invoice Creation**:
+  - Added Retainer toggle and cycle selector (*Monthly, Quarterly, Annual*) to `/invoices/new`.
+  - Invoices tagged with `is_retainer: true` automatically update linked projects and display distinct retainer badges on invoice PDFs and client portal billing feeds.
+- [x] **Full Suite Verification**:
+  - Vitest test suite: **69 test suites, 371 tests passing (100%)**.
+  - Next.js type check: `npx tsc --noEmit` &rarr; **0 errors**.
+  - Figma plugin build & VS Code extension build: **0 errors**.
+
+### 20. Frevio Figma Plugin — Design Presence & 1-Click Client Approvals (Shipped)
+- [x] **Complete Figma Plugin Scaffold (`figma-plugin/`)**:
+  - Production-ready `manifest.json` configured for Figma & FigJam design environments.
+  - Sandbox script [`figma-plugin/src/code.ts`](file:///Users/jaysisharma/Desktop/Projects/Active/clientpulse/figma-plugin/src/code.ts) with document listeners, frame export engine (`node.exportAsync` 2x retina PNG to base64), font loading, and canvas sticky note creation.
+  - Interactive companion UI [`figma-plugin/src/ui.html`](file:///Users/jaysisharma/Desktop/Projects/Active/clientpulse/figma-plugin/src/ui.html) with Obsidian theme `#0B0D11`, emerald accents, and multi-tab workflow.
+  - Self-contained type system [`figma-plugin/src/figma.d.ts`](file:///Users/jaysisharma/Desktop/Projects/Active/clientpulse/figma-plugin/src/figma.d.ts) compiling cleanly with zero external npm dependencies.
+- [x] **Live Design Telemetry & Real-Time Billable Earnings**:
+  - Automatically pulses active design intervals (`intervalSeconds: 60`) to `/api/extension/heartbeat`.
+  - Captures active focus area in real time (e.g. `Designing: Checkout Modal (390 × 844 px)`).
+  - Ticker displays today's tracked design hours and billable dollars ($) directly inside Figma.
+- [x] **1-Click Frame Deliverable Sign-Off (`POST /api/extension/deliverables`)**:
+  - Automatically detects selected canvas frames, components, or prototype sections.
+  - 1-Click export + upload creating an approval deliverable with `preview_type: 'figma'`.
+  - Dispatches automated client review email via Resend with direct portal link.
+- [x] **Canvas Feedback & Revision Pins (`GET /api/extension/figma/feedback`)**:
+  - Fetches pending deliverable revision requests and client portal comments.
+  - **"Pin Feedback onto Canvas"** drops color-coded cards and sticky notes directly next to the designer's frames with client comments and author attribution.
+- [x] **Interactive Canvas Embed Sync (`POST /api/extension/figma/canvas-embed`)**:
+  - 1-Click sync to embed the designer's active Figma prototype as the project's interactive portal canvas (`canvas_embed_url`).
+- [x] **Settings Page Integration**:
+  - Updated `/settings` with unified API key management for both VS Code and Figma plugin.
+- [x] **Verification**:
+  - Figma plugin build: `npm --prefix figma-plugin run build` &rarr; **0 errors**.
+  - Vitest test suite: **69 test suites, 371 tests passing (100%)**.
+  - Next.js type check: `npx tsc --noEmit` &rarr; **0 errors**.
+
 ---
 
 ## 📌 Supabase Deployment Instructions
@@ -268,4 +362,5 @@ Apply the complete suite migrations in your Supabase SQL Editor:
 6. [`deploy/marketing-freelancer-suite-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/marketing-freelancer-suite-migration.sql) — Digital marketing freelancer suite schema
 7. [`deploy/persona-modules-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/persona-modules-migration.sql) — Persona craft & workspace modules feature flags
 8. [`deploy/stripe-hardening-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/stripe-hardening-migration.sql) — Webhook idempotency and event ordering timestamps
+9. [`deploy/v040-advanced-features-migration.sql`](file:///Users/jaysisharma/Desktop/clientpulse/deploy/v040-advanced-features-migration.sql) — Client telemetry views, secrets vault, and project webhooks
 

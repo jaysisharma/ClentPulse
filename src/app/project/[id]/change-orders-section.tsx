@@ -8,6 +8,8 @@ import {
 import { ChangeOrder } from '@/types'
 import { fmtCurrency } from '@/lib/currencies'
 import { ChangeOrderModal } from '@/components/project/change-order-modal'
+import { ScopeDefenderModal } from '@/components/project/scope-defender-modal'
+import { Sparkles } from 'lucide-react'
 
 interface ChangeOrdersSectionProps {
   projectId: string
@@ -26,6 +28,7 @@ export function ChangeOrdersSection({
 }: ChangeOrdersSectionProps) {
   const [changeOrders, setChangeOrders] = useState<ChangeOrder[]>(initialChangeOrders)
   const [modalOpen, setModalOpen] = useState(false)
+  const [defenderOpen, setDefenderOpen] = useState(false)
   const [editingOrder, setEditingOrder] = useState<ChangeOrder | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
@@ -91,12 +94,12 @@ export function ChangeOrdersSection({
   }
 
   return (
-    <div className="rounded-2xl sm:rounded-3xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-5 sm:p-6 shadow-xs dark:shadow-sm space-y-6">
+    <div className="rounded-md sm:rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-5 sm:p-6 shadow-xs dark:shadow-sm space-y-6">
       {/* Header & Stats Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#f1f3f7] dark:border-white/[0.05]">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
+            <span className="w-8 h-8 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
               <ShieldAlert className="w-4 h-4" />
             </span>
             <div className="flex items-center gap-2 flex-wrap">
@@ -110,28 +113,39 @@ export function ChangeOrdersSection({
               )}
             </div>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-light pl-10">
+          <p className="text-xs text-slate-500 dark:text-slate-400 pl-10">
             Never do out-of-scope work for free. Convert extra client requests into approved, billed change orders.
           </p>
         </div>
 
         {canManage && (
-          <button
-            type="button"
-            onClick={() => {
-              setEditingOrder(null)
-              setModalOpen(true)
-            }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-semibold shadow-xs transition-all hover:scale-[1.02] cursor-pointer self-start sm:self-auto flex-shrink-0"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            <span>New Change Order</span>
-          </button>
+          <div className="flex items-center gap-2 self-start sm:self-auto flex-shrink-0 flex-wrap">
+            <button
+              type="button"
+              onClick={() => setDefenderOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-semibold shadow-xs transition-all cursor-pointer"
+              title="Transform out-of-scope requests into polite change orders"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>AI Scope Defender</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEditingOrder(null)
+                setModalOpen(true)
+              }}
+              className="bg-accent hover:bg-accent-hover inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-white text-xs font-semibold shadow-xs transition-all hover:scale-[1.02] cursor-pointer"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>New Change Order</span>
+            </button>
+          </div>
         )}
       </div>
 
       {actionError && (
-        <div className="p-3 text-xs rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400">
+        <div className="p-3 text-xs rounded-md bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400">
           {actionError}
         </div>
       )}
@@ -139,26 +153,26 @@ export function ChangeOrdersSection({
       {/* Mini KPI row */}
       {changeOrders.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/5">
-            <div className="text-[10px] uppercase font-mono text-slate-400">Protected</div>
+          <div className="p-3 rounded-md bg-slate-50 dark:bg-white/[0.02] border border-[#f1f3f7] dark:border-white/[0.05]">
+            <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Protected</div>
             <div className="text-base sm:text-lg font-mono font-medium text-emerald-600 dark:text-emerald-400 mt-0.5">
               +{fmtCurrency(protectedRevenue, currency)}
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/5">
-            <div className="text-[10px] uppercase font-mono text-slate-400">Total Issued</div>
+          <div className="p-3 rounded-md bg-slate-50 dark:bg-white/[0.02] border border-[#f1f3f7] dark:border-white/[0.05]">
+            <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Total Issued</div>
             <div className="text-base sm:text-lg font-mono font-medium text-slate-900 dark:text-white mt-0.5">
               {changeOrders.length}
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/5">
-            <div className="text-[10px] uppercase font-mono text-slate-400">Pending Review</div>
+          <div className="p-3 rounded-md bg-slate-50 dark:bg-white/[0.02] border border-[#f1f3f7] dark:border-white/[0.05]">
+            <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Pending Review</div>
             <div className="text-base sm:text-lg font-mono font-medium text-amber-600 dark:text-amber-400 mt-0.5">
               {pendingCount}
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/5">
-            <div className="text-[10px] uppercase font-mono text-slate-400">Settled (Paid)</div>
+          <div className="p-3 rounded-md bg-slate-50 dark:bg-white/[0.02] border border-[#f1f3f7] dark:border-white/[0.05]">
+            <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Settled (Paid)</div>
             <div className="text-base sm:text-lg font-mono font-medium text-indigo-600 dark:text-indigo-400 mt-0.5">
               {paidCount}
             </div>
@@ -168,12 +182,12 @@ export function ChangeOrdersSection({
 
       {/* List of Change Orders */}
       {changeOrders.length === 0 ? (
-        <div className="p-8 text-center border border-dashed border-slate-200 dark:border-white/10 rounded-2xl bg-slate-50/50 dark:bg-white/[0.01]">
+        <div className="p-8 text-center border border-dashed border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50/50 dark:bg-white/[0.01]">
           <ShieldAlert className="w-6 h-6 text-slate-400 mx-auto mb-2 opacity-60" />
           <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
             No change orders issued for this project yet.
           </p>
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 font-light mt-1 max-w-sm mx-auto">
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
             When a client asks for additional features or revisions outside original milestones, issue a change order here to lock in budget and delivery extension.
           </p>
         </div>
@@ -189,7 +203,7 @@ export function ChangeOrdersSection({
               <div
                 key={co.id}
                 id={`co-${co.id}`}
-                className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-all flex flex-col sm:flex-row sm:items-start justify-between gap-4"
+                className="p-4 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/[0.03] transition-all flex flex-col sm:flex-row sm:items-start justify-between gap-4"
               >
                 <div className="space-y-1.5 flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -221,13 +235,13 @@ export function ChangeOrdersSection({
                   </div>
 
                   {co.description && (
-                    <p className="text-xs text-slate-600 dark:text-slate-300 font-light leading-relaxed whitespace-pre-wrap">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
                       {co.description}
                     </p>
                   )}
 
                   {co.client_notes && (
-                    <div className="text-[11px] text-slate-500 dark:text-slate-400 italic bg-white dark:bg-black/30 p-2 rounded-lg border border-slate-100 dark:border-white/5">
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 italic bg-white dark:bg-black/30 p-2 rounded-md border border-[#f1f3f7] dark:border-white/[0.05]">
                       Client note: &ldquo;{co.client_notes}&rdquo;
                     </div>
                   )}
@@ -258,7 +272,7 @@ export function ChangeOrdersSection({
                       type="button"
                       title="Copy Client Approval Link"
                       onClick={() => handleCopyPortalLink(co.id)}
-                      className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 dark:text-slate-400 transition-colors text-xs flex items-center gap-1 cursor-pointer"
+                      className="p-1.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 dark:text-slate-400 transition-colors text-xs flex items-center gap-1 cursor-pointer"
                     >
                       {copiedId === co.id ? (
                         <>
@@ -278,7 +292,7 @@ export function ChangeOrdersSection({
                         type="button"
                         title="Mark Paid"
                         onClick={() => handleMarkPaid(co.id)}
-                        className="px-2 py-1 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 transition-colors text-[10px] font-semibold cursor-pointer"
+                        className="px-2 py-1 rounded-md border border-[#eaecf2] dark:border-white/[0.08] hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 transition-colors text-[10px] font-semibold cursor-pointer"
                       >
                         Mark Paid
                       </button>
@@ -291,13 +305,13 @@ export function ChangeOrdersSection({
                         setEditingOrder(co)
                         setModalOpen(true)
                       }}
-                      className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 dark:text-slate-400 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 dark:text-slate-400 transition-colors cursor-pointer"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
 
                     {confirmingDeleteId === co.id ? (
-                      <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 px-2 py-1 rounded-lg border border-rose-500/20">
+                      <span className="inline-flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 px-2 py-1 rounded-md border border-rose-500/20">
                         <span>Delete?</span>
                         <button
                           type="button"
@@ -320,7 +334,7 @@ export function ChangeOrdersSection({
                         type="button"
                         title="Delete"
                         onClick={() => setConfirmingDeleteId(co.id)}
-                        className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-colors cursor-pointer"
+                        className="p-1.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500 dark:text-rose-400 transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -344,6 +358,26 @@ export function ChangeOrdersSection({
         currency={currency}
         initialData={editingOrder}
         onSuccess={handleSuccess}
+      />
+
+      {/* AI Scope Defender Modal */}
+      <ScopeDefenderModal
+        isOpen={defenderOpen}
+        onClose={() => setDefenderOpen(false)}
+        projectId={projectId}
+        currency={currency}
+        onApplyChangeOrder={(title, amount) => {
+          setEditingOrder({
+            id: '',
+            project_id: projectId,
+            title,
+            description: 'Approved scope addition from client request.',
+            amount,
+            status: 'pending',
+            created_at: new Date().toISOString(),
+          } as any)
+          setModalOpen(true)
+        }}
       />
     </div>
   )

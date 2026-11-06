@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { notifyFreelancerOfApproval } from '@/lib/notifications'
 import { verifyPasscodeTicket, timingSafeCompare } from '@/lib/passcode-crypto'
+import { dispatchWebhook } from '@/lib/webhooks'
 
 const ALLOWED_STATUSES = ['approved', 'declined', 'changes_requested']
 
@@ -28,7 +29,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   // 1. Fetch target approval and project security settings
   const { data: approval, error: approvalError } = await supabase
     .from('approvals')
-    .select('id, project_id, status')
+    .select('id, project_id, status, title')
     .eq('id', id)
     .single()
 
@@ -42,7 +43,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   const { data: project } = await supabase
     .from('projects')
-    .select('id, user_id, org_id, passcode, slug')
+    .select('id, user_id, org_id, passcode, slug, project_name, client_name, webhook_url, webhook_enabled')
     .eq('id', approval.project_id)
     .single()
 
@@ -93,6 +94,22 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     status,
     feedback: feedback || null,
   }).catch(err => console.error('Failed to notify freelancer of approval response:', err))
+
+  // Dispatch real-time Slack/Discord webhook if enabled
+  if (project?.webhook_url && project.webhook_enabled !== false) {
+    const isApproved = status === 'approved'
+    dispatchWebhook(project.webhook_url, {
+      title: isApproved ? '✅ Milestone Deliverable Approved' : '⚠️ Changes Requested on Deliverable',
+      message: `${project.client_name || 'Client'} has ${status.replace('_', ' ')}: "${approval.title || 'Deliverable'}".${feedback ? `\n\nFeedback: "${feedback}"` : ''}`,
+      projectName: project.project_name,
+      clientName: project.client_name,
+      type: 'approval',
+      fields: [
+        { name: 'Decision', value: status },
+        ...(feedback ? [{ name: 'Client Feedback', value: feedback }] : []),
+      ],
+    }).catch(err => console.error('[Webhook Dispatch Error]:', err))
+  }
 
   return NextResponse.json({ success: true })
 }

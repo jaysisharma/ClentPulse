@@ -145,21 +145,21 @@ export default async function EarningsPage() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                   Financial Overview
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+              <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
                 Earnings
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                 What you&apos;ve made, spent, and kept across all client engagements.
               </p>
             </div>
             <a
               href="/api/export-csv?type=earnings"
               download
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all w-fit shadow-xs dark:shadow-sm"
+              className="inline-flex items-center gap-2 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all w-fit shadow-xs dark:shadow-sm"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export CSV</span>
@@ -168,30 +168,30 @@ export default async function EarningsPage() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-4 sm:p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-4 sm:p-5 shadow-xs dark:shadow-none">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Total earned</span>
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Total earned</span>
+                <div className="w-8 h-8 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                   <DollarSign className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">
                 {fmt(totalEarned)}
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">all time collected</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">all time collected</div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-4 sm:p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-4 sm:p-5 shadow-xs dark:shadow-none">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">This month</span>
-                <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">This month</span>
+                <div className="w-8 h-8 rounded-md bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                   <TrendingUp className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">
                 {fmt(thisMonth)}
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5 flex items-center gap-1.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-1.5">
                 {thisMonth > 0 || lastMonth > 0 ? (
                   <span className={`inline-flex items-center font-mono ${growthDiff >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                     {growthDiff >= 0 ? '+' : '−'}{growthPct}%
@@ -201,30 +201,30 @@ export default async function EarningsPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-4 sm:p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-4 sm:p-5 shadow-xs dark:shadow-none">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Unpaid</span>
-                <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Unpaid</span>
+                <div className="w-8 h-8 rounded-md bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
                   <Clock className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">
                 {fmt(unpaid)}
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">{sent.length} awaiting payment</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">{sent.length} awaiting payment</div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-4 sm:p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-4 sm:p-5 shadow-xs dark:shadow-none">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Net profit</span>
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center border ${netProfit >= 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400'}`}>
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Net profit</span>
+                <div className={`w-8 h-8 rounded-md flex items-center justify-center border ${netProfit >= 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400'}`}>
                   <Wallet className="w-4 h-4" />
                 </div>
               </div>
-              <div className={`font-mono font-light text-2xl sm:text-3xl tracking-tight ${netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+              <div className={`text-2xl sm:text-[27px] font-extrabold tabular-nums tracking-tight ${netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                 {fmt(netProfit)}
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5 flex items-center gap-1.5">
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 flex items-center gap-1.5">
                 <span>{fmt(totalExpenses)} expenses</span>
                 <span>·</span>
                 <a href="/expenses" className="text-slate-900 dark:text-white hover:underline font-medium">manage</a>
@@ -238,17 +238,17 @@ export default async function EarningsPage() {
           {/* Recent settlements */}
           <section className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                 Recent Settlements
               </span>
             </div>
             {recentPayments.length === 0 ? (
-              <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 py-12 px-6 text-center ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
-                <p className="text-sm text-slate-700 dark:text-slate-300 font-light">No paid invoices yet.</p>
+              <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 py-12 px-6 text-center shadow-xs dark:shadow-none">
+                <p className="text-sm text-slate-700 dark:text-slate-300">No paid invoices yet.</p>
                 <p className="text-xs text-slate-500 mt-1">Mark invoices as paid to see your settlements recorded here.</p>
               </div>
             ) : (
-              <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
+              <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 divide-y divide-[#f1f3f7] dark:divide-white/[0.05] overflow-hidden shadow-xs dark:shadow-none">
                 {recentPayments.map(inv => {
                   const invAmt = getInvoiceAmount(inv)
                   const invCurr = inv.currency || primaryCurrency

@@ -38,7 +38,7 @@ export function ClientFilesSection({ projectId, canManage = true }: ClientFilesS
 
   if (files.length === 0) {
     return (
-      <div className="flex items-start gap-3 rounded-xl border border-dashed border-slate-200 dark:border-white/10 p-4 text-xs text-slate-500 dark:text-slate-400">
+      <div className="flex items-start gap-3 rounded-md border border-dashed border-[#eaecf2] dark:border-white/[0.08] p-4 text-xs text-slate-500 dark:text-slate-400">
         <Inbox className="w-4 h-4 flex-shrink-0 mt-px" />
         <span>
           No files yet. Clients can upload logos, copy and documents from the Files tab of their portal.
@@ -49,7 +49,7 @@ export function ClientFilesSection({ projectId, canManage = true }: ClientFilesS
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 dark:border-white/10 divide-y divide-slate-100 dark:divide-white/[0.06] overflow-hidden">
+    <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] divide-y divide-[#f1f3f7] dark:divide-white/[0.06] overflow-hidden">
       {files.map(file => (
         <div key={file.id} className="p-3 flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-3 min-w-0">
@@ -65,7 +65,7 @@ export function ClientFilesSection({ projectId, canManage = true }: ClientFilesS
             {file.download_url && (
               <a
                 href={file.download_url}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                className="p-1.5 rounded-md text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                 aria-label={`Download ${file.file_name}`}
               >
                 <Download className="w-4 h-4" />
@@ -75,7 +75,7 @@ export function ClientFilesSection({ projectId, canManage = true }: ClientFilesS
               <button
                 onClick={() => handleDelete(file)}
                 disabled={deletingId === file.id}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors disabled:opacity-50 cursor-pointer"
+                className="p-1.5 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors disabled:opacity-50 cursor-pointer"
                 aria-label={`Delete ${file.file_name}`}
               >
                 <Trash2 className="w-4 h-4" />

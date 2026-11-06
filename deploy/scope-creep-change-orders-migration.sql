@@ -50,35 +50,13 @@ CREATE POLICY "Owners can manage own change orders" ON public.change_orders
 
 -- 2. Clients or anyone with project access can view change orders for the project
 DROP POLICY IF EXISTS "Public and clients can view change orders for project" ON public.change_orders;
-CREATE POLICY "Public and clients can view change orders for project" ON public.change_orders
-  FOR SELECT USING (
-    EXISTS (
-      SELECT 1 FROM public.projects p
-      WHERE p.id = change_orders.project_id
-        AND (
-          p.user_id = auth.uid()
-          OR p.client_user_id = auth.uid()
-          OR p.client_email = auth.email()
-          OR true -- Allow public read on portal project
-        )
-    )
-  );
+-- Removed: "Public and clients can view change orders for project" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- 3. Clients can update status of change orders (approve/decline)
 DROP POLICY IF EXISTS "Clients can update change orders" ON public.change_orders;
-CREATE POLICY "Clients can update change orders" ON public.change_orders
-  FOR UPDATE USING (
-    EXISTS (
-      SELECT 1 FROM public.projects p
-      WHERE p.id = change_orders.project_id
-        AND (
-          p.user_id = auth.uid()
-          OR p.client_user_id = auth.uid()
-          OR p.client_email = auth.email()
-          OR true
-        )
-    )
-  );
+-- Removed: "Clients can update change orders" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- Add to Supabase Realtime publication if not already present
 DO $$

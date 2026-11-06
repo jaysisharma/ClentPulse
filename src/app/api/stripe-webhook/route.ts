@@ -4,6 +4,7 @@ import Stripe from 'stripe'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 import { normalizePlan } from '@/lib/plans'
+import { claimStripeEvent, markStripeEventDone, releaseStripeEvent } from '@/lib/stripe-events'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -35,18 +36,23 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient()
 
-  // Webhook event idempotency guard
-  const { error: idempotencyError } = await supabase
-    .from('processed_stripe_events')
-    .insert({ event_id: event.id, status: 'processing' })
-
-  if (idempotencyError) {
-    if (idempotencyError.code === '23505') {
-      console.log(`Stripe Webhook event already processed: ${event.id}`)
-      return NextResponse.json({ received: true, duplicate: true })
-    }
-    console.error('Failed to register webhook event idempotency:', idempotencyError)
+  let claim
+  try {
+    claim = await claimStripeEvent(supabase, event.id)
+  } catch (err) {
+    console.error('Failed to register webhook event idempotency:', err)
     return NextResponse.json({ error: 'Failed to verify event idempotency' }, { status: 500 })
+  }
+  if (claim === 'duplicate') return NextResponse.json({ received: true, duplicate: true })
+  if (claim === 'in_progress') {
+    // Non-2xx so Stripe retries; if the other attempt dies, the retry takes over.
+    return NextResponse.json({ error: 'Event is being processed' }, { status: 409 })
+  }
+
+  // Every early exit still finishes the event, so its row isn't left 'processing'
+  async function ack(body: Record<string, unknown>) {
+    await markStripeEventDone(supabase, event.id)
+    return NextResponse.json(body)
   }
 
   try {
@@ -56,28 +62,11 @@ export async function POST(request: Request) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session
 
-      if (session.metadata?.type === 'invoice_payment') {
-        const invoiceId = session.metadata.invoice_id || session.metadata.invoiceId
-        if (invoiceId) {
-          await supabase
-            .from('invoices')
-            .update({ status: 'paid', paid_at: new Date().toISOString() })
-            .eq('id', invoiceId)
-        }
-        await supabase.from('processed_stripe_events').update({ status: 'done' }).eq('event_id', event.id)
-        return NextResponse.json({ received: true })
-      }
-
-      if (session.metadata?.type === 'change_order_payment') {
-        const changeOrderId = session.metadata.change_order_id || session.metadata.changeOrderId
-        if (changeOrderId) {
-          await supabase
-            .from('change_orders')
-            .update({ status: 'paid', paid_at: new Date().toISOString() })
-            .eq('id', changeOrderId)
-        }
-        await supabase.from('processed_stripe_events').update({ status: 'done' }).eq('event_id', event.id)
-        return NextResponse.json({ received: true })
+      // Client invoice and change-order payments are direct charges on the
+      // studio's connected account, handled (with account and amount checks) by
+      // /api/stripe-connect-webhook. Never mark them paid from the platform feed.
+      if (session.metadata?.type === 'invoice_payment' || session.metadata?.type === 'change_order_payment') {
+        return ack({ received: true, ignored: 'connect_payment' })
       }
 
       // Platform subscription checkout
@@ -107,7 +96,7 @@ export async function POST(request: Request) {
 
       if (existingUser?.stripe_event_created_at && eventCreated && eventCreated < existingUser.stripe_event_created_at) {
         console.warn(`Stripe event ${event.id} is stale on checkout completion (${eventCreated} < ${existingUser.stripe_event_created_at})`)
-        return NextResponse.json({ received: true, stale: true })
+        return ack({ received: true, stale: true })
       }
 
       let userUpdated = false
@@ -166,7 +155,7 @@ export async function POST(request: Request) {
 
       if (existingUser?.stripe_event_created_at && eventCreated && eventCreated < existingUser.stripe_event_created_at) {
         console.warn(`Stripe event ${event.id} is stale on subscription update (${eventCreated} < ${existingUser.stripe_event_created_at})`)
-        return NextResponse.json({ received: true, stale: true })
+        return ack({ received: true, stale: true })
       }
 
       const knownPrices = [
@@ -188,7 +177,7 @@ export async function POST(request: Request) {
       const subPriceId = subscription.items?.data?.[0]?.price?.id
       if (knownPrices.length > 0 && subPriceId && !knownPrices.includes(subPriceId)) {
         console.warn(`subscription: price ${subPriceId} does not match any recognized plan price`)
-        return NextResponse.json({ received: true, ignored: 'unrecognized_price' })
+        return ack({ received: true, ignored: 'unrecognized_price' })
       }
 
       const entitled = ['active', 'trialing', 'past_due']
@@ -252,7 +241,7 @@ export async function POST(request: Request) {
 
       if (existingUser?.stripe_event_created_at && eventCreated && eventCreated < existingUser.stripe_event_created_at) {
         console.warn(`Stripe event ${event.id} is stale on subscription delete (${eventCreated} < ${existingUser.stripe_event_created_at})`)
-        return NextResponse.json({ received: true, stale: true })
+        return ack({ received: true, stale: true })
       }
 
       const { error } = await supabase
@@ -303,14 +292,14 @@ export async function POST(request: Request) {
       const customerId = invoice.customer as string
 
       if (invoice.billing_reason === 'subscription_create') {
-        return NextResponse.json({ received: true, dunning_skipped: 'subscription_create' })
+        return ack({ received: true, dunning_skipped: 'subscription_create' })
       }
 
       const attemptCount = typeof invoice.attempt_count === 'number' ? invoice.attempt_count : 1
       const isFirstAttempt = attemptCount === 1
       const isFinalAttempt = invoice.next_payment_attempt === null
       if (!isFirstAttempt && !isFinalAttempt) {
-        return NextResponse.json({ received: true, dunning_skipped: 'intermediate_retry' })
+        return ack({ received: true, dunning_skipped: 'intermediate_retry' })
       }
 
       const { data: userData } = await supabase
@@ -362,20 +351,10 @@ export async function POST(request: Request) {
       }
     }
 
-    // REQUIREMENT (b): Update status = 'done' on success
-    await supabase
-      .from('processed_stripe_events')
-      .update({ status: 'done', updated_at: new Date().toISOString() })
-      .eq('event_id', event.id)
-
-    return NextResponse.json({ received: true })
+    return ack({ received: true })
   } catch (err: unknown) {
-    // REQUIREMENT (b): Delete the row on failure so Stripe retry succeeds
     console.error(`Webhook handler failed on event ${event.id}:`, err)
-    await supabase
-      .from('processed_stripe_events')
-      .delete()
-      .eq('event_id', event.id)
+    await releaseStripeEvent(supabase, event.id)
 
     const msg = err instanceof Error ? err.message : 'Processing failed'
     return NextResponse.json({ error: msg }, { status: 500 })

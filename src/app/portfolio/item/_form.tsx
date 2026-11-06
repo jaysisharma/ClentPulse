@@ -381,7 +381,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
     return (
       <AppLayout>
         <DarkShell>
-          <div className="max-w-3xl py-12 flex items-center gap-3 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
+          <div className="max-w-3xl py-12 flex items-center gap-3 text-slate-500 dark:text-slate-400 text-xs">
             <Loader2 className="w-4 h-4 animate-spin text-slate-900 dark:text-white" />
             Loading work item studio…
           </div>
@@ -397,7 +397,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
           {/* Back link */}
           <Link
             href="/portfolio"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-6"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to portfolio
           </Link>
@@ -406,26 +406,26 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-1.5 h-1.5 rounded-full bg-violet-500 animate-pulse" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                 Showcase Studio
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
               {editId ? 'Edit work item' : 'Add work item'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Select existing work to auto-fill narrative case studies and showcase imagery, or construct a custom portfolio item.
             </p>
           </div>
 
           {/* Missing Supabase Table Warning & One-Click Fix */}
           {missingTableError && (
-            <div className="mb-6 rounded-2xl border border-amber-300 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 p-5 shadow-xs">
+            <div className="mb-6 rounded-md border border-amber-300 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 p-5 shadow-xs">
               <div className="flex items-start gap-3">
                 <Database className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 <div className="space-y-3 flex-1">
                   <div>
-                    <h3 className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200">
+                    <h3 className="text-xs font-bold text-amber-900 dark:text-amber-200">
                       Supabase Setup Required: Table `portfolio_items` Not Found
                     </h3>
                     <p className="text-xs text-amber-800/90 dark:text-amber-300/80 mt-1 leading-relaxed">
@@ -438,7 +438,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                     <button
                       type="button"
                       onClick={copySql}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-amber-900 text-white dark:bg-amber-400 dark:text-amber-950 hover:opacity-90 px-3.5 py-1.5 text-xs font-semibold shadow-xs transition-opacity"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-amber-900 text-white dark:bg-amber-400 dark:text-amber-950 hover:opacity-90 px-3.5 py-1.5 text-xs font-semibold shadow-xs transition-opacity"
                     >
                       {sqlCopied ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
                       {sqlCopied ? 'Copied migration SQL!' : 'Copy SQL Migration'}
@@ -448,7 +448,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                       href="https://supabase.com/dashboard/project/_/sql"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 dark:border-amber-700 bg-white/60 dark:bg-amber-900/20 px-3.5 py-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:bg-white dark:hover:bg-amber-900/40 transition-colors shadow-xs"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-amber-300 dark:border-amber-700 bg-white/60 dark:bg-amber-900/20 px-3.5 py-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:bg-white dark:hover:bg-amber-900/40 transition-colors shadow-xs"
                     >
                       <span>Supabase SQL Editor</span>
                       <ExternalLink className="w-3 h-3 opacity-60" />
@@ -457,7 +457,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                     <button
                       type="button"
                       onClick={handleSaveLocally}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 px-3.5 py-1.5 text-xs font-semibold transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 px-3.5 py-1.5 text-xs font-semibold transition-colors"
                     >
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       Save locally & continue
@@ -471,20 +471,20 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
           <div className="space-y-6">
 
             {/* 1. SELECT EXISTING WORK (AUTO-FILL & AUTO-IMAGE FETCHING) */}
-            <div className="bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/30 dark:from-indigo-950/20 dark:via-[#0c0d12]/90 dark:to-purple-950/10 rounded-2xl border border-indigo-200/80 dark:border-indigo-500/20 ring-1 ring-indigo-500/10 p-6 sm:p-7 space-y-4 backdrop-blur-md shadow-xs dark:shadow-none">
-              <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-indigo-100 dark:border-white/5">
+            <div className="bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/30 dark:from-indigo-950/20 dark:via-[#12141c]/90 dark:to-purple-950/10 rounded-md border border-indigo-200/80 dark:border-indigo-500/20 ring-1 ring-indigo-500/10 p-6 sm:p-7 space-y-4 backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="flex items-center justify-between flex-wrap gap-2 pb-3 border-b border-indigo-100 dark:border-white/[0.05]">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-xs">
+                  <div className="w-8 h-8 rounded-md bg-indigo-600 text-white flex items-center justify-center shadow-xs">
                     <Wand2 className="w-4 h-4" />
                   </div>
                   <div>
-                    <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                    <h2 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2">
                       Auto-Fill From Existing Work
-                      <span className="text-[10px] font-semibold uppercase tracking-wider bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-semibold bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">
                         Smart Sync
                       </span>
                     </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                       Select any project to auto-generate case studies, extract deliverables, and fetch showcase imagery.
                     </p>
                   </div>
@@ -501,7 +501,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                       setProjectId(selected)
                       if (selected) handleSelectWork(selected)
                     }}
-                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#12131a] pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none transition-colors appearance-none cursor-pointer"
+                    className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12131a] pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-indigo-500 focus:outline-none transition-colors appearance-none cursor-pointer"
                   >
                     <option value="">Select a project to import details & imagery…</option>
                     {projects.map(p => (
@@ -516,7 +516,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                   type="button"
                   disabled={!projectId || autofilling}
                   onClick={() => handleSelectWork(projectId)}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2.5 text-xs transition-colors shadow-xs disabled:opacity-50 flex-shrink-0"
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2.5 text-xs transition-colors shadow-xs disabled:opacity-50 flex-shrink-0"
                 >
                   {autofilling ? (
                     <>
@@ -533,7 +533,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
               </div>
 
               {autofillSuccess && (
-                <div className="rounded-xl border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-950/20 p-3 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2 animate-fade-in">
+                <div className="rounded-md border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-950/20 p-3 text-xs text-emerald-800 dark:text-emerald-300 flex items-center gap-2 animate-fade-in">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
                   <span>{autofillSuccess}</span>
                 </div>
@@ -541,22 +541,22 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
             </div>
 
             {/* 2. PROJECT OVERVIEW CARD */}
-            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
-              <div className="pb-3 border-b border-slate-100 dark:border-white/5">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+            <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="pb-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
+                <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
                   Project Overview
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Name, narrative case study, and category tags.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Project Title
                 </label>
                 <input
-                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                  className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                   placeholder="e.g. Next.js SaaS Platform Architecture — Acme Corp"
                   value={title}
                   onChange={e => setTitle(e.target.value)}
@@ -566,15 +566,15 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                     Case Study & Highlights
                   </label>
-                  <span className="text-[11px] text-slate-400 font-light">
+                  <span className="text-[11px] text-slate-400">
                     Auto-generated from milestones, deliverables & metrics
                   </span>
                 </div>
                 <textarea
-                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors resize-none leading-relaxed font-sans"
+                  className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors resize-none leading-relaxed font-sans"
                   rows={6}
                   placeholder="Summarize the client problem, technical stack used, and key business outcomes achieved…"
                   value={description}
@@ -584,10 +584,10 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
 
               {/* Tags */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Stack & Domains <span className="text-slate-400 font-normal lowercase">(press Enter to add)</span>
                 </label>
-                <div className="flex flex-wrap gap-2 p-3 border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50/60 dark:bg-white/[0.03] min-h-[48px] focus-within:border-slate-400 dark:focus-within:border-white/30 transition-colors">
+                <div className="flex flex-wrap gap-2 p-3 border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50/60 dark:bg-white/[0.03] min-h-[48px] focus-within:border-slate-400 dark:focus-within:border-white/30 transition-colors">
                   {tags.map(t => (
                     <span
                       key={t}
@@ -615,22 +615,22 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
             </div>
 
             {/* 3. LINKS & MEDIA */}
-            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
-              <div className="pb-3 border-b border-slate-100 dark:border-white/5">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+            <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="pb-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
+                <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
                   Live URLs & Walkthroughs
                 </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Direct production links, source repositories, and walkthrough screencasts.
                 </p>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                     Live Website / App URL
                   </label>
-                  <span className="text-[10px] text-slate-400 font-light">
+                  <span className="text-[10px] text-slate-400">
                     Website, Web App, or App Store Link
                   </span>
                 </div>
@@ -641,16 +641,16 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                     placeholder="https://example.com or https://apps.apple.com/app/..."
                     value={liveUrl}
                     onChange={e => setLiveUrl(e.target.value)}
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                   />
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">
                   Synchronizes with your project settings and is showcased on your public portfolio.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Code Repository <span className="font-normal lowercase text-slate-400">(optional)</span>
                 </label>
                 <div className="relative">
@@ -660,13 +660,13 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                     placeholder="https://github.com/org/repo"
                     value={githubUrl}
                     onChange={e => setCode2Url(e.target.value)}
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Walkthrough Video <span className="font-normal lowercase text-slate-400">(YouTube or Loom)</span>
                 </label>
                 <input
@@ -674,7 +674,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                   placeholder="https://youtube.com/watch?v=… or https://loom.com/share/…"
                   value={videoUrl}
                   onChange={e => setVideoUrl(e.target.value)}
-                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                  className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                 />
                 {videoUrl && !videoEmbed && (
                   <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-1.5">
@@ -682,7 +682,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                   </p>
                 )}
                 {videoEmbed && (
-                  <div className="mt-3 rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 aspect-video shadow-xs">
+                  <div className="mt-3 rounded-md overflow-hidden border border-[#eaecf2] dark:border-white/[0.08] aspect-video shadow-xs">
                     <iframe
                       src={videoEmbed}
                       className="w-full h-full"
@@ -695,10 +695,10 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
             </div>
 
             {/* 4. SHOWCASE GALLERY (AUTO-FETCHED IMAGES & CUSTOM SCREENSHOTS) */}
-            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-4 backdrop-blur-md shadow-xs dark:shadow-none">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+            <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 space-y-4 backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="flex items-center justify-between pb-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
                 <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                  <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                     Showcase Imagery
                     {totalShots > 0 && (
                       <span className="text-[10px] font-semibold bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">
@@ -706,14 +706,14 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                       </span>
                     )}
                   </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     Auto-fetched live snapshots, project artwork cards, and high-res uploads.
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
+                  className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add custom image
                 </button>
@@ -731,15 +731,15 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="w-full border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl py-12 flex flex-col items-center gap-2.5 text-slate-400 dark:text-slate-500 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                  className="w-full border-2 border-dashed border-[#eaecf2] dark:border-white/[0.08] rounded-md py-12 flex flex-col items-center gap-2.5 text-slate-400 dark:text-slate-500 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-md bg-slate-100 dark:bg-white/5 flex items-center justify-center">
                     <ImageIcon className="w-6 h-6 text-slate-400" />
                   </div>
                   <span className="text-xs font-medium text-slate-700 dark:text-slate-300">
                     Upload showcase screenshots or select a project above
                   </span>
-                  <span className="text-[11px] font-light text-slate-400 dark:text-slate-500">
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500">
                     Selecting a project above automatically generates artwork cards & fetches snapshots
                   </span>
                 </button>
@@ -751,11 +751,11 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                     return (
                       <div
                         key={idx}
-                        className="relative group aspect-video rounded-xl overflow-hidden bg-slate-900 border border-slate-200 dark:border-white/10"
+                        className="relative group aspect-video rounded-md overflow-hidden bg-slate-900 border border-[#eaecf2] dark:border-white/[0.08]"
                       >
                         <img src={url} alt="Showcase asset" className="w-full h-full object-cover" />
                         <div className="absolute top-2 left-2">
-                          <span className="text-[9px] font-bold uppercase tracking-wider text-white bg-slate-950/80 px-2 py-0.5 rounded shadow-xs border border-white/10">
+                          <span className="text-[9px] font-bold text-white bg-slate-950/80 px-2 py-0.5 rounded shadow-xs border border-white/10">
                             {isSvgArtwork ? 'Studio Artwork' : isSnapshot ? 'Live Snapshot' : 'Asset'}
                           </span>
                         </div>
@@ -773,11 +773,11 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                   {pendingPreviews.map((src, i) => (
                     <div
                       key={i}
-                      className="relative group aspect-video rounded-xl overflow-hidden bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10"
+                      className="relative group aspect-video rounded-md overflow-hidden bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08]"
                     >
                       <img src={src} alt="" className="w-full h-full object-cover" />
                       <div className="absolute top-2 left-2">
-                        <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-700 bg-white/95 dark:bg-slate-900/90 dark:text-indigo-300 px-2 py-0.5 rounded-full shadow-xs border border-indigo-500/20">
+                        <span className="text-[10px] font-semibold text-indigo-700 bg-white/95 dark:bg-slate-900/90 dark:text-indigo-300 px-2 py-0.5 rounded-full shadow-xs border border-indigo-500/20">
                           Upload
                         </span>
                       </div>
@@ -794,17 +794,17 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                   <button
                     type="button"
                     onClick={() => fileRef.current?.click()}
-                    className="aspect-video rounded-xl border-2 border-dashed border-slate-200 dark:border-white/10 flex flex-col items-center justify-center gap-1 text-slate-400 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
+                    className="aspect-video rounded-md border-2 border-dashed border-[#eaecf2] dark:border-white/[0.08] flex flex-col items-center justify-center gap-1 text-slate-400 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
                   >
                     <Upload className="w-5 h-5" />
-                    <span className="text-[10px] font-semibold uppercase tracking-wider">Add more</span>
+                    <span className="text-[10px] font-semibold">Add more</span>
                   </button>
                 </div>
               )}
             </div>
 
             {error && (
-              <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs text-rose-700 dark:text-rose-300">
+              <div className="rounded-md border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs text-rose-700 dark:text-rose-300">
                 {error}
               </div>
             )}
@@ -813,7 +813,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
               <Link
                 href="/portfolio"
-                className="w-full sm:w-auto text-center rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-colors shadow-xs"
+                className="w-full sm:w-auto text-center rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-colors shadow-xs"
               >
                 Cancel
               </Link>
@@ -821,7 +821,7 @@ export function PortfolioItemForm({ editId }: { editId?: string }) {
                 type="button"
                 onClick={handleSave}
                 disabled={!title.trim() || saving || uploading}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-6 py-2.5 text-xs transition-all shadow-xs disabled:opacity-50"
+                className="bg-accent hover:bg-accent-hover w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md text-white font-semibold px-6 py-2.5 text-xs transition-all shadow-xs disabled:opacity-50"
               >
                 {uploading ? (
                   <>

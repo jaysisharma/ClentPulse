@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import { deriveKey } from '@/lib/server-secret'
 
 /**
  * Secret key used for signing client portal session cookies and tickets.
@@ -8,7 +9,8 @@ function getPasscodeSecret(): string {
     process.env.PASSCODE_SIGNING_SECRET ||
     process.env.INTEGRATION_ENCRYPTION_KEY ||
     process.env.SUPABASE_JWT_SECRET ||
-    'frevio-client-portal-session-secret-salt-2026'
+    // Never a hardcoded default: a public string would let anyone forge portal tickets
+    deriveKey('portal-passcode-ticket').toString('hex')
   )
 }
 

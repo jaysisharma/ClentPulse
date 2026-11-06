@@ -47,14 +47,14 @@ export function CollapsibleSection({
           type="button"
           onClick={() => setOpen(o => !o)}
           aria-expanded={open}
-          className="group inline-flex items-center gap-2 -ml-1.5 rounded-xl px-2 py-1 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
+          className="group inline-flex items-center gap-2 -ml-1.5 rounded-md px-2 py-1 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors cursor-pointer"
         >
           <ChevronDown
             className={cn('w-4 h-4 text-slate-400 transition-transform duration-200', open ? '' : '-rotate-90')}
           />
-          <h2 className="text-base sm:text-lg font-light uppercase tracking-tight text-slate-900 dark:text-white">{title}</h2>
+          <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">{title}</h2>
           {count != null && (
-            <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full px-2 py-0.5 ml-1">
+            <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] rounded-full px-2 py-0.5 ml-1">
               {count}
             </span>
           )}
@@ -65,7 +65,7 @@ export function CollapsibleSection({
             <button
               onClick={handleHide}
               disabled={hiding}
-              className="text-[11px] font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2.5 py-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-50 cursor-pointer flex-shrink-0"
+              className="text-[11px] font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] px-2.5 py-0.5 rounded-md hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-50 cursor-pointer flex-shrink-0"
             >
               {hiding ? 'Hiding…' : 'Hide'}
             </button>

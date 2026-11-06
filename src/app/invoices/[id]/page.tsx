@@ -32,7 +32,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 print:hidden">
             <Link 
               href="/invoices" 
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back to invoices
             </Link>

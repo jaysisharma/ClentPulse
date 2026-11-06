@@ -7,6 +7,9 @@ const FREELANCER_PATHS = [
   '/admin',
 ]
 
+// The signed-in client workspace (not /client/login or the custom-domain /client/portal hub)
+const CLIENT_PATHS = ['/client/dashboard', '/client/projects', '/client/billing', '/client/updates', '/client/messages']
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -31,7 +34,7 @@ export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   const onFreelancerRoute = FREELANCER_PATHS.some(p => pathname.startsWith(p))
-  const onClientRoute     = pathname.startsWith('/client/dashboard')
+  const onClientRoute     = CLIENT_PATHS.some(p => pathname === p || pathname.startsWith(`${p}/`))
   const onOnboardingRoute = pathname === '/onboarding'
 
   // Not authenticated — send everyone to the single login page

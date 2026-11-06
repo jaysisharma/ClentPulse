@@ -239,12 +239,12 @@ function Section({
 
       {/* Template pills */}
       {showTemplates && (
-        <div className="flex flex-wrap gap-1.5 mb-3 p-3 bg-slate-50 dark:bg-white/[0.03] rounded-xl border border-slate-200 dark:border-white/10 animate-fade-in">
+        <div className="flex flex-wrap gap-1.5 mb-3 p-3 bg-slate-50 dark:bg-white/[0.03] rounded-md border border-[#eaecf2] dark:border-white/[0.08] animate-fade-in">
           {templates.map(t => (
             <button
               key={t}
               onClick={() => onPickTemplate(t)}
-              className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full px-2.5 py-1 hover:border-indigo-400 dark:hover:border-indigo-400 hover:text-slate-900 dark:hover:text-white transition-colors text-left shadow-xs"
+              className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] rounded-md px-2.5 py-1 hover:border-indigo-400 dark:hover:border-indigo-400 hover:text-slate-900 dark:hover:text-white transition-colors text-left shadow-xs"
             >
               {t}
             </button>
@@ -255,7 +255,7 @@ function Section({
       {/* Items */}
       <div className="space-y-1.5">
         {items.length === 0 && !adding ? (
-          <p className="text-xs text-slate-400 dark:text-slate-500 py-1 italic font-light">{emptyText}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 py-1 italic">{emptyText}</p>
         ) : (
           items.map(item => (
             <div key={item.id} className="flex items-center gap-2.5 group py-0.5">
@@ -288,7 +288,7 @@ function Section({
           <div className="flex gap-2 mt-2">
             <input
               autoFocus
-              className="flex-1 px-3 py-2 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all"
+              className="flex-1 px-3 py-2 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all"
               placeholder="Task description…"
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}
@@ -300,7 +300,7 @@ function Section({
             <button
               onClick={onSubmit}
               disabled={!newTitle.trim() || saving}
-              className="px-3.5 py-1.5 text-xs font-semibold rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 disabled:opacity-50 transition-all shadow-xs"
+              className="bg-accent hover:bg-accent-hover px-3.5 py-1.5 text-xs font-semibold rounded-md text-white disabled:opacity-50 transition-all shadow-xs"
             >
               Add
             </button>

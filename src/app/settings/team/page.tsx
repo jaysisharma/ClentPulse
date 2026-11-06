@@ -309,13 +309,13 @@ export default function TeamSettingsPage() {
         <div className="max-w-5xl mx-auto space-y-8 animate-fade-in pb-16">
 
           {/* Page Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 dark:border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#eaecf2] dark:border-white/[0.08]">
             <div>
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">
+              <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 dark:text-slate-500 mb-1">
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Agency Command</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                 Team & Organization
               </h1>
             </div>
@@ -324,7 +324,7 @@ export default function TeamSettingsPage() {
               <button
                 type="button"
                 onClick={() => setShowInviteModal(true)}
-                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-xs"
+                className="bg-accent hover:bg-accent-hover inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold text-white transition-colors shadow-xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Invite Team Member</span>
@@ -334,14 +334,14 @@ export default function TeamSettingsPage() {
 
           {/* If currently in Personal Workspace */}
           {activeOrgId === 'personal' ? (
-            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-3xl border border-slate-200 dark:border-white/10 p-8 sm:p-12 text-center max-w-xl mx-auto backdrop-blur-md shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4">
+            <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-8 sm:p-12 text-center max-w-xl mx-auto backdrop-blur-md shadow-xs">
+              <div className="w-14 h-14 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4">
                 <Building2 className="w-7 h-7" />
               </div>
-              <h2 className="text-xl font-light uppercase tracking-tight text-slate-900 dark:text-white mb-2">
+              <h2 className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-2">
                 Personal Studio Mode
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mb-6 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
                 You are currently in your Personal Solo Workspace. To invite developers, project managers, and deliver multi-team client portals, launch an Agency Workspace.
               </p>
 
@@ -352,7 +352,7 @@ export default function TeamSettingsPage() {
                   placeholder="Enter your Agency Name (e.g. Acme Studio)"
                   value={newAgencyName}
                   onChange={e => setNewAgencyName(e.target.value)}
-                  className="w-full px-4 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors text-center"
+                  className="w-full px-4 py-2.5 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors text-center"
                 />
                 <button
                   type="submit"
@@ -376,10 +376,10 @@ export default function TeamSettingsPage() {
           ) : (
             <div className="space-y-8">
               {/* Agency Profile Details */}
-              <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-6 backdrop-blur-md shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-white/5">
+              <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 backdrop-blur-md shadow-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#f1f3f7] dark:border-white/[0.05]">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                       <Building2 className="w-5 h-5" />
                     </div>
                     <div>
@@ -398,12 +398,12 @@ export default function TeamSettingsPage() {
                         type="text"
                         value={orgName}
                         onChange={e => setOrgName(e.target.value)}
-                        className="px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                        className="px-3 py-1.5 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 transition-colors"
                       />
                       <button
                         type="submit"
                         disabled={savingOrg || orgName === org?.name}
-                        className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-xs disabled:opacity-40"
+                        className="bg-accent hover:bg-accent-hover px-3 py-1.5 rounded-md text-xs font-semibold text-white transition-colors shadow-xs disabled:opacity-40"
                       >
                         {savingOrg ? 'Saving…' : 'Rename'}
                       </button>
@@ -420,11 +420,11 @@ export default function TeamSettingsPage() {
 
               {/* Agency Branding & White-Labeling */}
               {['owner', 'admin'].includes(callerRole) && (
-                <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-6 backdrop-blur-md shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5 space-y-6">
-                  <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/5">
+                <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 backdrop-blur-md shadow-xs space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b border-[#f1f3f7] dark:border-white/[0.05]">
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center"
+                        className="w-10 h-10 rounded-md flex items-center justify-center"
                         style={{ backgroundColor: `${accentColor}15`, color: accentColor }}
                       >
                         <Palette className="w-5 h-5" />
@@ -433,7 +433,7 @@ export default function TeamSettingsPage() {
                         <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                           Agency Branding & White-Labeling
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                           Personalize logos, favicons, primary accent palette, and client portal unbranding.
                         </p>
                       </div>
@@ -452,10 +452,10 @@ export default function TeamSettingsPage() {
                             placeholder="https://youragency.com/logo.png"
                             value={logoUrl}
                             onChange={e => setLogoUrl(e.target.value)}
-                            className="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                            className="flex-1 px-3 py-2 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
                           />
                           {logoUrl && (
-                            <img src={logoUrl} alt="Logo preview" className="w-8 h-8 rounded-lg object-contain bg-white/5 border border-white/10 p-0.5 flex-shrink-0" />
+                            <img src={logoUrl} alt="Logo preview" className="w-8 h-8 rounded-md object-contain bg-white/5 border border-white/10 p-0.5 flex-shrink-0" />
                           )}
                         </div>
                       </div>
@@ -470,10 +470,10 @@ export default function TeamSettingsPage() {
                             placeholder="https://youragency.com/favicon.ico"
                             value={faviconUrl}
                             onChange={e => setFaviconUrl(e.target.value)}
-                            className="flex-1 px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                            className="flex-1 px-3 py-2 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
                           />
                           {faviconUrl && (
-                            <img src={faviconUrl} alt="Favicon preview" className="w-8 h-8 rounded-lg object-contain bg-white/5 border border-white/10 p-1 flex-shrink-0" />
+                            <img src={faviconUrl} alt="Favicon preview" className="w-8 h-8 rounded-md object-contain bg-white/5 border border-white/10 p-1 flex-shrink-0" />
                           )}
                         </div>
                       </div>
@@ -493,7 +493,7 @@ export default function TeamSettingsPage() {
                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono transition-all border ${
                               accentColor.toLowerCase() === preset.hex.toLowerCase()
                                 ? 'ring-2 ring-indigo-500 border-transparent bg-white/10 text-white font-semibold'
-                                : 'border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-white/20'
+                                : 'border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.02] text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-white/20'
                             }`}
                           >
                             <span
@@ -507,7 +507,7 @@ export default function TeamSettingsPage() {
 
                       <div className="flex items-center gap-3 max-w-xs">
                         <div
-                          className="w-8 h-8 rounded-xl flex-shrink-0 shadow-inner border border-white/10"
+                          className="w-8 h-8 rounded-md flex-shrink-0 shadow-inner border border-white/10"
                           style={{ backgroundColor: accentColor }}
                         />
                         <input
@@ -516,14 +516,14 @@ export default function TeamSettingsPage() {
                           onChange={e => setAccentColor(e.target.value)}
                           placeholder="#6366F1"
                           maxLength={7}
-                          className="w-28 px-3 py-1.5 text-xs font-mono rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white uppercase focus:outline-none focus:border-indigo-500 transition-colors"
+                          className="w-28 px-3 py-1.5 text-xs font-mono rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white uppercase focus:outline-none focus:border-indigo-500 transition-colors"
                         />
-                        <span className="text-[11px] text-slate-400 dark:text-slate-500 font-light">Custom HEX</span>
+                        <span className="text-[11px] text-slate-400 dark:text-slate-500">Custom HEX</span>
                       </div>
                     </div>
 
                     {/* White-Label Mode Toggle */}
-                    <div className="p-4 rounded-xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 flex items-start justify-between gap-4">
+                    <div className="p-4 rounded-md bg-slate-50/80 dark:bg-white/[0.02] border border-[#eaecf2] dark:border-white/[0.08] flex items-start justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-semibold text-slate-900 dark:text-white">
@@ -533,7 +533,7 @@ export default function TeamSettingsPage() {
                             Agency
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-1">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                           Completely removes "Powered by Frevio" branding and badges from all client status pages and deliverable links.
                         </p>
                       </div>
@@ -563,7 +563,7 @@ export default function TeamSettingsPage() {
                       <button
                         type="submit"
                         disabled={savingBranding}
-                        className="px-4 py-2 rounded-full text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
+                        className="bg-accent hover:bg-accent-hover px-4 py-2 rounded-md text-xs font-semibold text-white transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
                       >
                         {savingBranding ? (
                           <>
@@ -581,17 +581,17 @@ export default function TeamSettingsPage() {
 
               {/* Custom Domain (CNAME) Configuration */}
               {['owner', 'admin'].includes(callerRole) && (
-                <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-6 backdrop-blur-md shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5 space-y-6">
-                  <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/5">
+                <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 backdrop-blur-md shadow-xs space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b border-[#f1f3f7] dark:border-white/[0.05]">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                         <Globe className="w-5 h-5" />
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                           Custom Domain & CNAME Routing
                         </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                           Serve client status pages on your agency's own branded subdomain (e.g. status.youragency.com).
                         </p>
                       </div>
@@ -610,7 +610,7 @@ export default function TeamSettingsPage() {
                             placeholder="status.youragency.com"
                             value={customDomain}
                             onChange={e => setCustomDomain(e.target.value)}
-                            className="w-full px-3 py-2 text-xs font-mono rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                            className="w-full px-3 py-2 text-xs font-mono rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.03] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
                           />
                         </div>
 
@@ -618,7 +618,7 @@ export default function TeamSettingsPage() {
                           <button
                             type="submit"
                             disabled={savingDomain}
-                            className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
+                            className="bg-accent hover:bg-accent-hover px-4 py-2 rounded-md text-xs font-semibold text-white transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
                           >
                             {savingDomain ? 'Saving…' : 'Save Domain'}
                           </button>
@@ -628,7 +628,7 @@ export default function TeamSettingsPage() {
                               type="button"
                               onClick={handleVerifyDomain}
                               disabled={verifyingDomain}
-                              className="px-3.5 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50"
+                              className="px-3.5 py-2 rounded-md text-xs font-semibold border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50"
                             >
                               <RefreshCw className={`w-3.5 h-3.5 ${verifyingDomain ? 'animate-spin' : ''}`} />
                               <span>Verify DNS</span>
@@ -650,7 +650,7 @@ export default function TeamSettingsPage() {
 
                     {/* Verification Result Banner */}
                     {verificationResult && (
-                      <div className={`p-4 rounded-xl border text-xs font-mono ${
+                      <div className={`p-4 rounded-md border text-xs font-mono ${
                         verificationResult.verified
                           ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400'
                           : 'bg-amber-500/10 border-amber-500/20 text-amber-800 dark:text-amber-300'
@@ -666,33 +666,33 @@ export default function TeamSettingsPage() {
                             </span>
                           )}
                         </div>
-                        <p className="font-sans font-light text-slate-600 dark:text-slate-300 mt-1">{verificationResult.message}</p>
+                        <p className="font-sans text-slate-600 dark:text-slate-300 mt-1">{verificationResult.message}</p>
                       </div>
                     )}
 
                     {/* CNAME Instructions Card */}
-                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 space-y-3">
+                    <div className="p-4 rounded-md bg-slate-50 dark:bg-white/[0.02] border border-[#eaecf2] dark:border-white/[0.08] space-y-3">
                       <div className="text-xs font-semibold text-slate-900 dark:text-white">
                         DNS CNAME Instructions
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 font-light">
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
                         Add the following DNS record at your domain registrar (e.g. Cloudflare, Namecheap, GoDaddy):
                       </p>
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
-                        <div className="p-2.5 rounded-lg bg-white dark:bg-black/40 border border-slate-200 dark:border-white/5">
+                        <div className="p-2.5 rounded-md bg-white dark:bg-black/40 border border-[#eaecf2] dark:border-white/[0.05]">
                           <div className="text-[10px] uppercase text-slate-400">Type</div>
                           <div className="font-semibold text-slate-900 dark:text-white mt-0.5">CNAME</div>
                         </div>
 
-                        <div className="p-2.5 rounded-lg bg-white dark:bg-black/40 border border-slate-200 dark:border-white/5">
+                        <div className="p-2.5 rounded-md bg-white dark:bg-black/40 border border-[#eaecf2] dark:border-white/[0.05]">
                           <div className="text-[10px] uppercase text-slate-400">Host / Name</div>
                           <div className="font-semibold text-slate-900 dark:text-white mt-0.5">
                             {customDomain ? customDomain.split('.')[0] : 'status'}
                           </div>
                         </div>
 
-                        <div className="p-2.5 rounded-lg bg-white dark:bg-black/40 border border-slate-200 dark:border-white/5 flex items-center justify-between">
+                        <div className="p-2.5 rounded-md bg-white dark:bg-black/40 border border-[#eaecf2] dark:border-white/[0.05] flex items-center justify-between">
                           <div>
                             <div className="text-[10px] uppercase text-slate-400">Points to / Value</div>
                             <div className="font-semibold text-slate-900 dark:text-white mt-0.5 font-mono text-xs">cname.frevio.cloud</div>
@@ -738,19 +738,19 @@ export default function TeamSettingsPage() {
               )}
 
               {/* Team Members List */}
-              <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-6 backdrop-blur-md shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5">
+              <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 backdrop-blur-md shadow-xs">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                       Team Seats ({members.length})
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                       Colleagues with access to this agency workspace.
                     </p>
                   </div>
                 </div>
 
-                <div className="divide-y divide-slate-100 dark:divide-white/5">
+                <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05]">
                   {members.map(m => (
                     <div key={m.id} className="py-3.5 flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
@@ -773,7 +773,7 @@ export default function TeamSettingsPage() {
                             ? 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20'
                             : m.role === 'admin'
                             ? 'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20'
-                            : 'bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/10'
+                            : 'bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-400 border border-[#eaecf2] dark:border-white/[0.08]'
                         }`}>
                           {m.role === 'admin' ? 'Project Manager' : m.role}
                         </span>
@@ -802,7 +802,7 @@ export default function TeamSettingsPage() {
                             <button
                               type="button"
                               onClick={() => setRemovingMemberId(m.id)}
-                              className="p-1 rounded-lg text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+                              className="p-1 rounded-md text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
                               title="Remove member"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -817,11 +817,11 @@ export default function TeamSettingsPage() {
 
               {/* Pending Invitations */}
               {invites.length > 0 && (
-                <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-6 backdrop-blur-md shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5">
+                <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 backdrop-blur-md shadow-xs">
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
                     Pending Invitations ({invites.length})
                   </h3>
-                  <div className="divide-y divide-slate-100 dark:divide-white/5">
+                  <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05]">
                     {invites.map(inv => (
                       <div key={inv.id} className="py-3 flex items-center justify-between gap-3 text-xs">
                         <div>
@@ -832,7 +832,7 @@ export default function TeamSettingsPage() {
                           <button
                             type="button"
                             onClick={() => copyInviteLink(inv.token)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-[11px] font-mono text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/5 text-[11px] font-mono text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
                           >
                             {copiedToken === inv.token ? (
                               <>
@@ -854,7 +854,7 @@ export default function TeamSettingsPage() {
               )}
 
               {/* Activity Audit Trail */}
-              <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-6 backdrop-blur-md shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5">
+              <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 backdrop-blur-md shadow-xs">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <History className="w-4 h-4 text-indigo-500" />
@@ -866,22 +866,22 @@ export default function TeamSettingsPage() {
                     {activities.length} event{activities.length === 1 ? '' : 's'}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light mb-4">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
                   Chronological trail of internal notes, update review approvals, client broadcasts, and team operations.
                 </p>
 
                 {activities.length === 0 ? (
-                  <div className="text-center py-8 border border-dashed border-slate-200 dark:border-white/10 rounded-xl">
+                  <div className="text-center py-8 border border-dashed border-[#eaecf2] dark:border-white/[0.08] rounded-md">
                     <History className="w-5 h-5 mx-auto text-slate-400 dark:text-slate-600 mb-2" />
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       No agency activity recorded yet.
                     </p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-slate-100 dark:divide-white/5 max-h-96 overflow-y-auto pr-1">
+                  <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05] max-h-96 overflow-y-auto pr-1">
                     {activities.map(act => (
                       <div key={act.id} className="py-3 flex items-start gap-3">
-                        <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/5 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <div className="w-7 h-7 rounded-md bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.05] flex items-center justify-center flex-shrink-0 mt-0.5">
                           {act.action === 'update.published' ? (
                             <Send className="w-3.5 h-3.5 text-emerald-500" />
                           ) : act.action === 'update.review_submitted' ? (
@@ -928,16 +928,16 @@ export default function TeamSettingsPage() {
           {/* Invite Member Modal */}
           {showInviteModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-              <div className="bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl ring-1 ring-slate-950/5 dark:ring-white/5 animate-scale-up">
+              <div className="bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-md p-6 sm:p-8 max-w-md w-full shadow-2xl animate-scale-up">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
                     <h3 className="text-base font-semibold text-slate-900 dark:text-white">
                       Invite Team Member
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       Send an invitation to join {org?.name}.
                     </p>
                   </div>
@@ -945,7 +945,7 @@ export default function TeamSettingsPage() {
 
                 <form onSubmit={handleSendInvite} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                       Email Address
                     </label>
                     <input
@@ -955,26 +955,26 @@ export default function TeamSettingsPage() {
                       placeholder="colleague@agency.com"
                       value={inviteEmail}
                       onChange={e => setInviteEmail(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+                      className="w-full px-3.5 py-2.5 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                       Role & Permissions
                     </label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
                         onClick={() => setInviteRole('member')}
-                        className={`p-3 rounded-xl border text-left transition-all ${
+                        className={`p-3 rounded-md border text-left transition-all ${
                           inviteRole === 'member'
                             ? 'border-indigo-500 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-500/20'
-                            : 'border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400'
+                            : 'border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400'
                         }`}
                       >
                         <div className="text-xs font-semibold">Specialist / Member</div>
-                        <div className="text-[10px] text-slate-400 dark:text-slate-500 font-light mt-0.5">
+                        <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
                           Logs hours, checks off tasks, contributes deliverables.
                         </div>
                       </button>
@@ -982,14 +982,14 @@ export default function TeamSettingsPage() {
                       <button
                         type="button"
                         onClick={() => setInviteRole('admin')}
-                        className={`p-3 rounded-xl border text-left transition-all ${
+                        className={`p-3 rounded-md border text-left transition-all ${
                           inviteRole === 'admin'
                             ? 'border-indigo-500 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-500/20'
-                            : 'border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400'
+                            : 'border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400'
                         }`}
                       >
                         <div className="text-xs font-semibold">Project Manager</div>
-                        <div className="text-[10px] text-slate-400 dark:text-slate-500 font-light mt-0.5">
+                        <div className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
                           Manages projects, invoices, and client broadcasts.
                         </div>
                       </button>
@@ -1006,14 +1006,14 @@ export default function TeamSettingsPage() {
                     <button
                       type="button"
                       onClick={() => setShowInviteModal(false)}
-                      className="px-4 py-2 rounded-full text-xs font-semibold border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors"
+                      className="px-4 py-2 rounded-md text-xs font-semibold border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={inviting || !inviteEmail.trim()}
-                      className="px-4 py-2 rounded-full text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
+                      className="bg-accent hover:bg-accent-hover px-4 py-2 rounded-md text-xs font-semibold text-white transition-colors shadow-xs disabled:opacity-50 inline-flex items-center gap-1.5"
                     >
                       {inviting ? (
                         <>

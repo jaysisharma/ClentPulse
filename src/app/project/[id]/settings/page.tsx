@@ -34,6 +34,7 @@ const TABS = [
   { id: 'general',    label: 'General',             icon: Settings },
   { id: 'marketing',  label: 'Marketing & KPIs',    icon: BarChart3 },
   { id: 'client',     label: 'Client',              icon: Users },
+  { id: 'webhooks',   label: 'Webhooks & Alerts',   icon: Zap },
   { id: 'visibility', label: 'Visibility',          icon: Globe },
   { id: 'danger',     label: 'Danger zone',         icon: ShieldAlert },
 ] as const
@@ -45,7 +46,7 @@ function SaveButton({ loading, saved }: { loading: boolean; saved: boolean }) {
     <button 
       type="submit" 
       disabled={loading}
-      className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+      className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-2 text-xs transition-all shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
     >
       {loading ? (
         <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -66,7 +67,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 focus:outline-none p-0.5 ${
-        checked ? 'bg-slate-900 dark:bg-white' : 'bg-slate-200 dark:bg-white/10'
+        checked ? 'bg-accent hover:bg-accent-hover text-white' : 'bg-slate-200 dark:bg-white/10'
       }`}
     >
       <span className={`pointer-events-none inline-block h-4 w-4 transform rounded-full shadow-xs transition duration-200 ${
@@ -84,14 +85,14 @@ function ToggleRow({
   iconColor?: string
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 py-4 border-b border-slate-100 dark:border-white/5 last:border-0">
+    <div className="flex items-center justify-between gap-4 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05] last:border-0">
       <div className="flex items-center gap-3.5 min-w-0">
-        <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100 dark:bg-white/5 border border-slate-200/60 dark:border-white/5">
+        <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.05]">
           <Icon className={`w-4 h-4 ${iconColor}`} />
         </div>
         <div className="min-w-0">
-          <div className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">{label}</div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light leading-normal">{description}</div>
+          <div className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">{label}</div>
+          <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-normal">{description}</div>
         </div>
       </div>
       <Toggle checked={checked} onChange={onChange} />
@@ -123,6 +124,11 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
   const [canvasEmbedUrl, setCanvasEmbedUrl] = useState('')
   const [canvasEmbedTitle, setCanvasEmbedTitle] = useState('Strategy & Canvas')
   const [liveUrl, setLiveUrl] = useState('')
+  const [webhookUrl, setWebhookUrl] = useState('')
+  const [webhookEnabled, setWebhookEnabled] = useState(true)
+  const [overdueLockEnabled, setOverdueLockEnabled] = useState(true)
+  const [testingWebhook, setTestingWebhook] = useState(false)
+  const [webhookTestResult, setWebhookTestResult] = useState<{ ok: boolean; msg: string } | null>(null)
   const [loading, setLoading] = useState(false)
 
   const parsedCanvas = useMemo(() => parseCanvasEmbedUrl(canvasEmbedUrl), [canvasEmbedUrl])
@@ -172,6 +178,9 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       setCanvasEmbedUrl(data.canvas_embed_url ?? '')
       setCanvasEmbedTitle(data.canvas_embed_title ?? 'Strategy & Canvas')
       setLiveUrl(data.live_url ?? '')
+      setWebhookUrl(data.webhook_url ?? '')
+      setWebhookEnabled(data.webhook_enabled ?? true)
+      setOverdueLockEnabled(data.overdue_lock_enabled ?? true)
     })
 
     supabase.auth.getUser().then(async ({ data }: { data: any }) => {
@@ -217,6 +226,9 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
       canvas_embed_url: canvasEmbedUrl.trim() || null,
       canvas_embed_title: canvasEmbedTitle.trim() || null,
       live_url: liveUrl.trim() || null,
+      webhook_url: webhookUrl.trim() || null,
+      webhook_enabled: webhookEnabled,
+      overdue_lock_enabled: overdueLockEnabled,
     }).eq('id', id)
 
     // Fallback if live_url or canvas_embed columns have issues
@@ -249,6 +261,28 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
     setDuplicating(false)
     if (res.ok) router.push(`/project/${data.id}`)
     else setError(data.error ?? 'Failed to duplicate.')
+  }
+
+  async function handleTestWebhook() {
+    try {
+      setTestingWebhook(true)
+      setWebhookTestResult(null)
+      const res = await fetch(`/api/projects/${id}/webhook-test`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ webhookUrl }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setWebhookTestResult({ ok: true, msg: 'Test webhook sent successfully! Check your Slack/Discord channel.' })
+      } else {
+        setWebhookTestResult({ ok: false, msg: data.error || 'Failed to dispatch webhook.' })
+      }
+    } catch (err: any) {
+      setWebhookTestResult({ ok: false, msg: err.message || 'Network error' })
+    } finally {
+      setTestingWebhook(false)
+    }
   }
 
   function generatePortalPassword() {
@@ -307,20 +341,20 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
           <div className="mb-6">
             <Link 
               href={`/project/${id}`} 
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-4"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-4"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back to project
             </Link>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                 Workspace Configuration
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
               Project Settings
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Manage parameters, client credentials, and dashboard visibility.
             </p>
           </div>
@@ -341,11 +375,11 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                   <button
                     key={t.id}
                     onClick={() => setTab(t.id)}
-                    className={`flex-1 md:w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all text-left whitespace-nowrap ${
+                    className={`flex-1 md:w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-md text-xs font-semibold transition-all text-left whitespace-nowrap ${
                       active
                         ? isDanger
                           ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20'
-                          : 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+                          : 'bg-accent hover:bg-accent-hover text-white shadow-xs'
                         : isDanger
                         ? 'text-rose-500 hover:bg-rose-500/10'
                         : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white'
@@ -363,18 +397,18 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
 
               {/* ─── General ─── */}
               {tab === 'general' && (
-                <form onSubmit={handleSave} className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
-                  <div className="px-6 py-4 border-b border-slate-100 dark:border-white/5">
-                    <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">General Parameters</h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Project title, financial budget, and color accent.</p>
+                <form onSubmit={handleSave} className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                  <div className="px-6 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05]">
+                    <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">General Parameters</h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Project title, financial budget, and color accent.</p>
                   </div>
                   <div className="p-6 space-y-5">
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                         Project Title
                       </label>
                       <input 
-                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                        className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                         value={projectName} 
                         onChange={e => setProjectName(e.target.value)} 
                         required 
@@ -382,10 +416,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     </div>
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                           Live Website / App URL
                         </label>
-                        <span className="text-[10px] text-slate-400 font-light">
+                        <span className="text-[10px] text-slate-400">
                           Website, Web App, or App Store Link
                         </span>
                       </div>
@@ -393,40 +427,40 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                         <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
                         <input
                           type="url"
-                          className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                          className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] pl-10 pr-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                           value={liveUrl}
                           onChange={e => setLiveUrl(e.target.value)}
                           placeholder="https://example.com or https://apps.apple.com/app/..."
                         />
                       </div>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">
                         Visible on the client portal and automatically linked when showcasing this project in your public portfolio.
                       </p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                           Budget (USD)
                         </label>
                         <input 
                           type="number" 
                           min="0" 
                           step="0.01" 
-                          className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                          className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                           value={budget} 
                           onChange={e => setBudget(e.target.value)} 
                           placeholder="e.g. 5000" 
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                           Hourly Rate ($/hr)
                         </label>
                         <input 
                           type="number" 
                           min="0" 
                           step="0.01" 
-                          className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                          className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                           value={hourlyRate} 
                           onChange={e => setHourlyRate(e.target.value)} 
                           placeholder="e.g. 150" 
@@ -434,7 +468,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
                         Accent Color {selectedColor && <span className="text-[11px] font-normal normal-case text-slate-400 dark:text-slate-500 ml-1">({selectedColor.name})</span>}
                       </label>
                       <div className="flex gap-2.5 flex-wrap">
@@ -451,12 +485,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       </div>
                     </div>
                     {error && (
-                      <p className="text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-3">
+                      <p className="text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-md px-4 py-3">
                         {error}
                       </p>
                     )}
                   </div>
-                  <div className="px-6 py-4 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+                  <div className="px-6 py-4 border-t border-[#f1f3f7] dark:border-white/[0.05] bg-slate-50/50 dark:bg-white/[0.02]">
                     <SaveButton loading={loading} saved={saved} />
                   </div>
                 </form>
@@ -464,10 +498,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
 
               {/* ─── Marketing & KPIs ─── */}
               {tab === 'marketing' && (
-                <form onSubmit={handleSave} className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
-                  <div className="px-6 py-4 border-b border-slate-100 dark:border-white/5">
-                    <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Marketing & Performance Analytics</h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Configure custom campaign KPI metrics and live embedded reports for your client portal.</p>
+                <form onSubmit={handleSave} className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                  <div className="px-6 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05]">
+                    <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Marketing & Performance Analytics</h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Configure custom campaign KPI metrics and live embedded reports for your client portal.</p>
                   </div>
 
                   <div className="p-6 space-y-6">
@@ -475,10 +509,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     <div className="space-y-4">
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                             Campaign KPI Cards <span className="font-normal normal-case text-slate-400">({kpis.length}/4)</span>
                           </label>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                             Showcase business impact (ROAS, CPA, Leads, Spend) at the top of the client portal.
                           </p>
                         </div>
@@ -487,7 +521,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                           <button
                             type="button"
                             onClick={() => setKpis([...kpis, { label: '', value: '', trend: '' }])}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-2xs self-start cursor-pointer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-2xs self-start cursor-pointer"
                           >
                             <Plus className="w-3.5 h-3.5" />
                             <span>Add KPI Card</span>
@@ -497,7 +531,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
 
                       {/* Quick presets */}
                       {kpis.length === 0 && (
-                        <div className="p-4 rounded-xl border border-dashed border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] text-center space-y-2">
+                        <div className="p-4 rounded-md border border-dashed border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] text-center space-y-2">
                           <p className="text-xs text-slate-500 dark:text-slate-400">No KPIs configured yet. Click to add a preset:</p>
                           <div className="flex flex-wrap justify-center gap-2">
                             {[
@@ -510,7 +544,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                                 key={idx}
                                 type="button"
                                 onClick={() => setKpis(prev => prev.length < 4 ? [...prev, preset] : prev)}
-                                className="px-2.5 py-1 text-xs rounded-full border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors cursor-pointer"
+                                className="px-2.5 py-1 text-xs rounded-md border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50/50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors cursor-pointer"
                               >
                                 + {preset.label}
                               </button>
@@ -523,9 +557,9 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       {kpis.length > 0 && (
                         <div className="space-y-3">
                           {kpis.map((kpi, idx) => (
-                            <div key={idx} className="p-3.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] flex flex-col sm:flex-row items-center gap-3">
+                            <div key={idx} className="p-3.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] flex flex-col sm:flex-row items-center gap-3">
                               <div className="w-full sm:flex-1">
-                                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Metric Name</label>
+                                <label className="block text-[10px] font-semibold text-slate-400 mb-1">Metric Name</label>
                                 <input
                                   type="text"
                                   placeholder="e.g. Blended ROAS"
@@ -535,12 +569,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                                     next[idx] = { ...next[idx], label: e.target.value }
                                     setKpis(next)
                                   }}
-                                  className="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                                  className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c] px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
                                 />
                               </div>
 
                               <div className="w-full sm:w-36">
-                                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Current Value</label>
+                                <label className="block text-[10px] font-semibold text-slate-400 mb-1">Current Value</label>
                                 <input
                                   type="text"
                                   placeholder="e.g. 3.8x"
@@ -550,12 +584,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                                     next[idx] = { ...next[idx], value: e.target.value }
                                     setKpis(next)
                                   }}
-                                  className="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-3 py-1.5 text-xs font-mono font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                                  className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c] px-3 py-1.5 text-xs font-mono font-medium text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
                                 />
                               </div>
 
                               <div className="w-full sm:w-36">
-                                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-1">Trend / Comparison</label>
+                                <label className="block text-[10px] font-semibold text-slate-400 mb-1">Trend / Comparison</label>
                                 <input
                                   type="text"
                                   placeholder="e.g. +14%"
@@ -565,7 +599,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                                     next[idx] = { ...next[idx], trend: e.target.value }
                                     setKpis(next)
                                   }}
-                                  className="w-full rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-3 py-1.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                                  className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c] px-3 py-1.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
                                 />
                               </div>
 
@@ -582,7 +616,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
 
                           {/* Live preview */}
                           <div className="pt-2">
-                            <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2">Live Portal Preview</span>
+                            <span className="block text-[10px] font-semibold text-slate-400 mb-2">Live Portal Preview</span>
                             <KpiSnapshotStrip kpis={kpis} accentColor={color} />
                           </div>
                         </div>
@@ -590,19 +624,19 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     </div>
 
                     {/* Section 2: Live Embedded Performance Report */}
-                    <div className="space-y-4 pt-6 border-t border-slate-100 dark:border-white/5">
+                    <div className="space-y-4 pt-6 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                       <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                           Live Embedded Report <span className="font-normal normal-case text-slate-400">(Looker Studio / Sheets / BI)</span>
                         </label>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                           Adds an interactive &quot;Reports&quot; tab on your client portal embedding your external performance dashboard.
                         </p>
                       </div>
 
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                          <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                             Report Tab Title
                           </label>
                           <input
@@ -610,12 +644,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                             placeholder="e.g. Q3 Performance Dashboard"
                             value={reportEmbedTitle}
                             onChange={e => setReportEmbedTitle(e.target.value)}
-                            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                            className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                          <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                             Embed URL (Looker Studio / Google Sheets / Metabase)
                           </label>
                           <input
@@ -623,7 +657,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                             placeholder="https://lookerstudio.google.com/embed/reporting/..."
                             value={reportEmbedUrl}
                             onChange={e => setReportEmbedUrl(e.target.value)}
-                            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                            className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
                           />
                           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                             In Looker Studio: click <strong>File &rarr; Embed report &rarr; Enable embedding &rarr; Embed URL</strong> and paste the link here.
@@ -633,10 +667,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     </div>
 
                     {/* Section 3: Visual Strategy Board & Presentation Canvas */}
-                    <div className="space-y-4 pt-6 border-t border-slate-100 dark:border-white/5">
+                    <div className="space-y-4 pt-6 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                       <div className="flex items-start justify-between gap-3">
                         <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                             <span>Visual Strategy Board & Canvas</span>
                             {parsedCanvas && (
                               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 font-semibold">
@@ -644,7 +678,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                               </span>
                             )}
                           </label>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5">
+                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                             Embed live boards, content research, or wireframes from <strong>Figma, FigJam, Miro, Excalidraw, Loom, Canva, or Google Slides</strong> directly into your client portal.
                           </p>
                         </div>
@@ -652,7 +686,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
 
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                          <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                             Canvas Tab Title
                           </label>
                           <input
@@ -660,12 +694,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                             placeholder="e.g. Strategy & Wireframes"
                             value={canvasEmbedTitle}
                             onChange={e => setCanvasEmbedTitle(e.target.value)}
-                            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                            className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                          <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                             Whiteboard / Board URL
                           </label>
                           <input
@@ -673,7 +707,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                             placeholder="Paste Figma, Miro, Excalidraw, Loom, or Google Slides link…"
                             value={canvasEmbedUrl}
                             onChange={e => setCanvasEmbedUrl(e.target.value)}
-                            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
+                            className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs font-mono text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30"
                           />
                           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                             Supports Figma file/board links, Miro board links, Excalidraw rooms, Loom videos, Canva decks, or Google Slides. We automatically convert them into interactive embed frames.
@@ -681,7 +715,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                         </div>
 
                         {parsedCanvas && (
-                          <div className="mt-3 p-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.02] space-y-2">
+                          <div className="mt-3 p-3 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.02] space-y-2">
                             <div className="flex items-center justify-between text-xs">
                               <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                                 <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
@@ -697,7 +731,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                                 <ExternalLink className="w-2.5 h-2.5" />
                               </a>
                             </div>
-                            <div className="w-full h-64 rounded-lg overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-black/40">
+                            <div className="w-full h-64 rounded-md overflow-hidden border border-[#eaecf2] dark:border-white/[0.08] bg-slate-100 dark:bg-black/40">
                               <iframe
                                 src={parsedCanvas.embedUrl}
                                 title={canvasEmbedTitle || 'Canvas Preview'}
@@ -712,7 +746,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                     </div>
                   </div>
 
-                  <div className="px-6 py-4 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+                  <div className="px-6 py-4 border-t border-[#f1f3f7] dark:border-white/[0.05] bg-slate-50/50 dark:bg-white/[0.02]">
                     <SaveButton loading={loading} saved={saved} />
                   </div>
                 </form>
@@ -722,31 +756,31 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
               {tab === 'client' && (
                 <div className="space-y-6">
                   {/* Client info */}
-                  <form onSubmit={handleSave} className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
-                    <div className="px-6 py-4 border-b border-slate-100 dark:border-white/5">
-                      <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Client Information</h2>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Client contact details and status page passcode protection.</p>
+                  <form onSubmit={handleSave} className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                    <div className="px-6 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05]">
+                      <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Client Information</h2>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Client contact details and status page passcode protection.</p>
                     </div>
                     <div className="p-6 space-y-4">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                             Client Name
                           </label>
                           <input 
-                            className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                            className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                             value={clientName} 
                             onChange={e => setClientName(e.target.value)} 
                             required 
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                          <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                             Client Email
                           </label>
                           <input 
                             type="email"
-                            className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                            className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                             value={clientEmail} 
                             onChange={e => setClientEmail(e.target.value)} 
                             placeholder="client@example.com" 
@@ -756,47 +790,47 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       <div>
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <Lock className="w-3.5 h-3.5 text-slate-400" />
-                          <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                          <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                             Status page passcode <span className="text-slate-400 font-normal lowercase">(optional)</span>
                           </label>
                         </div>
                         <input 
                           type="text" 
-                          className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                          className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                           value={passcode} 
                           onChange={e => setPasscode(e.target.value)} 
                           placeholder="Leave blank for open link access" 
                         />
                       </div>
                     </div>
-                    <div className="px-6 py-4 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+                    <div className="px-6 py-4 border-t border-[#f1f3f7] dark:border-white/[0.05] bg-slate-50/50 dark:bg-white/[0.02]">
                       <SaveButton loading={loading} saved={saved} />
                     </div>
                   </form>
 
                   {/* Portal access */}
-                  <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
-                    <div className="px-6 py-4 border-b border-slate-100 dark:border-white/5 flex items-center gap-2.5">
+                  <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                    <div className="px-6 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05] flex items-center gap-2.5">
                       <ShieldCheck className="w-4 h-4 text-emerald-500" />
                       <div>
-                        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Client Portal Login</h2>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                        <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Client Portal Login</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                           Give {clientName || 'your client'} private credentials to view deliverables, sign documents, and pay invoices.
                         </p>
                       </div>
                     </div>
                     <div className="p-6">
                       {!clientEmail.trim() ? (
-                        <p className="text-xs font-medium text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3">
+                        <p className="text-xs font-medium text-amber-800 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-md px-4 py-3">
                           Add a client email above and save first to generate login credentials.
                         </p>
                       ) : (
                         <form onSubmit={handleSetPortalPassword} className="space-y-4">
                           <p className="text-xs text-slate-500 dark:text-slate-400">
-                            Client Account ID: <span className="font-mono font-medium text-slate-900 dark:text-white bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-white/5">{clientEmail}</span>
+                            Client Account ID: <span className="font-mono font-medium text-slate-900 dark:text-white bg-slate-100 dark:bg-white/5 px-2 py-0.5 rounded-md border border-[#eaecf2] dark:border-white/[0.05]">{clientEmail}</span>
                           </p>
                           <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                               Portal password
                             </label>
                             <div className="relative max-w-sm">
@@ -805,7 +839,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                                 placeholder="Min. 6 characters" 
                                 value={portalPassword} 
                                 onChange={e => setPortalPassword(e.target.value)} 
-                                className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 pr-10 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                                className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 pr-10 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                               />
                               <button 
                                 type="button" 
@@ -818,22 +852,22 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                             </div>
                           </div>
                           {portalError && (
-                            <p className="text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-3">
+                            <p className="text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-md px-4 py-3">
                               {portalError}
                             </p>
                           )}
                           <button 
                             type="submit" 
                             disabled={portalSaving}
-                            className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50"
+                            className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50"
                           >
                             {portalSaving ? 'Setting...' : 'Set portal password'}
                           </button>
                         </form>
                       )}
                       {portalShare && (
-                        <div className="mt-5 bg-slate-50/80 dark:bg-white/[0.02] border border-slate-200 dark:border-white/10 rounded-xl p-4 space-y-3">
-                          <p className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                        <div className="mt-5 bg-slate-50/80 dark:bg-white/[0.02] border border-[#eaecf2] dark:border-white/[0.08] rounded-md p-4 space-y-3">
+                          <p className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
                             ✓ {portalShare.updated ? 'Credentials updated.' : 'Portal access active.'} Send to {clientName || 'client'}:
                           </p>
                           {[
@@ -842,8 +876,8 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                             { label: 'Password', value: portalShare.password, field: 'password' as const },
                           ].map(row => (
                             <div key={row.field}>
-                              <div className="text-[10px] uppercase font-semibold text-slate-400 dark:text-slate-500 mb-1">{row.label}</div>
-                              <div className="flex items-center justify-between bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-xl px-3 py-2">
+                              <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-500 mb-1">{row.label}</div>
+                              <div className="flex items-center justify-between bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-md px-3 py-2">
                                 <span className="font-mono text-xs truncate text-slate-800 dark:text-slate-200">{row.value}</span>
                                 <button 
                                   type="button" 
@@ -862,16 +896,99 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                 </div>
               )}
 
+              {/* ─── Webhooks & Alerts ─── */}
+              {tab === 'webhooks' && (
+                <div className="space-y-6">
+                  <form onSubmit={handleSave} className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                    <div className="px-6 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05] flex items-center justify-between">
+                      <div>
+                        <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Slack &amp; Discord Webhook Alerts</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Receive instant notifications when clients approve work, comment, or pay invoices.</p>
+                      </div>
+                      <SaveButton loading={loading} saved={saved} />
+                    </div>
+
+                    <div className="p-6 space-y-5">
+                      <div>
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                          Webhook URL (Slack or Discord)
+                        </label>
+                        <div className="mt-1 flex gap-2">
+                          <input
+                            type="url"
+                            placeholder="https://hooks.slack.com/services/... or https://discord.com/api/webhooks/..."
+                            value={webhookUrl}
+                            onChange={e => setWebhookUrl(e.target.value)}
+                            className="flex-1 rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 px-3 py-2 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+                          />
+                          <button
+                            type="button"
+                            disabled={testingWebhook || !webhookUrl.trim()}
+                            onClick={handleTestWebhook}
+                            className="px-3 py-2 rounded-md border border-indigo-200 dark:border-indigo-500/20 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 text-xs font-semibold hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-1.5 shrink-0"
+                          >
+                            {testingWebhook && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                            <span>Test Ping</span>
+                          </button>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                          Paste your incoming webhook from Slack (Channel Settings → Integrations → Incoming Webhooks) or Discord (Server Settings → Integrations → Webhooks).
+                        </p>
+                      </div>
+
+                      {webhookTestResult && (
+                        <div className={`p-3 rounded-md text-xs flex items-center gap-2 border ${webhookTestResult.ok ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'}`}>
+                          {webhookTestResult.ok ? <Check className="w-4 h-4 shrink-0" /> : <ShieldAlert className="w-4 h-4 shrink-0" />}
+                          <span>{webhookTestResult.msg}</span>
+                        </div>
+                      )}
+
+                      <div className="border-t border-[#f1f3f7] dark:border-white/[0.05] pt-4">
+                        <ToggleRow
+                          icon={Zap}
+                          label="Enable Webhook Notifications"
+                          description="Dispatch alerts for client approvals, change orders, comments, and invoice settlements."
+                          checked={webhookEnabled}
+                          onChange={setWebhookEnabled}
+                        />
+                      </div>
+                    </div>
+                  </form>
+
+                  {/* Financial Defense: Deliverable Soft Lock */}
+                  <form onSubmit={handleSave} className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                    <div className="px-6 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05] flex items-center justify-between">
+                      <div>
+                        <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Financial Defense: Overdue Invoice Soft-Lock</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Automatically protect deliverables when invoices pass their due dates.</p>
+                      </div>
+                      <SaveButton loading={loading} saved={saved} />
+                    </div>
+
+                    <div className="p-6">
+                      <ToggleRow
+                        icon={Lock}
+                        label="Soft-Lock Deliverables on Overdue Invoices"
+                        description="When enabled, live site staging previews and app builds in the client portal are paused with a courteous payment advisory until overdue invoices are settled."
+                        checked={overdueLockEnabled}
+                        onChange={setOverdueLockEnabled}
+                        iconColor="text-rose-500"
+                      />
+                    </div>
+                  </form>
+                </div>
+              )}
+
               {/* ─── Visibility ─── */}
               {tab === 'visibility' && (
                 <div className="space-y-6">
                   {/* Your dashboard */}
-                  <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
-                    <div className="px-6 py-4 border-b border-slate-100 dark:border-white/5 flex items-center gap-2">
+                  <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                    <div className="px-6 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05] flex items-center gap-2">
                       <LayoutDashboard className="w-4 h-4 text-slate-400" />
                       <div>
-                        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Your Workspace Sections</h2>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Toggle modules visible on your project dashboard.</p>
+                        <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Your Workspace Sections</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Toggle modules visible on your project dashboard.</p>
                       </div>
                     </div>
                     <div className="px-6">
@@ -883,12 +1000,12 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                   </div>
 
                   {/* What clients see */}
-                  <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
-                    <div className="px-6 py-4 border-b border-slate-100 dark:border-white/5 flex items-center gap-2">
+                  <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none overflow-hidden backdrop-blur-md">
+                    <div className="px-6 py-4 border-b border-[#f1f3f7] dark:border-white/[0.05] flex items-center gap-2">
                       <Globe className="w-4 h-4 text-slate-400" />
                       <div>
-                        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Public Portal Visibility</h2>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Shown on the client status page your client visits.</p>
+                        <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Public Portal Visibility</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Shown on the client status page your client visits.</p>
                       </div>
                     </div>
                     <div className="px-6">
@@ -899,7 +1016,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                         <ToggleRow icon={Clock} label="Hours worked" description="Display total tracked time so clients can see ongoing effort." checked={showTimeLogged} onChange={setShowTimeLogged} />
                       )}
                       {!modules.developer && !modules.time_tracking && (
-                        <div className="py-4 text-xs text-slate-400 font-light italic">
+                        <div className="py-4 text-xs text-slate-400 italic">
                           No developer telemetry or time tracking modules are active for this project.
                         </div>
                       )}
@@ -916,10 +1033,10 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
               {tab === 'danger' && (
                 <div className="space-y-6">
                   {/* Duplicate */}
-                  <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none px-6 py-5 flex items-center justify-between gap-4 backdrop-blur-md">
+                  <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-none px-6 py-5 flex items-center justify-between gap-4 backdrop-blur-md">
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Duplicate project</div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Creates a clone with the same client, colour, budget, and hourly rate.</p>
+                      <div className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Duplicate project</div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Creates a clone with the same client, colour, budget, and hourly rate.</p>
                     </div>
                     {confirmingDuplicate ? (
                       <span className="inline-flex items-center gap-1.5 text-xs text-indigo-400 bg-indigo-500/10 px-3 py-1.5 rounded-full border border-indigo-500/20">
@@ -945,7 +1062,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                       <button 
                         onClick={() => setConfirmingDuplicate(true)} 
                         disabled={duplicating}
-                        className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                        className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                       >
                         {duplicating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Copy className="w-3.5 h-3.5" />}
                         Duplicate
@@ -954,16 +1071,16 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                   </div>
 
                   {/* Delete */}
-                  <div className="rounded-2xl border border-rose-500/20 bg-white dark:bg-[#0c0d12]/90 ring-1 ring-rose-500/10 overflow-hidden shadow-xs dark:shadow-none backdrop-blur-md">
+                  <div className="rounded-md border border-rose-500/20 bg-white dark:bg-[#12141c]/90 ring-1 ring-rose-500/10 overflow-hidden shadow-xs dark:shadow-none backdrop-blur-md">
                     <div className="px-6 py-4 bg-rose-500/5 border-b border-rose-500/10 flex items-center gap-2">
                       <ShieldAlert className="w-4 h-4 text-rose-500" />
                       <div>
-                        <h2 className="text-xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400">Delete project</h2>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Permanent action — this cannot be undone.</p>
+                        <h2 className="text-sm font-bold tracking-tight text-rose-600 dark:text-rose-400">Delete project</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Permanent action — this cannot be undone.</p>
                       </div>
                     </div>
                     <div className="px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm font-light">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-sm">
                         Permanently removes all status updates, milestones, approval logs, invoice associations, and logged sessions for this project.
                       </p>
                       {confirmingDelete ? (
@@ -990,7 +1107,7 @@ export default function ProjectSettingsPage({ params }: { params: Promise<{ id: 
                         <button 
                           disabled={deleting} 
                           onClick={() => setConfirmingDelete(true)} 
-                          className="rounded-full bg-rose-600 hover:bg-rose-500 text-white font-semibold px-4 py-2 text-xs transition-all shadow-xs flex-shrink-0 inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+                          className="rounded-md bg-rose-600 hover:bg-rose-500 text-white font-semibold px-4 py-2 text-xs transition-all shadow-xs flex-shrink-0 inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                         >
                           {deleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                           Delete project

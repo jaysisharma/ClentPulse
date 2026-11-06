@@ -57,7 +57,7 @@ describe('Forgot & Reset Password Auth Flows', () => {
       expect(res.status).toBe(400)
     })
 
-    it('returns 404 if user is not found', async () => {
+    it('answers exactly as for a real account when the email is unknown (no enumeration)', async () => {
       mockFrom.mockReturnValue({
         select: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
@@ -65,11 +65,13 @@ describe('Forgot & Reset Password Auth Flows', () => {
           })
         })
       })
-      mockListUsers.mockResolvedValue({ data: { users: [] }, error: null })
 
       const { POST } = await import('../forgot-password/route')
       const res = await POST(makeRequest('http://localhost/api/auth/forgot-password', { email: 'unknown@pulse.io' }))
-      expect(res.status).toBe(404)
+      expect(res.status).toBe(200)
+      expect(await res.json()).toEqual({ success: true, email: 'unknown@pulse.io' })
+      expect(mockListUsers).not.toHaveBeenCalled()
+      expect(mockResendSend).not.toHaveBeenCalled()
     })
 
     it('sends a 6-digit reset code via Resend if user exists', async () => {

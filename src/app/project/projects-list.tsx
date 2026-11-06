@@ -49,7 +49,7 @@ const HEALTH_STYLE: Record<Health['tone'], string> = {
   danger: 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/20',
   warn: 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-500/20',
   ok: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20',
-  idle: 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10',
+  idle: 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-[#eaecf2] dark:border-white/[0.08]',
 }
 
 const STATUSES = ['all', 'active', 'paused', 'completed'] as const
@@ -149,13 +149,13 @@ export function ProjectsList({
         {/* Left: View Mode Toggle & Mode-Specific Tools */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Main View Mode Switcher */}
-          <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-2xs">
+          <div className="flex items-center gap-1 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-1 rounded-full shadow-2xs">
             <button
               type="button"
               onClick={() => handleSetViewMode('list')}
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                 viewMode === 'list'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs font-semibold'
+                  ? 'bg-accent hover:bg-accent-hover text-white shadow-2xs font-semibold'
                   : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
               }`}
             >
@@ -178,14 +178,14 @@ export function ProjectsList({
 
           {/* List Mode Status Filters */}
           {viewMode === 'list' && (
-            <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-2xs">
+            <div className="flex items-center gap-1 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-1 rounded-full shadow-2xs">
               {STATUSES.map(s => (
                 <button
                   key={s}
                   onClick={() => setStatus(s)}
                   className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer ${
                     status === s
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs font-semibold'
+                      ? 'bg-accent hover:bg-accent-hover text-white shadow-2xs font-semibold'
                       : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
                   }`}
                 >
@@ -203,13 +203,13 @@ export function ProjectsList({
           {/* Canvas Mode Layout & Smart Sort Controls */}
           {viewMode === 'canvas' && (
             <div className="flex items-center gap-1.5">
-              <div className="flex items-center gap-0.5 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-2xs">
+              <div className="flex items-center gap-0.5 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-1 rounded-full shadow-2xs">
                 <button
                   type="button"
                   onClick={() => handleSetCanvasLayout('matrix')}
                   className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                     canvasLayout === 'matrix'
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold'
+                      ? 'bg-accent hover:bg-accent-hover text-white font-semibold'
                       : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
                   }`}
                   title="2x2 Quadrant Matrix View"
@@ -222,7 +222,7 @@ export function ProjectsList({
                   onClick={() => handleSetCanvasLayout('columns')}
                   className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                     canvasLayout === 'columns'
-                      ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold'
+                      ? 'bg-accent hover:bg-accent-hover text-white font-semibold'
                       : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
                   }`}
                   title="4-Column Board View"
@@ -235,7 +235,7 @@ export function ProjectsList({
               <button
                 type="button"
                 onClick={() => priorityCanvasRef.current?.triggerAutoPrioritize()}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] hover:bg-slate-50 dark:hover:bg-white/5 text-xs font-medium text-slate-700 dark:text-slate-300 transition-all shadow-2xs cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c] hover:bg-slate-50 dark:hover:bg-white/5 text-xs font-medium text-slate-700 dark:text-slate-300 transition-all shadow-2xs cursor-pointer"
                 title="Sort projects by active blockers, deadlines and check-ins"
               >
                 <Wand2 className="w-3.5 h-3.5 text-indigo-500" />
@@ -253,7 +253,7 @@ export function ProjectsList({
             placeholder="Search projects or clients…"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            className="w-full pl-9 pr-8 py-2 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all ring-1 ring-slate-950/5 dark:ring-white/5 font-light"
+            className="w-full pl-9 pr-8 py-2 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-md text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all"
           />
           {search && (
             <button
@@ -277,30 +277,30 @@ export function ProjectsList({
           searchQuery={search}
         />
       ) : projects.length === 0 ? (
-        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-14 px-6 text-center shadow-xs dark:shadow-sm">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
+        <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] py-14 px-6 text-center shadow-xs dark:shadow-sm">
+          <div className="w-12 h-12 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center mx-auto mb-4">
             <FolderPlus className="w-6 h-6" />
           </div>
           <h3 className="text-base font-medium text-slate-900 dark:text-white">No projects yet</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto font-light">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
             Create your first project to start working with clients in Frevio.
           </p>
           <Link
             href="/project/new"
-            className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold px-4 py-2 text-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-xs"
+            className="bg-accent hover:bg-accent-hover mt-5 inline-flex items-center gap-1.5 rounded-md text-white font-semibold px-4 py-2 text-xs transition-all shadow-xs"
           >
             <Plus className="w-3.5 h-3.5" />
             <span>Create project</span>
           </Link>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-12 text-center shadow-xs dark:shadow-sm">
+        <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-12 text-center shadow-xs dark:shadow-sm">
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">No projects match your filter or search query.</p>
         </div>
       ) : (
-        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm overflow-hidden">
+        <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-sm overflow-hidden">
           {/* Column headers (desktop only) */}
-          <div className="hidden md:grid grid-cols-[minmax(0,2fr)_1fr_1.2fr_1.4fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-100 dark:border-white/5 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
+          <div className="hidden md:grid grid-cols-[minmax(0,2fr)_1fr_1.2fr_1.4fr_1fr_auto] gap-4 px-5 py-3 border-b border-[#f1f3f7] dark:border-white/[0.05] text-[11px] font-semibold text-slate-400 dark:text-slate-500">
             <span>Project</span>
             <span>Priority</span>
             <span>Health</span>
@@ -309,7 +309,7 @@ export function ProjectsList({
             <span className="text-right">Action</span>
           </div>
 
-          <div className="divide-y divide-slate-100 dark:divide-white/5">
+          <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05]">
             {filtered.map(p => (
               <div
                 key={p.id}
@@ -334,7 +334,7 @@ export function ProjectsList({
                       : p.priority === 'p2'
                       ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-500/30'
                       : p.priority === 'p3'
-                      ? 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10'
+                      ? 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-[#eaecf2] dark:border-white/[0.08]'
                       : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/30'
                   }`}>
                     {(p.priority || 'P1').toUpperCase()}
@@ -375,7 +375,7 @@ export function ProjectsList({
                 <div className="mt-3 md:mt-0 flex items-center gap-2 md:justify-end">
                   <Link
                     href={`/project/${p.id}/update`}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/5 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors"
                   >
                     <Send className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" /> Send update
                   </Link>

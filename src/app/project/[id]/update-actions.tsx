@@ -21,7 +21,7 @@ export function UpdateActions({ updateId, projectId }: { updateId: string; proje
     <div className="flex items-center gap-1">
       <button
         onClick={() => router.push(`/project/${projectId}/update?edit=${updateId}`)}
-        className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
+        className="p-1.5 rounded-md text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
         title="Edit update"
       >
         <Pencil className="w-3.5 h-3.5" />
@@ -49,7 +49,7 @@ export function UpdateActions({ updateId, projectId }: { updateId: string; proje
         <button
           onClick={() => setConfirming(true)}
           disabled={deleting}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 cursor-pointer"
+          className="p-1.5 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 cursor-pointer"
           title="Delete update"
         >
           <Trash2 className="w-3.5 h-3.5" />

@@ -57,12 +57,12 @@ export default async function ProjectsPage() {
                     {currentOrgName} Workspace
                   </span>
                 ) : (
-                  <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                  <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
                     Personal Studio
                   </span>
                 )}
               </div>
-              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+              <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
                 Projects
               </h1>
               <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5 flex items-center gap-2">
@@ -80,7 +80,7 @@ export default async function ProjectsPage() {
               <Link href="/project/new">
                 <button
                   type="button"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 px-4 py-2 text-xs font-semibold dark:hover:bg-slate-100 transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
+                  className="bg-accent hover:bg-accent-hover inline-flex items-center gap-1.5 rounded-md text-white px-4 py-2 text-xs font-semibold transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   New project
@@ -91,8 +91,8 @@ export default async function ProjectsPage() {
 
           {allProjects.length === 0 ? (
             /* New-user setup state */
-            <div className="rounded-3xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-16 px-6 flex flex-col items-center text-center shadow-md dark:shadow-xl">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center">
+            <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] py-16 px-6 flex flex-col items-center text-center shadow-md dark:shadow-xl">
+              <div className="w-14 h-14 rounded-md bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
               </div>
               <h2 className="text-xl font-normal text-slate-900 dark:text-white tracking-tight mt-5">No projects yet</h2>
@@ -102,7 +102,7 @@ export default async function ProjectsPage() {
               <Link href="/project/new" className="mt-6">
                 <button
                   type="button"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 px-6 py-2.5 text-xs font-semibold dark:hover:bg-slate-100 transition-all shadow-md cursor-pointer"
+                  className="bg-accent hover:bg-accent-hover inline-flex items-center gap-1.5 rounded-md text-white px-6 py-2.5 text-xs font-semibold transition-all shadow-md cursor-pointer"
                 >
                   <Plus className="w-3.5 h-3.5" />
                   Create your first project

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "lib": ["ES2020", "DOM"],
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "typeRoots": ["./src"]
+  },
+  "include": ["src/**/*"]
+}
+

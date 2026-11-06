@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { rateLimit } from '@/lib/rate-limit'
 import { NextResponse } from 'next/server'
 
 export async function POST(
@@ -7,6 +8,14 @@ export async function POST(
 ) {
   const { buildId } = await params
   const supabase = await createClient()
+
+  // Count one download per visitor per build per hour, so the number can't be
+  // inflated by replaying the request
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'anonymous'
+  const rl = await rateLimit(`build-download:${ip}:${buildId}`, 1, 60 * 60_000)
+  if (!rl.success) {
+    return NextResponse.json({ success: true, counted: false })
+  }
 
   // First try the RPC increment
   const { data: rpcCount, error: rpcError } = await supabase

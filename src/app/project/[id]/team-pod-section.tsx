@@ -97,14 +97,14 @@ export function TeamPodSection({
   }
 
   return (
-    <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md shadow-xs space-y-3.5">
+    <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5 backdrop-blur-md shadow-xs space-y-3.5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+          <div className="p-1.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
             <Users className="w-3.5 h-3.5" />
           </div>
           <div>
-            <h3 className="text-xs font-semibold text-slate-900 dark:text-white uppercase tracking-wider">
+            <h3 className="text-xs font-semibold text-slate-900 dark:text-white">
               Project Team Pod ({teamMembers.length})
             </h3>
           </div>
@@ -123,11 +123,11 @@ export function TeamPodSection({
       </div>
 
       {teamMembers.length === 0 ? (
-        <div className="text-xs text-slate-400 dark:text-slate-500 font-light italic py-2">
+        <div className="text-xs text-slate-400 dark:text-slate-500 italic py-2">
           No specialists assigned to this project pod yet.
         </div>
       ) : (
-        <div className="divide-y divide-slate-100 dark:divide-white/5">
+        <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05]">
           {teamMembers.map(tm => {
             const isLive = Boolean(
               currentTime &&
@@ -144,7 +144,7 @@ export function TeamPodSection({
                     </div>
                     {isLive && (
                       <span
-                        className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#0c0d12] animate-pulse"
+                        className="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#12141c] animate-pulse"
                         title="Active in VS Code right now"
                       />
                     )}
@@ -183,17 +183,17 @@ export function TeamPodSection({
       {/* Assign Member Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-3xl p-6 max-w-sm w-full shadow-2xl ring-1 ring-slate-950/5 dark:ring-white/5 animate-scale-up">
+          <div className="bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-md p-6 max-w-sm w-full shadow-2xl animate-scale-up">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
               Assign to Project Pod
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-light mb-4">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
               Add a team specialist and designate their delivery title.
             </p>
 
             <form onSubmit={handleAssign} className="space-y-3.5">
               <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">
                   Team Member
                 </label>
                 {loadingMembers ? (
@@ -203,7 +203,7 @@ export function TeamPodSection({
                     value={selectedUserId}
                     onChange={e => setSelectedUserId(e.target.value)}
                     required
-                    className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
                   >
                     {availableOrgMembers.map(m => (
                       <option key={m.user_id} value={m.user_id}>
@@ -215,7 +215,7 @@ export function TeamPodSection({
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+                <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">
                   Role Title on this Project
                 </label>
                 <input
@@ -223,7 +223,7 @@ export function TeamPodSection({
                   placeholder="e.g. Lead Full-Stack Engineer"
                   value={roleTitle}
                   onChange={e => setRoleTitle(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
@@ -234,25 +234,25 @@ export function TeamPodSection({
                     key={preset}
                     type="button"
                     onClick={() => setRoleTitle(preset)}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    className="text-[10px] font-mono px-2 py-0.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                   >
                     {preset}
                   </button>
                 ))}
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-white/5">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-3 py-1.5 rounded-full text-xs font-semibold border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5"
+                  className="px-3 py-1.5 rounded-md text-xs font-semibold border border-[#eaecf2] dark:border-white/[0.08] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/5"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving || !selectedUserId}
-                  className="px-4 py-1.5 rounded-full text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
+                  className="bg-accent hover:bg-accent-hover px-4 py-1.5 rounded-md text-xs font-semibold text-white transition-colors disabled:opacity-50 inline-flex items-center gap-1.5"
                 >
                   {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
                   <span>Assign to Pod</span>

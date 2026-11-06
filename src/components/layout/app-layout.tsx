@@ -122,7 +122,7 @@ export function AppLayout({
   const totalUnread = Object.values(unreadCounts).reduce((a, b) => a + b, 0)
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 transition-colors">
+    <div className="flex min-h-screen bg-[#f8f9fc] dark:bg-[#090a0f] text-slate-900 dark:text-slate-100 transition-colors">
 
       {/* Mobile overlay */}
       {open && (

@@ -26,6 +26,10 @@ const mockFrom = vi.fn(() => ({
   update: mockUpdate,
 }))
 
+vi.mock('@/lib/supabase/admin', () => ({
+  createAdminClient: vi.fn(() => ({ from: mockFrom })),
+}))
+
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn().mockResolvedValue({
     auth: { getUser: mockGetUser },

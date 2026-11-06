@@ -27,6 +27,8 @@ export async function POST(request: Request) {
 
   if (!invoice) return NextResponse.json({ error: 'Invoice not found' }, { status: 404 })
   if (invoice.status === 'paid') return NextResponse.json({ error: 'Invoice has already been paid' }, { status: 400 })
+  // Drafts (and refunded or void invoices) were never issued to the client
+  if (invoice.status !== 'sent') return NextResponse.json({ error: 'This invoice is not open for payment' }, { status: 400 })
 
   const { data: owner } = await supabase
     .from('users')
@@ -94,8 +96,8 @@ export async function POST(request: Request) {
         isDeposit: invoice.is_deposit ? 'true' : 'false',
         type: 'invoice_payment',
       },
-      success_url: `${appUrl}/portal/invoices/${invoice.id}?paid=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/portal/invoices/${invoice.id}?canceled=true`,
+      success_url: `${appUrl}/invoice/${invoice.id}?paid=1`,
+      cancel_url: `${appUrl}/invoice/${invoice.id}`,
     }, {
       stripeAccount: owner.stripe_account_id,
     })

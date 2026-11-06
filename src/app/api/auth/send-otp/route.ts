@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { generateOtpCode, sealSecret } from '@/lib/server-secret'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -80,7 +81,7 @@ export async function POST(request: Request) {
     }
 
     // 2. Generate a 6-digit verification code
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString()
+    const otpCode = generateOtpCode()
     const expiresAt = new Date(now.getTime() + 5 * 60 * 1000).toISOString() // 5 minutes validity
 
     // 3. Upsert the code and rate limit state in public.otp_codes
@@ -94,7 +95,8 @@ export async function POST(request: Request) {
         attempts_count: attemptsCount,
         window_start: windowStart,
         failed_verifications: 0,
-        temp_password: password || null,
+        // Encrypted at rest; verify-otp opens it to create the account
+        temp_password: password ? sealSecret(String(password), 'otp-signup-password') : null,
         temp_name: fullName || null
       }, { onConflict: 'email' })
 

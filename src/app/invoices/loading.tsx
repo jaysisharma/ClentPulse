@@ -1,7 +1,7 @@
 import { AppLayout } from '@/components/layout/app-layout'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-lg ${className}`} />
+  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-md ${className}`} />
 }
 
 export default function Loading() {
@@ -13,11 +13,11 @@ export default function Loading() {
             <Sk className="h-7 w-24" />
             <Sk className="h-4 w-48" />
           </div>
-          <Sk className="h-8 w-28 rounded-lg" />
+          <Sk className="h-8 w-28 rounded-md" />
         </div>
         <div className="grid grid-cols-3 gap-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-2">
+            <div key={i} className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5 space-y-2">
               <Sk className="h-7 w-28" />
               <Sk className="h-4 w-24" />
             </div>
@@ -25,7 +25,7 @@ export default function Loading() {
         </div>
         <div className="space-y-2">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-5 py-4 flex items-center gap-4">
+            <div key={i} className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] px-5 py-4 flex items-center gap-4">
               <div className="flex-1 space-y-1.5">
                 <Sk className="h-4 w-32" />
                 <Sk className="h-3 w-24" />

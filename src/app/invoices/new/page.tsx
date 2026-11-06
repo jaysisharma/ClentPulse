@@ -29,6 +29,8 @@ export default function NewInvoicePage() {
   const [dueDate, setDueDate] = useState('')
   const [currency, setCurrency] = useState('USD')
   const [isDeposit, setIsDeposit] = useState(false)
+  const [isRetainer, setIsRetainer] = useState(false)
+  const [retainerPeriod, setRetainerPeriod] = useState('monthly')
   const [taxRate, setTaxRate] = useState<number>(0)
   const [taxId, setTaxId] = useState('')
   const [items, setItems] = useState<LineItem[]>([emptyItem()])
@@ -188,6 +190,8 @@ export default function NewInvoicePage() {
       tax_rate: taxRate > 0 ? taxRate : 0,
       tax_id: taxId.trim() || null,
       is_deposit: isDeposit,
+      is_retainer: isRetainer,
+      retainer_period: isRetainer ? retainerPeriod : null,
       items,
       notes: notes || null,
     }).select().single()
@@ -199,6 +203,15 @@ export default function NewInvoicePage() {
       await supabase.from('projects').update({
         deposit_required: total,
         deposit_paid: false,
+      }).eq('id', projectId)
+    }
+
+    // If it's a retainer invoice linked to a project, set retainer settings on the project
+    if (isRetainer && projectId) {
+      await supabase.from('projects').update({
+        is_retainer: true,
+        retainer_amount: total,
+        retainer_interval: retainerPeriod === 'quarterly' ? 'quarter' : retainerPeriod === 'annual' ? 'year' : 'month',
       }).eq('id', projectId)
     }
 
@@ -225,7 +238,7 @@ export default function NewInvoicePage() {
           {/* Back link */}
           <Link 
             href="/invoices" 
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-6"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to invoices
           </Link>
@@ -234,51 +247,51 @@ export default function NewInvoicePage() {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-2">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                 Financial Ledger
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
               New invoice
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Configure billable deliverables, hourly logs, and payment terms. Save as draft or send directly.
             </p>
           </div>
 
           <div className="space-y-6">
             {/* Header info */}
-            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
-              <div className="pb-3 border-b border-slate-100 dark:border-white/5">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Invoice Details</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Reference identifier, due date, and client linkage.</p>
+            <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="pb-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
+                <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Invoice Details</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Reference identifier, due date, and client linkage.</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Invoice number
                   </label>
                   <input 
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                     value={invoiceNumber} 
                     onChange={e => setInvoiceNumber(e.target.value)} 
                     required 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Due date
                   </label>
                   <input 
                     type="date" 
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                     value={dueDate} 
                     onChange={e => setDueDate(e.target.value)} 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Currency
                   </label>
                   <CurrencySelector
@@ -289,7 +302,7 @@ export default function NewInvoicePage() {
               </div>
 
               {/* Upfront Deposit Option */}
-              <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] p-4 space-y-3">
+              <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-900 dark:text-white">
                     <input
@@ -306,31 +319,31 @@ export default function NewInvoicePage() {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-light">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Requires settlement before project work commences. Paying unlocks the client portal and activates project status.
                 </p>
 
                 {isDeposit && budget != null && budget > 0 && (
-                  <div className="pt-2 border-t border-slate-200 dark:border-white/5 flex flex-wrap items-center gap-2">
+                  <div className="pt-2 border-t border-[#eaecf2] dark:border-white/[0.05] flex flex-wrap items-center gap-2">
                     <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Deposit presets:</span>
                     <button
                       type="button"
                       onClick={() => applyDepositPreset(50)}
-                      className="px-2.5 py-1 text-xs rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-mono transition-colors"
+                      className="px-2.5 py-1 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-mono transition-colors"
                     >
                       50% ({fmtCurrency(budget * 0.5, currency)})
                     </button>
                     <button
                       type="button"
                       onClick={() => applyDepositPreset(33)}
-                      className="px-2.5 py-1 text-xs rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-mono transition-colors"
+                      className="px-2.5 py-1 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-mono transition-colors"
                     >
                       33% ({fmtCurrency(budget * 0.33, currency)})
                     </button>
                     <button
                       type="button"
                       onClick={() => applyDepositPreset(25)}
-                      className="px-2.5 py-1 text-xs rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-mono transition-colors"
+                      className="px-2.5 py-1 text-xs rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-mono transition-colors"
                     >
                       25% ({fmtCurrency(budget * 0.25, currency)})
                     </button>
@@ -338,14 +351,52 @@ export default function NewInvoicePage() {
                 )}
               </div>
 
+              {/* Recurring Retainer Option */}
+              <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-900 dark:text-white">
+                    <input
+                      type="checkbox"
+                      checked={isRetainer}
+                      onChange={e => setIsRetainer(e.target.checked)}
+                      className="rounded border-slate-300 dark:border-white/20 text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer"
+                    />
+                    <span>🔄 Mark as Recurring Retainer Invoice</span>
+                  </label>
+                  {isRetainer && (
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                      Retainer Cycle
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Tags this invoice as a periodic retainer for ongoing marketing management, design services, or maintenance.
+                </p>
+
+                {isRetainer && (
+                  <div className="pt-2 border-t border-[#eaecf2] dark:border-white/[0.05] flex items-center gap-3">
+                    <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">Billing Cycle:</span>
+                    <select
+                      value={retainerPeriod}
+                      onChange={e => setRetainerPeriod(e.target.value)}
+                      className="text-xs bg-white dark:bg-black/40 border border-slate-300 dark:border-white/10 rounded-md px-2.5 py-1 text-slate-800 dark:text-slate-200"
+                    >
+                      <option value="monthly">Monthly Cycle</option>
+                      <option value="quarterly">Quarterly Cycle</option>
+                      <option value="annual">Annual Cycle</option>
+                    </select>
+                  </div>
+                )}
+              </div>
+
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Link to project <span className="font-normal lowercase text-slate-400">(optional)</span>
                 </label>
                 <select
                   value={projectId}
                   onChange={e => handleProjectChange(e.target.value)}
-                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-[#0c0d12] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                  className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-[#12141c] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                 >
                   <option value="">— Standalone / No linked project —</option>
                   {projects.map(p => <option key={p.id} value={p.id}>{p.project_name} ({p.client_name})</option>)}
@@ -353,7 +404,7 @@ export default function NewInvoicePage() {
               </div>
 
               {unbilledEntries.length > 0 && (
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-xs text-indigo-700 dark:text-indigo-300 font-sans mt-2 animate-fade-in">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-indigo-500/10 border border-indigo-500/20 rounded-md text-xs text-indigo-700 dark:text-indigo-300 font-sans mt-2 animate-fade-in">
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-indigo-500 flex-shrink-0" />
                     <span>
@@ -363,7 +414,7 @@ export default function NewInvoicePage() {
                   <button
                     type="button"
                     onClick={importTimeEntries}
-                    className="rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold px-3.5 py-1.5 text-xs transition-all shadow-xs self-start sm:self-auto"
+                    className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-3.5 py-1.5 text-xs transition-all shadow-xs self-start sm:self-auto"
                   >
                     Import time logs
                   </button>
@@ -372,23 +423,23 @@ export default function NewInvoicePage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Client name
                   </label>
                   <input 
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                     value={clientName} 
                     onChange={e => setClientName(e.target.value)} 
                     required 
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Client email
                   </label>
                   <input 
                     type="email" 
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                     value={clientEmail} 
                     onChange={e => setClientEmail(e.target.value)} 
                     placeholder="client@company.com" 
@@ -398,15 +449,15 @@ export default function NewInvoicePage() {
             </div>
 
             {/* Line items */}
-            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 shadow-xs dark:shadow-none space-y-4 backdrop-blur-md">
-              <div className="pb-3 border-b border-slate-100 dark:border-white/5">
-                <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">Line Items</h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">Specify task items, quantities, and hourly rates.</p>
+            <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 shadow-xs dark:shadow-none space-y-4 backdrop-blur-md">
+              <div className="pb-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
+                <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">Line Items</h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Specify task items, quantities, and hourly rates.</p>
               </div>
 
               <div className="space-y-3">
                 {/* Header row */}
-                <div className="grid grid-cols-12 gap-2 text-[10px] uppercase font-semibold text-slate-400 dark:text-slate-500 px-1 tracking-wider">
+                <div className="grid grid-cols-12 gap-2 text-[11px] font-semibold text-slate-500 dark:text-slate-500 px-1 tracking-wider">
                   <span className="col-span-6">Description</span>
                   <span className="col-span-2 text-right">Qty</span>
                   <span className="col-span-2 text-right">Rate ($)</span>
@@ -416,19 +467,19 @@ export default function NewInvoicePage() {
                 {items.map((item, i) => (
                   <div key={i} className="grid grid-cols-12 gap-2 items-center">
                     <input
-                      className="col-span-6 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors"
+                      className="col-span-6 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors"
                       placeholder="e.g. Design sprint, frontend code"
                       value={item.description}
                       onChange={e => updateItem(i, 'description', e.target.value)}
                     />
                     <input
-                      className="col-span-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white text-right focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors font-mono"
+                      className="col-span-2 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white text-right focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors font-mono"
                       type="number" min="0" step="0.5"
                       value={item.quantity}
                       onChange={e => updateItem(i, 'quantity', parseFloat(e.target.value) || 0)}
                     />
                     <input
-                      className="col-span-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white text-right focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors font-mono"
+                      className="col-span-2 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-white text-right focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors font-mono"
                       type="number" min="0" step="0.01"
                       value={item.rate}
                       onChange={e => updateItem(i, 'rate', parseFloat(e.target.value) || 0)}
@@ -452,16 +503,16 @@ export default function NewInvoicePage() {
                 <button
                   type="button"
                   onClick={() => setItems([...items, emptyItem()])}
-                  className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 mt-2"
+                  className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 mt-2"
                 >
                   <Plus className="w-3.5 h-3.5" /> Add line item
                 </button>
               </div>
 
               {/* Tax & VAT Configuration */}
-              <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="mt-6 pt-4 border-t border-[#f1f3f7] dark:border-white/[0.05] grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Tax / VAT Rate (%)
                   </label>
                   <input
@@ -472,11 +523,11 @@ export default function NewInvoicePage() {
                     placeholder="0"
                     value={taxRate || ''}
                     onChange={e => setTaxRate(parseFloat(e.target.value) || 0)}
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                     Tax / VAT ID <span className="font-normal lowercase text-slate-400">(optional)</span>
                   </label>
                   <input
@@ -484,13 +535,13 @@ export default function NewInvoicePage() {
                     placeholder="e.g. EU123456789 or ABN"
                     value={taxId}
                     onChange={e => setTaxId(e.target.value)}
-                    className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                   />
                 </div>
               </div>
 
               {/* Total & Subtotal Breakdown */}
-              <div className="mt-6 pt-4 border-t border-slate-100 dark:border-white/5 flex justify-end">
+              <div className="mt-6 pt-4 border-t border-[#f1f3f7] dark:border-white/[0.05] flex justify-end">
                 <div className="w-64 space-y-2 text-right">
                   <div className="flex justify-between items-baseline text-xs text-slate-500 dark:text-slate-400">
                     <span>Subtotal:</span>
@@ -502,9 +553,9 @@ export default function NewInvoicePage() {
                       <span className="font-mono font-medium text-slate-800 dark:text-slate-200">{fmtCurrency(taxAmount, currency)}</span>
                     </div>
                   )}
-                  <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex justify-between items-baseline">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Due:</span>
-                    <span className={`text-2xl sm:text-3xl font-light tracking-tight font-mono ${overBudget ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
+                  <div className="pt-2 border-t border-[#eaecf2] dark:border-white/[0.08] flex justify-between items-baseline">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Total Due:</span>
+                    <span className={`text-2xl sm:text-3xl  tracking-tight font-mono ${overBudget ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
                       {fmtCurrency(total, currency)}
                     </span>
                   </div>
@@ -513,9 +564,9 @@ export default function NewInvoicePage() {
 
               {/* Budget context for the linked project */}
               {budget != null && (
-                <div className={`mt-4 rounded-xl border p-4 text-xs font-mono backdrop-blur-md ${overBudget
+                <div className={`mt-4 rounded-md border p-4 text-xs font-mono backdrop-blur-md ${overBudget
                   ? 'border-rose-500/20 bg-rose-500/10 text-rose-800 dark:text-rose-300'
-                  : 'border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-white/[0.02] text-slate-600 dark:text-slate-400'}`}>
+                  : 'border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/80 dark:bg-white/[0.02] text-slate-600 dark:text-slate-400'}`}>
                   <div className="flex items-center justify-between">
                     <span>Project budget</span><span className="font-semibold text-slate-900 dark:text-white tabular-nums">{fmtCurrency(budget, currency)}</span>
                   </div>
@@ -535,12 +586,12 @@ export default function NewInvoicePage() {
             </div>
 
             {/* Notes */}
-            <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 shadow-xs dark:shadow-none space-y-2 backdrop-blur-md">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 shadow-xs dark:shadow-none space-y-2 backdrop-blur-md">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Payment Terms & Notes <span className="font-normal lowercase text-slate-400">(optional)</span>
               </label>
               <textarea
-                className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors resize-none leading-relaxed"
+                className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors resize-none leading-relaxed"
                 rows={3}
                 placeholder="Direct deposit instructions, routing details, thank you notes..."
                 value={notes}
@@ -549,7 +600,7 @@ export default function NewInvoicePage() {
             </div>
 
             {error && (
-              <div className="text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-3">
+              <div className="text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-md px-4 py-3">
                 {error}
               </div>
             )}
@@ -559,7 +610,7 @@ export default function NewInvoicePage() {
                 type="button"
                 onClick={() => handleSubmit('draft')}
                 disabled={loading || !valid}
-                className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-all shadow-xs flex-1 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-all shadow-xs flex-1 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Saving...' : 'Save as draft'}
               </button>
@@ -567,7 +618,7 @@ export default function NewInvoicePage() {
                 type="button"
                 onClick={() => handleSubmit('sent')}
                 disabled={loading || !valid}
-                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-5 py-2.5 text-xs transition-all shadow-xs flex-1 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-5 py-2.5 text-xs transition-all shadow-xs flex-1 justify-center disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Submitting...' : 'Save & mark sent'}
               </button>

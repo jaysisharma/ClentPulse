@@ -1,8 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-const { mockRpc, mockFrom } = vi.hoisted(() => ({
+const { mockRpc, mockFrom, mockRateLimit } = vi.hoisted(() => ({
   mockRpc: vi.fn(),
   mockFrom: vi.fn(),
+  mockRateLimit: vi.fn(),
+}))
+
+vi.mock('@/lib/rate-limit', () => ({
+  rateLimit: (...args: any[]) => mockRateLimit(...args),
 }))
 
 vi.mock('@/lib/supabase/server', () => ({
@@ -23,6 +28,15 @@ function makePostRequest(): Request {
 describe('/api/builds/[buildId]/download', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockRateLimit.mockResolvedValue({ success: true, resetIn: 0 })
+  })
+
+  it('does not count a repeat download from the same visitor within the hour', async () => {
+    mockRateLimit.mockResolvedValue({ success: false, resetIn: 1000 })
+    const res = await POST(makePostRequest(), { params: Promise.resolve({ buildId: 'build-1' }) })
+    expect(await res.json()).toEqual({ success: true, counted: false })
+    expect(mockRpc).not.toHaveBeenCalled()
+    expect(mockFrom).not.toHaveBeenCalled()
   })
 
   it('increments download count via RPC when available', async () => {

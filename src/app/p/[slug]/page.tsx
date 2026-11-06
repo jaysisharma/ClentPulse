@@ -1,4 +1,3 @@
-import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { notFound } from 'next/navigation'
 import {
@@ -16,6 +15,8 @@ import { PoweredByReferral } from '@/components/ui/powered-by-referral'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { ClientPortalView } from './client-portal-view'
 import { verifyPasscodeTicket, timingSafeCompare } from '@/lib/passcode-crypto'
+import { verifyClientMagicToken } from '@/lib/magic-token'
+import { ReadReceiptTracker } from '@/components/telemetry/read-receipt-tracker'
 
 export async function generateMetadata({
   params,
@@ -23,9 +24,9 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const supabase = await createClient()
   // Service role: the RPC returns the passcode, so it must never be callable by anon
-  const { data: projectRows } = await createAdminClient()
+  const supabase = createAdminClient()
+  const { data: projectRows } = await supabase
     .rpc('get_project_by_slug', { p_slug: slug })
   const project = projectRows?.[0] ?? null
 
@@ -75,18 +76,29 @@ export async function generateMetadata({
   }
 }
 
-export default async function PublicProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PublicProjectPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ co_paid?: string; magic_token?: string }>
+}) {
   const { slug } = await params
-  const supabase = await createClient()
+  const { co_paid: paidChangeOrderId, magic_token } = await searchParams
 
-  // Service role: the RPC returns the passcode, so it must never be callable by anon
-  const { data: projectRows } = await createAdminClient()
+  // Service role: the RPC returns the passcode, so it must never be callable by anon.
+  // Every read below is scoped to this project and only runs once the passcode gate
+  // has passed — the portal tables have no public RLS policies.
+  const supabase = createAdminClient()
+  const { data: projectRows } = await supabase
     .rpc('get_project_by_slug', { p_slug: slug })
 
   const project = projectRows?.[0] ?? null
   if (!project) notFound()
 
-  if (project.passcode) {
+  const isMagicValid = magic_token ? verifyClientMagicToken(magic_token).valid : false
+
+  if (project.passcode && !isMagicValid) {
     const cookieStore = await cookies()
     const enteredPasscodeOrTicket = cookieStore.get(`client_project_passcode_${slug}`)?.value
 
@@ -197,7 +209,7 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
   // Fetch all client-visible project invoices (deposit, sent, paid)
   const { data: projectInvoicesRaw } = await supabase
     .from('invoices')
-    .select('id, invoice_number, amount, total, currency, status, due_date, paid_at, is_deposit, created_at')
+    .select('id, invoice_number, amount, total, currency, status, due_date, paid_at, is_deposit, is_retainer, retainer_period, created_at')
     .eq('project_id', project.id)
     .in('status', ['sent', 'paid'])
     .order('created_at', { ascending: false })
@@ -219,6 +231,7 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
     .from('change_orders')
     .select('*')
     .eq('project_id', project.id)
+    .neq('status', 'draft')
     .order('created_at', { ascending: false })
 
   // Fetch active app builds for this project
@@ -246,7 +259,8 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
   const leadSpecialistName = orgData?.name || owner?.name || 'Studio Specialist'
 
   return (
-    <div className="min-h-screen bg-[#07080d] text-white relative selection:bg-indigo-600 selection:text-white font-sans">
+    <div className="min-h-screen bg-[#f8f9fc] dark:bg-[#090a0f] relative font-sans">
+      <ReadReceiptTracker projectId={project.id} entityType="portal" />
       <ClientPortalView
         project={project}
         updates={updates}
@@ -272,6 +286,7 @@ export default async function PublicProjectPage({ params }: { params: Promise<{ 
         depositInvoice={depositInvoice}
         changeOrders={(changeOrders as any[]) ?? []}
         appBuilds={(appBuilds as any[]) ?? []}
+        justPaid={Boolean(paidChangeOrderId)}
         footer={
           // Free-plan portals carry the referral badge; paid and white-label portals stay unbranded
           <PoweredByReferral

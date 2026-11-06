@@ -2,7 +2,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { DarkShell } from '@/components/layout/dark-shell'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200/70 dark:bg-white/5 rounded-xl ${className}`} />
+  return <div className={`bg-slate-200/70 dark:bg-white/5 rounded-md ${className}`} />
 }
 
 export default function Loading() {
@@ -21,25 +21,25 @@ export default function Loading() {
             {/* Nav skeleton */}
             <div className="w-full md:w-48 flex-shrink-0 flex md:flex-col gap-1">
               {[...Array(4)].map((_, i) => (
-                <Sk key={i} className="h-10 w-full rounded-xl" />
+                <Sk key={i} className="h-10 w-full rounded-md" />
               ))}
             </div>
 
             {/* Panel skeleton */}
             <div className="flex-1 w-full space-y-6">
-              <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 space-y-5">
+              <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 space-y-5">
                 <Sk className="h-4 w-32" />
-                <Sk className="h-10 w-full rounded-xl" />
+                <Sk className="h-10 w-full rounded-md" />
                 <div className="grid grid-cols-2 gap-4">
-                  <Sk className="h-10 rounded-xl" />
-                  <Sk className="h-10 rounded-xl" />
+                  <Sk className="h-10 rounded-md" />
+                  <Sk className="h-10 rounded-md" />
                 </div>
                 <div className="flex gap-2">
                   {[...Array(9)].map((_, j) => (
                     <Sk key={j} className="w-7 h-7 rounded-full" />
                   ))}
                 </div>
-                <div className="pt-3 border-t border-slate-100 dark:border-white/5">
+                <div className="pt-3 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                   <Sk className="h-9 w-28 rounded-full" />
                 </div>
               </div>

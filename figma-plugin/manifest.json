@@ -1,0 +1,13 @@
+{
+  "name": "Frevio — Design Presence & Client Approvals",
+  "id": "frevio-figma-plugin",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma", "figjam"],
+  "networkAccess": {
+    "allowedDomains": ["*"],
+    "reasoning": "Synchronize design telemetry, submit frame approvals to client portal, and fetch client feedback."
+  }
+}
+

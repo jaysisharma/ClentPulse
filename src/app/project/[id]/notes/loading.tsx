@@ -2,7 +2,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { DarkShell } from '@/components/layout/dark-shell'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200/70 dark:bg-white/5 rounded-xl ${className}`} />
+  return <div className={`bg-slate-200/70 dark:bg-white/5 rounded-md ${className}`} />
 }
 
 export default function Loading() {
@@ -21,7 +21,7 @@ export default function Loading() {
           </div>
           <div className="space-y-3">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 overflow-hidden">
+              <div key={i} className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] overflow-hidden">
                 <div className="flex items-center justify-between p-5">
                   <div className="space-y-2">
                     <Sk className="h-4 w-40" />

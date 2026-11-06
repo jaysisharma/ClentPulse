@@ -27,7 +27,7 @@ interface Doc {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  draft:    'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10',
+  draft:    'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 border-[#eaecf2] dark:border-white/[0.08]',
   sent:     'bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border-indigo-500/20',
   accepted: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20',
   signed:   'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20',
@@ -107,7 +107,7 @@ export default function DocDetailPage() {
     return (
       <AppLayout>
         <DarkShell>
-          <div className="max-w-3xl py-12 flex items-center gap-3 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
+          <div className="max-w-3xl py-12 flex items-center gap-3 text-slate-500 dark:text-slate-400 text-xs">
             <Loader2 className="w-4 h-4 animate-spin text-slate-900 dark:text-white" />
             Loading document…
           </div>
@@ -129,7 +129,7 @@ export default function DocDetailPage() {
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 print:hidden">
             <Link
               href="/docs"
-              className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> Back to documents
             </Link>
@@ -139,7 +139,7 @@ export default function DocDetailPage() {
                 <button
                   type="button"
                   onClick={() => setEditing(true)}
-                  className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
+                  className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
                 >
                   <Pencil className="w-3.5 h-3.5" /> Edit
                 </button>
@@ -147,7 +147,7 @@ export default function DocDetailPage() {
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
+                className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
               >
                 <Printer className="w-3.5 h-3.5" /> Print
               </button>
@@ -155,7 +155,7 @@ export default function DocDetailPage() {
                 <button
                   type="button"
                   onClick={markSent}
-                  className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
+                  className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
                 >
                   <Send className="w-3.5 h-3.5" /> Mark sent
                 </button>
@@ -163,7 +163,7 @@ export default function DocDetailPage() {
               <button
                 type="button"
                 onClick={copyLink}
-                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-1.5 text-xs transition-all shadow-xs inline-flex items-center gap-1.5"
+                className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-1.5 text-xs transition-all shadow-xs inline-flex items-center gap-1.5"
               >
                 {copied ? (
                   <>
@@ -179,7 +179,7 @@ export default function DocDetailPage() {
                 href={publicUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
+                className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
               >
                 <ExternalLink className="w-3.5 h-3.5" /> Preview
               </a>
@@ -216,7 +216,7 @@ export default function DocDetailPage() {
           </div>
 
           {actionError && (
-            <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs text-rose-700 dark:text-rose-300 mb-5 print:hidden">
+            <div className="rounded-md border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs text-rose-700 dark:text-rose-300 mb-5 print:hidden">
               {actionError}
             </div>
           )}
@@ -224,7 +224,7 @@ export default function DocDetailPage() {
           {/* Client response banner */}
           {responded && (
             <div
-              className={`rounded-2xl border p-4 sm:p-5 mb-6 backdrop-blur-md print:hidden ${
+              className={`rounded-md border p-4 sm:p-5 mb-6 backdrop-blur-md print:hidden ${
                 isSigned || isAccepted
                   ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-800 dark:text-emerald-300'
                   : 'bg-rose-500/10 border-rose-500/20 text-rose-800 dark:text-rose-300'
@@ -258,28 +258,28 @@ export default function DocDetailPage() {
           )}
 
           {/* Document card */}
-          <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 overflow-hidden backdrop-blur-md shadow-xs dark:shadow-none">
+          <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] overflow-hidden backdrop-blur-md shadow-xs dark:shadow-none">
             {/* Doc Header */}
-            <div className="px-6 sm:px-8 py-6 sm:py-7 border-b border-slate-100 dark:border-white/5">
+            <div className="px-6 sm:px-8 py-6 sm:py-7 border-b border-[#f1f3f7] dark:border-white/[0.05]">
               {editing ? (
                 <input
-                  className="w-full text-2xl sm:text-3xl font-light uppercase tracking-tight text-slate-900 dark:text-white bg-transparent border-b border-slate-300 dark:border-white/20 focus:outline-none pb-1 mb-4"
+                  className="w-full text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white bg-transparent border-b border-slate-300 dark:border-white/20 focus:outline-none pb-1 mb-4"
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   autoFocus
                 />
               ) : (
-                <h1 className="text-2xl sm:text-3xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white mb-3">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white mb-3">
                   {doc.title}
                 </h1>
               )}
 
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">
                   {TYPE_LABELS[doc.type] ?? doc.type}
                 </span>
                 <span
-                  className={`text-[10px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                  className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border ${
                     STATUS_STYLES[doc.status] ?? STATUS_STYLES.draft
                   }`}
                 >
@@ -303,7 +303,7 @@ export default function DocDetailPage() {
               {editing ? (
                 <>
                   <textarea
-                    className="w-full text-xs sm:text-sm font-mono leading-relaxed border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50/60 dark:bg-white/[0.03] px-4 py-3 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 text-slate-800 dark:text-slate-100 transition-colors resize-none"
+                    className="w-full text-xs sm:text-sm font-mono leading-relaxed border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50/60 dark:bg-white/[0.03] px-4 py-3 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 text-slate-800 dark:text-slate-100 transition-colors resize-none"
                     rows={32}
                     value={content}
                     onChange={e => setContent(e.target.value)}
@@ -314,7 +314,7 @@ export default function DocDetailPage() {
                       type="button"
                       onClick={saveEdit}
                       disabled={saving}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-5 py-2 text-xs transition-all shadow-xs disabled:opacity-50"
+                      className="bg-accent hover:bg-accent-hover inline-flex items-center gap-1.5 rounded-md text-white font-semibold px-5 py-2 text-xs transition-all shadow-xs disabled:opacity-50"
                     >
                       {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                       Save changes
@@ -326,7 +326,7 @@ export default function DocDetailPage() {
                         setContent(doc.content)
                         setTitle(doc.title)
                       }}
-                      className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
+                      className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
                     >
                       <X className="w-3.5 h-3.5" /> Cancel
                     </button>
@@ -344,14 +344,14 @@ export default function DocDetailPage() {
           </div>
 
           {/* Public share capsule */}
-          <div className="mt-5 p-4 rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/60 dark:bg-white/[0.02] backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 print:hidden">
-            <span className="font-light">
+          <div className="mt-5 p-4 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] backdrop-blur-md flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 print:hidden">
+            <span className="">
               Client Access URL: <code className="font-mono text-slate-700 dark:text-slate-300 text-[11px] break-all">{publicUrl}</code>
             </span>
             <button
               type="button"
               onClick={copyLink}
-              className="self-start sm:self-auto inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white hover:opacity-80 transition-opacity"
+              className="self-start sm:self-auto inline-flex items-center gap-1.5 text-sm font-bold tracking-tight text-slate-900 dark:text-white hover:opacity-80 transition-opacity"
             >
               {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? 'Copied' : 'Copy'}

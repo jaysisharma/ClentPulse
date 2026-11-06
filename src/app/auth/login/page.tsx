@@ -439,8 +439,9 @@ export default function LoginPage() {
                     {mode === 'forgot' ? 'Set New Password' : 'Verify Your Email'}
                   </h1>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    We sent a 6-digit verification code to{' '}
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 break-all">{email}</span>.
+                    {mode === 'forgot' ? 'If there’s an account for ' : 'We sent a 6-digit verification code to '}
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 break-all">{email}</span>
+                    {mode === 'forgot' ? ', we’ve sent it a 6-digit reset code.' : '.'}
                   </p>
                 </div>
 

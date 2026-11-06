@@ -1,7 +1,7 @@
 import { AppLayout } from '@/components/layout/app-layout'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-lg ${className}`} />
+  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-md ${className}`} />
 }
 
 export default function Loading() {
@@ -16,7 +16,7 @@ export default function Loading() {
           <div key={s} className="space-y-3">
             <Sk className="h-4 w-32" />
             {[...Array(2)].map((_, i) => (
-              <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5">
+              <div key={i} className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 space-y-2">
                     <div className="flex items-center gap-2">
@@ -30,8 +30,8 @@ export default function Loading() {
                     <Sk className="h-4 w-5/6" />
                   </div>
                   <div className="flex gap-2 flex-shrink-0">
-                    <Sk className="h-8 w-20 rounded-lg" />
-                    <Sk className="h-8 w-8 rounded-lg" />
+                    <Sk className="h-8 w-20 rounded-md" />
+                    <Sk className="h-8 w-8 rounded-md" />
                   </div>
                 </div>
               </div>

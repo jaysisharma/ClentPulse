@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { stripe } from '@/lib/stripe'
 import { NextResponse } from 'next/server'
 
@@ -34,7 +35,8 @@ export async function GET() {
       payoutsEnabled !== profile.stripe_payouts_enabled ||
       detailsSubmitted !== profile.stripe_connect_onboarded
     ) {
-      await supabase
+      // Service role: Stripe Connect status columns are protected from user writes
+      await createAdminClient()
         .from('users')
         .update({
           stripe_charges_enabled: chargesEnabled,

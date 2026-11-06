@@ -61,7 +61,7 @@ const PLAN_META: Record<PlanTier, {
     icon: Zap,
     color: 'text-slate-500 dark:text-slate-400',
     bg: 'bg-slate-100 dark:bg-white/5',
-    border: 'border-slate-200 dark:border-white/10',
+    border: 'border-[#eaecf2] dark:border-white/[0.08]',
     features: FREE_FEATURES,
   },
   pro: {
@@ -111,7 +111,7 @@ function SectionCard({ children, className, id }: { children: React.ReactNode; c
     <div
       id={id}
       className={cn(
-        'rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 shadow-xs dark:shadow-none ring-1 ring-slate-950/5 dark:ring-white/5 transition-all',
+        'rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 shadow-xs dark:shadow-none transition-all',
         className
       )}
     >
@@ -130,7 +130,7 @@ function SectionHeader({ title, description, badge }: {
       <div>
         <h2 className="text-sm font-semibold text-slate-900 dark:text-white">{title}</h2>
         {description && (
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed font-light">{description}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">{description}</p>
         )}
       </div>
       {badge}
@@ -433,21 +433,21 @@ export default function SettingsPage() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                 Workspace Controls
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
               Settings
             </h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Configure your profile, security, appearance, workspace modules, and billing.
             </p>
           </div>
 
           {/* ── Upgrade Success Banner ─────────────────────────────────── */}
           {justUpgraded && (
-            <div className="rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-950/20 p-4 flex items-center gap-3.5">
+            <div className="rounded-md border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-950/20 p-4 flex items-center gap-3.5">
               <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
                 <Check className="w-4 h-4" />
               </div>
@@ -461,7 +461,7 @@ export default function SettingsPage() {
           )}
 
           {/* ── Navigation Tabs ────────────────────────────────────────── */}
-          <div className="border-b border-slate-200 dark:border-white/10 pb-1">
+          <div className="border-b border-[#eaecf2] dark:border-white/[0.08] pb-1">
             <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1" aria-label="Settings categories">
               {SETTINGS_TABS.map(t => {
                 const Icon = t.icon
@@ -472,9 +472,9 @@ export default function SettingsPage() {
                     type="button"
                     onClick={() => switchTab(t.id)}
                     className={cn(
-                      'inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
+                      'inline-flex items-center gap-2 px-3.5 py-2 rounded-md text-xs font-medium transition-all cursor-pointer whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
                       isActive
-                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-xs'
+                        ? 'bg-accent hover:bg-accent-hover text-white font-semibold shadow-xs'
                         : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
                     )}
                   >
@@ -503,7 +503,7 @@ export default function SettingsPage() {
 
               <form onSubmit={handleSave} className="space-y-4 max-w-xl">
                 <div>
-                  <label htmlFor="display-name" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                  <label htmlFor="display-name" className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                     Display Name
                   </label>
                   <input
@@ -512,12 +512,12 @@ export default function SettingsPage() {
                     value={name}
                     onChange={e => setName(e.target.value)}
                     placeholder="e.g. Alex Rivera"
-                    className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
+                    className="w-full rounded-md bg-slate-50 dark:bg-white/[0.04] border border-[#eaecf2] dark:border-white/[0.08] text-slate-900 dark:text-white text-xs px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="portfolio-username" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                  <label htmlFor="portfolio-username" className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                     Portfolio Handle
                   </label>
                   <input
@@ -526,7 +526,7 @@ export default function SettingsPage() {
                     value={username}
                     onChange={e => setUsername(e.target.value.toLowerCase())}
                     placeholder="alexrivera"
-                    className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-mono"
+                    className="w-full rounded-md bg-slate-50 dark:bg-white/[0.04] border border-[#eaecf2] dark:border-white/[0.08] text-slate-900 dark:text-white text-xs px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-mono"
                   />
                   {username && !usernameError && (
                     <div className="flex items-center gap-1.5 mt-2">
@@ -550,7 +550,7 @@ export default function SettingsPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-5 py-2 text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                    className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-5 py-2 text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
                     {loading ? (
                       <>
@@ -582,7 +582,7 @@ export default function SettingsPage() {
 
               <form onSubmit={handleChangePassword} className="space-y-4 max-w-xl">
                 <div>
-                  <label htmlFor="new-password" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                  <label htmlFor="new-password" className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                     New Password
                   </label>
                   <div className="relative">
@@ -592,7 +592,7 @@ export default function SettingsPage() {
                       value={newPassword}
                       onChange={e => setNewPassword(e.target.value)}
                       placeholder="At least 6 characters"
-                      className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 pr-10 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-mono"
+                      className="w-full rounded-md bg-slate-50 dark:bg-white/[0.04] border border-[#eaecf2] dark:border-white/[0.08] text-slate-900 dark:text-white text-xs px-3.5 py-2.5 pr-10 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-mono"
                     />
                     <button
                       type="button"
@@ -606,7 +606,7 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="confirm-password" className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                  <label htmlFor="confirm-password" className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
                     Confirm New Password
                   </label>
                   <div className="relative">
@@ -616,7 +616,7 @@ export default function SettingsPage() {
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
                       placeholder="Re-enter your new password"
-                      className="w-full rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs px-3.5 py-2.5 pr-10 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-mono"
+                      className="w-full rounded-md bg-slate-50 dark:bg-white/[0.04] border border-[#eaecf2] dark:border-white/[0.08] text-slate-900 dark:text-white text-xs px-3.5 py-2.5 pr-10 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-mono"
                     />
                     <button
                       type="button"
@@ -634,7 +634,7 @@ export default function SettingsPage() {
                 )}
 
                 {passwordSuccess && (
-                  <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-medium bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-xl p-3">
+                  <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 font-medium bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 rounded-md p-3">
                     <Check className="w-4 h-4 flex-shrink-0" />
                     <span>Password updated successfully.</span>
                   </div>
@@ -644,7 +644,7 @@ export default function SettingsPage() {
                   <button
                     type="submit"
                     disabled={passwordLoading || !newPassword}
-                    className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-5 py-2 text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                    className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-5 py-2 text-xs transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
                     {passwordLoading ? (
                       <>
@@ -679,10 +679,10 @@ export default function SettingsPage() {
                     type="button"
                     onClick={() => setTheme('light')}
                     className={cn(
-                      'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
+                      'flex flex-col items-center gap-2 p-4 rounded-md border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
                       theme === 'light'
                         ? 'border-indigo-400 bg-indigo-50 dark:border-white/30 dark:bg-white/[0.08] text-indigo-700 dark:text-white ring-1 ring-indigo-400/30'
-                        : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 dark:border-white/5 dark:bg-white/[0.02] dark:text-slate-400 dark:hover:bg-white/[0.05]'
+                        : 'border-[#eaecf2] bg-slate-50 text-slate-500 hover:bg-slate-100 dark:border-white/[0.05] dark:bg-white/[0.02] dark:text-slate-400 dark:hover:bg-white/[0.05]'
                     )}
                   >
                     <Sun className={cn('w-5 h-5', theme === 'light' ? 'text-amber-500' : 'text-slate-400 dark:text-slate-500')} />
@@ -692,10 +692,10 @@ export default function SettingsPage() {
                     type="button"
                     onClick={() => setTheme('dark')}
                     className={cn(
-                      'flex flex-col items-center gap-2 p-4 rounded-xl border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
+                      'flex flex-col items-center gap-2 p-4 rounded-md border transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
                       theme === 'dark'
                         ? 'border-slate-700 bg-slate-900 text-white dark:border-white/30 dark:bg-white/[0.08] ring-1 ring-white/15'
-                        : 'border-slate-200 bg-slate-50 text-slate-500 hover:bg-slate-100 dark:border-white/5 dark:bg-white/[0.02] dark:text-slate-400 dark:hover:bg-white/[0.05]'
+                        : 'border-[#eaecf2] bg-slate-50 text-slate-500 hover:bg-slate-100 dark:border-white/[0.05] dark:bg-white/[0.02] dark:text-slate-400 dark:hover:bg-white/[0.05]'
                     )}
                   >
                     <Moon className={cn('w-5 h-5', theme === 'dark' ? 'text-indigo-400' : 'text-slate-400 dark:text-slate-500')} />
@@ -711,11 +711,11 @@ export default function SettingsPage() {
                   description="Customize the brand accent color and studio logo presented on client deliverables."
                   badge={
                     !isPaid ? (
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
+                      <span className="text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
                         Pro
                       </span>
                     ) : (
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
+                      <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
                         Active
                       </span>
                     )
@@ -724,7 +724,7 @@ export default function SettingsPage() {
 
                 <div className={cn('space-y-5', !isPaid && 'opacity-50 pointer-events-none select-none')}>
                   <div>
-                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">
+                    <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-2.5">
                       Accent Color
                     </label>
                     <div className="flex gap-2.5 flex-wrap">
@@ -750,14 +750,14 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                    <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-2">
                       Studio Logo
                     </label>
-                    <label className="flex items-center gap-3 border border-dashed border-slate-300 dark:border-white/15 rounded-xl p-4 text-xs text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-700 dark:hover:text-slate-200 transition-colors w-full cursor-pointer bg-slate-50/50 dark:bg-white/[0.02]">
+                    <label className="flex items-center gap-3 border border-dashed border-slate-300 dark:border-white/15 rounded-md p-4 text-xs text-slate-500 dark:text-slate-400 hover:border-slate-400 dark:hover:border-white/30 hover:text-slate-700 dark:hover:text-slate-200 transition-colors w-full cursor-pointer bg-slate-50/50 dark:bg-white/[0.02]">
                       {logoUrl ? (
-                        <img src={logoUrl} alt="Logo" className="h-8 w-auto object-contain rounded bg-white dark:bg-black/40 p-1 border border-slate-200 dark:border-white/10" />
+                        <img src={logoUrl} alt="Logo" className="h-8 w-auto object-contain rounded bg-white dark:bg-black/40 p-1 border border-[#eaecf2] dark:border-white/[0.08]" />
                       ) : (
-                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-400">
+                        <div className="w-8 h-8 rounded-md bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] flex items-center justify-center text-slate-400">
                           <Upload className="w-4 h-4" />
                         </div>
                       )}
@@ -774,9 +774,9 @@ export default function SettingsPage() {
                   </div>
 
                   {/* Live Branding Preview */}
-                  <div className="mt-4 p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02]">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mb-2">Live Client Preview</div>
-                    <div className="flex items-center justify-between p-3 rounded-lg bg-white dark:bg-[#07080a] border border-slate-200 dark:border-white/10">
+                  <div className="mt-4 p-4 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.02]">
+                    <div className="text-[10px] font-semibold text-slate-400 mb-2">Live Client Preview</div>
+                    <div className="flex items-center justify-between p-3 rounded-md bg-white dark:bg-[#07080a] border border-[#eaecf2] dark:border-white/[0.08]">
                       <div className="flex items-center gap-2.5">
                         {logoUrl ? (
                           <img src={logoUrl} alt="Studio" className="h-5 w-auto object-contain" />
@@ -798,7 +798,7 @@ export default function SettingsPage() {
                       type="button"
                       onClick={handleSave}
                       disabled={loading}
-                      className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-5 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer"
+                      className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-5 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer"
                     >
                       {saved ? <><Check className="w-3.5 h-3.5 text-emerald-500" /> Saved</> : 'Save Branding'}
                     </button>
@@ -806,7 +806,7 @@ export default function SettingsPage() {
                 </div>
 
                 {!isPaid && (
-                  <div className="mt-4 pt-4 border-t border-slate-100 dark:border-white/5">
+                  <div className="mt-4 pt-4 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                     <Link
                       href="/upgrade"
                       className="inline-flex items-center gap-1.5 text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-semibold"
@@ -827,15 +827,15 @@ export default function SettingsPage() {
                 title="Workspace Modules & Craft"
                 description="Tailor active modules for your specific craft (developer, marketer, designer, or consultant)."
                 badge={
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
+                  <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-2.5 py-1 rounded-full flex-shrink-0">
                     {Object.values(modules).filter(Boolean).length} / {MODULE_CATALOG.length} Active
                   </span>
                 }
               />
 
               {/* Quick Craft Presets */}
-              <div className="mb-5 pb-4 border-b border-slate-100 dark:border-white/5 space-y-2">
-                <label className="block text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <div className="mb-5 pb-4 border-b border-[#f1f3f7] dark:border-white/[0.05] space-y-2">
+                <label className="block text-[10px] font-semibold text-slate-500 dark:text-slate-400">
                   Craft Presets
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -849,10 +849,10 @@ export default function SettingsPage() {
                         onClick={() => handleApplyCraftPreset(p.id)}
                         disabled={applyingPreset !== null}
                         className={cn(
-                          'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
+                          'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500',
                           isCurrent
-                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-slate-900 dark:border-white shadow-xs font-semibold'
-                            : 'bg-slate-50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
+                            ? 'bg-accent hover:bg-accent-hover text-white border-slate-900 dark:border-white shadow-xs font-semibold'
+                            : 'bg-slate-50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 border-[#eaecf2] dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/20'
                         )}
                       >
                         {applyingPreset === p.id ? (
@@ -877,14 +877,14 @@ export default function SettingsPage() {
                   return (
                     <div
                       key={item.id}
-                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/[0.04] transition-colors"
+                      className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/[0.04] transition-colors"
                     >
                       <div className="flex items-start gap-3 min-w-0">
                         <div className={cn(
-                          'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 border',
+                          'w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5 border',
                           isEnabled
                             ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/20'
-                            : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-500 border-slate-200 dark:border-white/10'
+                            : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-500 border-[#eaecf2] dark:border-white/[0.08]'
                         )}>
                           <Icon className="w-4 h-4" />
                         </div>
@@ -894,12 +894,12 @@ export default function SettingsPage() {
                               {item.name}
                             </span>
                             {item.badge && (
-                              <span className="text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-500 dark:text-indigo-400">
+                              <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-500 dark:text-indigo-400">
                                 {item.badge}
                               </span>
                             )}
                             <span className={cn(
-                              'text-[9px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full',
+                              'text-[9px] font-semibold px-1.5 py-0.5 rounded-full',
                               isEnabled
                                 ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10'
                                 : 'text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-white/5'
@@ -907,7 +907,7 @@ export default function SettingsPage() {
                               {isEnabled ? 'Enabled' : 'Disabled'}
                             </span>
                           </div>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-0.5 leading-snug">
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
                             {item.shortDescription}
                           </p>
                         </div>
@@ -950,7 +950,7 @@ export default function SettingsPage() {
               />
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] flex flex-col justify-between">
+                <div className="p-4 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.02] flex flex-col justify-between">
                   <div>
                     <span className="text-xs font-semibold text-slate-900 dark:text-white">Google Drive & Calendar</span>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Deliverable assets & meeting sync</p>
@@ -964,7 +964,7 @@ export default function SettingsPage() {
                   </Link>
                 </div>
 
-                <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] flex flex-col justify-between">
+                <div className="p-4 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.02] flex flex-col justify-between">
                   <div>
                     <span className="text-xs font-semibold text-slate-900 dark:text-white">GitHub Repositories</span>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Commit milestones & code links</p>
@@ -978,7 +978,7 @@ export default function SettingsPage() {
                   </Link>
                 </div>
 
-                <div className="p-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] flex flex-col justify-between">
+                <div className="p-4 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.02] flex flex-col justify-between">
                   <div>
                     <span className="text-xs font-semibold text-slate-900 dark:text-white">Figma Files</span>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Live design review embeds</p>
@@ -996,7 +996,7 @@ export default function SettingsPage() {
               <div className="pt-2">
                 <Link
                   href="/settings/integrations"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-semibold hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-xs"
+                  className="bg-accent hover:bg-accent-hover inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-white text-xs font-semibold transition-all shadow-xs"
                 >
                   <span>Open Full Integrations Hub</span>
                   <ArrowUpRight className="w-3.5 h-3.5" />
@@ -1009,37 +1009,37 @@ export default function SettingsPage() {
           {activeTab === 'developer' && (
             <SectionCard className="p-5 sm:p-6">
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
+                <div className="w-8 h-8 rounded-md bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 flex-shrink-0">
                   <Code2 className="w-4 h-4" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Developer Settings & API Keys</h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-light">VS Code · Cursor · Antigravity CLI live sync</p>
+                  <h2 className="text-sm font-semibold text-slate-900 dark:text-white">Developer & Designer Integrations</h2>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">VS Code · Figma Plugin · Cursor · Antigravity CLI</p>
                 </div>
-                <span className="ml-auto text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full">
+                <span className="ml-auto text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 px-2.5 py-1 rounded-full">
                   Live Sync
                 </span>
               </div>
 
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-light leading-relaxed mb-4">
-                Sync active coding intervals and live presence to your client portals automatically. Only tracks workspace timestamps and duration — never raw source code or filenames.
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">
+                Sync active coding sessions from VS Code and design presence from the Frevio Figma Plugin to your client portals automatically. Only tracks timestamps and active focus — never raw source code or canvas graphics.
               </p>
 
               {generatedToken && (
-                <div className="p-4 mb-4 rounded-xl border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/20 space-y-2">
+                <div className="p-4 mb-4 rounded-md border border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/70 dark:bg-emerald-950/20 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-300">
+                    <span className="text-[10px] font-semibold text-emerald-800 dark:text-emerald-300">
                       Generated Key (One-time Reveal)
                     </span>
                     <span className="text-[10px] text-emerald-600 dark:text-emerald-400/80">Copy now — won&apos;t show again</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 bg-white dark:bg-black/60 px-3 py-2 rounded-lg border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono text-slate-800 dark:text-emerald-200 overflow-x-auto select-all">
+                    <code className="flex-1 bg-white dark:bg-black/60 px-3 py-2 rounded-md border border-emerald-200 dark:border-emerald-500/30 text-xs font-mono text-slate-800 dark:text-emerald-200 overflow-x-auto select-all">
                       {generatedToken}
                     </code>
                     <button
                       onClick={() => copyToken(generatedToken)}
-                      className="rounded-full border border-emerald-300 dark:border-emerald-500/30 bg-white dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 px-3 py-1.5 text-xs transition-all flex items-center gap-1.5 cursor-pointer flex-shrink-0"
+                      className="rounded-md border border-emerald-300 dark:border-emerald-500/30 bg-white dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-200 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 px-3 py-1.5 text-xs transition-all flex items-center gap-1.5 cursor-pointer flex-shrink-0"
                     >
                       {tokenCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                       {tokenCopied ? 'Copied' : 'Copy'}
@@ -1050,14 +1050,14 @@ export default function SettingsPage() {
 
               {tokens.length > 0 && (
                 <div className="space-y-2 mb-4">
-                  <label className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                  <label className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 block">
                     Active Extension Tokens ({tokens.length})
                   </label>
                   <div className="space-y-2">
                     {tokens.map(t => (
                       <div
                         key={t.id}
-                        className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02]"
+                        className="flex items-center justify-between p-3 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.02]"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
                           <Key className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" />
@@ -1108,15 +1108,15 @@ export default function SettingsPage() {
               <button
                 onClick={handleGenerateToken}
                 disabled={generatingToken}
-                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 <Key className="w-3.5 h-3.5" />
                 {generatingToken ? 'Generating…' : tokens.length > 0 ? 'Generate New Key' : 'Generate Extension Key'}
               </button>
 
-              <div className="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 space-y-1 text-[11px] text-slate-500 dark:text-slate-400 font-light">
+              <div className="pt-4 mt-4 border-t border-[#f1f3f7] dark:border-white/[0.05] space-y-1 text-[11px] text-slate-500 dark:text-slate-400">
                 <p className="font-semibold text-slate-700 dark:text-slate-300 text-xs mb-1.5">Setup in 60 seconds:</p>
-                <p>1. Open Command Palette <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono text-slate-600 dark:text-slate-300">Cmd+Shift+P</kbd></p>
+                <p>1. Open Command Palette <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] text-[10px] font-mono text-slate-600 dark:text-slate-300">Cmd+Shift+P</kbd></p>
                 <p>2. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Set API Token</code> and paste your key.</p>
                 <p>3. Run <code className="font-mono text-indigo-600 dark:text-indigo-400">Frevio: Link Workspace to Project</code> to start sync.</p>
               </div>
@@ -1131,7 +1131,7 @@ export default function SettingsPage() {
                 <div className={cn('rounded-t-2xl p-5 border-b', planMeta.bg, planMeta.border)}>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={cn('w-9 h-9 rounded-xl flex items-center justify-center border', planMeta.bg, planMeta.border)}>
+                      <div className={cn('w-9 h-9 rounded-md flex items-center justify-center border', planMeta.bg, planMeta.border)}>
                         <PlanIcon className={cn('w-5 h-5', planMeta.color)} />
                       </div>
                       <div>
@@ -1142,7 +1142,7 @@ export default function SettingsPage() {
                     {isPaid ? (
                       <button
                         onClick={handleManageBilling}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 px-4 py-1.5 text-xs font-medium transition-all cursor-pointer"
+                        className="inline-flex items-center gap-1.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 px-4 py-1.5 text-xs font-medium transition-all cursor-pointer"
                       >
                         Manage Billing
                         <ArrowUpRight className="w-3.5 h-3.5" />
@@ -1150,14 +1150,14 @@ export default function SettingsPage() {
                     ) : (
                       <Link
                         href="/upgrade"
-                        className="inline-flex items-center gap-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 text-xs font-semibold transition-all shadow-sm"
+                        className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1.5 text-xs font-semibold transition-all shadow-sm"
                       >
                         <Sparkles className="w-3.5 h-3.5" />
                         Upgrade to Pro
                       </Link>
                     )}
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-3 font-light leading-relaxed">
+                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
                     {PLAN_BLURB[normalizedPlan]}
                   </p>
                 </div>
@@ -1170,7 +1170,7 @@ export default function SettingsPage() {
                     </div>
                   ))}
                   {!isPaid && (
-                    <div className="col-span-full mt-2 pt-3 border-t border-slate-100 dark:border-white/5">
+                    <div className="col-span-full mt-2 pt-3 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                       <Link href="/upgrade" className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
                         See everything included in Pro →
                       </Link>
@@ -1191,14 +1191,14 @@ export default function SettingsPage() {
                   description="Share your unique referral URL and receive recurring platform credits when invited creators subscribe."
                   badge={<Gift className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />}
                 />
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02]">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 p-3 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.02]">
                   <div className="flex-1 font-mono text-xs text-slate-700 dark:text-slate-300 truncate px-1">
                     {buildReferralUrl(username || userId || 'creator')}
                   </div>
                   <button
                     type="button"
                     onClick={handleCopyReferral}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 text-xs font-semibold transition-all shadow-xs cursor-pointer flex-shrink-0"
+                    className="bg-accent hover:bg-accent-hover inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-white text-xs font-semibold transition-all shadow-xs cursor-pointer flex-shrink-0"
                   >
                     {refCopied ? <Check className="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                     {refCopied ? 'Copied!' : 'Copy Link'}

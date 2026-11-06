@@ -101,11 +101,11 @@ export function ApprovalsSection({
       }
     >
       {showForm && (
-        <form onSubmit={create} className="bg-white dark:bg-[#0c0d12]/95 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-5 mb-4 space-y-3.5 shadow-xs backdrop-blur-md animate-fade-in">
+        <form onSubmit={create} className="bg-white dark:bg-[#12141c]/95 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5 mb-4 space-y-3.5 shadow-xs backdrop-blur-md animate-fade-in">
           <div>
-            <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Request Title</label>
+            <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Request Title</label>
             <input
-              className="w-full px-3.5 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all"
+              className="w-full px-3.5 py-2.5 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all"
               placeholder="e.g. Homepage Design Prototype v2"
               value={title}
               onChange={e => setTitle(e.target.value)}
@@ -115,7 +115,7 @@ export function ApprovalsSection({
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Deliverable Type</label>
+            <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Deliverable Type</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
               {PREVIEW_TYPES.map(t => {
                 const Icon = t.icon
@@ -125,10 +125,10 @@ export function ApprovalsSection({
                     key={t.id}
                     type="button"
                     onClick={() => setPreviewType(t.id)}
-                    className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl border text-xs font-medium transition-all ${
+                    className={`flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-md border text-xs font-medium transition-all ${
                       selected
                         ? 'border-indigo-500/40 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-semibold ring-1 ring-indigo-500/20'
-                        : 'border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5'
+                        : 'border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5'
                     }`}
                   >
                     <Icon className="w-3.5 h-3.5 flex-shrink-0" />
@@ -140,9 +140,9 @@ export function ApprovalsSection({
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">Deliverable URL</label>
+            <label className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">Deliverable URL</label>
             <input
-              className="w-full px-3.5 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all font-mono"
+              className="w-full px-3.5 py-2.5 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all font-mono"
               placeholder="https://staging.domain.com or https://figma.com/file/..."
               value={url}
               onChange={e => setUrl(e.target.value)}
@@ -153,14 +153,14 @@ export function ApprovalsSection({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all disabled:opacity-50 shadow-xs"
+              className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-2 text-xs transition-all disabled:opacity-50 shadow-xs"
             >
               {saving ? 'Creating...' : 'Create request'}
             </button>
             <button
               type="button"
               onClick={() => setShowForm(false)}
-              className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs transition-colors shadow-xs"
+              className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-4 py-2 text-xs transition-colors shadow-xs"
             >
               Cancel
             </button>
@@ -169,7 +169,7 @@ export function ApprovalsSection({
       )}
 
       {!approvals.length ? (
-        <div className="bg-white/60 dark:bg-[#0c0d12]/60 rounded-2xl border border-dashed border-slate-200 dark:border-white/10 p-10 text-center text-xs text-slate-500 dark:text-slate-400 ring-1 ring-slate-950/5 dark:ring-white/5">
+        <div className="bg-white/60 dark:bg-[#12141c]/60 rounded-md border border-dashed border-[#eaecf2] dark:border-white/[0.08] p-10 text-center text-xs text-slate-500 dark:text-slate-400">
           No approval requests yet. Create one to get client sign-off on deliverables.
         </div>
       ) : (
@@ -181,8 +181,8 @@ export function ApprovalsSection({
             const DeliverableIcon = pType.icon
 
             return (
-              <div key={a.id} className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-5 flex items-start gap-4 group shadow-xs ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
-                <div className={`mt-0.5 p-2 rounded-xl ${ui.bg} flex-shrink-0`}>
+              <div key={a.id} className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5 flex items-start gap-4 group shadow-xs backdrop-blur-md hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
+                <div className={`mt-0.5 p-2 rounded-md ${ui.bg} flex-shrink-0`}>
                   <Icon className={`w-4 h-4 ${ui.color}`} />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -192,7 +192,7 @@ export function ApprovalsSection({
                       {ui.label}
                     </span>
                     {a.preview_type && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300 border border-[#eaecf2] dark:border-white/[0.08]">
                         <DeliverableIcon className="w-3 h-3" />
                         {pType.label}
                       </span>
@@ -209,7 +209,7 @@ export function ApprovalsSection({
                     )}
                   </div>
                   {a.feedback && (
-                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-2.5 bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 rounded-xl p-3 italic font-light">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-2.5 bg-slate-50 dark:bg-white/[0.03] border border-[#eaecf2] dark:border-white/[0.05] rounded-md p-3 italic">
                       {a.feedback}
                     </p>
                   )}
@@ -217,7 +217,7 @@ export function ApprovalsSection({
                 <button
                   onClick={() => del(a.id)}
                   aria-label="Delete request"
-                  className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-rose-500 transition-all flex-shrink-0"
+                  className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-slate-400 hover:text-rose-500 transition-all flex-shrink-0"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

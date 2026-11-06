@@ -2,7 +2,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { DarkShell } from '@/components/layout/dark-shell'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200/70 dark:bg-white/5 rounded-xl ${className}`} />
+  return <div className={`bg-slate-200/70 dark:bg-white/5 rounded-md ${className}`} />
 }
 
 export default function Loading() {
@@ -18,8 +18,8 @@ export default function Loading() {
               <Sk className="h-8 w-24 rounded-full" />
             </div>
           </div>
-          <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 p-8 space-y-8 backdrop-blur-md">
-            <div className="space-y-3 pb-6 border-b border-slate-100 dark:border-white/5">
+          <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-8 space-y-8 backdrop-blur-md">
+            <div className="space-y-3 pb-6 border-b border-[#f1f3f7] dark:border-white/[0.05]">
               <Sk className="h-8 w-64" />
               <div className="flex gap-3">
                 <Sk className="h-5 w-20 rounded-full" />
@@ -31,7 +31,7 @@ export default function Loading() {
               <Sk className="h-4 w-full" />
               <Sk className="h-4 w-5/6" />
               <Sk className="h-4 w-4/6" />
-              <Sk className="h-32 w-full rounded-xl" />
+              <Sk className="h-32 w-full rounded-md" />
               <Sk className="h-4 w-3/4" />
               <Sk className="h-4 w-2/3" />
             </div>

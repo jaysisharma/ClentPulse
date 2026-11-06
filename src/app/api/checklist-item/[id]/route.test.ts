@@ -24,6 +24,19 @@ vi.mock('next/headers', () => ({
   }),
 }))
 
+// Routes use the service-role client for project lookups and writes; reuse the
+// session mock's tables, aliasing maybeSingle to single.
+vi.mock('@/lib/supabase/admin', async () => {
+  const { createClient } = await import('@/lib/supabase/server')
+  const client: any = await createClient()
+  const from = (table: string) => {
+    const q = client.from(table)
+    if (!q.maybeSingle && q.single) q.maybeSingle = q.single
+    return q
+  }
+  return { createAdminClient: () => ({ ...client, from }) }
+})
+
 vi.mock('@/lib/supabase/server', () => ({
   createClient: vi.fn().mockResolvedValue({
     auth: { getUser: mockGetUser },

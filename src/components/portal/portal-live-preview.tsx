@@ -7,7 +7,9 @@ import {
   Copy, Check, ShieldCheck, Maximize2, Minimize2, RefreshCw,
   Eye, EyeOff, ChevronUp, ChevronDown
 } from 'lucide-react'
+import { DeviceFrame, deviceSize } from './device-frame'
 import { sanitizePreviewUrl, extractDomain, isCommonFrameRestrictedDomain } from '@/lib/live-preview'
+import { DeviceControls } from './device-controls'
 
 interface PreviewEnvironment {
   label: string
@@ -158,59 +160,6 @@ export function PortalLivePreview({
   const fullConfig = getContainerStyles(true)
 
   // Reusable Device Controls component
-  const DeviceControls = () => (
-    <div className="flex items-center gap-1 bg-slate-200/70 dark:bg-white/10 p-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-2xs">
-      <button
-        onClick={() => setDeviceMode('desktop')}
-        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
-          deviceMode === 'desktop'
-            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-semibold'
-            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-        }`}
-        title="Desktop View (100% Fluid)"
-      >
-        <Monitor className="w-3.5 h-3.5" />
-        <span>Desktop</span>
-      </button>
-
-      <button
-        onClick={() => setDeviceMode('tablet')}
-        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
-          deviceMode === 'tablet'
-            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-semibold'
-            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-        }`}
-        title="Tablet View (768px)"
-      >
-        <Tablet className="w-3.5 h-3.5" />
-        <span>Tablet</span>
-      </button>
-
-      <button
-        onClick={() => setDeviceMode('mobile')}
-        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
-          deviceMode === 'mobile'
-            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-semibold'
-            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-        }`}
-        title="Phone View (375px)"
-      >
-        <Smartphone className="w-3.5 h-3.5 text-indigo-500" />
-        <span>Phone</span>
-      </button>
-
-      {/* Orientation toggle */}
-      {deviceMode !== 'desktop' && (
-        <button
-          onClick={toggleOrientation}
-          className="p-1.5 rounded-lg text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors ml-0.5 cursor-pointer"
-          title={`Rotate to ${orientation === 'portrait' ? 'Landscape' : 'Portrait'}`}
-        >
-          <RotateCw className="w-3.5 h-3.5 text-indigo-500" />
-        </button>
-      )}
-    </div>
-  )
 
   return (
     <>
@@ -259,7 +208,7 @@ export function PortalLivePreview({
               </div>
 
               {/* Center: Interactive Device Viewport Mode Toggles */}
-              <DeviceControls />
+              <DeviceControls deviceMode={deviceMode} orientation={orientation} onDeviceModeChange={setDeviceMode} onToggleOrientation={toggleOrientation} />
 
               {/* Right: URL Address Bar + Reload + Full Screen + External Link */}
               <div className="flex items-center gap-2">
@@ -355,7 +304,7 @@ export function PortalLivePreview({
 
             {/* Device Mockup Wrapper */}
             <div className={`${styleConfig.wrapper} transition-all duration-300 ease-out`}>
-              <div className={`${styleConfig.frame} bg-white dark:bg-black relative transition-all duration-300 ease-out`}>
+              <DeviceFrame size={deviceSize(deviceMode, orientation)} className={`${styleConfig.frame} bg-white dark:bg-black relative`}>
                 
                 {/* Phone Speaker Slit Notch (for phone device view) */}
                 {styleConfig.notch && (
@@ -380,7 +329,7 @@ export function PortalLivePreview({
                     setHasError(true)
                   }}
                 />
-              </div>
+              </DeviceFrame>
             </div>
 
           </div>
@@ -430,7 +379,7 @@ export function PortalLivePreview({
 
               {/* Center: Device Type Adjustment Controls */}
               <div className="flex items-center gap-2">
-                <DeviceControls />
+                <DeviceControls deviceMode={deviceMode} orientation={orientation} onDeviceModeChange={setDeviceMode} onToggleOrientation={toggleOrientation} />
               </div>
 
               {/* Right: Icon-only Action Buttons */}
@@ -510,7 +459,7 @@ export function PortalLivePreview({
 
             {/* Device Wrapper */}
             <div className={`${fullConfig.wrapper} transition-all duration-300 ease-out`}>
-              <div className={`${fullConfig.frame} relative transition-all duration-300 ease-out`}>
+              <DeviceFrame fit="both" size={deviceSize(deviceMode, orientation)} className={`${fullConfig.frame} relative`}>
                 
                 {/* Phone Speaker Slit Notch */}
                 {fullConfig.notch && (
@@ -530,7 +479,7 @@ export function PortalLivePreview({
                   sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals"
                   onLoad={() => setIsLoading(false)}
                 />
-              </div>
+              </DeviceFrame>
             </div>
 
           </div>

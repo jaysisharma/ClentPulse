@@ -1,6 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { rateLimit } from '@/lib/rate-limit'
+import { generateOtpCode } from '@/lib/server-secret'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -11,31 +13,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Email address is required.' }, { status: 400 })
     }
 
+    // Per-IP cap so this can't be used to flood inboxes across many addresses
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'anonymous'
+    const rl = await rateLimit(`forgot-password:${ip}`, 10, 15 * 60_000)
+    if (!rl.success) {
+      return NextResponse.json({ error: 'Too many requests. Please try again in a few minutes.' }, { status: 429 })
+    }
+
     const cleanEmail = email.trim().toLowerCase()
     const supabaseAdmin = createAdminClient()
 
-    // 1. Verify that the user exists
+    // Same response whether or not the account exists, so this can't be used to
+    // discover who has an account. Every auth user has a public.users row.
+    const accepted = NextResponse.json({ success: true, email: cleanEmail })
+
     const { data: userRecord } = await supabaseAdmin
       .from('users')
       .select('id, name, email')
       .eq('email', cleanEmail)
       .maybeSingle()
 
-    let userExists = !!userRecord
-
-    if (!userExists) {
-      const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers()
-      if (!listError && users) {
-        userExists = users.some(u => u.email?.toLowerCase() === cleanEmail)
-      }
-    }
-
-    if (!userExists) {
-      return NextResponse.json(
-        { error: 'No account found with this email address.' },
-        { status: 404 }
-      )
-    }
+    if (!userRecord) return accepted
 
     const now = new Date()
     const fiveMinutes = 5 * 60 * 1000
@@ -81,7 +79,7 @@ export async function POST(request: Request) {
     }
 
     // 3. Generate a secure 6-digit verification code
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString()
+    const otpCode = generateOtpCode()
     const expiresAt = new Date(now.getTime() + 10 * 60 * 1000).toISOString() // 10 minutes validity
 
     // 4. Store code in otp_codes
@@ -141,7 +139,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to deliver reset email. Please try again.' }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true, email: cleanEmail })
+    return accepted
   } catch (err: any) {
     console.error('[Forgot Password] Exception:', err)
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 })

@@ -39,26 +39,7 @@ export async function POST(request: Request) {
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
-    let country = 'Unknown'
-    let city = 'Unknown'
-
-    // Look up location for remote clients (skip localhost/private ranges)
-    if (clientIp && clientIp !== '127.0.0.1' && clientIp !== '::1' && !clientIp.startsWith('192.168.')) {
-      try {
-        const geoRes = await fetch(`http://ip-api.com/json/${clientIp}?fields=status,country,city`, {
-          signal: AbortSignal.timeout(1000)
-        })
-        if (geoRes.ok) {
-          const geoData = await geoRes.json()
-          if (geoData.status === 'success') {
-            country = geoData.country || 'Unknown'
-            city = geoData.city || 'Unknown'
-          }
-        }
-      } catch (err) {
-        console.error('[Analytics Track] Geo IP lookup failed:', err)
-      }
-    }
+    const { country, city } = await resolveLocation(headersList, clientIp)
 
     const { error } = await adminClient.from('page_visits').insert({
       ip_address: clientIp,
@@ -83,4 +64,55 @@ export async function POST(request: Request) {
     console.error('[Analytics Track] Unexpected Exception:', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
+}
+
+const regionNames = new Intl.DisplayNames(['en'], { type: 'region' })
+
+function countryName(code: string | null | undefined): string | null {
+  if (!code || !/^[A-Za-z]{2}$/.test(code) || code.toUpperCase() === 'XX') return null
+  try {
+    return regionNames.of(code.toUpperCase()) ?? null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Visitor location without leaking IPs: prefer the geo headers our host or CDN
+ * already adds (Vercel, Cloudflare, CloudFront). Only if IPINFO_TOKEN is set do we
+ * ask a third party, and then over HTTPS. Otherwise the location stays Unknown.
+ */
+async function resolveLocation(headersList: Pick<Headers, 'get'>, clientIp: string): Promise<{ country: string; city: string }> {
+  const headerCountry = countryName(
+    headersList.get('x-vercel-ip-country') ||
+    headersList.get('cf-ipcountry') ||
+    headersList.get('cloudfront-viewer-country')
+  )
+  const rawCity = headersList.get('x-vercel-ip-city') || headersList.get('cloudfront-viewer-city')
+  if (headerCountry) {
+    let city = 'Unknown'
+    if (rawCity) {
+      try { city = decodeURIComponent(rawCity) } catch { city = rawCity }
+    }
+    return { country: headerCountry, city }
+  }
+
+  const token = process.env.IPINFO_TOKEN
+  const isPrivate = !clientIp || clientIp === '127.0.0.1' || clientIp === '::1' || clientIp.startsWith('192.168.') || clientIp.startsWith('10.')
+  if (token && !isPrivate) {
+    try {
+      const res = await fetch(`https://ipinfo.io/${encodeURIComponent(clientIp)}/json`, {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(1000),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        return { country: countryName(data.country) ?? 'Unknown', city: data.city || 'Unknown' }
+      }
+    } catch (err) {
+      console.error('[Analytics Track] Geo IP lookup failed:', err)
+    }
+  }
+
+  return { country: 'Unknown', city: 'Unknown' }
 }

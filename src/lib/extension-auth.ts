@@ -46,3 +46,32 @@ export async function verifyExtensionRequest(request: Request): Promise<{ userId
 
   return { userId: data.user_id, tokenId: data.id }
 }
+
+/** Loads a project if the extension user owns it or belongs to its organization. */
+export async function getManageableProject<T = any>(
+  admin: ReturnType<typeof createAdminClient>,
+  projectId: string,
+  userId: string,
+  columns: string
+): Promise<T | null> {
+  const { data: project } = await admin
+    .from('projects')
+    .select(`user_id, org_id, ${columns}`)
+    .eq('id', projectId)
+    .maybeSingle()
+
+  if (!project) return null
+  const row = project as any
+  if (row.user_id === userId) return project as T
+
+  if (row.org_id) {
+    const { data: member } = await admin
+      .from('organization_members')
+      .select('role')
+      .eq('org_id', row.org_id)
+      .eq('user_id', userId)
+      .maybeSingle()
+    if (member) return project as T
+  }
+  return null
+}

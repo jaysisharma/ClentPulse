@@ -317,7 +317,7 @@ export default function NewDocPage() {
           {/* Back navigation */}
           <Link
             href="/docs"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-6"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-6"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to documents
           </Link>
@@ -328,14 +328,14 @@ export default function NewDocPage() {
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                     Document Studio
                   </span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+                <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
                   Create document
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                   Select a tailored template with structured legal and strategic copy to present to clients.
                 </p>
               </div>
@@ -347,16 +347,16 @@ export default function NewDocPage() {
                     key={type}
                     type="button"
                     onClick={() => selectType(type)}
-                    className="w-full group bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-5 sm:p-6 text-left hover:border-slate-400 dark:hover:border-white/30 transition-all backdrop-blur-md shadow-xs dark:shadow-none flex items-center gap-5"
+                    className="w-full group bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5 sm:p-6 text-left hover:border-slate-400 dark:hover:border-white/30 transition-all backdrop-blur-md shadow-xs dark:shadow-none flex items-center gap-5"
                   >
-                    <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center flex-shrink-0 text-slate-700 dark:text-slate-300 group-hover:scale-105 transition-transform">
+                    <div className="w-12 h-12 rounded-md bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] flex items-center justify-center flex-shrink-0 text-slate-700 dark:text-slate-300 group-hover:scale-105 transition-transform">
                       <Icon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm sm:text-base font-medium text-slate-900 dark:text-white mb-0.5 flex items-center gap-2">
                         {label}
                       </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400 font-light line-clamp-2">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2">
                         {desc}
                       </div>
                     </div>
@@ -371,7 +371,7 @@ export default function NewDocPage() {
               <button
                 type="button"
                 onClick={() => setStep('type')}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-4"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mb-4"
               >
                 <ArrowLeft className="w-3 h-3" /> Change template
               </button>
@@ -380,36 +380,36 @@ export default function NewDocPage() {
               <div className="mb-8">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                  <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                     {DOC_TYPES.find(d => d.type === docType)?.label}
                   </span>
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+                <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
                   Document details
                 </h1>
-                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                   Fine-tune proposal terms, milestones, and deliverable content before publishing.
                 </p>
               </div>
 
               <div className="space-y-6">
                 {/* Meta details card */}
-                <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
-                  <div className="pb-3 border-b border-slate-100 dark:border-white/5">
-                    <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 space-y-5 backdrop-blur-md shadow-xs dark:shadow-none">
+                  <div className="pb-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
+                    <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
                       Document Metadata
                     </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                       Title, client association, and optional financial commitments.
                     </p>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                       Document title
                     </label>
                     <input
-                      className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                      className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                       placeholder="e.g. Supabase Integration Proposal — Acme Corp"
                       value={title}
                       onChange={e => setTitle(e.target.value)}
@@ -418,13 +418,13 @@ export default function NewDocPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                       Link to project <span className="font-normal lowercase text-slate-400">(optional)</span>
                     </label>
                     <select
                       value={projectId}
                       onChange={e => handleProjectChange(e.target.value)}
-                      className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-[#0c0d12] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                      className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-[#12141c] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                     >
                       <option value="">— Standalone / No linked project —</option>
                       {projects.map(p => (
@@ -437,23 +437,23 @@ export default function NewDocPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                         Client name
                       </label>
                       <input
-                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                        className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                         placeholder="Acme Corp"
                         value={clientName}
                         onChange={e => handleClientNameChange(e.target.value)}
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                         Client email
                       </label>
                       <input
                         type="email"
-                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
+                        className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full"
                         placeholder="client@acme.com"
                         value={clientEmail}
                         onChange={e => setClientEmail(e.target.value)}
@@ -463,14 +463,14 @@ export default function NewDocPage() {
 
                   {docType !== 'requirements' && (
                     <div>
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                         Investment amount ($) <span className="font-normal lowercase text-slate-400">(optional)</span>
                       </label>
                       <input
                         type="number"
                         min="0"
                         step="0.01"
-                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
+                        className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors w-full font-mono"
                         placeholder="5000"
                         value={amount}
                         onChange={e => setAmount(e.target.value)}
@@ -480,13 +480,13 @@ export default function NewDocPage() {
                 </div>
 
                 {/* Content editor */}
-                <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 space-y-4 backdrop-blur-md shadow-xs dark:shadow-none">
-                  <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+                <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 space-y-4 backdrop-blur-md shadow-xs dark:shadow-none">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
                     <div>
-                      <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                      <h2 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
                         Document Body
                       </h2>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-light">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                         Full markdown content ready for client distribution.
                       </p>
                     </div>
@@ -496,7 +496,7 @@ export default function NewDocPage() {
                   </div>
 
                   <textarea
-                    className="w-full px-4 py-3 text-xs sm:text-sm border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50/60 dark:bg-white/[0.03] text-slate-800 dark:text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-colors resize-none"
+                    className="w-full px-4 py-3 text-xs sm:text-sm border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50/60 dark:bg-white/[0.03] text-slate-800 dark:text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-colors resize-none"
                     rows={26}
                     value={content}
                     onChange={e => setContent(e.target.value)}
@@ -505,7 +505,7 @@ export default function NewDocPage() {
                 </div>
 
                 {error && (
-                  <div className="rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs text-rose-700 dark:text-rose-300">
+                  <div className="rounded-md border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 p-4 text-xs text-rose-700 dark:text-rose-300">
                     {error}
                   </div>
                 )}
@@ -516,7 +516,7 @@ export default function NewDocPage() {
                     type="button"
                     onClick={() => save('draft')}
                     disabled={!title.trim() || saving}
-                    className="w-full sm:w-auto rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-colors shadow-xs disabled:opacity-50"
+                    className="w-full sm:w-auto rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-colors shadow-xs disabled:opacity-50"
                   >
                     Save as draft
                   </button>
@@ -524,7 +524,7 @@ export default function NewDocPage() {
                     type="button"
                     onClick={() => save('sent')}
                     disabled={!title.trim() || saving}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-6 py-2.5 text-xs transition-all shadow-xs disabled:opacity-50"
+                    className="bg-accent hover:bg-accent-hover w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md text-white font-semibold px-6 py-2.5 text-xs transition-all shadow-xs disabled:opacity-50"
                   >
                     {saving ? (
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />

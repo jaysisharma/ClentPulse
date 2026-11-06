@@ -52,53 +52,53 @@ export default async function ExpensesPage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                 Studio Expenses
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
               Expenses
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               Track production costs, tools, and contractor fees to measure real take-home net profit.
             </p>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Total spent</span>
-                <div className="w-7 h-7 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 dark:text-rose-400">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Total spent</span>
+                <div className="w-8 h-8 rounded-md bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 dark:text-rose-400">
                   <Receipt className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">{fmt(totalSpent)}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">all time disbursements</div>
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">{fmt(totalSpent)}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">all time disbursements</div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">This month</span>
-                <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-600 dark:text-slate-300">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">This month</span>
+                <div className="w-8 h-8 rounded-md bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] flex items-center justify-center text-slate-600 dark:text-slate-300">
                   <Calendar className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">{fmt(spentThisMonth)}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">current billing cycle</div>
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">{fmt(spentThisMonth)}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">current billing cycle</div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Net profit</span>
-                <div className={`w-7 h-7 rounded-lg flex items-center justify-center border ${netProfit >= 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400'}`}>
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Net profit</span>
+                <div className={`w-8 h-8 rounded-md flex items-center justify-center border ${netProfit >= 0 ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400'}`}>
                   <Wallet className="w-4 h-4" />
                 </div>
               </div>
-              <div className={`font-mono font-light text-2xl sm:text-3xl tracking-tight ${netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
+              <div className={`text-2xl sm:text-[27px] font-extrabold tabular-nums tracking-tight ${netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}`}>
                 {fmt(netProfit)}
               </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">paid revenue − total expenses</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">paid revenue − total expenses</div>
             </div>
           </div>
 

@@ -56,7 +56,37 @@ export interface Project {
   canvas_embed_title?: string | null
   live_url?: string | null
   priority?: string | null
+  client_last_viewed_at?: string | null
+  webhook_url?: string | null
+  webhook_enabled?: boolean | null
+  overdue_lock_enabled?: boolean | null
+  is_retainer?: boolean | null
+  retainer_amount?: number | null
+  retainer_interval?: string | null
   created_at: string
+}
+
+export interface ProjectSecret {
+  id: string
+  project_id: string
+  title: string
+  category: 'api_key' | 'credentials' | 'tokens' | 'database' | 'other'
+  notes?: string | null
+  created_by?: string
+  last_revealed_at?: string | null
+  reveal_count?: number
+  created_at: string
+  updated_at?: string
+}
+
+export interface ClientActivityView {
+  id: string
+  project_id: string
+  entity_type: 'portal' | 'invoice' | 'contract' | 'doc'
+  entity_id?: string | null
+  viewer_source?: string
+  user_agent?: string | null
+  viewed_at: string
 }
 
 export interface Invoice {
@@ -72,7 +102,11 @@ export interface Invoice {
   tax_rate?: number
   tax_id?: string | null
   is_deposit?: boolean
+  is_retainer?: boolean
+  retainer_period?: string | null
   paid_at?: string | null
+  last_viewed_at?: string | null
+  view_count?: number
   created_at: string
 }
 

@@ -109,11 +109,11 @@ describe('NewProjectForm Component', () => {
     const createBtn = screen.getByRole('button', { name: /create project/i })
     fireEvent.click(createBtn)
 
-    // Expect the api fetch to create the client account
+    // Expect the api fetch to create the client login, scoped to the new project
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('/api/create-client', expect.objectContaining({
+      expect(global.fetch).toHaveBeenCalledWith('/api/client-access', expect.objectContaining({
         method: 'POST',
-        body: JSON.stringify({ email: 'globex@corp.com', password: 'password123' })
+        body: JSON.stringify({ projectId: 'proj-999', password: 'password123', createOnly: true })
       }))
     })
 

@@ -76,14 +76,14 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
   return (
     <div className="flex items-center gap-2 flex-wrap">
       <Link href={`/invoices/${invoice.id}/edit`}>
-        <span className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 cursor-pointer">
+        <span className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 cursor-pointer">
           <Pencil className="w-3.5 h-3.5" /> Edit
         </span>
       </Link>
       <button 
         type="button" 
         onClick={() => window.print()}
-        className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 cursor-pointer"
+        className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 cursor-pointer"
       >
         <Printer className="w-3.5 h-3.5" /> Print / PDF
       </button>
@@ -94,7 +94,7 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
             type="button"
             onClick={sendInvoice}
             disabled={sendStatus === 'sending' || sendStatus === 'sent'}
-            className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+            className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
           >
             {sendStatus === 'sending' ? (
               <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending...</>
@@ -117,7 +117,7 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
               router.refresh()
             }}
             disabled={loading}
-            className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+            className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
           >
             {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Mail className="w-3.5 h-3.5" />}
             Mark as sent
@@ -131,7 +131,7 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
           type="button"
           onClick={sendReminder}
           disabled={reminderStatus === 'sending' || reminderStatus === 'sent'}
-          className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+          className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
         >
           {reminderStatus === 'sending' ? (
             <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Sending...</>
@@ -148,7 +148,7 @@ export function InvoiceActions({ invoice }: { invoice: Invoice }) {
           type="button"
           onClick={markPaid} 
           disabled={loading}
-          className="rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3.5 py-1.5 text-xs transition-all shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
+          className="rounded-md bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3.5 py-1.5 text-xs transition-all shadow-xs inline-flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
         >
           {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
           Mark paid

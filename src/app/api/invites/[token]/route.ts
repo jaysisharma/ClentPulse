@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { ACTIVE_WORKSPACE_COOKIE } from '@/lib/workspace'
 
@@ -7,9 +8,10 @@ export async function GET(
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params
-  const supabase = await createClient()
 
-  const { data: invite, error } = await supabase
+  // Service role: the invitee isn't a member yet, so the org isn't readable under RLS.
+  // The secret token is the lookup key.
+  const { data: invite, error } = await createAdminClient()
     .from('organization_invites')
     .select('id, email, role, status, expires_at, org:organizations(id, name, slug, logo_url, accent_color)')
     .eq('token', token)

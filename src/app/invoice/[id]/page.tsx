@@ -4,6 +4,7 @@ import { InvoicePrint } from '@/app/invoices/[id]/invoice-print'
 import { PayNowButton } from './pay-button'
 import { CheckCircle2, Clock } from 'lucide-react'
 import { PoweredByReferral } from '@/components/ui/powered-by-referral'
+import { ReadReceiptTracker } from '@/components/telemetry/read-receipt-tracker'
 import { isPaidPlan } from '@/lib/plans'
 import type { Metadata } from 'next'
 
@@ -97,6 +98,11 @@ export default async function PublicInvoicePage({
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-80 bg-indigo-500/5 dark:bg-indigo-500/[0.03] blur-3xl pointer-events-none" />
 
       <div className="max-w-2xl mx-auto relative">
+        <ReadReceiptTracker
+          projectId={invoice.project_id || invoice.id}
+          entityType="invoice"
+          entityId={invoice.id}
+        />
         <InvoicePrint invoice={invoice} owner={owner} projectName={projectName} />
 
         {/* Paid confirmation — verified strictly against database invoice status */}

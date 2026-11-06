@@ -972,7 +972,7 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
               {aiInsights.map((insight, idx) => (
                 <li key={idx} className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-350">
                   <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 flex-shrink-0" />
-                  <span dangerouslySetInnerHTML={{ __html: insight.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                  <span>{renderBold(insight)}</span>
                 </li>
               ))}
             </ul>
@@ -2123,4 +2123,12 @@ export function AdminDashboard({ initialUsers, initialVisits, initialPromo, acti
       )}
     </div>
   )
+}
+
+/**
+ * Renders `**bold**` spans as React elements. Insights embed visitor-supplied
+ * text (UTM campaigns, countries), so they must never be injected as raw HTML.
+ */
+function renderBold(text: string): React.ReactNode[] {
+  return text.split(/\*\*(.*?)\*\*/g).map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part))
 }

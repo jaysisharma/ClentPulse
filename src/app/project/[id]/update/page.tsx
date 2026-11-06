@@ -224,7 +224,7 @@ Best,`
           {/* Back Link */}
           <Link 
             href={`/project/${id}`} 
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to project details
           </Link>
@@ -233,14 +233,14 @@ Best,`
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+              <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                 Weekly Briefing
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+            <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
               {isEditing ? 'Edit status update' : 'Publish status update'}
             </h1>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
               {project ? `${project.project_name} · ` : ''}{currentWeek}
             </p>
           </div>
@@ -249,12 +249,12 @@ Best,`
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-start">
             
             {/* Left Form Column */}
-            <div className="lg:col-span-3 bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-6 sm:p-7 shadow-xs dark:shadow-none space-y-6 backdrop-blur-md">
+            <div className="lg:col-span-3 bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-6 sm:p-7 shadow-xs dark:shadow-none space-y-6 backdrop-blur-md">
               
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-white/5">
+                <div className="flex items-center justify-between pb-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white">
+                    <h3 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white">
                       Accomplishments & Milestones
                     </h3>
                     <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">
@@ -266,14 +266,14 @@ Best,`
                     type="button"
                     onClick={handleAiDraft}
                     disabled={aiLoading}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-pink-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 hover:from-indigo-500/25 hover:to-pink-500/25 transition-all shadow-xs cursor-pointer disabled:opacity-50"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-semibold bg-gradient-to-r from-indigo-500/15 via-purple-500/15 to-pink-500/15 border border-indigo-500/30 text-indigo-700 dark:text-indigo-300 hover:from-indigo-500/25 hover:to-pink-500/25 transition-all shadow-xs cursor-pointer disabled:opacity-50"
                   >
                     {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3 text-indigo-500" />}
                     <span>{aiLoading ? 'Synthesizing...' : 'Auto-Draft with AI'}</span>
                   </button>
                 </div>
 
-                <p className="text-xs text-slate-500 dark:text-slate-400 -mt-1 font-light">
+                <p className="text-xs text-slate-500 dark:text-slate-400 -mt-1">
                   Add the key achievements and completed items from this week — these appear in your client portal and notification emails.
                 </p>
 
@@ -281,10 +281,10 @@ Best,`
                   {bullets.map((bullet, i) => (
                     <div 
                       key={i} 
-                      className="flex gap-3 items-center bg-slate-50/80 dark:bg-white/[0.03] border border-slate-200/80 dark:border-white/5 p-3 rounded-xl focus-within:bg-white dark:focus-within:bg-white/[0.06] focus-within:border-slate-300 dark:focus-within:border-white/20 transition-all"
+                      className="flex gap-3 items-center bg-slate-50/80 dark:bg-white/[0.03] border border-[#eaecf2] dark:border-white/[0.05] p-3 rounded-md focus-within:bg-white dark:focus-within:bg-white/[0.06] focus-within:border-slate-300 dark:focus-within:border-white/20 transition-all"
                     >
                       <span 
-                        className="w-6 h-6 rounded-lg flex items-center justify-center text-[11px] font-mono font-bold flex-shrink-0"
+                        className="w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-mono font-bold flex-shrink-0"
                         style={{ backgroundColor: `${project?.color ?? '#6366F1'}18`, color: project?.color ?? '#6366F1' }}
                       >
                         {i + 1}
@@ -320,15 +320,15 @@ Best,`
                   <button
                     type="button"
                     onClick={() => setBullets([...bullets, ''])}
-                    className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
+                    className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-1.5 text-xs font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
                   >
                     <Plus className="w-3.5 h-3.5" /> Add milestone item
                   </button>
                 </div>
               </div>
 
-              <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-white/5">
-                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <div className="space-y-2 pt-4 border-t border-[#f1f3f7] dark:border-white/[0.05]">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
                   Client Context & Next Steps <span className="font-normal normal-case text-slate-400">(Optional)</span>
                 </label>
                 <textarea
@@ -336,13 +336,13 @@ Best,`
                   value={note}
                   onChange={e => setNote(e.target.value)}
                   rows={4}
-                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors leading-relaxed"
+                  className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] p-3 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors leading-relaxed"
                 />
               </div>
 
-              <div className="space-y-2 pt-4 border-t border-slate-100 dark:border-white/5">
+              <div className="space-y-2 pt-4 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                     <Video className="w-3.5 h-3.5 text-indigo-500" />
                     <span>Video Walkthrough URL</span>
                     <span className="font-normal normal-case text-slate-400">(Loom, YouTube, Vimeo)</span>
@@ -354,15 +354,15 @@ Best,`
                   placeholder="https://www.loom.com/share/... or https://youtu.be/..."
                   value={videoUrl}
                   onChange={e => setVideoUrl(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors font-mono"
+                  className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-slate-400 dark:focus:border-white/30 focus:outline-none transition-colors font-mono"
                 />
-                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-light">
+                <p className="text-[11px] text-slate-400 dark:text-slate-500">
                   Embeds an interactive video player directly at the top of the client&apos;s status broadcast.
                 </p>
               </div>
 
               {error && (
-                <div className="text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-3">
+                <div className="text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-md px-4 py-3">
                   {error}
                 </div>
               )}
@@ -376,7 +376,7 @@ Best,`
                       type="button"
                       onClick={() => handleSubmit('draft')}
                       disabled={loading || !hasContent}
-                      className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-all shadow-xs flex-1 justify-center inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-5 py-2.5 text-xs font-semibold transition-all shadow-xs flex-1 justify-center inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loading ? 'Saving...' : isEditing ? 'Save changes' : 'Save draft'}
                     </button>
@@ -385,7 +385,7 @@ Best,`
                         type="button"
                         onClick={() => handleSubmit('review')}
                         disabled={loading || !hasContent}
-                        className="rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 px-5 py-2.5 text-xs font-semibold transition-all shadow-xs flex-1 justify-center inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300 hover:bg-amber-500/20 px-5 py-2.5 text-xs font-semibold transition-all shadow-xs flex-1 justify-center inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                         Submit for PM Review
@@ -396,7 +396,7 @@ Best,`
                         type="button"
                         onClick={() => handleSubmit('send')}
                         disabled={loading || !hasContent}
-                        className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-5 py-2.5 text-xs transition-all shadow-xs flex-1 justify-center inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-5 py-2.5 text-xs transition-all shadow-xs flex-1 justify-center inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Send className="w-3.5 h-3.5" />
                         {loading ? 'Publishing...' : isEditing ? 'Save & send' : 'Send to client'}
@@ -411,19 +411,19 @@ Best,`
             <div className="lg:col-span-2 sticky top-8 space-y-4">
               
               <div className="flex items-center justify-between px-1">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400">
                   Client Email Preview
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                   <Eye className="w-3 h-3" /> Live
                 </span>
               </div>
 
               {/* Email Card Preview Mockup */}
-              <div className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 rounded-2xl overflow-hidden backdrop-blur-md shadow-xs dark:shadow-none">
+              <div className="bg-white dark:bg-[#12141c]/90 border border-[#eaecf2] dark:border-white/[0.08] rounded-md overflow-hidden backdrop-blur-md shadow-xs dark:shadow-none">
                 
                 {/* Email Meta Info Bar */}
-                <div className="bg-slate-50/80 dark:bg-white/[0.02] border-b border-slate-200 dark:border-white/5 px-4 py-3 text-xs text-slate-500 dark:text-slate-400 space-y-1 font-mono">
+                <div className="bg-slate-50/80 dark:bg-white/[0.02] border-b border-[#eaecf2] dark:border-white/[0.05] px-4 py-3 text-xs text-slate-500 dark:text-slate-400 space-y-1 font-mono">
                   <div className="flex items-center gap-1">
                     <span className="text-slate-400 dark:text-slate-500">To:</span> 
                     <span className="text-slate-700 dark:text-slate-300">{project?.client_name || 'Client'}</span>
@@ -440,15 +440,15 @@ Best,`
                 <div className="p-5 sm:p-6 space-y-5">
                   {/* Header Banner */}
                   <div 
-                    className="rounded-xl px-5 py-4 text-white space-y-1 shadow-xs"
+                    className="rounded-md px-5 py-4 text-white space-y-1 shadow-xs"
                     style={{ backgroundColor: project?.color ?? '#6366F1' }}
                   >
-                    <div className="text-[10px] font-semibold uppercase tracking-wider opacity-85">Weekly status update</div>
+                    <div className="text-[10px] font-semibold opacity-85">Weekly status update</div>
                     <h3 className="text-base font-bold truncate tracking-tight">{project?.project_name || 'Project Title'}</h3>
                   </div>
 
                   {/* Email Body */}
-                  <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4 leading-relaxed font-light">
+                  <div className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 space-y-4 leading-relaxed">
                     <p className="font-medium text-slate-900 dark:text-white">Hi {project?.client_name || 'Client'},</p>
                     <p>Here&apos;s a breakdown of the key progress shipped on <strong className="font-semibold text-slate-900 dark:text-white">{project?.project_name || 'your project'}</strong> this week:</p>
                     
@@ -491,9 +491,9 @@ Best,`
 
               {/* Raw Plain-Text Box */}
               {hasContent && (
-                <div className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-4 space-y-3 shadow-xs dark:shadow-none backdrop-blur-md">
+                <div className="bg-white dark:bg-[#12141c]/90 rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-4 space-y-3 shadow-xs dark:shadow-none backdrop-blur-md">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                    <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                       <Mail className="w-3.5 h-3.5" /> Plain Text Copy
                     </span>
                     <button
@@ -503,13 +503,13 @@ Best,`
                         if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current)
                         copiedTimerRef.current = setTimeout(() => setCopied(false), 2000)
                       }}
-                      className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3 py-1 text-[11px] font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
+                      className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3 py-1 text-[11px] font-semibold transition-colors shadow-xs inline-flex items-center gap-1.5"
                     >
                       {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
                       {copied ? 'Copied' : 'Copy'}
                     </button>
                   </div>
-                  <pre className="text-[11px] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-[#08090a] border border-slate-200/80 dark:border-white/5 rounded-xl p-3.5 whitespace-pre-wrap font-mono leading-relaxed max-h-48 overflow-y-auto">
+                  <pre className="text-[11px] text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-[#08090a] border border-[#eaecf2] dark:border-white/[0.05] rounded-md p-3.5 whitespace-pre-wrap font-mono leading-relaxed max-h-48 overflow-y-auto">
                     {generateEmailText()}
                   </pre>
                 </div>

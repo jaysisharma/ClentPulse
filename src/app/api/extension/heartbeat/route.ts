@@ -35,7 +35,7 @@ export async function POST(request: Request) {
   // 1. Verify project belongs to the authenticated user
   const { data: project, error: projectError } = await admin
     .from('projects')
-    .select('id, user_id, project_name, status')
+    .select('id, user_id, project_name, status, hourly_rate')
     .eq('id', projectId)
     .eq('user_id', auth.userId)
     .single()
@@ -101,11 +101,56 @@ export async function POST(request: Request) {
       })
   }
 
+  // 4. Calculate today's logged hours and billable amount
+  const { data: todayEntries } = await admin
+    .from('time_entries')
+    .select('hours')
+    .eq('project_id', projectId)
+    .eq('date', today)
+
+  const todayHours = Math.round((todayEntries || []).reduce((s, e) => s + (Number(e.hours) || 0), 0) * 10) / 10
+  const rate = Number(project.hourly_rate) || 0
+  const billableToday = Math.round(todayHours * rate)
+
+  // 5. Check for recent client notifications within the last heartbeat interval (e.g. 5 minutes)
+  const recentWindow = new Date(Date.now() - 5 * 60 * 1000).toISOString()
+  const [{ data: recentApprovals }, { data: recentComments }] = await Promise.all([
+    admin
+      .from('approvals')
+      .select('title, status, responded_at')
+      .eq('project_id', projectId)
+      .neq('status', 'pending')
+      .gte('responded_at', recentWindow)
+      .limit(2),
+    admin
+      .from('update_comments')
+      .select('author_name, body, created_at')
+      .eq('project_id', projectId)
+      .eq('is_internal', false)
+      .gte('created_at', recentWindow)
+      .limit(2),
+  ])
+
+  const events: Array<{ type: string; message: string }> = [
+    ...(recentApprovals || []).map(a => ({
+      type: 'approval',
+      message: `${a.status === 'approved' ? '✅ Deliverable Approved' : '⚠️ Changes Requested'}: "${a.title}"`,
+    })),
+    ...(recentComments || []).map(c => ({
+      type: 'comment',
+      message: `💬 ${c.author_name || 'Client'}: "${(c.body || '').slice(0, 50)}"`,
+    })),
+  ]
+
   return NextResponse.json({
     success: true,
     projectId: project.id,
     projectName: project.project_name,
     focusArea: cleanFocus || 'Coding',
     lastHeartbeatAt: nowIso,
+    todayHours,
+    hourlyRate: rate,
+    billableToday,
+    events,
   })
 }

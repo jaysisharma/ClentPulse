@@ -209,9 +209,8 @@ DO $$ BEGIN
   DROP POLICY IF EXISTS "Owners and admins can update their organizations" ON public.organizations;
 END $$;
 
-CREATE POLICY "Public can view organizations"
-  ON public.organizations FOR SELECT
-  USING (true);
+-- Removed: "Public can view organizations" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 CREATE POLICY "Authenticated users can create organizations"
   ON public.organizations FOR INSERT
@@ -272,9 +271,8 @@ DO $$ BEGIN
   DROP POLICY IF EXISTS "Owners and admins can manage project team members" ON public.project_team_members;
 END $$;
 
-CREATE POLICY "Public can view project team members"
-  ON public.project_team_members FOR SELECT
-  USING (true);
+-- Removed: "Public can view project team members" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 CREATE POLICY "Owners and admins can manage project team members"
   ON public.project_team_members FOR ALL

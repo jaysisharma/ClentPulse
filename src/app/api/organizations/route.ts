@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { slugify } from '@/lib/workspace'
 
@@ -73,7 +74,8 @@ export async function POST(request: Request) {
 
   // Ensure unique slug
   let slug = baseSlug
-  const { data: existing } = await supabase
+  // Service role: slugs are globally unique but other orgs aren't readable under RLS
+  const { data: existing } = await createAdminClient()
     .from('organizations')
     .select('id')
     .eq('slug', slug)

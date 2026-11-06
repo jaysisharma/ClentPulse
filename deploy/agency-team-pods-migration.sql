@@ -19,9 +19,8 @@ create index if not exists project_team_members_user_id_idx on public.project_te
 alter table public.project_team_members enable row level security;
 
 -- Policy: Public/Client can view assigned team pod for projects they access via slug
-create policy "Public can view project team members"
-  on public.project_team_members for select
-  using (true);
+-- Removed: "Public can view project team members" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- Policy: Authenticated users can manage team members if they own the project or are owner/admin of the organization
 create policy "Owners and admins can manage project team members"

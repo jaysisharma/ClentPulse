@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
 import { normalizePlan } from '@/lib/plans'
@@ -86,7 +87,8 @@ export async function POST(request: Request) {
       metadata: { supabase_user_id: user.id },
     })
     customerId = customer.id
-    const { error: updateError } = await supabase.from('users').update({ stripe_customer_id: customerId }).eq('id', user.id)
+    // Service role: stripe_customer_id is protected from user writes
+    const { error: updateError } = await createAdminClient().from('users').update({ stripe_customer_id: customerId }).eq('id', user.id)
     if (updateError) {
       console.error('Failed to store Stripe customer ID:', updateError)
       return NextResponse.json({ error: 'Failed to create checkout session' }, { status: 500 })

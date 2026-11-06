@@ -31,6 +31,9 @@ import { UpdatesList } from './updates-list'
 import { NotificationToast } from './notification-toast'
 import { PresenceBadge } from '@/components/project/presence-badge'
 import { ClientViewingBadge } from '@/components/project/client-viewing-badge'
+import { ReadReceiptBadge } from '@/components/telemetry/read-receipt-badge'
+import { ProjectSecretsVault } from '@/components/project/project-secrets-vault'
+import { ClientMagicLinkButton } from '@/components/project/client-magic-link-button'
 import { ClientBlockerCard } from './client-blocker-card'
 import { TeamPodSection } from './team-pod-section'
 import type { ProjectTeamMember } from '@/types'
@@ -165,21 +168,21 @@ export default async function ProjectPage({
         <div className="relative z-10 animate-fade-in pb-12">
 
         {sent === 'true' && (
-          <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 flex items-center gap-3 text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-500/10 shadow-xs animate-fade-in">
+          <div className="mb-6 rounded-md border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 flex items-center gap-3 text-emerald-800 dark:text-emerald-300 ring-1 ring-emerald-500/10 shadow-xs animate-fade-in">
             <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
             <span className="text-xs font-semibold">Weekly status update email has been sent to client via Resend.</span>
           </div>
         )}
 
         {reviewed === 'true' && (
-          <div className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-5 py-4 flex items-center gap-3 text-amber-800 dark:text-amber-300 ring-1 ring-amber-500/10 shadow-xs animate-fade-in">
+          <div className="mb-6 rounded-md border border-amber-500/20 bg-amber-500/10 px-5 py-4 flex items-center gap-3 text-amber-800 dark:text-amber-300 ring-1 ring-amber-500/10 shadow-xs animate-fade-in">
             <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
             <span className="text-xs font-semibold">Weekly update draft submitted for agency PM review.</span>
           </div>
         )}
 
         {saved === 'true' && (
-          <div className="mb-6 rounded-2xl border border-sky-500/20 bg-sky-500/10 px-5 py-4 flex items-center gap-3 text-sky-800 dark:text-sky-300 ring-1 ring-sky-500/10 shadow-xs animate-fade-in">
+          <div className="mb-6 rounded-md border border-sky-500/20 bg-sky-500/10 px-5 py-4 flex items-center gap-3 text-sky-800 dark:text-sky-300 ring-1 ring-sky-500/10 shadow-xs animate-fade-in">
             <Check className="w-4 h-4 text-sky-600 dark:text-sky-400 flex-shrink-0" />
             <span className="text-xs font-semibold">Draft status update has been saved successfully.</span>
           </div>
@@ -189,7 +192,7 @@ export default async function ProjectPage({
         <div className="mb-6">
           <Link
             href="/project"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             Back to projects
@@ -197,12 +200,12 @@ export default async function ProjectPage({
         </div>
 
         {/* Header Title section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6 mb-8 pb-6 border-b border-slate-200 dark:border-white/10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 sm:gap-6 mb-8 pb-6 border-b border-[#eaecf2] dark:border-white/[0.08]">
           <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
             <div className="w-1.5 self-stretch min-h-[44px] rounded-full flex-shrink-0 shadow-sm" style={{ backgroundColor: project.color }} />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-light uppercase tracking-tight text-slate-900 dark:text-white truncate">{project.project_name}</h1>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white truncate">{project.project_name}</h1>
                 <StatusToggle
                   projectId={project.id}
                   current={project.status as 'active' | 'paused' | 'completed'}
@@ -213,7 +216,7 @@ export default async function ProjectPage({
                     href={project.live_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border border-indigo-200/80 dark:border-indigo-500/20 bg-indigo-50/70 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors shadow-2xs"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-indigo-200/80 dark:border-indigo-500/20 bg-indigo-50/70 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors shadow-2xs"
                     title={`Open live site or app: ${project.live_url}`}
                   >
                     <Globe className="w-3.5 h-3.5" />
@@ -224,7 +227,7 @@ export default async function ProjectPage({
                 {project.canvas_embed_url && (
                   <a
                     href="#strategy-canvas"
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border border-purple-200/80 dark:border-purple-500/20 bg-purple-50/70 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-500/20 transition-colors shadow-2xs"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold border border-purple-200/80 dark:border-purple-500/20 bg-purple-50/70 dark:bg-purple-500/10 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-500/20 transition-colors shadow-2xs"
                   >
                     <Layout className="w-3.5 h-3.5" />
                     <span>{project.canvas_embed_title || 'Strategy Board'}</span>
@@ -240,8 +243,12 @@ export default async function ProjectPage({
                   projectId={project.id}
                   clientName={project.client_name}
                 />
+                <ReadReceiptBadge
+                  lastViewedAt={project.client_last_viewed_at}
+                  labelPrefix="Client last seen"
+                />
               </div>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">{project.client_name}</p>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">{project.client_name}</p>
 
               {/* Compact Inline Metrics */}
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3 text-xs text-slate-500 dark:text-slate-400">
@@ -276,7 +283,7 @@ export default async function ProjectPage({
               href={publicUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 px-3.5 py-2 text-xs font-semibold transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 px-3.5 py-2 text-xs font-semibold transition-all shadow-xs"
               title="Open live client portal in a new tab"
             >
               <Eye className="w-3.5 h-3.5 text-slate-400" />
@@ -284,7 +291,7 @@ export default async function ProjectPage({
               <ExternalLink className="w-3 h-3 text-slate-400 opacity-60" />
             </a>
             <Link href={`/project/${id}/update`} className="flex-1 sm:flex-initial">
-              <button className="w-full sm:w-auto justify-center rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs">
+              <button className="bg-accent hover:bg-accent-hover w-full sm:w-auto justify-center rounded-md text-white font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs">
                 <Plus className="w-3.5 h-3.5" />
                 <span>Send update</span>
               </button>
@@ -295,13 +302,13 @@ export default async function ProjectPage({
 
         {/* Attention strip — mirrors the health signal from the projects list */}
         {attention.length > 0 && (
-          <div className="mb-8 rounded-2xl border border-amber-500/20 bg-amber-500/10 dark:bg-amber-500/5 divide-y divide-amber-500/10 overflow-hidden shadow-xs ring-1 ring-amber-500/10">
+          <div className="mb-8 rounded-md border border-amber-500/20 bg-amber-500/10 dark:bg-amber-500/5 divide-y divide-amber-500/10 overflow-hidden shadow-xs ring-1 ring-amber-500/10">
             {attention.map((a, i) => (
               <div key={i} className="flex items-center gap-3 px-5 py-3.5">
                 <a.icon className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
                 <span className="text-xs sm:text-sm font-medium text-amber-900 dark:text-amber-200 flex-1 min-w-0">{a.label}</span>
                 <Link href={a.href} className="flex-shrink-0">
-                  <button className="rounded-full border border-amber-500/30 bg-white dark:bg-amber-500/20 text-amber-900 dark:text-amber-200 hover:bg-amber-50 dark:hover:bg-amber-500/30 px-3 py-1 text-xs font-semibold transition-all shadow-xs">
+                  <button className="rounded-md border border-amber-500/30 bg-white dark:bg-amber-500/20 text-amber-900 dark:text-amber-200 hover:bg-amber-50 dark:hover:bg-amber-500/30 px-3 py-1 text-xs font-semibold transition-all shadow-xs">
                     {a.cta}
                   </button>
                 </Link>
@@ -344,18 +351,18 @@ export default async function ProjectPage({
                 count={updates?.length ?? 0}
               >
                 {!updates?.length ? (
-                  <div className="bg-white/40 dark:bg-white/[0.02] border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-10 sm:p-12 text-center transition-all">
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4">
+                  <div className="bg-white/40 dark:bg-white/[0.02] border border-dashed border-[#eaecf2] dark:border-white/[0.08] rounded-md p-10 sm:p-12 text-center transition-all">
+                    <div className="w-12 h-12 rounded-md bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto mb-4">
                       <Send className="w-5 h-5 ml-0.5" />
                     </div>
                     <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">
                       Keep {project.client_name} in the loop
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-5 font-light max-w-sm mx-auto leading-relaxed">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-5 max-w-sm mx-auto leading-relaxed">
                       Publish weekly progress, Loom walkthroughs, and deliverable links directly to their live portal.
                     </p>
                     <Link href={`/project/${id}/update`}>
-                      <button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all inline-flex items-center gap-1.5 shadow-xs">
+                      <button className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-2 text-xs transition-all inline-flex items-center gap-1.5 shadow-xs">
                         <Plus className="w-3.5 h-3.5" />
                         <span>Send first update</span>
                       </button>
@@ -391,7 +398,7 @@ export default async function ProjectPage({
                 >
                   <div className="space-y-3">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <span className="text-xs text-slate-500 dark:text-slate-400 font-light">
+                      <span className="text-xs text-slate-500 dark:text-slate-400">
                         Live interactive board shared with {project.client_name} on their client portal.
                       </span>
                       <Link
@@ -460,21 +467,26 @@ export default async function ProjectPage({
               />
             </div>
 
+            {/* Encrypted Credential & Secret Vault */}
+            <div id="secrets-vault" className="scroll-mt-6">
+              <ProjectSecretsVault projectId={project.id} />
+            </div>
+
             {/* Completed Project: Showcase on Portfolio & Testimonial */}
             {project.status === 'completed' && (
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-indigo-50/50 via-white to-purple-50/40 dark:from-indigo-950/20 dark:via-[#0c0d12]/90 dark:to-purple-950/20 border border-indigo-200/80 dark:border-indigo-500/20 shadow-xs ring-1 ring-indigo-500/10 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-md">
+                <div className="bg-gradient-to-r from-indigo-50/50 via-white to-purple-50/40 dark:from-indigo-950/20 dark:via-[#12141c]/90 dark:to-purple-950/20 border border-indigo-200/80 dark:border-indigo-500/20 shadow-xs ring-1 ring-indigo-500/10 rounded-md p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-md">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                      <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400">
                         Work Finished & Shipped
                       </span>
                     </div>
                     <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                       Showcase this work on your public portfolio
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 font-light">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                       {project.live_url
                         ? `Live link: ${project.live_url}`
                         : 'Auto-generate showcase artwork, extract deliverables, and link your live website or app.'}
@@ -482,13 +494,13 @@ export default async function ProjectPage({
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <Link href={`/portfolio/item/new?projectId=${project.id}`}>
-                      <button className="rounded-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs">
+                      <button className="rounded-md bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 text-xs font-semibold transition-all flex items-center gap-1.5 shadow-xs">
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>Add to Portfolio</span>
                       </button>
                     </Link>
                     <Link href={`/testimonial/${project.id}`} target="_blank" rel="noopener noreferrer">
-                      <button className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-2 text-xs font-medium transition-colors shadow-xs">
+                      <button className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-3.5 py-2 text-xs font-medium transition-colors shadow-xs">
                         Request review
                       </button>
                     </Link>
@@ -533,19 +545,20 @@ export default async function ProjectPage({
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">Status page</span>
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <ClientMagicLinkButton projectId={project.id} />
                         <CopyLinkButton url={publicUrl} />
                         <a href={publicUrl} target="_blank" rel="noopener noreferrer">
-                          <button className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-2.5 py-1 text-xs transition-colors shadow-xs">
+                          <button className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 px-2.5 py-1 text-xs transition-colors shadow-xs">
                             View
                           </button>
                         </a>
                       </div>
                     </div>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate bg-slate-50 dark:bg-white/[0.04] px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/10 font-mono">{publicUrl}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate bg-slate-50 dark:bg-white/[0.04] px-3 py-1.5 rounded-md border border-[#eaecf2] dark:border-white/[0.08] font-mono">{publicUrl}</p>
                   </div>
 
-                  <Link href={`/project/${id}/contract`} className="border-t border-slate-100 dark:border-white/5 pt-4 flex items-center justify-between group">
+                  <Link href={`/project/${id}/contract`} className="border-t border-[#f1f3f7] dark:border-white/[0.05] pt-4 flex items-center justify-between group">
                     <div className="flex items-center gap-2">
                       <FileSignature className="w-4 h-4 text-slate-400" />
                       <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">Contract</span>
@@ -559,7 +572,7 @@ export default async function ProjectPage({
                     )}
                   </Link>
 
-                  <Link href={`/project/${id}/settings?tab=portal`} className="border-t border-slate-100 dark:border-white/5 pt-4 flex items-center justify-between group">
+                  <Link href={`/project/${id}/settings?tab=portal`} className="border-t border-[#f1f3f7] dark:border-white/[0.05] pt-4 flex items-center justify-between group">
                     <div className="flex items-center gap-2">
                       <Layout className="w-4 h-4 text-slate-400" />
                       <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">Strategy Board</span>
@@ -571,7 +584,7 @@ export default async function ProjectPage({
                     )}
                   </Link>
 
-                  <a href="#app-builds" className="border-t border-slate-100 dark:border-white/5 pt-4 flex items-center justify-between group">
+                  <a href="#app-builds" className="border-t border-[#f1f3f7] dark:border-white/[0.05] pt-4 flex items-center justify-between group">
                     <div className="flex items-center gap-2">
                       <Smartphone className="w-4 h-4 text-slate-400" />
                       <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">Android APKs</span>

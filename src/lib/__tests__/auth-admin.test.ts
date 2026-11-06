@@ -31,15 +31,19 @@ describe('isUserAdmin helper', () => {
     expect(await isUserAdmin(mockSupabase, mockUser)).toBe(true)
   })
 
-  it('returns true when user has user_metadata.is_admin = true', async () => {
+  it('ignores user_metadata.is_admin, which any user can set on themselves', async () => {
     const mockUser = {
       id: 'user-2',
       email: 'someuser@example.com',
       user_metadata: { is_admin: true },
     } as unknown as User
-    const mockSupabase = {} as any
+    const mockSupabase = {
+      from: () => ({
+        select: () => ({ eq: () => ({ maybeSingle: async () => ({ data: { is_admin: false }, error: null }) }) }),
+      }),
+    } as any
 
-    expect(await isUserAdmin(mockSupabase, mockUser)).toBe(true)
+    expect(await isUserAdmin(mockSupabase, mockUser)).toBe(false)
   })
 
   it('returns true when users table in DB has is_admin = true', async () => {

@@ -2,7 +2,7 @@
   "name": "frevio-extension",
   "displayName": "Frevio — Developer Presence & Time Tracking",
   "description": "Automatic coding activity & real-time presence sync for freelancers and clients on Frevio.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "frevio",
   "icon": "icon.png",
   "repository": {
@@ -47,13 +47,56 @@
         "title": "Frevio: Send Update to Client"
       },
       {
+        "command": "frevio.aiDraftUpdate",
+        "title": "Frevio: AI Draft Update from Git Commits"
+      },
+      {
+        "command": "frevio.viewSecrets",
+        "title": "Frevio: View / Insert Project Secret"
+      },
+      {
         "command": "frevio.wrapUpSession",
         "title": "Frevio: Wrap Up Session & Send Update"
+      },
+      {
+        "command": "frevio.uploadBuild",
+        "title": "Frevio: Upload Build / Release for Client"
+      },
+      {
+        "command": "frevio.logManualTime",
+        "title": "Frevio: Log Manual / Browser Testing Time"
+      },
+      {
+        "command": "frevio.openPortal",
+        "title": "Frevio: Open Client Portal"
+      },
+      {
+        "command": "frevio.viewApprovals",
+        "title": "Frevio: View Pending Deliverables & Feedback"
       }
     ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "frevio.uploadBuild",
+          "when": "resourceExtname =~ /\\.(apk|ipa|zip|tar\\.gz)$/",
+          "group": "frevio"
+        }
+      ]
+    },
     "configuration": {
       "title": "Frevio",
       "properties": {
+        "frevio.showBillableInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show today's tracked hours and billable amount in the status bar."
+        },
+        "frevio.enableEditorNotifications": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show real-time notifications in VS Code when clients approve deliverables or comment."
+        },
         "frevio.apiBaseUrl": {
           "type": "string",
           "default": "https://www.frevio.cloud",
@@ -77,6 +120,18 @@
           "type": "boolean",
           "default": true,
           "description": "Prompt to send a client progress update when pausing tracking or wrapping up a session."
+        },
+        "frevio.browserTestingGracePeriodMinutes": {
+          "type": "number",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 120,
+          "description": "Minutes to continue tracking time when switching to Chrome or external browser (e.g. testing localhost, inspecting DevTools). Set to 0 to disable."
+        },
+        "frevio.promptAwayCatchUp": {
+          "type": "boolean",
+          "default": true,
+          "description": "Prompt to log untracked browser testing time when returning to VS Code after an extended away period."
         }
       }
     }

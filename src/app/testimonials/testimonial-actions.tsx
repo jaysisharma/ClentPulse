@@ -30,7 +30,7 @@ export function TestimonialActions({ id, approved = false }: { id: string; appro
         <button
           onClick={approve}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 transition-all disabled:opacity-50 shadow-xs cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-700 dark:text-emerald-300 transition-all disabled:opacity-50 shadow-xs cursor-pointer"
         >
           <Check className="w-3.5 h-3.5" />
           <span>Approve</span>
@@ -59,7 +59,7 @@ export function TestimonialActions({ id, approved = false }: { id: string; appro
         <button
           onClick={() => setConfirmingDel(true)}
           disabled={loading}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all disabled:opacity-50 cursor-pointer"
+          className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all disabled:opacity-50 cursor-pointer"
           aria-label="Delete testimonial"
         >
           <Trash2 className="w-3.5 h-3.5" />

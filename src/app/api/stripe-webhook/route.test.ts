@@ -48,6 +48,15 @@ const mockSupabaseFrom = vi.fn(() => ({
 }))
 const mockSupabase = { from: mockSupabaseFrom }
 
+const mockClaim = vi.fn()
+const mockMarkDone = vi.fn()
+const mockRelease = vi.fn()
+vi.mock('@/lib/stripe-events', () => ({
+  claimStripeEvent: (...args: any[]) => mockClaim(...args),
+  markStripeEventDone: (...args: any[]) => mockMarkDone(...args),
+  releaseStripeEvent: (...args: any[]) => mockRelease(...args),
+}))
+
 vi.mock('@/lib/supabase/admin', () => ({
   createAdminClient: vi.fn().mockReturnValue(mockSupabase),
 }))
@@ -71,6 +80,7 @@ function makeEvent(type: string, data: object, created?: number) {
 describe('POST /api/stripe-webhook', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockClaim.mockResolvedValue('process')
     mockResendSend.mockResolvedValue({ error: null })
     mockPortalCreate.mockResolvedValue({ url: 'https://billing.stripe.com/portal/test' })
     mockSupabaseMaybeSingle.mockResolvedValue({ data: { email: 'test@example.com', name: 'Test User' } })
@@ -100,7 +110,7 @@ describe('POST /api/stripe-webhook', () => {
     mockConstructEvent.mockReturnValue(
       makeEvent('checkout.session.completed', { customer: 'cus_123', metadata: {} })
     )
-    mockSupabaseInsert.mockResolvedValueOnce({ error: { code: '23505', message: 'duplicate' } })
+    mockClaim.mockResolvedValueOnce('duplicate')
     const { POST } = await import('./route')
     const res = await POST(makeRequest())
     expect(res.status).toBe(200)
@@ -133,7 +143,7 @@ describe('POST /api/stripe-webhook', () => {
     expect(mockSupabaseUpdate).not.toHaveBeenCalled()
   })
 
-  it('marks invoice paid on checkout.session.completed for invoice_payment', async () => {
+  it('ignores invoice_payment sessions on the platform feed (handled by the Connect webhook)', async () => {
     mockConstructEvent.mockReturnValue(
       makeEvent('checkout.session.completed', {
         customer: 'cus_123',
@@ -141,10 +151,32 @@ describe('POST /api/stripe-webhook', () => {
       })
     )
     const { POST } = await import('./route')
-    await POST(makeRequest())
-    expect(mockSupabaseUpdate).toHaveBeenCalledWith(
-      expect.objectContaining({ status: 'paid', paid_at: expect.any(String) })
-    )
+    const res = await POST(makeRequest())
+    expect(await res.json()).toEqual({ received: true, ignored: 'connect_payment' })
+    expect(mockSupabaseUpdate).not.toHaveBeenCalled()
+    expect(mockMarkDone).toHaveBeenCalledWith(expect.anything(), 'evt_test_123')
+  })
+
+  it('answers 409 so Stripe retries while another delivery is processing the event', async () => {
+    mockConstructEvent.mockReturnValue(makeEvent('customer.subscription.deleted', { customer: 'cus_123' }))
+    mockClaim.mockResolvedValueOnce('in_progress')
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(409)
+    expect(mockSupabaseUpdate).not.toHaveBeenCalled()
+  })
+
+  it('releases the event when the handler fails so Stripe can retry', async () => {
+    mockConstructEvent.mockReturnValue(makeEvent('customer.subscription.deleted', { customer: 'cus_123' }))
+    mockSupabaseUpdateEq.mockImplementation(() => ({
+      then(resolve: any) { resolve({ error: { message: 'db down' } }) },
+      select: vi.fn(),
+    }))
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest())
+    expect(res.status).toBe(500)
+    expect(mockRelease).toHaveBeenCalledWith(expect.anything(), 'evt_test_123')
+    expect(mockMarkDone).not.toHaveBeenCalled()
   })
 
   it('revokes Pro on customer.subscription.deleted', async () => {

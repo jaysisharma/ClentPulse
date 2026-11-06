@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { stripe } from '@/lib/stripe'
 import { NextResponse } from 'next/server'
 import { checkRateLimit } from '@/lib/rate-limit'
@@ -42,7 +43,8 @@ export async function POST() {
 
     stripeAccountId = account.id
 
-    const { error: updateError } = await supabase
+    // Service role: stripe_account_id is protected from user writes
+    const { error: updateError } = await createAdminClient()
       .from('users')
       .update({ stripe_account_id: stripeAccountId })
       .eq('id', user.id)

@@ -84,6 +84,16 @@ describe('POST /api/pay-invoice', () => {
     expect(data.error).toBe('Missing invoiceId')
   })
 
+  it('refuses to take payment for a draft invoice', async () => {
+    mockInvoiceSingle.mockResolvedValue({
+      data: { id: 'inv_draft', status: 'draft', items: [{ amount: 1000 }], user_id: 'usr_1', currency: 'EUR' },
+    })
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest({ invoiceId: 'inv_draft' }))
+    expect(res.status).toBe(400)
+    expect((await res.json()).error).toBe('This invoice is not open for payment')
+  })
+
   it('returns 404 when invoice is not found', async () => {
     mockInvoiceSingle.mockResolvedValue({ data: null })
     const { POST } = await import('./route')

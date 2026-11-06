@@ -1,5 +1,6 @@
 import { headers } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import Link from 'next/link'
 import { ArrowUpRight, ShieldCheck, Lock, Globe, Building2, Search } from 'lucide-react'
 import type { Metadata } from 'next'
@@ -9,8 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const customDomain = headerList.get('x-custom-domain')
 
   if (customDomain) {
-    const supabase = await createClient()
-    const { data: org } = await supabase
+    // Service role: organizations is not publicly readable; only branding columns are selected
+    const { data: org } = await createAdminClient()
       .from('organizations')
       .select('name, logo_url, favicon_url')
       .eq('custom_domain', customDomain)
@@ -40,7 +41,8 @@ export default async function ClientPortalHubPage() {
   let projects: any[] = []
 
   if (customDomain) {
-    const { data: foundOrg } = await supabase
+    // Service role: organizations is not publicly readable; only branding columns are selected
+    const { data: foundOrg } = await createAdminClient()
       .from('organizations')
       .select('id, name, slug, logo_url, favicon_url, accent_color, white_label, custom_domain')
       .eq('custom_domain', customDomain)

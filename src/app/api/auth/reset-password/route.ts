@@ -77,25 +77,17 @@ export async function POST(request: Request) {
       )
     }
 
-    // 4. Resolve user ID from public.users or auth.admin.listUsers
+    // 4. Resolve the user. Every auth user has a public.users row (handle_new_user);
+    // listUsers() is not a fallback — it only returns the first page of users.
     const { data: userRecord } = await supabaseAdmin
       .from('users')
       .select('id')
       .eq('email', cleanEmail)
       .maybeSingle()
 
-    let userId = userRecord?.id
-
+    const userId = userRecord?.id
     if (!userId) {
-      const { data: { users }, error: listError } = await supabaseAdmin.auth.admin.listUsers()
-      if (!listError && users) {
-        const found = users.find(u => u.email?.toLowerCase() === cleanEmail)
-        if (found) userId = found.id
-      }
-    }
-
-    if (!userId) {
-      return NextResponse.json({ error: 'User account could not be found.' }, { status: 404 })
+      return NextResponse.json({ error: 'Invalid or expired verification code. Please request a new one.' }, { status: 400 })
     }
 
     // 5. Update the user password in Supabase Auth

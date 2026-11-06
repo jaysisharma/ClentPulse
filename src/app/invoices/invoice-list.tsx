@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Search, FileText, ArrowRight, AlertCircle, X, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { fmtCurrency } from '@/lib/currencies'
+import { ReadReceiptBadge } from '@/components/telemetry/read-receipt-badge'
 
 interface LineItem { amount: number }
 interface Invoice {
@@ -15,10 +16,12 @@ interface Invoice {
   due_date: string | null
   currency?: string | null
   items: LineItem[]
+  last_viewed_at?: string | null
+  view_count?: number | null
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  draft:   'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10',
+  draft:   'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-[#eaecf2] dark:border-white/[0.08]',
   sent:    'bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/20',
   paid:    'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/20',
   overdue: 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-500/20',
@@ -75,15 +78,15 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
         {/* Status segmented pill */}
-        <div className="flex items-center gap-1 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-1 rounded-full w-fit max-w-full ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-1 rounded-full w-fit max-w-full shadow-xs dark:shadow-sm overflow-x-auto no-scrollbar">
           {FILTERS.map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={cn(
-                'px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-all cursor-pointer whitespace-nowrap',
+                'px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-all cursor-pointer whitespace-nowrap',
                 filter === f
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
+                  ? 'bg-accent hover:bg-accent-hover text-white shadow-xs font-semibold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5',
               )}
             >
@@ -108,7 +111,7 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
             placeholder="Search by invoice # or client…"
             value={query}
             onChange={e => setQuery(e.target.value)}
-            className="w-full pl-9 pr-8 py-2 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all ring-1 ring-slate-950/5 dark:ring-white/5 font-light"
+            className="w-full pl-9 pr-8 py-2 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-full text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 transition-all"
           />
           {query && (
             <button
@@ -123,13 +126,13 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
 
       {/* Table */}
       {visible.length === 0 ? (
-        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 p-12 text-center shadow-xs dark:shadow-sm">
+        <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] p-12 text-center shadow-xs dark:shadow-sm">
           <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">No invoices match your filter or search query.</p>
         </div>
       ) : (
-        <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm overflow-hidden">
+        <div className="rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] shadow-xs dark:shadow-sm overflow-hidden">
           {/* Column headers (desktop only) */}
-          <div className="hidden md:grid grid-cols-[minmax(0,2fr)_1.5fr_1.2fr_1fr_auto] gap-4 px-5 py-3 border-b border-slate-100 dark:border-white/5 text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">
+          <div className="hidden md:grid grid-cols-[minmax(0,2fr)_1.5fr_1.2fr_1fr_auto] gap-4 px-5 py-3 border-b border-[#f1f3f7] dark:border-white/[0.05] text-[11px] font-semibold text-slate-400 dark:text-slate-500">
             <span>Invoice & Client</span>
             <span>Status</span>
             <span>Due Date</span>
@@ -137,7 +140,7 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
             <span className="text-right">Action</span>
           </div>
 
-          <div className="divide-y divide-slate-100 dark:divide-white/5">
+          <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05]">
             {visible.map(inv => {
               const overdue = isOverdue(inv)
               const statusKey = overdue ? 'overdue' : inv.status
@@ -159,7 +162,7 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
                       </p>
                     </Link>
                     {/* Mobile-only amount display */}
-                    <div className="md:hidden text-sm font-light font-mono text-slate-900 dark:text-white text-right shrink-0">
+                    <div className="md:hidden text-sm font-mono text-slate-900 dark:text-white text-right shrink-0">
                       {fmt(amount, inv.currency || 'USD')}
                     </div>
                   </div>
@@ -170,14 +173,21 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
                       {/* Status Badge */}
                       <div>
                         <span className={cn(
-                          'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-medium border uppercase tracking-wider',
-                          STATUS_STYLES[statusKey] ?? 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10'
+                          'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-medium border',
+                          STATUS_STYLES[statusKey] ?? 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border-[#eaecf2] dark:border-white/[0.08]'
                         )}>
                           {statusKey === 'paid' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
                           {statusKey === 'overdue' && <AlertCircle className="w-3 h-3" />}
                           {statusKey}
                         </span>
                       </div>
+
+                      {/* Read Receipt Telemetry */}
+                      <ReadReceiptBadge
+                        lastViewedAt={inv.last_viewed_at}
+                        viewCount={inv.view_count}
+                        labelPrefix="Viewed"
+                      />
 
                       {/* Due Date */}
                       <div className="text-xs text-slate-500 dark:text-slate-400">
@@ -195,7 +205,7 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
                     <div className="md:hidden">
                       <Link
                         href={`/invoices/${inv.id}`}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors inline-flex"
+                        className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors inline-flex"
                       >
                         <ChevronRight className="w-4 h-4" />
                       </Link>
@@ -203,7 +213,7 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
                   </div>
 
                   {/* Amount (desktop only) */}
-                  <div className="hidden md:block text-sm font-light font-mono text-slate-900 dark:text-white text-right">
+                  <div className="hidden md:block text-sm font-mono text-slate-900 dark:text-white text-right">
                     {fmt(amount, inv.currency || 'USD')}
                   </div>
 
@@ -211,7 +221,7 @@ export function InvoiceList({ invoices }: { invoices: Invoice[] }) {
                   <div className="hidden md:flex items-center justify-end">
                     <Link
                       href={`/invoices/${inv.id}`}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                      className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 dark:text-slate-500 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </Link>

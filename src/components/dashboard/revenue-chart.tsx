@@ -3,6 +3,8 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { Plus, Receipt, TrendingUp } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { CARD, CARD_TITLE } from './styles'
 
 type Point = { date: string; amount: number }
 
@@ -100,13 +102,13 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
   const empty = totalRev === 0 && totalExp === 0
 
   return (
-    <div className="rounded-2xl border p-4 sm:p-6 lg:p-7 bg-white dark:bg-[#0c0d12] border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-sm min-w-0 w-full overflow-hidden">
+    <div className={cn(CARD, 'p-5 min-w-0 w-full overflow-hidden')}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-6 sm:mb-7">
         <div className="min-w-0">
-          <h2 className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Cash Flow · Money in vs out</h2>
+          <h2 className={CARD_TITLE}>Cash flow <span className="font-medium text-slate-400 dark:text-slate-500">· money in vs out</span></h2>
           <div className="flex items-baseline gap-2 mt-1.5 flex-wrap">
-            <span className={`text-2xl sm:text-3xl font-light font-mono tabular-nums tracking-tight ${net >= 0 ? 'text-slate-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>{fmt$(net)}</span>
+            <span className={`text-2xl sm:text-[27px] font-extrabold tabular-nums tracking-tight ${net >= 0 ? 'text-slate-900 dark:text-white' : 'text-rose-600 dark:text-rose-400'}`}>{fmt$(net)}</span>
             <span className="text-xs font-medium text-slate-500 dark:text-slate-400">net profit</span>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 sm:gap-x-5 gap-y-1 mt-2.5 sm:mt-3">
@@ -122,15 +124,15 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
         </div>
 
         {/* Range tabs */}
-        <div className="flex items-center gap-1 p-1 rounded-full self-start bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 max-w-full overflow-x-auto scrollbar-none">
+        <div className="flex items-center gap-1 p-0.5 rounded-md self-start bg-slate-100/80 dark:bg-white/[0.05] border border-slate-200/50 dark:border-white/10 max-w-full overflow-x-auto scrollbar-none">
           {RANGES.map(r => (
             <button
               key={r.key}
               onClick={() => setRangeKey(r.key)}
-              className={`px-2.5 sm:px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
+              className={`px-2.5 py-1 rounded text-[11px] font-medium transition-colors cursor-pointer whitespace-nowrap flex-shrink-0 ${
                 rangeKey === r.key
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
+                  ? 'bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-2xs font-semibold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
               }`}
             >
               {r.label}
@@ -140,7 +142,7 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
       </div>
 
       {empty ? (
-        <div className="h-48 sm:h-56 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-200 dark:border-white/10 rounded-xl">
+        <div className="h-48 sm:h-56 flex flex-col items-center justify-center text-center p-6 border border-dashed border-[#eaecf2] dark:border-white/10 rounded-md">
           <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center mb-3">
             <TrendingUp className="w-4 h-4 text-slate-400" />
           </div>
@@ -151,14 +153,14 @@ export function RevenueChart({ paid, expenses }: { paid: Point[]; expenses: Poin
           <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
             <Link
               href="/invoices/new"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-semibold transition-all shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-accent text-white hover:bg-accent-hover text-xs font-semibold transition-all shadow-xs"
             >
               <Plus className="w-3.5 h-3.5" />
               Create invoice
             </Link>
             <Link
               href="/expenses"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 text-xs font-medium transition-colors shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[#eaecf2] dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 text-xs font-medium transition-colors shadow-xs"
             >
               <Receipt className="w-3.5 h-3.5" />
               Record expense

@@ -1,18 +1,17 @@
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 import { FIRST_TOUCH_COOKIE, launchPlatformName, parseSignupSource } from '@/lib/attribution'
-import { OveradsNavbar } from '@/components/landing/overads-navbar'
-import { OveradsHero } from '@/components/landing/overads-hero'
-import { OveradsScreensShowcase } from '@/components/landing/overads-screens-showcase'
-import { OveradsComparisonTable } from '@/components/landing/overads-comparison-table'
-import { OveradsIntegrations } from '@/components/landing/overads-integrations'
-import { OveradsFounderSection } from '@/components/landing/overads-founder-section'
-import { LandingPricing } from '@/components/landing/landing-pricing'
-import { LandingFaq } from '@/components/landing/landing-faq'
-import { OveradsCta } from '@/components/landing/overads-cta'
-import { Logo } from '@/components/ui/logo'
-import { ShieldCheck, Zap, Globe } from 'lucide-react'
+import SiteHeader from '@/components/home/site-header'
+import HeroSection6 from '@/components/home/hero-section-6'
+import TrustStrip from '@/components/home/trust-strip'
+import ProblemSection from '@/components/home/problem-section'
+import HowItWorksConnected from '@/components/home/how-it-works-connected'
+import SpotlightFeatures from '@/components/home/spotlight-features'
+import TestimonialsSection from '@/components/home/testimonials-section'
+import PricingSection from '@/components/home/pricing-section'
+import FAQSection from '@/components/home/faq-section'
+import CTASection from '@/components/home/cta-section'
+import Footer from '@/components/home/footer'
 import type { Metadata } from 'next'
 
 // Canonical lives here, not in the root layout, so other pages don't all point at the homepage
@@ -29,7 +28,6 @@ export default async function LandingPage({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const isLoggedIn = !!user
-  const signupHref = isLoggedIn ? '/dashboard' : '/auth/login?mode=signup'
 
   // Public, anon-readable counter; a missing row just hides the promo banner
   const { data: promo } = await supabase.from('launch_promo').select('claimed, cap').eq('id', 1).maybeSingle()
@@ -42,136 +40,20 @@ export default async function LandingPage({
     launchPlatformName(parseSignupSource((await cookies()).get(FIRST_TOUCH_COOKIE)?.value).source)
 
   return (
-    <div className="min-h-screen bg-[#08090a] font-sans text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-white">
-
-      {/* ── 0. Floating Glass Navbar (Overads Pill Nav) ── */}
-      <OveradsNavbar
-        isLoggedIn={isLoggedIn}
-        signupHref={signupHref}
-        promoRemaining={promoRemaining}
-        launchPlatform={launchPlatform}
-      />
-
+    <div className="home min-h-screen flex flex-col bg-background text-foreground antialiased">
+      <SiteHeader isLoggedIn={isLoggedIn} promoRemaining={promoRemaining} launchPlatform={launchPlatform} />
       <main className="flex-1">
-
-        {/* ── 1. Hero: Light Uppercase Display + Rotating Prompts + Workspace Showcase ── */}
-        <OveradsHero signupHref={signupHref} />
-
-        {/* ── 3. Screens: Inside Frevio ("Three screens. That is the whole job.") ── */}
-        <OveradsScreensShowcase />
-
-        {/* ── 4. Honest Comparison Table (7 Capabilities vs Stack of Tools vs Traditional) ── */}
-        <OveradsComparisonTable />
-
-        {/* ── 5. Connected Toolchain (VS Code, GitHub, Stripe Pipeline) ── */}
-        <OveradsIntegrations />
-
-        {/* ── 6. Real Early Results & Founder Trust Section ── */}
-        <OveradsFounderSection />
-
-        {/* ── 7. Pricing: Simple Plans. Predictable Growth. ── */}
-        <section id="pricing" className="py-24 lg:py-32 px-4 sm:px-6 bg-[#08090a] border-t border-white/5">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
-              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
-                <span>Pricing</span>
-              </div>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-                Start free. Pay when it&apos;s worth it.
-              </h2>
-              <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
-                Start completely free for 2 active projects. Upgrade to Pro or Agency as your studio scales.
-              </p>
-            </div>
-
-            {/* ── 3 High-Impact Visual Guarantees for Skimmers ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-16 max-w-4xl mx-auto">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 flex items-center gap-3.5 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 text-emerald-400">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">No card needed</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Free for 2 active projects</div>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 flex items-center gap-3.5 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-400">
-                  <Zap className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">Set up in minutes</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Create a project, copy the link, send it</div>
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 flex items-center gap-3.5 shadow-xs">
-                <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0 text-violet-400">
-                  <Globe className="w-5 h-5" />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">One link per client</div>
-                  <div className="text-xs text-slate-400 mt-0.5">Instead of email threads and shared folders</div>
-                </div>
-              </div>
-            </div>
-
-            <LandingPricing />
-          </div>
-        </section>
-
-        {/* ── 8. FAQ: Frequently Answered ── */}
-        <section id="faq" className="py-24 lg:py-32 px-6 bg-[#08090a] border-t border-white/5">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center space-y-4 mb-16">
-              <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-indigo-400">
-                <span>FAQ</span>
-              </div>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-light uppercase tracking-[-0.02em] text-white leading-[0.98]">
-                Questions
-              </h2>
-              <p className="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
-                Anything not covered here? Email jaysi@frevio.cloud and I&apos;ll answer.
-              </p>
-            </div>
-
-            <LandingFaq />
-          </div>
-        </section>
-
-        {/* ── 9. Final CTA ── */}
-        <OveradsCta signupHref={signupHref} />
-
+        <HeroSection6 />
+        <TrustStrip />
+        <ProblemSection />
+        <HowItWorksConnected />
+        <SpotlightFeatures />
+        <TestimonialsSection />
+        <PricingSection />
+        <FAQSection />
+        <CTASection />
       </main>
-
-      {/* ── Footer: Ultra-Clean Studio Footer ── */}
-      <footer className="border-t border-white/5 bg-[#050608] py-16 px-6 text-xs text-slate-500">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-2.5">
-            <Logo className="w-5 h-5 text-white" />
-            <span className="font-bold text-white text-sm tracking-tight font-mono">Frevio</span>
-            <span className="text-slate-700">/</span>
-            <span className="text-slate-400 font-light">Client pages for freelancers and small studios</span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-6 text-slate-400 font-mono text-[11px]">
-            <Link href="/demo" className="hover:text-white transition-colors">Live demo</Link>
-            <a href="#screens" className="hover:text-white transition-colors">Inside</a>
-            <a href="#comparison" className="hover:text-white transition-colors">Comparison</a>
-            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-            <a href="#about" className="hover:text-white transition-colors">About</a>
-            <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
-            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
-          </div>
-
-          <div className="flex items-center gap-2 text-slate-500 font-mono text-[11px]">
-            <span>© {new Date().getFullYear()} Frevio</span>
-          </div>
-        </div>
-      </footer>
-
+      <Footer />
     </div>
   )
 }

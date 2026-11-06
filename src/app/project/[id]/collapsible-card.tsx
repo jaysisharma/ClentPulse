@@ -45,7 +45,7 @@ export function CollapsibleCard({
   }
 
   return (
-    <div className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 rounded-2xl overflow-hidden shadow-xs backdrop-blur-md">
+    <div className="bg-white dark:bg-[#12141c]/90 border border-[#eaecf2] dark:border-white/[0.08] rounded-md overflow-hidden shadow-xs backdrop-blur-md">
       <div className="flex items-center justify-between px-5 py-4 gap-2">
         <button
           type="button"
@@ -66,14 +66,14 @@ export function CollapsibleCard({
             <button
               onClick={handleHide}
               disabled={hiding}
-              className="text-[11px] font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2.5 py-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-50 cursor-pointer flex-shrink-0"
+              className="text-[11px] font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] px-2.5 py-0.5 rounded-md hover:bg-slate-200 dark:hover:bg-white/10 disabled:opacity-50 cursor-pointer flex-shrink-0"
             >
               {hiding ? 'Hiding…' : 'Hide'}
             </button>
           )}
         </div>
       </div>
-      {open && <div className="px-5 pb-5 border-t border-slate-100 dark:border-white/5 pt-4">{children}</div>}
+      {open && <div className="px-5 pb-5 border-t border-[#f1f3f7] dark:border-white/[0.05] pt-4">{children}</div>}
     </div>
   )
 }

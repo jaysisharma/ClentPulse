@@ -1,27 +1,10 @@
 import { cn } from '@/lib/utils'
 
 // Full-bleed responsive canvas for freelancer pages.
-// In dark mode: overads.io deep dark luxury palette (#08090a).
-// In light mode: crisp, polished studio slate palette (#f8fafc / slate-50).
+// Flat app canvas matching the marketing site's screenshots: #f8f9fc light, #090a0f dark.
 export function DarkShell({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('-mx-4 sm:-mx-6 lg:-mx-8 -mt-18 sm:-mt-20 lg:-mt-8 -mb-4 sm:-mb-6 lg:-mb-8 min-h-screen px-3.5 sm:px-6 lg:px-10 pt-18 sm:pt-20 lg:pt-8 pb-12 animate-fade-in relative overflow-hidden max-w-full bg-slate-50 dark:bg-[#08090a] text-slate-900 dark:text-slate-100 transition-colors duration-200 print:m-0 print:p-0 print:bg-white print:text-slate-900 print:min-h-0 print:overflow-visible', className)}>
-      {/* Dark mode ambient soft glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 hidden dark:block print:hidden"
-        style={{
-          background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(99, 102, 241, 0.08), transparent 70%), #08090a',
-        }}
-      />
-      {/* Light mode ambient soft glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 block dark:hidden print:hidden"
-        style={{
-          background: 'radial-gradient(ellipse 80% 40% at 50% -10%, rgba(99, 102, 241, 0.04), transparent 70%), #f8fafc',
-        }}
-      />
+    <div className={cn('-mx-4 sm:-mx-6 lg:-mx-8 -mt-18 sm:-mt-20 lg:-mt-8 -mb-4 sm:-mb-6 lg:-mb-8 min-h-screen px-3.5 sm:px-6 lg:px-10 pt-18 sm:pt-20 lg:pt-8 pb-12 animate-fade-in relative overflow-hidden max-w-full bg-[#f8f9fc] dark:bg-[#090a0f] text-slate-900 dark:text-slate-100 transition-colors duration-200 print:m-0 print:p-0 print:bg-white print:text-slate-900 print:min-h-0 print:overflow-visible', className)}>
       <div className="relative z-10">
         {children}
       </div>

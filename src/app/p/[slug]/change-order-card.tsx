@@ -1,237 +1,171 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  ShieldAlert, CheckCircle2, XCircle, Clock, DollarSign,
-  Calendar, ArrowRight, Loader2, CreditCard, Check
-} from 'lucide-react'
+import { ShieldAlert, CheckCircle2, XCircle, Clock, Calendar, Loader2, Check } from 'lucide-react'
 import { ChangeOrder } from '@/types'
 import { fmtCurrency } from '@/lib/currencies'
+import { cn } from '@/lib/utils'
+import { changeOrderNeedsPayment } from './portal-model'
+import { MUTED, PRIMARY_BUTTON, SECONDARY_BUTTON, PayChangeOrderButton, shortDate } from './portal-ui'
 
+function amountLabel(order: ChangeOrder) {
+  return fmtCurrency(order.amount, order.currency || 'USD')
+}
+
+export function ChangeOrderStatusPill({ order }: { order: ChangeOrder }) {
+  const base = 'inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md border flex-shrink-0'
+  if (order.status === 'pending') {
+    return <span className={cn(base, 'text-amber-800 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20')}><Clock className="w-3 h-3" />Awaiting you</span>
+  }
+  if (changeOrderNeedsPayment(order)) {
+    return <span className={cn(base, 'text-amber-800 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20')}><CheckCircle2 className="w-3 h-3" />Approved · payment due</span>
+  }
+  if (order.status === 'approved') {
+    return <span className={cn(base, 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/20')}><CheckCircle2 className="w-3 h-3" />Approved</span>
+  }
+  if (order.status === 'paid') {
+    return <span className={cn(base, 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 border-emerald-100 dark:border-emerald-500/20')}><Check className="w-3 h-3" />Approved · paid</span>
+  }
+  return <span className={cn(base, 'text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-white/[0.06] border-slate-200 dark:border-white/10')}><XCircle className="w-3 h-3" />Declined</span>
+}
+
+/** A proposed scope change: the client approves or declines, then pays if required. */
 export function ChangeOrderCard({
   changeOrder,
   accentColor = '#6366F1',
   onStatusChange,
+  isDemo = false,
 }: {
   changeOrder: ChangeOrder
   accentColor?: string
   onStatusChange?: (co: ChangeOrder) => void
+  isDemo?: boolean
 }) {
   const [order, setOrder] = useState<ChangeOrder>(changeOrder)
   const [loading, setLoading] = useState(false)
   const [showDeclineForm, setShowDeclineForm] = useState(false)
   const [declineNotes, setDeclineNotes] = useState('')
-
   const [error, setError] = useState<string | null>(null)
 
+  async function review(action: 'approve' | 'decline') {
+    setLoading(true)
+    setError(null)
+    if (isDemo) {
+      const next = { ...order, status: action === 'approve' ? 'approved' : 'declined' } as ChangeOrder
+      setOrder(next)
+      onStatusChange?.(next)
+      setLoading(false)
+      return
+    }
+    try {
+      const res = await fetch(`/api/change-orders/${order.id}/review`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(action === 'approve' ? { action } : { action, notes: declineNotes.trim() || null }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data.changeOrder) throw new Error(data.error || 'We couldn’t record your decision. Please try again.')
+      setOrder(data.changeOrder)
+      setShowDeclineForm(false)
+      onStatusChange?.(data.changeOrder)
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const isPending = order.status === 'pending'
-  const isApproved = order.status === 'approved'
-  const isPaid = order.status === 'paid'
-  const isDeclined = order.status === 'declined'
-
-  async function handleApproveAndPay() {
-    setLoading(true)
-    setError(null)
-    try {
-      // 1-click approve scope change directly
-      const res = await fetch(`/api/change-orders/${order.id}/review`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'approve' }),
-      })
-      const data = await res.json()
-      if (data.changeOrder) {
-        setOrder(data.changeOrder)
-        onStatusChange?.(data.changeOrder)
-      } else {
-        throw new Error(data.error || 'Failed to record approval')
-      }
-    } catch (err: any) {
-      setError(err.message || 'Error processing approval')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function handleDecline() {
-    setLoading(true)
-    setError(null)
-    try {
-      const res = await fetch(`/api/change-orders/${order.id}/review`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'decline', notes: declineNotes }),
-      })
-      const data = await res.json()
-      if (data.changeOrder) {
-        setOrder(data.changeOrder)
-        setShowDeclineForm(false)
-        onStatusChange?.(data.changeOrder)
-      }
-    } catch (err: any) {
-      setError(err.message || 'Error declining change order')
-    } finally {
-      setLoading(false)
-    }
-  }
+  const needsPayment = changeOrderNeedsPayment(order)
 
   return (
-    <div
-      id={`co-${order.id}`}
-      className="bg-white dark:bg-[#0c0d12]/90 rounded-2xl border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md shadow-xs dark:shadow-none p-5 sm:p-6 transition-all space-y-4"
-    >
-      {error && (
-        <div className="p-3 text-xs rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400">
-          {error}
-        </div>
-      )}
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-        <div className="space-y-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
-              <ShieldAlert className="w-4 h-4" />
-            </span>
-            <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-white truncate">
-              {order.title}
-            </h3>
-          </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 font-mono pl-10">
-            <span className="text-slate-900 dark:text-white font-semibold text-sm">
-              +{fmtCurrency(order.amount, order.currency || 'USD')}
-            </span>
-            {Boolean(order.timeline_days && order.timeline_days > 0) && (
-              <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
-                <Calendar className="w-3.5 h-3.5" />
-                +{order.timeline_days} days delivery adjustment
-              </span>
-            )}
-            {order.estimated_hours && (
-              <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-slate-400" />
-                {order.estimated_hours}h estimated
-              </span>
-            )}
+    <div className="p-4 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/[0.02] space-y-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start gap-3 min-w-0">
+          <span className="w-9 h-9 rounded-md bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
+            <ShieldAlert className="w-4 h-4" />
+          </span>
+          <div className="min-w-0">
+            <p className="text-sm font-bold break-words">Scope change: {order.title}</p>
+            <p className={cn('text-xs mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5', MUTED)}>
+              {order.amount > 0 && <span className="font-semibold text-slate-900 dark:text-white">+{amountLabel(order)}</span>}
+              {Boolean(order.timeline_days && order.timeline_days > 0) && (
+                <span className="inline-flex items-center gap-1"><Calendar className="w-3 h-3" />+{order.timeline_days} days</span>
+              )}
+              {order.estimated_hours ? <span className="inline-flex items-center gap-1"><Clock className="w-3 h-3" />{order.estimated_hours}h estimated</span> : null}
+            </p>
           </div>
         </div>
-
-        {/* Status Pill */}
-        <div className="self-start sm:self-auto flex-shrink-0">
-          {isPending && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-3 py-1 rounded-full">
-              <Clock className="w-3 h-3" />
-              Sign-off Required
-            </span>
-          )}
-          {isApproved && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 rounded-full">
-              <CheckCircle2 className="w-3 h-3" />
-              Approved · Payment Due
-            </span>
-          )}
-          {isPaid && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
-              <Check className="w-3.5 h-3.5" />
-              Approved &amp; Paid via Stripe
-            </span>
-          )}
-          {isDeclined && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-3 py-1 rounded-full">
-              <XCircle className="w-3 h-3" />
-              Declined (Original Scope)
-            </span>
-          )}
-        </div>
+        <ChangeOrderStatusPill order={order} />
       </div>
 
-      {/* Description */}
       {order.description && (
-        <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/5 text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap font-sans">
-          {order.description}
-        </div>
+        <p className="text-sm leading-relaxed whitespace-pre-wrap break-words text-slate-700 dark:text-slate-300">{order.description}</p>
       )}
 
-      {/* Decline Form / Notes */}
-      {showDeclineForm && (
-        <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-500/20 bg-rose-50/50 dark:bg-rose-500/[0.03] space-y-3">
-          <label className="block text-xs font-semibold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-            Decline Note for Studio (Optional)
-          </label>
+      {isPending && showDeclineForm && (
+        <div>
+          <label htmlFor={`co-note-${order.id}`} className="block text-xs font-semibold mb-1.5">Note for the studio (optional)</label>
           <textarea
+            id={`co-note-${order.id}`}
             rows={2}
-            placeholder="e.g. Let's stick with the original project scope for now..."
+            maxLength={2000}
+            placeholder="e.g. Let’s stick with the original scope for now."
             value={declineNotes}
             onChange={e => setDeclineNotes(e.target.value)}
-            className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white dark:bg-black/30 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:border-rose-500"
+            className="w-full px-3 py-2 text-sm rounded-md border border-[#eaecf2] dark:border-white/10 bg-white dark:bg-white/[0.03] placeholder:text-slate-400 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 resize-none"
           />
-          <div className="flex items-center justify-end gap-2">
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => setShowDeclineForm(false)}
-              className="px-3 py-1 rounded-full text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-white cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              disabled={loading}
-              onClick={handleDecline}
-              className="px-4 py-1.5 rounded-full bg-rose-600 text-white text-xs font-semibold hover:bg-rose-700 transition-colors shadow-2xs cursor-pointer flex items-center gap-1.5"
-            >
-              {loading && <Loader2 className="w-3 h-3 animate-spin" />}
-              <span>Confirm Decline</span>
-            </button>
-          </div>
         </div>
       )}
 
-      {/* Action Buttons for Client */}
-      {isPending && !showDeclineForm && (
-        <div className="pt-2 border-t border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="text-xs text-slate-500 dark:text-slate-400 font-light">
-            Approving authorizes the deliverable addition and updates project timeline.
-          </div>
-          <div className="flex items-center gap-2 self-end sm:self-auto">
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => setShowDeclineForm(true)}
-              className="px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer"
-            >
-              Decline Change
-            </button>
-
-            <button
-              type="button"
-              disabled={loading}
-              onClick={handleApproveAndPay}
-              className="px-5 py-2 rounded-full text-white text-xs font-semibold transition-all hover:scale-[1.02] shadow-sm cursor-pointer flex items-center gap-2"
-              style={{ backgroundColor: accentColor }}
-            >
-              {loading ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Check className="w-3.5 h-3.5" />
-              )}
-              <span>
-                {order.amount > 0
-                  ? `Approve Scope Change (+${fmtCurrency(order.amount, order.currency || 'USD')})`
-                  : 'Approve Scope Change'}
-              </span>
-            </button>
-          </div>
+      {isPending && (
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {showDeclineForm ? (
+            <>
+              <button type="button" onClick={() => setShowDeclineForm(false)} disabled={loading} className={SECONDARY_BUTTON}>Cancel</button>
+              <button type="button" onClick={() => review('decline')} disabled={loading} className={cn(PRIMARY_BUTTON, 'bg-slate-700 dark:bg-slate-600')}>
+                {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Decline change
+              </button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={() => setShowDeclineForm(true)} disabled={loading} className={SECONDARY_BUTTON}>Decline</button>
+              <button type="button" onClick={() => review('approve')} disabled={loading} className={PRIMARY_BUTTON} style={{ backgroundColor: accentColor }}>
+                {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                Approve{order.amount > 0 ? ` +${amountLabel(order)}` : ''}
+              </button>
+            </>
+          )}
         </div>
       )}
 
-      {/* Approved scope notice */}
-      {isApproved && order.amount > 0 && !isPaid && (
-        <div className="pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between gap-3">
-          <span className="text-xs text-slate-500 dark:text-slate-400">
-            Scope approved (+{fmtCurrency(order.amount, order.currency || 'USD')}). Please arrange settlement directly with the studio.
-          </span>
+      {needsPayment && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-[#f1f3f7] dark:border-white/[0.05]">
+          <p className={cn('text-xs', MUTED)}>You approved this change. Pay to add it to the project.</p>
+          <PayChangeOrderButton changeOrderId={order.id} label={`Pay ${amountLabel(order)}`} accent={accentColor} isDemo={isDemo} />
         </div>
       )}
+
+      {error && <p role="alert" className="text-xs text-rose-600 dark:text-rose-400">{error}</p>}
     </div>
+  )
+}
+
+/** A decided scope change, for history lists. */
+export function ChangeOrderHistoryRow({ order }: { order: ChangeOrder }) {
+  const decidedAt = order.paid_at || order.approved_at
+  return (
+    <li className="flex items-start gap-3 py-3">
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold break-words">{order.title}</p>
+        <p className={cn('text-xs mt-0.5', MUTED)}>
+          {order.amount > 0 ? `+${amountLabel(order)}` : 'No cost'}
+          {order.timeline_days ? ` · +${order.timeline_days} days` : ''}
+          {decidedAt ? ` · ${shortDate(decidedAt)}` : ''}
+        </p>
+        {order.client_notes && <p className={cn('text-xs mt-1.5 italic break-words', MUTED)}>“{order.client_notes}”</p>}
+      </div>
+      <ChangeOrderStatusPill order={order} />
+    </li>
   )
 }

@@ -74,7 +74,8 @@ create policy "Users can delete own projects" on public.projects for delete usin
 create policy "Users can manage own updates" on public.updates for all using (
   exists (select 1 from public.projects where id = project_id and user_id = auth.uid())
 );
-create policy "Public can view updates" on public.updates for select using (true);
+-- Removed: "Public can view updates" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- Auto-create user profile on signup
 create or replace function public.handle_new_user()
@@ -117,12 +118,12 @@ create policy "Owner can manage checklist items" on public.checklist_items
   for all using (auth.uid() = user_id);
 
 -- Anyone (clients) can read checklist items — needed for public status page
-create policy "Public can read checklist items" on public.checklist_items
-  for select using (true);
+-- Removed: "Public can read checklist items" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- Clients can toggle their own items done without auth (upsert by id)
-create policy "Public can update client checklist items" on public.checklist_items
-  for update using (assigned_to = 'client');
+-- Removed: "Public can update client checklist items" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- Project milestones (Feature #13)
@@ -143,8 +144,8 @@ alter table public.milestones enable row level security;
 create policy "Owner can manage milestones" on public.milestones
   for all using (auth.uid() = user_id);
 
-create policy "Public can read milestones" on public.milestones
-  for select using (true);
+-- Removed: "Public can read milestones" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- Update comments (client-facing comments on individual update cards)
@@ -162,8 +163,8 @@ create table if not exists public.update_comments (
 alter table public.update_comments enable row level security;
 
 -- Anyone can insert a comment (clients don't have auth)
-create policy "Public can insert update comments" on public.update_comments
-  for insert with check (true);
+-- Removed: "Public can insert update comments" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- Freelancer can read comments on their own projects
 create policy "Owner can read update comments" on public.update_comments
@@ -172,8 +173,8 @@ create policy "Owner can read update comments" on public.update_comments
   );
 
 -- Public can read comments (for the status page to display them)
-create policy "Public can read update comments" on public.update_comments
-  for select using (true);
+-- Removed: "Public can read update comments" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- Security: slug-scoped RPC for public status pages

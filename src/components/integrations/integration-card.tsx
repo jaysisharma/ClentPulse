@@ -49,19 +49,19 @@ export function IntegrationCard({
   return (
     <div
       className={`
-        rounded-2xl border bg-white dark:bg-[#0c0d12] p-5 transition-colors
+        rounded-md border bg-white dark:bg-[#12141c] p-5 transition-colors
         ${isConnected
           ? 'border-green-200 dark:border-green-900/40'
           : isExpired
           ? 'border-yellow-200 dark:border-yellow-900/40'
-          : 'border-slate-200 dark:border-white/10'
+          : 'border-[#eaecf2] dark:border-white/[0.08]'
         }
       `}
       aria-label={`${displayName} integration`}
     >
       <div className="flex items-start gap-4">
         {/* Logo */}
-        <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5">
+        <div className="w-10 h-10 flex-shrink-0 flex items-center justify-center rounded-md bg-slate-100 dark:bg-white/5">
           {logo}
         </div>
 
@@ -141,7 +141,7 @@ export function IntegrationCard({
           ) : isExpired ? (
             <button
               onClick={onConnect}
-              className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors border border-yellow-200 dark:border-yellow-900/40"
+              className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-md bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/30 transition-colors border border-yellow-200 dark:border-yellow-900/40"
               aria-label={`Reconnect ${displayName}`}
             >
               <RefreshCw className="w-3 h-3" />
@@ -152,7 +152,7 @@ export function IntegrationCard({
           ) : (
             <button
               onClick={onConnect}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-700 dark:hover:bg-slate-100 transition-colors"
+              className="bg-accent hover:bg-accent-hover inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md text-white transition-colors"
               aria-label={`Connect ${displayName}`}
             >
               <PlugZap className="w-3 h-3" />

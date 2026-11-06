@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Frevio — Design Presence & Client Approvals</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: #0b0d11;
+      color: #e5e7eb;
+      font-size: 12px;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Header & Tabs */
+    .header {
+      padding: 12px 14px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: #0f1218;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+    }
+
+    .project-pill {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #9ca3af;
+      max-width: 150px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: #0b0d11;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0 10px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 9px 4px;
+      background: transparent;
+      border: none;
+      color: #9ca3af;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      color: #e5e7eb;
+    }
+
+    .tab-btn.active {
+      color: #10b981;
+      border-bottom-color: #10b981;
+    }
+
+    /* Content view scroll area */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tab-pane.active {
+      display: flex;
+    }
+
+    /* Glass Cards */
+    .card {
+      background: #12151c;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Form inputs */
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    input, textarea, select {
+      background: #1a1e27;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 7px 10px;
+      color: #fff;
+      font-size: 12px;
+      outline: none;
+      width: 100%;
+      transition: border-color 0.15s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #10b981;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 54px;
+      font-family: inherit;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background: #10b981;
+      color: #0b0d11;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #059669;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e5e7eb;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Status & Ticker */
+    .stats-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: #171b24;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 8px 10px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      margin-top: 2px;
+    }
+
+    .stat-value.highlight {
+      color: #10b981;
+    }
+
+    /* Selection Badge */
+    .selection-box {
+      background: #171b24;
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .selection-icon {
+      font-size: 20px;
+    }
+
+    .selection-info {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .selection-name {
+      font-weight: 600;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .selection-meta {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-top: 1px;
+    }
+
+    /* Feedback list */
+    .feedback-item {
+      background: #171b24;
+      border-left: 3px solid #6366f1;
+      border-radius: 0 6px 6px 0;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .feedback-item.revision {
+      border-left-color: #f87171;
+    }
+
+    .feedback-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .feedback-body {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    /* Toast notification */
+    .toast {
+      background: #10b981;
+      color: #0b0d11;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toast.show {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="header">
+    <div class="brand">
+      <div class="brand-dot" id="presenceDot"></div>
+      <span>Frevio</span>
+    </div>
+    <div class="project-pill" id="headerProjectName">Not Linked</div>
+  </div>
+
+  <!-- Navigation tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" data-tab="tab-presence">⏱ Telemetry</button>
+    <button class="tab-btn" data-tab="tab-deliverable">🚀 Deliverable</button>
+    <button class="tab-btn" data-tab="tab-feedback">💬 Feedback</button>
+    <button class="tab-btn" data-tab="tab-settings">⚙ Settings</button>
+  </div>
+
+  <div class="content">
+
+    <div class="toast" id="toastBox">
+      <span id="toastMsg">Update sent!</span>
+    </div>
+
+    <!-- TAB 1: TELEMETRY & PRESENCE -->
+    <div class="tab-pane active" id="tab-presence">
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-label">Hours Today</div>
+          <div class="stat-value" id="statsHours">0.0h</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Billable Revenue</div>
+          <div class="stat-value highlight" id="statsEarnings">$0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span>Live Design Telemetry</span>
+          <span style="font-size: 10px; color: #10b981;" id="trackingStatusText">SYNCING</span>
+        </div>
+        <p style="font-size: 11px; color: #9ca3af;">
+          Synchronizing active Figma design presence to your client's portal.
+        </p>
+        <div style="font-size: 11px; font-weight: 600; color: #cbd5e1; margin-top: 4px;">
+          Focus: <span id="currentFocusArea" style="color: #fff;">UI/UX Design</span>
+        </div>
+        <button class="btn btn-secondary" id="btnToggleTracking" style="margin-top: 6px;">
+          ⏸ Pause Tracking
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Quick Progress Update</div>
+        <textarea id="quickUpdateInput" placeholder="What did you complete in Figma? (e.g. Designed mobile checkout modal & dark mode states)"></textarea>
+        <button class="btn btn-primary" id="btnSendQuickUpdate">
+          Send Progress Update
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 2: DELIVERABLE SUBMISSION -->
+    <div class="tab-pane" id="tab-deliverable">
+      <div class="selection-box" id="selectionCard">
+        <div class="selection-icon">📐</div>
+        <div class="selection-info">
+          <div class="selection-name" id="selectedFrameName">No Frame Selected</div>
+          <div class="selection-meta" id="selectedFrameMeta">Select any frame or component on canvas</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Client Sign-Off Details</div>
+        <label>
+          Deliverable Title
+          <input type="text" id="deliverableTitle" placeholder="e.g. Mobile Checkout Screen v2" />
+        </label>
+        <label>
+          Notes for Client (Optional)
+          <textarea id="deliverableNotes" placeholder="Explain what was designed, changes made, and key decisions."></textarea>
+        </label>
+        <label>
+          Figma Prototype / File URL
+          <input type="text" id="deliverableUrl" placeholder="https://www.figma.com/proto/..." />
+        </label>
+        <button class="btn btn-primary" id="btnSubmitDeliverable" style="margin-top: 6px;">
+          🚀 Send Deliverable to Client
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 3: CLIENT FEEDBACK & CANVAS PINNING -->
+    <div class="tab-pane" id="tab-feedback">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 11px; font-weight: 700; color: #cbd5e1;">Pending Client Notes</span>
+        <button class="btn btn-secondary" id="btnRefreshFeedback" style="width: auto; padding: 4px 8px; font-size: 10px;">
+          ↻ Refresh
+        </button>
+      </div>
+
+      <div id="feedbackListContainer" style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="font-size: 11px; color: #64748b; text-align: center; padding: 18px;">
+          Click "Refresh" to pull client comments.
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="btnPinFeedback" disabled>
+        📌 Pin Feedback onto Canvas
+      </button>
+    </div>
+
+    <!-- TAB 4: SETTINGS & PROJECT LINK -->
+    <div class="tab-pane" id="tab-settings">
+      <div class="card">
+        <div class="card-title">Link Frevio Project</div>
+        <label>
+          Select Project
+          <select id="projectSelect">
+            <option value="">Loading projects...</option>
+          </select>
+        </label>
+        <button class="btn btn-secondary" id="btnSaveProject">Link to Figma File</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Interactive Canvas Embed</div>
+        <p style="font-size: 11px; color: #9ca3af;">
+          Embed this Figma board directly into your client's status portal.
+        </p>
+        <button class="btn btn-secondary" id="btnSyncEmbed">
+          Sync Canvas Embed to Portal
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Authentication</div>
+        <label>
+          API Token (from Frevio > Settings > Editor Extension)
+          <input type="password" id="apiTokenInput" placeholder="frev_live_..." />
+        </label>
+        <label>
+          API Base URL
+          <input type="text" id="apiBaseUrlInput" value="https://www.frevio.cloud" />
+        </label>
+        <button class="btn btn-primary" id="btnSaveAuth">Save Token & Settings</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // State
+    let config = {
+      token: '',
+      projectId: '',
+      projectName: '',
+      clientName: '',
+      apiBaseUrl: 'https://www.frevio.cloud',
+      isPaused: false,
+    }
+    let currentSelection = null
+    let feedbackCache = []
+    let heartbeatTimer = null
+
+    // DOM Elements
+    const tabButtons = document.querySelectorAll('.tab-btn')
+    const tabPanes = document.querySelectorAll('.tab-pane')
+    const headerProjectName = document.getElementById('headerProjectName')
+    const presenceDot = document.getElementById('presenceDot')
+    const statsHours = document.getElementById('statsHours')
+    const statsEarnings = document.getElementById('statsEarnings')
+    const trackingStatusText = document.getElementById('trackingStatusText')
+    const btnToggleTracking = document.getElementById('btnToggleTracking')
+    const currentFocusArea = document.getElementById('currentFocusArea')
+    const selectedFrameName = document.getElementById('selectedFrameName')
+    const selectedFrameMeta = document.getElementById('selectedFrameMeta')
+    const deliverableTitle = document.getElementById('deliverableTitle')
+    const deliverableNotes = document.getElementById('deliverableNotes')
+    const deliverableUrl = document.getElementById('deliverableUrl')
+    const btnSubmitDeliverable = document.getElementById('btnSubmitDeliverable')
+    const btnSendQuickUpdate = document.getElementById('btnSendQuickUpdate')
+    const quickUpdateInput = document.getElementById('quickUpdateInput')
+    const feedbackListContainer = document.getElementById('feedbackListContainer')
+    const btnPinFeedback = document.getElementById('btnPinFeedback')
+    const btnRefreshFeedback = document.getElementById('btnRefreshFeedback')
+    const projectSelect = document.getElementById('projectSelect')
+    const btnSaveProject = document.getElementById('btnSaveProject')
+    const btnSyncEmbed = document.getElementById('btnSyncEmbed')
+    const apiTokenInput = document.getElementById('apiTokenInput')
+    const apiBaseUrlInput = document.getElementById('apiBaseUrlInput')
+    const btnSaveAuth = document.getElementById('btnSaveAuth')
+    const toastBox = document.getElementById('toastBox')
+    const toastMsg = document.getElementById('toastMsg')
+
+    // Tab switching
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabButtons.forEach(b => b.classList.remove('active'))
+        tabPanes.forEach(p => p.classList.remove('active'))
+        btn.classList.add('active')
+        document.getElementById(btn.dataset.tab).classList.add('active')
+
+        if (btn.dataset.tab === 'tab-feedback' && feedbackCache.length === 0) {
+          fetchFeedback()
+        }
+      })
+    })
+
+    function showToast(msg) {
+      toastMsg.innerText = msg
+      toastBox.classList.add('show')
+      setTimeout(() => toastBox.classList.remove('show'), 4000)
+    }
+
+    // Message receiver from sandbox code.ts
+    window.onmessage = async (event) => {
+      const msg = event.data.pluginMessage
+      if (!msg) return
+
+      switch (msg.type) {
+        case 'init-data': {
+          config = { ...config, ...msg.storedConfig }
+          apiTokenInput.value = config.token || ''
+          apiBaseUrlInput.value = config.apiBaseUrl || 'https://www.frevio.cloud'
+          updateHeader()
+          handleSelection(msg.selection)
+
+          if (config.token) {
+            loadProjects()
+            startHeartbeat()
+          }
+          break
+        }
+
+        case 'selection-change': {
+          handleSelection(msg.selection)
+          break
+        }
+
+        case 'frame-exported': {
+          await submitDeliverableWithImage(msg)
+          break
+        }
+
+        case 'export-error': {
+          btnSubmitDeliverable.disabled = false
+          btnSubmitDeliverable.innerText = '🚀 Send Deliverable to Client'
+          break
+        }
+      }
+    }
+
+    function updateHeader() {
+      if (config.projectName) {
+        headerProjectName.innerText = config.projectName
+      } else {
+        headerProjectName.innerText = 'Not Linked'
+      }
+
+      if (config.isPaused) {
+        presenceDot.style.background = '#f59e0b'
+        trackingStatusText.innerText = 'PAUSED'
+        trackingStatusText.style.color = '#f59e0b'
+        btnToggleTracking.innerText = '▶ Resume Tracking'
+      } else {
+        presenceDot.style.background = '#10b981'
+        trackingStatusText.innerText = 'SYNCING'
+        trackingStatusText.style.color = '#10b981'
+        btnToggleTracking.innerText = '⏸ Pause Tracking'
+      }
+    }
+
+    function handleSelection(sel) {
+      currentSelection = sel
+      if (sel) {
+        selectedFrameName.innerText = sel.name
+        selectedFrameMeta.innerText = `${sel.type} · ${sel.width} × ${sel.height} px`
+        currentFocusArea.innerText = `UI/UX (${sel.name})`
+        if (!deliverableTitle.value || deliverableTitle.dataset.autoFilled === 'true') {
+          deliverableTitle.value = sel.name
+          deliverableTitle.dataset.autoFilled = 'true'
+        }
+        btnSubmitDeliverable.disabled = false
+      } else {
+        selectedFrameName.innerText = 'No Frame Selected'
+        selectedFrameMeta.innerText = 'Select any frame or component on canvas'
+        currentFocusArea.innerText = 'UI/UX Design'
+        btnSubmitDeliverable.disabled = true
+      }
+    }
+
+    // Load projects list
+    async function loadProjects() {
+      if (!config.token) return
+      try {
+        const res = await fetch(`${config.apiBaseUrl}/api/extension/projects`, {
+          headers: { Authorization: `Bearer ${config.token}` }
+        })
+        if (!res.ok) return
+        const data = await res.json()
+        projectSelect.innerHTML = '<option value="">-- Choose a Frevio Project --</option>'
+        ;(data.projects || []).forEach(p => {
+          const opt = document.createElement('option')
+          opt.value = p.id
+          opt.textContent = `${p.project_name} (${p.client_name})`
+          if (p.id === config.projectId) opt.selected = true
+          projectSelect.appendChild(opt)
+        })
+      } catch (err) {
+        console.error('Failed to load projects', err)
+      }
+    }
+
+    // Heartbeat sync
+    async function sendHeartbeat() {
+      if (!config.token || !config.projectId || config.isPaused) return
+      try {
+        const focus = currentSelection ? `Designing: ${currentSelection.name}` : 'UI/UX Design'
+        const res = await fetch(`${config.apiBaseUrl}/api/extension/heartbeat`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${config.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            projectId: config.projectId,
+            focusArea: focus,
+            intervalSeconds: 60,
+          })
+        })
+        if (res.ok) {
+          const data = await res.json()
+          if (typeof data.todayHours === 'number') statsHours.innerText = `${data.todayHours}h`
+          if (typeof data.billableToday === 'number') statsEarnings.innerText = `$${data.billableToday}`
+        }
+      } catch {}
+    }
+
+    function startHeartbeat() {
+      if (heartbeatTimer) clearInterval(heartbeatTimer)
+      sendHeartbeat()
+      heartbeatTimer = setInterval(sendHeartbeat, 60000)
+    }
+
+    // Toggle Tracking
+    btnToggleTracking.addEventListener('click', () => {
+      config.isPaused = !config.isPaused
+      updateHeader()
+      parent.postMessage({ pluginMessage: { type: 'save-settings', isPaused: config.isPaused } }, '*')
+      if (!config.isPaused) sendHeartbeat()
+    })
+
+    // Send Quick Progress Update
+    btnSendQuickUpdate.addEventListener('click', async () => {
+      const text = quickUpdateInput.value.trim()
+      if (!text || !config.token || !config.projectId) return
+
+      btnSendQuickUpdate.disabled = true
+      btnSendQuickUpdate.innerText = 'Sending...'
+
+      try {
+        const res = await fetch(`${config.apiBaseUrl}/api/extension/updates`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${config.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            projectId: config.projectId,
+            bullets: [text],
+          })
+        })
+        if (res.ok) {
+          quickUpdateInput.value = ''
+          showToast('Progress update published to client portal!')
+        }
+      } catch (e) {
+        showToast('Error sending update')
+      } finally {
+        btnSendQuickUpdate.disabled = false
+        btnSendQuickUpdate.innerText = 'Send Progress Update'
+      }
+    })
+
+    // Submit Deliverable trigger
+    btnSubmitDeliverable.addEventListener('click', () => {
+      if (!currentSelection) return
+      btnSubmitDeliverable.disabled = true
+      btnSubmitDeliverable.innerText = 'Exporting Frame...'
+      parent.postMessage({ pluginMessage: { type: 'export-frame' } }, '*')
+    })
+
+    // Deliverable upload
+    async function submitDeliverableWithImage(exportData) {
+      btnSubmitDeliverable.innerText = 'Publishing to Client Portal...'
+      const title = deliverableTitle.value.trim() || currentSelection?.name || 'Design Deliverable'
+      const notes = deliverableNotes.value.trim()
+      const url = deliverableUrl.value.trim()
+
+      try {
+        const res = await fetch(`${config.apiBaseUrl}/api/extension/deliverables`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${config.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            projectId: config.projectId,
+            title,
+            notes: notes || undefined,
+            url: url || undefined,
+            previewType: 'figma',
+            notifyClient: true,
+          })
+        })
+
+        if (res.ok) {
+          showToast(`Deliverable "${title}" sent for client sign-off!`)
+          deliverableNotes.value = ''
+          parent.postMessage({ pluginMessage: { type: 'notify', message: `🚀 "${title}" published to client portal!` } }, '*')
+        } else {
+          showToast('Failed to create deliverable')
+        }
+      } catch (e) {
+        showToast('Network error submitting deliverable')
+      } finally {
+        btnSubmitDeliverable.disabled = false
+        btnSubmitDeliverable.innerText = '🚀 Send Deliverable to Client'
+      }
+    }
+
+    // Fetch Feedback
+    async function fetchFeedback() {
+      if (!config.token || !config.projectId) return
+      btnRefreshFeedback.innerText = '...'
+      try {
+        const res = await fetch(`${config.apiBaseUrl}/api/extension/figma/feedback?projectId=${config.projectId}`, {
+          headers: { Authorization: `Bearer ${config.token}` }
+        })
+        if (res.ok) {
+          const data = await res.json()
+          feedbackCache = data.feedback || []
+          renderFeedback()
+        }
+      } catch {}
+      finally {
+        btnRefreshFeedback.innerText = '↻ Refresh'
+      }
+    }
+
+    function renderFeedback() {
+      feedbackListContainer.innerHTML = ''
+      if (feedbackCache.length === 0) {
+        feedbackListContainer.innerHTML = '<div style="font-size: 11px; color: #64748b; text-align: center; padding: 18px;">No pending client comments or revision requests!</div>'
+        btnPinFeedback.disabled = true
+        return
+      }
+
+      feedbackCache.forEach(item => {
+        const div = document.createElement('div')
+        div.className = `feedback-item ${item.type === 'revision_request' ? 'revision' : ''}`
+        div.innerHTML = `
+          <div class="feedback-header">
+            <span>${item.type === 'revision_request' ? '⚠️ ' + item.title : '💬 ' + item.title}</span>
+            <span style="color: #64748b;">${item.author}</span>
+          </div>
+          <div class="feedback-body">${item.text}</div>
+        `
+        feedbackListContainer.appendChild(div)
+      })
+
+      btnPinFeedback.disabled = false
+    }
+
+    btnRefreshFeedback.addEventListener('click', fetchFeedback)
+
+    // Pin feedback
+    btnPinFeedback.addEventListener('click', () => {
+      if (feedbackCache.length === 0) return
+      parent.postMessage({ pluginMessage: { type: 'pin-feedback', feedback: feedbackCache } }, '*')
+    })
+
+    // Save linked project
+    btnSaveProject.addEventListener('click', () => {
+      const selectedId = projectSelect.value
+      const selectedText = projectSelect.options[projectSelect.selectedIndex]?.text || ''
+      if (!selectedId) return
+
+      config.projectId = selectedId
+      config.projectName = selectedText.split(' (')[0]
+      updateHeader()
+      parent.postMessage({
+        pluginMessage: {
+          type: 'save-settings',
+          projectId: config.projectId,
+          projectName: config.projectName
+        }
+      }, '*')
+      showToast(`Linked to ${config.projectName}!`)
+      startHeartbeat()
+    })
+
+    // Sync Canvas Embed
+    btnSyncEmbed.addEventListener('click', async () => {
+      if (!config.token || !config.projectId) return
+      btnSyncEmbed.disabled = true
+      btnSyncEmbed.innerText = 'Syncing...'
+
+      try {
+        const protoUrl = deliverableUrl.value.trim()
+        const res = await fetch(`${config.apiBaseUrl}/api/extension/figma/canvas-embed`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${config.token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            projectId: config.projectId,
+            canvasEmbedUrl: protoUrl || undefined,
+          })
+        })
+        if (res.ok) {
+          showToast('Canvas embed synced to client portal!')
+          parent.postMessage({ pluginMessage: { type: 'notify', message: '✅ Figma canvas linked to client portal!' } }, '*')
+        }
+      } catch {}
+      finally {
+        btnSyncEmbed.disabled = false
+        btnSyncEmbed.innerText = 'Sync Canvas Embed to Portal'
+      }
+    })
+
+    // Save auth token
+    btnSaveAuth.addEventListener('click', () => {
+      const token = apiTokenInput.value.trim()
+      const url = apiBaseUrlInput.value.trim().replace(/\/+$/, '')
+
+      if (!token.startsWith('frev_live_')) {
+        showToast('Token must start with frev_live_')
+        return
+      }
+
+      config.token = token
+      config.apiBaseUrl = url || 'https://www.frevio.cloud'
+
+      parent.postMessage({
+        pluginMessage: {
+          type: 'save-settings',
+          token: config.token,
+          apiBaseUrl: config.apiBaseUrl
+        }
+      }, '*')
+
+      showToast('Settings saved successfully!')
+      loadProjects()
+      startHeartbeat()
+    })
+  </script>
+</body>
+</html>
+

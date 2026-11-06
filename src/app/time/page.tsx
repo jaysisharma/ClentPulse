@@ -73,17 +73,17 @@ function fmtDate(dateStr: string) {
 
 function StatCard({ label, value, sub, icon: Icon }: { label: string; value: string; sub?: string; icon?: React.ComponentType<{ className?: string }> }) {
   return (
-    <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
+    <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02),0_4px_12px_rgba(0,0,0,0.02)]">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{label}</span>
+        <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">{label}</span>
         {Icon && (
-          <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-600 dark:text-slate-300">
+          <div className="w-8 h-8 rounded-md bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-900/50 text-accent dark:text-indigo-400 flex items-center justify-center">
             <Icon className="w-4 h-4" />
           </div>
         )}
       </div>
-      <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">{value}</div>
-      {sub && <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">{sub}</div>}
+      <div className="text-2xl sm:text-[27px] font-extrabold text-slate-900 dark:text-white tracking-tight tabular-nums">{value}</div>
+      {sub && <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">{sub}</div>}
     </div>
   )
 }
@@ -130,7 +130,7 @@ function EntryRow({
 
   if (editing) {
     return (
-      <div className="flex items-center gap-2 rounded-xl border border-indigo-200 dark:border-white/20 bg-slate-50 dark:bg-white/[0.04] px-4 py-3 ring-1 ring-indigo-500/20 dark:ring-white/10">
+      <div className="flex items-center gap-2 rounded-md border border-indigo-200 dark:border-white/20 bg-slate-50 dark:bg-white/[0.04] px-4 py-3 ring-1 ring-indigo-500/20 dark:ring-white/10">
         <div
           className="w-2 h-2 rounded-full flex-shrink-0"
           style={{ backgroundColor: entry.projects?.color ?? '#94a3b8' }}
@@ -144,16 +144,16 @@ function EntryRow({
           placeholder="Description"
         />
         <input
-          className="w-20 bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1 text-xs text-right text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500 dark:focus:border-white/30"
+          className="w-20 bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-md px-2 py-1 text-xs text-right text-slate-900 dark:text-white font-mono focus:outline-none focus:border-indigo-500 dark:focus:border-white/30"
           type="number" step="0.25" min="0.25"
           value={hrs}
           onChange={e => setHrs(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') cancel() }}
         />
-        <button onClick={save} className="p-1.5 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors cursor-pointer">
+        <button onClick={save} className="bg-accent hover:bg-accent-hover p-1.5 rounded-md text-white transition-colors cursor-pointer">
           <Check className="w-3.5 h-3.5" />
         </button>
-        <button onClick={cancel} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer">
+        <button onClick={cancel} className="p-1.5 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer">
           <X className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -162,7 +162,7 @@ function EntryRow({
 
   return (
     <div
-      className="flex items-center gap-3 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 hover:bg-slate-50 dark:hover:bg-white/[0.03] px-4 py-3.5 group cursor-pointer ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none transition-all"
+      className="flex items-center gap-3 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 hover:bg-slate-50 dark:hover:bg-white/[0.03] px-4 py-3.5 group cursor-pointer shadow-xs dark:shadow-none transition-all"
       onClick={startEdit}
     >
       <div
@@ -187,7 +187,7 @@ function EntryRow({
       </div>
       <button
         onClick={e => { e.stopPropagation(); onDelete(entry.id) }}
-        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer"
+        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer"
       >
         <Trash2 className="w-3.5 h-3.5" />
       </button>
@@ -401,21 +401,21 @@ export default function TimePage() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                   Time Tracking
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+              <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
                 Time Tracker
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                 Track hours, monitor engineering rhythm, and manage billable sessions.
               </p>
             </div>
             <a
               href="/api/export-csv?type=time"
               download
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all w-fit shadow-xs dark:shadow-sm"
+              className="inline-flex items-center gap-2 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all w-fit shadow-xs dark:shadow-sm"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Export CSV</span>
@@ -462,7 +462,7 @@ export default function TimePage() {
           <div className="transition-all duration-300">
             {timerRunning ? (
               /* ── Running state ───────────────────────────────────── */
-              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50 dark:bg-[#0c0d12]/95 p-6 sm:p-8 ring-1 ring-emerald-500/20 shadow-lg dark:shadow-2xl relative overflow-hidden">
+              <div className="rounded-md border border-emerald-500/30 bg-emerald-50 dark:bg-[#12141c]/95 p-6 sm:p-8 ring-1 ring-emerald-500/20 shadow-lg dark:shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
                 <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                   <div>
@@ -472,14 +472,14 @@ export default function TimePage() {
                         Active Recording Session
                       </span>
                     </div>
-                    <div className="text-5xl sm:text-6xl font-mono font-light text-slate-900 dark:text-white tracking-tight mb-3">
+                    <div className="text-5xl sm:text-6xl font-mono font-bold text-slate-900 dark:text-white tracking-tight mb-3">
                       {elapsed(timer!.started_at)}
                     </div>
                     <div className="text-sm font-medium text-slate-800 dark:text-slate-200">{timer!.description}</div>
                     {timer!.project_id && (() => {
                       const p = projects.find(p => p.id === timer!.project_id)
                       return p ? (
-                        <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-full bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs text-slate-700 dark:text-slate-300">
+                        <div className="inline-flex items-center gap-1.5 mt-2.5 px-2.5 py-1 rounded-full bg-white dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] text-xs text-slate-700 dark:text-slate-300">
                           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
                           <span>{p.project_name}</span>
                         </div>
@@ -490,7 +490,7 @@ export default function TimePage() {
                     <button
                       onClick={stopTimer}
                       disabled={stopping}
-                      className="rounded-full bg-rose-500/10 hover:bg-rose-500/20 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 border border-rose-500/30 text-rose-600 dark:text-rose-300 px-5 py-2.5 text-xs font-semibold flex items-center gap-2 transition-all shadow-sm disabled:opacity-50 cursor-pointer"
+                      className="rounded-md bg-rose-500/10 hover:bg-rose-500/20 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 border border-rose-500/30 text-rose-600 dark:text-rose-300 px-5 py-2.5 text-xs font-semibold flex items-center gap-2 transition-all shadow-sm disabled:opacity-50 cursor-pointer"
                     >
                       <Square className="w-3.5 h-3.5 fill-current" />
                       <span>{stopping ? 'Saving session...' : 'Stop & Save'}</span>
@@ -503,16 +503,16 @@ export default function TimePage() {
               </div>
             ) : (
               /* ── Idle state ──────────────────────────────────────── */
-              <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none overflow-hidden">
+              <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 shadow-xs dark:shadow-none overflow-hidden">
                 {/* Mode tabs */}
-                <div className="flex items-center gap-1 p-3 border-b border-slate-100 dark:border-white/5">
+                <div className="flex items-center gap-1 p-3 border-b border-[#f1f3f7] dark:border-white/[0.05]">
                   {(['timer', 'manual'] as const).map(m => (
                     <button
                       key={m}
                       onClick={() => setMode(m)}
                       className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-medium rounded-full transition-all capitalize cursor-pointer ${
                         mode === m
-                          ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-xs'
+                          ? 'bg-accent hover:bg-accent-hover text-white font-semibold shadow-xs'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-white/5'
                       }`}
                     >
@@ -527,7 +527,7 @@ export default function TimePage() {
                     <div className="space-y-3">
                       <div className="flex flex-col sm:flex-row gap-3">
                         <input
-                          className="flex-1 px-4 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-light"
+                          className="flex-1 px-4 py-2.5 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
                           placeholder="What are you working on right now?"
                           value={timerDesc}
                           onChange={e => setTimerDesc(e.target.value)}
@@ -536,7 +536,7 @@ export default function TimePage() {
                         <select
                           value={timerProject}
                           onChange={e => setTimerProject(e.target.value)}
-                          className="px-3 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-white dark:bg-[#0c0d12] text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all cursor-pointer"
+                          className="px-3 py-2.5 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-white dark:bg-[#12141c] text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all cursor-pointer"
                         >
                           <option value="">Select Project (Optional)</option>
                           {projects.map(p => (
@@ -548,7 +548,7 @@ export default function TimePage() {
                         <button
                           onClick={startTimer}
                           disabled={startLoading}
-                          className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 font-semibold px-5 py-2.5 text-xs dark:hover:bg-slate-100 transition-all flex items-center justify-center gap-1.5 shadow-sm flex-shrink-0 disabled:opacity-50 cursor-pointer"
+                          className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-5 py-2.5 text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm flex-shrink-0 disabled:opacity-50 cursor-pointer"
                         >
                           <Play className="w-3.5 h-3.5 fill-current" />
                           <span>{startLoading ? 'Starting...' : 'Start'}</span>
@@ -562,7 +562,7 @@ export default function TimePage() {
                     <form onSubmit={addManual} className="space-y-3">
                       <div className="flex flex-col sm:flex-row gap-3">
                         <input
-                          className="flex-1 px-4 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-light"
+                          className="flex-1 px-4 py-2.5 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
                           placeholder="What did you work on?"
                           value={manDesc}
                           onChange={e => setManDesc(e.target.value)}
@@ -570,7 +570,7 @@ export default function TimePage() {
                         />
                         <input
                           type="number" step="0.25" min="0.25"
-                          className="w-full sm:w-28 px-4 py-2.5 text-xs font-mono border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all text-right"
+                          className="w-full sm:w-28 px-4 py-2.5 text-xs font-mono border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all text-right"
                           placeholder="Hours"
                           value={manHours}
                           onChange={e => setManHours(e.target.value)}
@@ -581,7 +581,7 @@ export default function TimePage() {
                         <select
                           value={manProject}
                           onChange={e => setManProject(e.target.value)}
-                          className="flex-1 px-3 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-white dark:bg-[#0c0d12] text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all cursor-pointer"
+                          className="flex-1 px-3 py-2.5 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-white dark:bg-[#12141c] text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all cursor-pointer"
                         >
                           <option value="">No project</option>
                           {projects.map(p => (
@@ -592,14 +592,14 @@ export default function TimePage() {
                         </select>
                         <input
                           type="date"
-                          className="px-3 py-2.5 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
+                          className="px-3 py-2.5 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
                           value={manDate}
                           onChange={e => setManDate(e.target.value)}
                         />
                         <button
                           type="submit"
                           disabled={saving}
-                          className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 font-semibold px-5 py-2.5 text-xs dark:hover:bg-slate-100 transition-all flex items-center justify-center gap-1.5 shadow-sm flex-shrink-0 disabled:opacity-50 cursor-pointer"
+                          className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-5 py-2.5 text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm flex-shrink-0 disabled:opacity-50 cursor-pointer"
                         >
                           <Plus className="w-3.5 h-3.5" />
                           <span>{saving ? 'Adding...' : 'Log Time'}</span>
@@ -617,12 +617,12 @@ export default function TimePage() {
 
           {/* Entry list */}
           {entries.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 dark:border-white/10 bg-white/70 dark:bg-[#0c0d12]/60 p-16 text-center ring-1 ring-slate-950/5 dark:ring-white/5 backdrop-blur-md">
-              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center mx-auto mb-4">
+            <div className="rounded-md border border-dashed border-slate-300 dark:border-white/[0.08] bg-white/70 dark:bg-[#12141c]/60 p-16 text-center backdrop-blur-md">
+              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] flex items-center justify-center mx-auto mb-4">
                 <Clock className="w-6 h-6 text-slate-400" />
               </div>
               <h3 className="font-normal text-lg text-slate-900 dark:text-white mb-1">No time logged yet</h3>
-              <p className="text-slate-500 dark:text-slate-400 text-xs font-light">Start a live timer or log a manual entry above to establish your timeline.</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs">Start a live timer or log a manual entry above to establish your timeline.</p>
             </div>
           ) : (
             <div className="space-y-6">
@@ -635,14 +635,14 @@ export default function TimePage() {
                     placeholder="Search entries…"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
-                    className="w-full bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all font-light"
+                    className="w-full bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-full pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
                   />
                 </div>
                 <div className="relative">
                   <select
                     value={filterProject}
                     onChange={e => setFilterProject(e.target.value)}
-                    className="appearance-none bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 rounded-full pl-4 pr-9 py-2 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 cursor-pointer"
+                    className="appearance-none bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] rounded-full pl-4 pr-9 py-2 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 cursor-pointer"
                   >
                     <option value="">All projects</option>
                     {projects.map(p => <option key={p.id} value={p.id}>{p.project_name}</option>)}
@@ -652,8 +652,8 @@ export default function TimePage() {
               </div>
 
               {filtered.length === 0 ? (
-                <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 py-12 text-center ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none">
-                  <p className="text-slate-500 dark:text-slate-400 text-xs font-light">No entries match your search criteria.</p>
+                <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 py-12 text-center shadow-xs dark:shadow-none">
+                  <p className="text-slate-500 dark:text-slate-400 text-xs">No entries match your search criteria.</p>
                   <button
                     onClick={() => { setSearch(''); setFilterProject('') }}
                     className="mt-2 text-xs text-indigo-600 dark:text-white hover:underline font-medium"
@@ -669,7 +669,7 @@ export default function TimePage() {
                       <div key={date} className="space-y-2.5">
                         <div className="flex items-center justify-between px-1">
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{fmtDate(date)}</span>
+                            <span className="text-xs font-semibold text-accent dark:text-indigo-400">{fmtDate(date)}</span>
                             <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">({dayEntries.length})</span>
                           </div>
                           <div className="text-xs font-mono font-medium text-slate-600 dark:text-slate-400 tabular-nums">

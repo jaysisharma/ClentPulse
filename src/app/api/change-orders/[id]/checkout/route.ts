@@ -23,7 +23,7 @@ export async function POST(
 
     const { data: changeOrder, error: coError } = await supabase
       .from('change_orders')
-      .select('id, project_id, user_id, title, description, amount, currency, status')
+      .select('id, project_id, user_id, title, description, amount, currency, status, requires_payment')
       .eq('id', id)
       .single()
 
@@ -33,6 +33,10 @@ export async function POST(
 
     if (changeOrder.status === 'paid') {
       return NextResponse.json({ error: 'Change order already paid' }, { status: 400 })
+    }
+    // Only an approved change that requires payment can be paid
+    if (changeOrder.status !== 'approved' || !changeOrder.requires_payment) {
+      return NextResponse.json({ error: 'This change order is not ready for payment' }, { status: 400 })
     }
 
     const { data: project } = await supabase
@@ -94,8 +98,8 @@ export async function POST(
         expectedCurrency: currency,
         type: 'change_order_payment',
       },
-      success_url: `${appUrl}/portal/${project?.slug || 'project'}?co_paid=${changeOrder.id}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/portal/${project?.slug || 'project'}?co_canceled=${changeOrder.id}`,
+      success_url: `${appUrl}/p/${project?.slug || ''}?co_paid=${changeOrder.id}#billing`,
+      cancel_url: `${appUrl}/p/${project?.slug || ''}#billing`,
     }, {
       stripeAccount: owner.stripe_account_id,
     })

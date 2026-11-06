@@ -1,9 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { timingSafeCompare, createPasscodeTicket, verifyPasscodeTicket } from '../passcode-crypto'
 import { signWebhookPayload, verifyWebhookSignature } from '../webhooks'
 import { generateDigitalSeal } from '../audit-crypto'
 
 describe('passcode-crypto', () => {
+  beforeEach(() => {
+    // Deployments always have a server secret; there is no hardcoded fallback
+    process.env.APP_SECRET = 'test-root-secret'
+  })
+
   it('correctly compares strings in constant time', () => {
     expect(timingSafeCompare('secret123', 'secret123')).toBe(true)
     expect(timingSafeCompare('secret123', 'secret124')).toBe(false)

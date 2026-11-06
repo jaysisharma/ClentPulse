@@ -3,12 +3,11 @@ import { checkAndSyncPromoPlan, isPaidPlan } from '@/lib/plans'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { AppLayout } from '@/components/layout/app-layout'
-import { Button } from '@/components/ui/button'
 import { ProductTour, TourTrigger } from '@/components/layout/product-tour'
 import Link from 'next/link'
 import {
   Plus, Timer, FolderOpen, DollarSign, Wallet,
-  FileSignature, CheckCircle2, Send, ChevronRight, ArrowRight, Sparkles, FileText, Radio, ArrowUpRight
+  FileSignature, CheckCircle2, Send, ChevronRight, ArrowRight, Sparkles, FileText, ArrowUpRight
 } from 'lucide-react'
 import { UpgradeToast } from './upgrade-toast'
 import { RemindSelfButton } from './remind-self-button'
@@ -16,6 +15,8 @@ import { DarkShell } from '@/components/layout/dark-shell'
 import { Greeting } from '@/components/dashboard/greeting'
 import { RevenueChart } from '@/components/dashboard/revenue-chart'
 import { cn } from '@/lib/utils'
+import { KpiCard } from '@/components/dashboard/kpi-card'
+import { CARD, CARD_TITLE, CARD_LINK, ROW, TONES } from '@/components/dashboard/styles'
 import { ACTIVE_WORKSPACE_COOKIE, parseActiveWorkspaceId } from '@/lib/workspace'
 import { AgencyExecutiveRadar } from '@/components/dashboard/agency-executive-radar'
 
@@ -96,65 +97,37 @@ function formatRelativeTime(dateStr: string | null | undefined): string {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
-function OveradsKpiCard({
-  label,
-  value,
-  icon: Icon,
-  caption,
-  trend,
-  tone,
-  href,
-}: {
-  label: string
-  value: React.ReactNode
-  icon: React.ElementType
-  caption?: React.ReactNode
-  trend?: { dir: 'up' | 'down' | 'flat'; label: string }
-  tone?: 'default' | 'danger'
-  href?: string
-}) {
-  const cardContent = (
-    <div className={cn(
-      "rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 p-4 sm:p-5 ring-1 ring-slate-950/5 dark:ring-white/5 transition-all duration-200 shadow-xs dark:shadow-sm flex flex-col justify-between min-w-0 h-full",
-      href && "hover:border-slate-300 dark:hover:border-white/20 hover:scale-[1.01] group cursor-pointer"
-    )}>
-      <div>
-        <div className="flex items-center justify-between gap-2">
-          <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 truncate">{label}</span>
-          <div className={cn(
-            "w-7 h-7 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-600 dark:text-slate-400 flex-shrink-0 transition-colors",
-            href && "group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-500/10"
-          )}>
-            <Icon className="w-3.5 h-3.5" />
-          </div>
-        </div>
-        <div className={`mt-2.5 sm:mt-3 text-2xl sm:text-3xl font-light font-mono tracking-tight tabular-nums truncate ${tone === 'danger' ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
-          {value}
-        </div>
-      </div>
-      <div className="mt-3 flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
-        {trend && (
-          <span className={`inline-flex items-center gap-0.5 rounded-md px-1.5 py-0.5 text-[11px] font-semibold font-mono flex-shrink-0 ${
-            trend.dir === 'up' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20' :
-            trend.dir === 'down' ? 'bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/20' : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400'
-          }`}>
-            {trend.dir === 'up' ? '↑' : trend.dir === 'down' ? '↓' : '•'} {trend.label}
-          </span>
-        )}
-        <span className="text-slate-500 dark:text-slate-400 text-[11px] min-w-0 truncate">{caption}</span>
-      </div>
-    </div>
-  )
+function localDate(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 
-  if (href) {
-    return (
-      <Link href={href} className="block min-w-0 h-full focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-2xl">
-        {cardContent}
-      </Link>
-    )
-  }
+// Local dates of the last `n` days (oldest first), for the hours sparkline
+function lastDays(n: number) {
+  return Array.from({ length: n }, (_, i) => {
+    const d = new Date()
+    d.setDate(d.getDate() - (n - 1 - i))
+    return localDate(d)
+  })
+}
 
-  return cardContent
+// Monday starts of the last `n` weeks (oldest first), for weekly sparklines
+function lastWeekStarts(n: number) {
+  const monday = new Date(localWeekStart() + 'T00:00:00')
+  return Array.from({ length: n }, (_, i) => {
+    const d = new Date(monday)
+    d.setDate(d.getDate() - 7 * (n - 1 - i))
+    return localDate(d)
+  })
+}
+
+// Sum amounts into the week each date falls in
+function bucketByWeek(weeks: string[], points: { date: string; amount: number }[]) {
+  return weeks.map((w, i) => {
+    const next = weeks[i + 1]
+    return points
+      .filter(p => p.date >= w && (!next || p.date < next))
+      .reduce((s, p) => s + p.amount, 0)
+  })
 }
 
 export default async function DashboardPage({
@@ -413,6 +386,7 @@ export default async function DashboardPage({
     expensesRes,
     timerRes,
     tokenCountRes,
+    recentTimeRes,
   ] = await Promise.all([
     supabase
       .from('projects')
@@ -426,6 +400,7 @@ export default async function DashboardPage({
     supabase.from('expenses').select('date, amount').eq('user_id', user.id),
     supabase.from('timers').select('description, project_id, started_at').eq('user_id', user.id).maybeSingle(),
     supabase.from('api_tokens').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+    supabase.from('time_entries').select('hours, date').eq('user_id', user.id).gte('date', lastDays(7)[0]),
   ])
 
   const criticalError = projectsRes.error || invoicesRes.error || expensesRes.error
@@ -626,22 +601,37 @@ export default async function DashboardPage({
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 6)
 
+  // ── KPI sparklines ─────────────────────────────────────────────────────
+  const weeks = lastWeekStarts(8)
+  const recentTime = (recentTimeRes.data ?? []) as { hours: number | null; date: string }[]
+  const sparkInvoiced = bucketByWeek(weeks, allInvoices.map(i => ({ date: localDate(new Date(i.created_at)), amount: calcInvoiceTotal(i) })))
+  const sparkPaid = bucketByWeek(weeks, paidPoints)
+  const sparkHours = lastDays(7).map(d => recentTime.filter(t => t.date === d).reduce((s, t) => s + (t.hours ?? 0), 0))
+  const sparkProjects = weeks.map((_, i) => {
+    const next = weeks[i + 1]
+    return allProjects.filter(p => !next || localDate(new Date(p.created_at)) < next).length
+  })
+
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+
   return (
     <AppLayout user={profile ? { name: profile.name ?? null, plan: plan as 'free' | 'pro' } : undefined}>
       <DarkShell>
-        <div className="relative z-10 space-y-7 pb-10">
+        <div className="relative z-10 space-y-6 pb-10 max-w-[1550px] mx-auto">
           <UpgradeToast />
 
-          {/* ── Overads Header ───────────────────────────────────────── */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          {/* ── Greeting ─────────────────────────────────────────────── */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-white">
+              <h1 className="text-2xl sm:text-[27px] font-extrabold text-slate-900 dark:text-white tracking-[-0.02em]">
                 <Greeting name={greetName} />
               </h1>
-              <p className="text-slate-400 text-sm mt-1.5 flex items-center gap-2">
+              <p className="text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                <span>{today}</span>
+                <span className="text-slate-300 dark:text-slate-600">·</span>
                 <span>{activeProjects.length} active project{activeProjects.length !== 1 ? 's' : ''}</span>
-                <span className="text-slate-600">·</span>
-                <span className={attentionCount > 0 ? 'text-amber-400 font-medium' : 'text-emerald-400'}>
+                <span className="text-slate-300 dark:text-slate-600">·</span>
+                <span className={attentionCount > 0 ? 'text-amber-600 dark:text-amber-400 font-semibold' : 'text-emerald-600 dark:text-emerald-400 font-semibold'}>
                   {attentionCount > 0 ? `${attentionCount} item${attentionCount !== 1 ? 's' : ''} need attention` : 'all projects on track'}
                 </span>
               </p>
@@ -649,60 +639,59 @@ export default async function DashboardPage({
 
             <div className="flex items-center gap-2 flex-wrap">
               <TourTrigger />
-              <Link href="/time" data-tour-time-btn="">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shadow-xs dark:shadow-none"
-                >
-                  <Timer className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
-                  Log time
-                </button>
+              <Link
+                href="/time"
+                data-tour-time-btn=""
+                className="inline-flex items-center gap-2 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c] px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition-colors"
+              >
+                <Timer className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                Log time
               </Link>
-              <Link href="/project/new" data-tour-project-btn="">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 px-4 py-2 text-xs font-semibold dark:hover:bg-slate-100 transition-all hover:scale-[1.02] shadow-sm cursor-pointer"
-                >
-                  <Plus className="w-3.5 h-3.5" />
-                  New project
-                </button>
+              <Link
+                href="/project/new"
+                data-tour-project-btn=""
+                className="inline-flex items-center gap-1.5 rounded-md bg-accent hover:bg-accent-hover text-white px-3.5 py-2 text-xs font-semibold shadow-sm shadow-accent/20 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                New project
               </Link>
             </div>
           </div>
 
-          {/* ── Editor Extension Live Status Strip (only shown if user has set up tokens) ── */}
+          {/* ── Editor extension status (only once a token exists) ────── */}
           {hasExtensionToken && (
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12] px-4 sm:px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs dark:shadow-sm ring-1 ring-slate-950/5 dark:ring-white/5">
+            <div className={cn(CARD, 'px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs')}>
               <div className="flex items-center gap-2.5 min-w-0">
                 <span className="relative flex h-2 w-2 flex-shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span className="text-slate-900 dark:text-slate-200 font-medium">Editor Extension Sync</span>
+                <span className="text-slate-900 dark:text-slate-200 font-semibold">Editor extension connected</span>
                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">·</span>
-                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline truncate">Streaming active coding status directly from your editor</span>
+                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline truncate">Your coding status streams to client portals</span>
               </div>
-              <Link href="/settings" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors font-medium flex items-center gap-1 text-[11px] self-start sm:self-auto flex-shrink-0">
-                Extension Tokens <ChevronRight className="w-3.5 h-3.5" />
+              <Link href="/settings" className={cn(CARD_LINK, 'self-start sm:self-auto flex-shrink-0')}>
+                Extension tokens <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           )}
 
           {isNewUser ? (
             /* ── New-user setup state ─────────────────────────────────── */
-            <div className="rounded-3xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-16 px-6 flex flex-col items-center text-center shadow-md dark:shadow-xl">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+            <div className={cn(CARD, 'py-16 px-6 flex flex-col items-center text-center')}>
+              <div className={cn('w-12 h-12 rounded-md border flex items-center justify-center', TONES.indigo.tile)}>
+                <Sparkles className="w-5 h-5" />
               </div>
-              <h2 className="text-xl font-normal text-slate-900 dark:text-white tracking-tight mt-5">Let&apos;s set up your workspace</h2>
+              <h2 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-5">Let&apos;s set up your workspace</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm">
                 Create your first project to start tracking time, broadcasting live presence, and sending client updates.
               </p>
-              <Link href="/project/new" className="mt-6">
-                <button type="button" className="inline-flex items-center gap-2 rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 px-6 py-2.5 text-xs font-semibold dark:hover:bg-slate-100 transition-all shadow-md cursor-pointer">
-                  <Plus className="w-4 h-4" />
-                  Create your first project
-                </button>
+              <Link
+                href="/project/new"
+                className="mt-6 inline-flex items-center gap-2 rounded-md bg-accent hover:bg-accent-hover text-white px-5 py-2.5 text-sm font-semibold shadow-lg shadow-accent/20 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Create your first project
               </Link>
               <Link href="/clients" className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 inline-flex items-center gap-1">
                 or add a client first <ArrowRight className="w-3 h-3" />
@@ -710,69 +699,79 @@ export default async function DashboardPage({
             </div>
           ) : (
             <>
-              {/* ── 4 Overads KPI number boxes ─────────────────────────── */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                <OveradsKpiCard
+              {/* ── KPI cards ──────────────────────────────────────────── */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <KpiCard
+                  id="owed"
                   label="Outstanding"
                   value={fmt$(owedAmount)}
                   icon={DollarSign}
+                  tone={overdueCount > 0 ? 'rose' : 'amber'}
                   href="/invoices"
-                  tone={overdueCount > 0 ? 'danger' : 'default'}
-                  caption={
-                    owedAmount > 0
-                      ? overdueCount > 0
-                        ? `${overdueCount} overdue`
-                        : 'awaiting payment'
-                      : 'all paid up'
-                  }
+                  badge={owedAmount > 0 ? (overdueCount > 0 ? `${overdueCount} overdue` : `${unpaidInvoices.length} awaiting payment`) : 'All paid up'}
+                  badgeTone={owedAmount > 0 ? (overdueCount > 0 ? 'rose' : 'amber') : 'emerald'}
+                  spark={sparkInvoiced}
                 />
-                <OveradsKpiCard
-                  label="This month"
+                <KpiCard
+                  id="month"
+                  label="Net this month"
                   value={fmt$(netThisMonth)}
                   icon={Wallet}
+                  tone="emerald"
                   href="/earnings"
-                  trend={
+                  badge={
                     netThisMonth !== 0 || netLastMonth !== 0
-                      ? { dir: netDiff > 0 ? 'up' : netDiff < 0 ? 'down' : 'flat', label: fmt$(Math.abs(netDiff)) }
-                      : undefined
+                      ? `${netDiff > 0 ? '↑' : netDiff < 0 ? '↓' : '•'} ${fmt$(Math.abs(netDiff))} vs last month`
+                      : 'No payments yet'
                   }
-                  caption={netDiff > 0 ? 'more than last month' : netDiff < 0 ? 'less than last month' : 'vs last month'}
+                  badgeTone={netDiff > 0 ? 'emerald' : netDiff < 0 ? 'rose' : 'slate'}
+                  spark={sparkPaid}
                 />
-                <OveradsKpiCard
+                <KpiCard
+                  id="hours"
                   label="Hours this week"
                   value={fmtHours(hoursThisWeek)}
                   icon={Timer}
+                  tone="sky"
                   href="/time"
-                  trend={
+                  badge={
                     hoursThisWeek > 0 || hoursLastWeek > 0
-                      ? { dir: hoursDiff > 0 ? 'up' : hoursDiff < 0 ? 'down' : 'flat', label: fmtHours(Math.abs(hoursDiff)) }
-                      : undefined
+                      ? `${hoursDiff > 0 ? '↑' : hoursDiff < 0 ? '↓' : '•'} ${fmtHours(Math.abs(hoursDiff))} vs last week`
+                      : 'Nothing logged yet'
                   }
-                  caption={hoursDiff > 0 ? 'more than last week' : hoursDiff < 0 ? 'less than last week' : 'vs last week'}
+                  badgeTone={hoursDiff > 0 ? 'emerald' : hoursDiff < 0 ? 'rose' : 'slate'}
+                  spark={sparkHours}
                 />
-                <OveradsKpiCard
+                <KpiCard
+                  id="projects"
                   label="Active projects"
                   value={activeProjects.length}
                   icon={FolderOpen}
+                  tone="indigo"
                   href="/project"
-                  caption={`of ${allProjects.length} total projects`}
+                  badge={`of ${allProjects.length} total`}
+                  badgeTone="slate"
+                  spark={sparkProjects}
                 />
               </div>
 
               {/* ── Two-column workspace ─────────────────────────────────── */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
 
-                {/* Left column (wider): needs attention + chart */}
-                <div className="lg:col-span-2 space-y-6 min-w-0 w-full">
-                  {/* ── Needs attention to-do list (Immediate priority at top) ── */}
+                {/* Left column: needs attention + cash flow */}
+                <div className="xl:col-span-8 space-y-6 min-w-0 w-full">
                   {attentionCount > 0 && (
-                    <section className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h2 className="text-[10px] font-medium uppercase tracking-[0.18em] text-amber-400">Needs attention</h2>
-                        <span className="text-[11px] text-slate-400">{attentionCount} action required</span>
+                    <section className={cn(CARD, 'overflow-hidden')}>
+                      <div className="flex items-center justify-between px-5 pt-5 pb-3">
+                        <div className="flex items-center gap-2">
+                          <h2 className={CARD_TITLE}>Needs attention</h2>
+                          <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', TONES.amber.pill)}>
+                            {attentionCount} to do
+                          </span>
+                        </div>
                       </div>
 
-                      <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden shadow-xs dark:shadow-sm">
+                      <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05] border-t border-[#f1f3f7] dark:border-white/[0.05]">
                         {overdueProjects.map(p => {
                           const sent = (p.updates ?? []).filter(u => u.sent_at).sort((a, b) => new Date(b.sent_at!).getTime() - new Date(a.sent_at!).getTime())
                           const lastSent = sent[0]?.sent_at
@@ -784,22 +783,20 @@ export default async function DashboardPage({
                             : `Created ${daysSince}d ago · No update sent yet · ${p.client_name}`
 
                           return (
-                            <div key={`u-${p.id}`} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                              <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                                <span className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center flex-shrink-0 text-amber-600 dark:text-amber-400">
+                            <div key={`u-${p.id}`} className={cn(ROW, 'flex-col sm:flex-row items-stretch sm:items-center justify-between')}>
+                              <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <span className={cn('w-8 h-8 rounded-md border flex items-center justify-center flex-shrink-0', TONES.amber.tile)}>
                                   <Send className="w-3.5 h-3.5" />
                                 </span>
                                 <div className="min-w-0 flex-1">
-                                  <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{p.project_name}</p>
-                                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{subtitle}</p>
+                                  <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">{p.project_name}</p>
+                                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{subtitle}</p>
                                 </div>
                               </div>
                               <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto pl-11 sm:pl-0">
                                 <RemindSelfButton projectId={p.id} />
-                                <Link href={`/project/${p.id}/update`}>
-                                  <button type="button" className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-medium transition-colors cursor-pointer">
-                                    Send update
-                                  </button>
+                                <Link href={`/project/${p.id}/update`} className="px-3 py-1.5 rounded-md bg-accent hover:bg-accent-hover text-white text-xs font-semibold transition-colors">
+                                  Send update
                                 </Link>
                               </div>
                             </div>
@@ -807,68 +804,58 @@ export default async function DashboardPage({
                         })}
 
                         {pendingApprovals.map(a => (
-                          <div key={`a-${a.id}`} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                              <span className="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center flex-shrink-0 text-violet-600 dark:text-violet-400">
+                          <div key={`a-${a.id}`} className={cn(ROW, 'flex-col sm:flex-row items-stretch sm:items-center justify-between')}>
+                            <div className="flex items-center gap-3 min-w-0 flex-1">
+                              <span className={cn('w-8 h-8 rounded-md border flex items-center justify-center flex-shrink-0', TONES.violet.tile)}>
                                 <CheckCircle2 className="w-3.5 h-3.5" />
                               </span>
                               <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{a.title}</p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Waiting on client approval · {a.projectName}</p>
+                                <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">{a.title}</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">Waiting on client approval · {a.projectName}</p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto pl-11 sm:pl-0">
-                              <Link href={`/project/${a.projectId}`}>
-                                <button type="button" className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 text-xs font-medium border border-slate-200 dark:border-white/10 transition-colors cursor-pointer">
-                                  Follow up
-                                </button>
-                              </Link>
-                            </div>
+                            <Link href={`/project/${a.projectId}`} className="self-end sm:self-auto flex-shrink-0 px-3 py-1.5 rounded-md border border-[#eaecf2] dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.06] text-xs font-semibold transition-colors">
+                              Follow up
+                            </Link>
                           </div>
                         ))}
 
                         {unsignedContracts.map(c => (
-                          <div key={`c-${c.id}`} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
-                            <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-                              <span className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-indigo-400">
+                          <div key={`c-${c.id}`} className={cn(ROW, 'flex-col sm:flex-row items-stretch sm:items-center justify-between')}>
+                            <div className="flex items-center gap-3 min-w-0 flex-1">
+                              <span className={cn('w-8 h-8 rounded-md border flex items-center justify-center flex-shrink-0', TONES.indigo.tile)}>
                                 <FileSignature className="w-3.5 h-3.5" />
                               </span>
                               <div className="min-w-0 flex-1">
-                                <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{c.title}</p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 truncate">Contract not signed yet · {c.projectName}</p>
+                                <p className="text-xs font-semibold text-slate-900 dark:text-white truncate">{c.title}</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">Contract not signed yet · {c.projectName}</p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0 self-end sm:self-auto pl-11 sm:pl-0">
-                              <Link href={`/project/${c.projectId}/contract`}>
-                                <button type="button" className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-800 dark:text-white text-xs font-medium transition-colors cursor-pointer">
-                                  Review &amp; sign
-                                </button>
-                              </Link>
-                            </div>
+                            <Link href={`/project/${c.projectId}/contract`} className="self-end sm:self-auto flex-shrink-0 px-3 py-1.5 rounded-md border border-[#eaecf2] dark:border-white/10 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.06] text-xs font-semibold transition-colors">
+                              Review &amp; sign
+                            </Link>
                           </div>
                         ))}
                       </div>
                     </section>
                   )}
 
-                  {/* ── Cash Flow Chart ────────────────────────────────────── */}
                   <RevenueChart paid={paidPoints} expenses={expensePoints} />
                 </div>
 
-                {/* Right column: timer + invoices + projects */}
-                <div className="space-y-6 lg:sticky lg:top-8 min-w-0 w-full">
+                {/* Right column: timer, unpaid invoices, activity */}
+                <div className="xl:col-span-4 space-y-6 xl:sticky xl:top-8 min-w-0 w-full">
 
-                  {/* ── Active timer / Workstation Card ───────────────────── */}
                   {runningTimer ? (
-                    <Link href="/time" className="block rounded-2xl bg-white dark:bg-[#0c0d12] border border-emerald-500/20 dark:border-emerald-500/25 ring-1 ring-emerald-500/10 p-4 space-y-3 hover:border-emerald-500/40 transition-all shadow-xs dark:shadow-sm">
+                    <Link href="/time" className={cn(CARD, 'block p-4 space-y-2.5 border-emerald-200 dark:border-emerald-500/25 hover:border-emerald-300 dark:hover:border-emerald-500/40 transition-colors')}>
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                        <span className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[11px] font-semibold', TONES.emerald.pill)}>
                           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Timer running</span>
-                        </div>
-                        <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 font-mono">View timer →</span>
+                          Timer running
+                        </span>
+                        <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">View timer →</span>
                       </div>
-                      <div className="text-sm font-semibold text-slate-900 dark:text-white truncate">{runningTimer.description || 'Untitled task'}</div>
+                      <div className="text-sm font-bold text-slate-900 dark:text-white truncate">{runningTimer.description || 'Untitled task'}</div>
                       {timerProject && (
                         <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                           <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: timerProject.color }} />
@@ -877,52 +864,46 @@ export default async function DashboardPage({
                       )}
                     </Link>
                   ) : (
-                    <Link href="/time" className="flex items-center gap-3 rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 px-4 py-3.5 hover:border-indigo-500/30 hover:scale-[1.01] transition-all shadow-xs dark:shadow-sm group">
-                      <span className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-indigo-400 group-hover:scale-105 transition-transform">
+                    <Link href="/time" className={cn(CARD, 'flex items-center gap-3 px-4 py-3.5 hover:border-slate-300 dark:hover:border-white/20 transition-colors group')}>
+                      <span className={cn('w-8 h-8 rounded-md border flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform', TONES.indigo.tile)}>
                         <Timer className="w-4 h-4" />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">Start a timer</p>
+                        <p className="text-xs font-bold text-slate-900 dark:text-white">Start a timer</p>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400">Track billable work with 1 click</p>
                       </div>
-                      <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                      <span className={CARD_LINK}>
                         Track <ChevronRight className="w-3.5 h-3.5" />
                       </span>
                     </Link>
                   )}
 
-                  {/* ── Unpaid Invoices ──────────────────────────────────── */}
                   {upcomingInvoices.length > 0 && (
-                    <section className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h2 className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Unpaid Invoices</h2>
-                        <Link href="/invoices" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 inline-flex items-center gap-0.5">
+                    <section className={cn(CARD, 'overflow-hidden')}>
+                      <div className="flex items-center justify-between px-5 pt-5 pb-3">
+                        <h2 className={CARD_TITLE}>Unpaid invoices</h2>
+                        <Link href="/invoices" className={CARD_LINK}>
                           View all <ChevronRight className="w-3.5 h-3.5" />
                         </Link>
                       </div>
-
-                      <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden shadow-xs dark:shadow-sm">
+                      <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05] border-t border-[#f1f3f7] dark:border-white/[0.05]">
                         {upcomingInvoices.map(inv => {
                           const due = dueLabel(inv.due_date)
                           return (
-                            <Link
-                              key={inv.id}
-                              href={`/invoices/${inv.id}`}
-                              className="flex items-center gap-3 p-3.5 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group"
-                            >
-                              <span className={cn(
-                                'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0',
-                                due?.overdue ? 'bg-rose-500/10 text-rose-500 dark:text-rose-400' : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400',
-                              )}>
+                            <Link key={inv.id} href={`/invoices/${inv.id}`} className={cn(ROW, 'group')}>
+                              <span className={cn('w-8 h-8 rounded-md border flex items-center justify-center flex-shrink-0', due?.overdue ? TONES.rose.tile : TONES.slate.tile)}>
                                 <FileText className="w-3.5 h-3.5" />
                               </span>
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">{inv.client_name}</p>
-                                <p className={cn('text-[11px] truncate', due?.overdue ? 'text-rose-600 dark:text-rose-400 font-medium' : 'text-slate-500 dark:text-slate-400')}>
-                                  {inv.invoice_number} · {due?.text}
-                                </p>
+                                <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-accent dark:group-hover:text-indigo-300 transition-colors">{inv.client_name}</p>
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate font-mono">{inv.invoice_number}</p>
                               </div>
-                              <span className="text-xs font-semibold text-slate-900 dark:text-white font-mono tabular-nums flex-shrink-0">{fmt$(calcInvoiceTotal(inv))}</span>
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-xs font-bold text-slate-900 dark:text-white tabular-nums">{fmt$(calcInvoiceTotal(inv))}</p>
+                                <span className={cn('inline-block mt-0.5 px-1.5 py-px rounded border text-[10px] font-semibold', due?.overdue ? TONES.rose.pill : TONES.slate.pill)}>
+                                  {due?.text}
+                                </span>
+                              </div>
                             </Link>
                           )
                         })}
@@ -930,43 +911,40 @@ export default async function DashboardPage({
                     </section>
                   )}
 
-                  {/* ── Recent Activity ──────────────────────────────────── */}
-                  <section className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Recent Activity</h2>
-                      <Link href="/project" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 inline-flex items-center gap-0.5">
+                  <section className={cn(CARD, 'overflow-hidden')}>
+                    <div className="flex items-center justify-between px-5 pt-5 pb-3">
+                      <div className="flex items-center gap-2">
+                        <h2 className={CARD_TITLE}>Recent activity</h2>
+                        {activityFeed.length > 0 && <span className="w-2 h-2 rounded-full bg-emerald-500" />}
+                      </div>
+                      <Link href="/project" className={CARD_LINK}>
                         All projects <ChevronRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
 
                     {activityFeed.length === 0 ? (
-                      <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 py-8 px-5 flex flex-col items-center text-center gap-2">
-                        <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center">
-                          <FolderOpen className="w-4 h-4 text-slate-400" />
+                      <div className="py-8 px-5 flex flex-col items-center text-center gap-2 border-t border-[#f1f3f7] dark:border-white/[0.05]">
+                        <div className={cn('w-9 h-9 rounded-md border flex items-center justify-center', TONES.slate.tile)}>
+                          <FolderOpen className="w-4 h-4" />
                         </div>
                         <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">No recent activity yet</p>
-                        <Link href="/project/new" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 inline-flex items-center gap-1 mt-1">
+                        <Link href="/project/new" className={cn(CARD_LINK, 'mt-1')}>
                           <Plus className="w-3 h-3" /> Start a project
                         </Link>
                       </div>
                     ) : (
-                      <div className="rounded-2xl bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/5 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden shadow-xs dark:shadow-sm">
+                      <div className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05] border-t border-[#f1f3f7] dark:border-white/[0.05]">
                         {activityFeed.map(item => {
                           const timeStr = formatRelativeTime(item.date)
+                          const tone =
+                            item.type === 'invoice_paid' ? TONES.emerald
+                            : item.type === 'invoice_sent' ? TONES.indigo
+                            : item.type === 'update' ? TONES.violet
+                            : item.type === 'contract_signed' ? TONES.sky
+                            : TONES.slate
                           return (
-                            <Link
-                              key={item.id}
-                              href={item.href}
-                              className="flex items-center gap-3 p-3.5 hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group"
-                            >
-                              <span className={cn(
-                                "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 border",
-                                item.type === 'invoice_paid' && "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 dark:text-emerald-400",
-                                item.type === 'invoice_sent' && "bg-indigo-500/10 border-indigo-500/20 text-indigo-500 dark:text-indigo-400",
-                                item.type === 'update' && "bg-violet-500/10 border-violet-500/20 text-violet-500 dark:text-violet-400",
-                                item.type === 'contract_signed' && "bg-cyan-500/10 border-cyan-500/20 text-cyan-500 dark:text-cyan-400",
-                                item.type === 'project_created' && "bg-slate-500/10 border-slate-500/20 text-slate-500 dark:text-slate-400"
-                              )}>
+                            <Link key={item.id} href={item.href} className={cn(ROW, 'group')}>
+                              <span className={cn('w-8 h-8 rounded-md border flex items-center justify-center flex-shrink-0', tone.tile)}>
                                 {item.type === 'invoice_paid' && <CheckCircle2 className="w-3.5 h-3.5" />}
                                 {item.type === 'invoice_sent' && <FileText className="w-3.5 h-3.5" />}
                                 {item.type === 'update' && <Send className="w-3.5 h-3.5" />}
@@ -974,7 +952,7 @@ export default async function DashboardPage({
                                 {item.type === 'project_created' && <FolderOpen className="w-3.5 h-3.5" />}
                               </span>
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
+                                <p className="text-xs font-semibold text-slate-900 dark:text-white truncate group-hover:text-accent dark:group-hover:text-indigo-300 transition-colors">
                                   {item.title}
                                 </p>
                                 <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
@@ -982,11 +960,10 @@ export default async function DashboardPage({
                                 </p>
                               </div>
                               {typeof item.amount === 'number' && (
-                                <span className="text-xs font-mono font-medium text-slate-900 dark:text-slate-200 tabular-nums flex-shrink-0">
+                                <span className="text-xs font-bold text-slate-900 dark:text-slate-200 tabular-nums flex-shrink-0">
                                   {fmt$(item.amount)}
                                 </span>
                               )}
-                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors flex-shrink-0" />
                             </Link>
                           )
                         })}
@@ -994,29 +971,25 @@ export default async function DashboardPage({
                     )}
                   </section>
 
-                  {/* ── Upgrade nudge (Free tier only) ───────────────────── */}
                   {isFree && (
                     <Link
                       href="/upgrade"
-                      className="flex items-center gap-3 rounded-2xl bg-gradient-to-br from-indigo-950/60 to-[#0c0d14] border border-indigo-500/25 px-4 py-3.5 hover:border-indigo-500/50 transition-all group shadow-sm"
+                      className="flex items-center gap-3 rounded-md bg-accent hover:bg-accent-hover text-white px-4 py-3.5 shadow-lg shadow-accent/20 transition-colors group"
                     >
-                      <span className="w-8 h-8 rounded-lg bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                        <Sparkles className="w-4 h-4 text-indigo-400" />
+                      <span className="w-8 h-8 rounded-md bg-white/15 border border-white/20 flex items-center justify-center flex-shrink-0">
+                        <Sparkles className="w-4 h-4" />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs font-semibold text-white">Upgrade to Pro</p>
-                        <p className="text-[11px] text-indigo-300/70">Unlimited projects · custom branding · auto emails</p>
+                        <p className="text-xs font-bold">Upgrade to Pro</p>
+                        <p className="text-[11px] text-white/75">Unlimited projects · custom branding · auto emails</p>
                       </div>
-                      <ArrowUpRight className="w-4 h-4 text-indigo-400 group-hover:text-white transition-colors flex-shrink-0" />
+                      <ArrowUpRight className="w-4 h-4 text-white/80 group-hover:text-white transition-colors flex-shrink-0" />
                     </Link>
                   )}
-
                 </div>
-
               </div>
             </>
           )}
-
         </div>
       </DarkShell>
       <ProductTour userId={user.id} isAgency={activeWorkspaceId !== 'personal'} />

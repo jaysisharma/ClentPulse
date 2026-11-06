@@ -1,4 +1,5 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { getProjectAccess } from '@/lib/project-access'
 import { NextResponse } from 'next/server'
 
 export async function POST(
@@ -13,23 +14,37 @@ export async function POST(
     if (!['approve', 'decline'].includes(action)) {
       return NextResponse.json({ error: 'Action must be approve or decline' }, { status: 400 })
     }
+    if (notes != null && (typeof notes !== 'string' || notes.length > 2000)) {
+      return NextResponse.json({ error: 'Notes must be text under 2000 characters' }, { status: 400 })
+    }
 
-    const supabase = await createClient()
+    // Service role: change_orders has no public write policy, so access is checked here
+    const admin = createAdminClient()
 
-    // Fetch change order
-    const { data: changeOrder, error: fetchError } = await supabase
+    const { data: changeOrder } = await admin
       .from('change_orders')
-      .select('id, project_id, amount, requires_payment, status')
+      .select('id, project_id, status')
       .eq('id', id)
-      .single()
+      .maybeSingle()
 
-    if (fetchError || !changeOrder) {
+    if (!changeOrder || changeOrder.status === 'draft') {
       return NextResponse.json({ error: 'Change order not found' }, { status: 404 })
     }
 
-    const newStatus = action === 'approve' ? 'approved' : 'declined'
+    const access = await getProjectAccess(changeOrder.project_id)
+    if (!access) {
+      return NextResponse.json({ error: 'Change order not found' }, { status: 404 })
+    }
+    if (!access.canActAsClient) {
+      return NextResponse.json({ error: 'Passcode verification required for this portal' }, { status: 401 })
+    }
+
+    if (changeOrder.status !== 'pending') {
+      return NextResponse.json({ error: 'This change order has already been reviewed' }, { status: 400 })
+    }
+
     const updatePayload: Record<string, any> = {
-      status: newStatus,
+      status: action === 'approve' ? 'approved' : 'declined',
       client_notes: notes || null,
     }
 
@@ -37,10 +52,11 @@ export async function POST(
       updatePayload.approved_at = new Date().toISOString()
     }
 
-    const { data: updated, error: updateError } = await supabase
+    const { data: updated, error: updateError } = await admin
       .from('change_orders')
       .update(updatePayload)
       .eq('id', id)
+      .eq('status', 'pending')
       .select('*')
       .single()
 

@@ -31,13 +31,6 @@ create policy "Users manage own documents" on public.documents
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
 -- Public signing link: the client opens /doc/<uuid> to view and respond
--- (sign / approve / decline). The UUID is the unguessable secret — same trust
--- model the rest of the public client flows use. Anyone with a valid id may
--- read and update it, so treat document ids as private links.
-drop policy if exists "Public can view documents" on public.documents;
-create policy "Public can view documents" on public.documents
-  for select using (true);
-
-drop policy if exists "Public can respond to documents" on public.documents;
-create policy "Public can respond to documents" on public.documents
-  for update using (true) with check (true);
+-- (sign / approve / decline). That access goes through the security-definer
+-- functions in secure-documents-migration.sql — never add public policies here,
+-- since `using (true)` exposes every tenant's rows, not just the one id.

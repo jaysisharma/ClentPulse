@@ -113,7 +113,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-md dark:backdrop-blur-xl animate-fade-in">
       <div
         className={cn(
-          "w-full max-w-xl rounded-[28px] bg-white dark:bg-[#0c0d12] border border-slate-200 dark:border-white/10 ring-1 ring-slate-950/5 dark:ring-white/10 shadow-2xl dark:shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transition-all duration-300 relative",
+          "w-full max-w-xl rounded-md bg-white dark:bg-[#12141c] border border-[#eaecf2] dark:border-white/[0.08] shadow-2xl dark:shadow-[0_30px_90px_rgba(0,0,0,0.95)] overflow-hidden transition-all duration-300 relative",
           success ? "scale-[0.98] border-emerald-500/20" : "scale-100"
         )}
       >
@@ -142,7 +142,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             <div>
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
-                <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-400 dark:text-slate-400">
+                <span className="text-xs font-semibold text-slate-400 dark:text-slate-400">
                   Feedback & Suggestions
                 </span>
               </div>
@@ -154,7 +154,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
             {/* Category Selectors */}
             <div className="space-y-2">
-              <label className="block text-[10px] font-medium uppercase tracking-[0.15em] text-slate-400 dark:text-slate-400">
+              <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400">
                 Channel
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -167,14 +167,14 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                       type="button"
                       onClick={() => setCategory(cat.value)}
                       className={cn(
-                        "flex flex-col items-start text-left p-3 rounded-xl border transition-all cursor-pointer",
+                        "flex flex-col items-start text-left p-3 rounded-md border transition-all cursor-pointer",
                         active
                           ? "bg-indigo-50/50 border-indigo-300 dark:bg-white/[0.08] dark:border-white/30 ring-1 ring-indigo-500/20 dark:ring-white/10"
-                          : "border-slate-200 dark:border-white/5 bg-slate-50/60 dark:bg-white/[0.02] hover:bg-slate-100/60 dark:hover:bg-white/[0.05] hover:border-slate-300 dark:hover:border-white/15"
+                          : "border-[#eaecf2] dark:border-white/[0.05] bg-slate-50/60 dark:bg-white/[0.02] hover:bg-slate-100/60 dark:hover:bg-white/[0.05] hover:border-slate-300 dark:hover:border-white/15"
                       )}
                     >
                       <div className="flex items-center gap-2">
-                        <span className={cn("p-1 rounded-md border", active ? cat.bg : "bg-white dark:bg-white/5 border-slate-200 dark:border-transparent")}>
+                        <span className={cn("p-1 rounded-md border", active ? cat.bg : "bg-white dark:bg-white/5 border-[#eaecf2] dark:border-transparent")}>
                           <Icon className={cn("w-3.5 h-3.5", active ? cat.color : "text-slate-400 dark:text-slate-500")} />
                         </span>
                         <span className={cn("text-xs font-medium", active ? "text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-400")}>
@@ -193,7 +193,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             {/* Subject Input */}
             {category !== 'nps_score' && (
               <div className="space-y-1.5">
-                <label htmlFor="subject" className="block text-[10px] font-medium uppercase tracking-[0.15em] text-slate-400 dark:text-slate-400">
+                <label htmlFor="subject" className="block text-xs font-semibold text-slate-600 dark:text-slate-400">
                   Subject
                 </label>
                 <input
@@ -206,7 +206,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                       category === 'feature_request' ? 'E.g., Multi-currency client invoicing support' :
                         'E.g., Question about Stripe webhook renewals'
                   }
-                  className="w-full text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] rounded-xl px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
+                  className="w-full text-xs text-slate-900 dark:text-white border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.03] rounded-md px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all"
                 />
               </div>
             )}
@@ -215,7 +215,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             {(category === 'nps_score' || category === 'feature_request') && (
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="block text-[10px] font-medium uppercase tracking-[0.15em] text-slate-400 dark:text-slate-400">
+                  <label className="block text-xs font-semibold text-slate-600 dark:text-slate-400">
                     {category === 'nps_score' ? 'How likely are you to recommend Frevio?' : 'Priority Rating'}
                   </label>
                   <span className="text-xs font-mono text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 px-2 py-0.5 rounded-full font-medium">
@@ -229,10 +229,10 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                       type="button"
                       onClick={() => handleRatingClick(val)}
                       className={cn(
-                        "h-8 rounded-lg flex items-center justify-center text-xs font-mono transition-all border cursor-pointer",
+                        "h-8 rounded-md flex items-center justify-center text-xs font-mono transition-all border cursor-pointer",
                         rating === val
-                          ? "bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white font-bold shadow-xs dark:shadow-[0_0_12px_rgba(255,255,255,0.3)]"
-                          : "bg-slate-100 dark:bg-white/[0.02] border-slate-200/80 dark:border-white/5 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
+                          ? "bg-accent hover:bg-accent-hover text-white border-slate-900 dark:border-white font-bold shadow-xs dark:shadow-[0_0_12px_rgba(255,255,255,0.3)]"
+                          : "bg-slate-100 dark:bg-white/[0.02] border-[#eaecf2] dark:border-white/[0.05] text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white"
                       )}
                     >
                       {val}
@@ -248,7 +248,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
             {/* Message/Comment Textarea */}
             <div className="space-y-1.5">
-              <label htmlFor="comment" className="block text-[10px] font-medium uppercase tracking-[0.15em] text-slate-400 dark:text-slate-400">
+              <label htmlFor="comment" className="block text-xs font-semibold text-slate-600 dark:text-slate-400">
                 {category === 'bug_report' ? 'Steps to Reproduce / Details' :
                   category === 'support_message' ? 'What can we help you with?' :
                     category === 'nps_score' ? 'What is the main reason for your score?' :
@@ -264,13 +264,13 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                     category === 'nps_score' ? 'What do you appreciate most, or what would get us to a 10/10?' :
                       'Describe your ideal workflow or requested integration.'
                 }
-                className="w-full text-xs text-slate-900 dark:text-white border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.03] rounded-xl px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all resize-none leading-relaxed"
+                className="w-full text-xs text-slate-900 dark:text-white border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.03] rounded-md px-3.5 py-2.5 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-white/30 focus:ring-1 focus:ring-indigo-500/20 dark:focus:ring-white/20 transition-all resize-none leading-relaxed"
               />
             </div>
 
             {/* Error Notice */}
             {error && (
-              <div className="p-3 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs rounded-xl flex items-start gap-2.5">
+              <div className="p-3 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs rounded-md flex items-start gap-2.5">
                 <AlertTriangle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
@@ -282,14 +282,14 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 type="button"
                 onClick={onClose}
                 disabled={submitting}
-                className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white px-5 py-2 text-xs transition-all cursor-pointer disabled:opacity-50 font-medium"
+                className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white px-5 py-2 text-xs transition-all cursor-pointer disabled:opacity-50 font-medium"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold px-6 py-2 text-xs hover:bg-slate-800 dark:hover:bg-slate-100 transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-6 py-2 text-xs transition-all shadow-sm flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {submitting ? (
                   <>

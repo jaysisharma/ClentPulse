@@ -111,7 +111,7 @@ export function MilestonesWidget({
       {adding && (
         <div className="flex gap-2 mb-3">
           <input
-            className="flex-1 px-3 py-2 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all"
+            className="flex-1 px-3 py-2 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all"
             placeholder="Milestone title"
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
@@ -120,14 +120,14 @@ export function MilestonesWidget({
           />
           <input
             type="date"
-            className="w-32 px-2.5 py-2 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all [color-scheme:light] dark:[color-scheme:dark]"
+            className="w-32 px-2.5 py-2 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white focus:outline-none focus:border-slate-400 dark:focus:border-white/30 transition-all [color-scheme:light] dark:[color-scheme:dark]"
             value={newDate}
             onChange={e => setNewDate(e.target.value)}
           />
           <button
             onClick={addMilestone}
             disabled={!newTitle.trim() || saving}
-            className="px-3 py-2 rounded-xl text-white text-xs font-semibold disabled:opacity-50 transition-all shadow-xs"
+            className="px-3 py-2 rounded-md text-white text-xs font-semibold disabled:opacity-50 transition-all shadow-xs"
             style={{ backgroundColor: color }}
           >
             <Plus className="w-4 h-4" />

@@ -63,6 +63,8 @@ declare module 'vscode' {
 
   export interface TextEditor {
     readonly document: TextDocument
+    readonly selection: { active: any }
+    edit(callback: (editBuilder: { insert: (location: any, value: string) => void }) => void): Promise<boolean>
   }
 
   export enum ConfigurationTarget {
@@ -89,8 +91,14 @@ declare module 'vscode' {
     report(value: T): void
   }
 
+  export interface WindowState {
+    readonly focused: boolean
+  }
+
   export namespace window {
     export let activeTextEditor: TextEditor | undefined
+    export const state: WindowState
+    export const onDidChangeWindowState: Event<WindowState>
     export const onDidChangeActiveTextEditor: Event<TextEditor | undefined>
     export function createStatusBarItem(alignment?: StatusBarAlignment, priority?: number): StatusBarItem
     export function showInputBox(options?: {
@@ -104,6 +112,15 @@ declare module 'vscode' {
     export function showInformationMessage<T extends string>(message: string, ...items: T[]): Promise<T | undefined>
     export function showWarningMessage<T extends string>(message: string, ...items: T[]): Promise<T | undefined>
     export function showErrorMessage<T extends string>(message: string, ...items: T[]): Promise<T | undefined>
+    export function showOpenDialog(options?: {
+      canSelectFiles?: boolean
+      canSelectFolders?: boolean
+      canSelectMany?: boolean
+      defaultUri?: Uri
+      openLabel?: string
+      title?: string
+      filters?: { [name: string]: string[] }
+    }): Promise<Uri[] | undefined>
     export function showQuickPick<T extends QuickPickItem>(items: T[], options?: { placeHolder?: string }): Promise<T | undefined>
     export function withProgress<R>(
       options: { location: ProgressLocation; title?: string; cancellable?: boolean },
@@ -114,6 +131,7 @@ declare module 'vscode' {
   export namespace workspace {
     export let workspaceFolders: readonly WorkspaceFolder[] | undefined
     export function getConfiguration(section?: string): WorkspaceConfiguration
+    export function findFiles(include: string, exclude?: string | null, maxResults?: number): Promise<Uri[]>
     export const onDidChangeTextDocument: Event<any>
     export const onDidSaveTextDocument: Event<TextDocument>
     export const onDidChangeWorkspaceFolders: Event<any>
@@ -126,5 +144,9 @@ declare module 'vscode' {
 
   export namespace env {
     export function openExternal(target: Uri): Promise<boolean>
+    export const clipboard: {
+      writeText(value: string): Promise<void>
+      readText(): Promise<string>
+    }
   }
 }

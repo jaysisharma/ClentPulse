@@ -2,7 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { stripe } from '@/lib/stripe'
 import Stripe from 'stripe'
 import { NextResponse } from 'next/server'
-import { headers } from 'next/headers'
+import { claimStripeEvent, markStripeEventDone, releaseStripeEvent } from '@/lib/stripe-events'
 
 export async function POST(request: Request) {
   const body = await request.text()
@@ -30,32 +30,17 @@ export async function POST(request: Request) {
 
   const supabase = createAdminClient()
 
-  // -------------------------------------------------------------
-  // Idempotency check with processing / done status
-  // -------------------------------------------------------------
-  const { data: existing } = await supabase
-    .from('processed_stripe_events')
-    .select('event_id, status, created_at')
-    .eq('event_id', event.id)
-    .maybeSingle()
-
-  if (existing) {
-    if (existing.status === 'done') {
-      return NextResponse.json({ received: true, duplicate: true })
-    }
-    // If another invocation is actively processing (< 60s ago), acknowledge early
-    const ageMs = Date.now() - new Date(existing.created_at).getTime()
-    if (ageMs < 60_000) {
-      return NextResponse.json({ received: true, in_progress: true })
-    }
-  } else {
-    const { error: insErr } = await supabase
-      .from('processed_stripe_events')
-      .insert({ event_id: event.id, status: 'processing' })
-
-    if (insErr && insErr.code === '23505') {
-      return NextResponse.json({ received: true, duplicate: true })
-    }
+  let claim
+  try {
+    claim = await claimStripeEvent(supabase, event.id)
+  } catch (err) {
+    console.error('[Connect Webhook] Idempotency check failed:', err)
+    return NextResponse.json({ error: 'Failed to verify event idempotency' }, { status: 500 })
+  }
+  if (claim === 'duplicate') return NextResponse.json({ received: true, duplicate: true })
+  if (claim === 'in_progress') {
+    // Non-2xx so Stripe retries; if the other attempt dies, the retry takes over.
+    return NextResponse.json({ error: 'Event is being processed' }, { status: 409 })
   }
 
   try {
@@ -204,7 +189,8 @@ export async function POST(request: Request) {
                 .update({
                   status: 'paid',
                   paid_at: new Date().toISOString(),
-                  stripe_charge_id: typeof pi.latest_charge === 'string' ? pi.latest_charge : pi.id,
+                  // Same id the checkout path stores, so refunds can find the invoice
+                  stripe_charge_id: pi.id,
                 })
                 .eq('id', invoice.id)
 
@@ -225,11 +211,31 @@ export async function POST(request: Request) {
     // -------------------------------------------------------------
     if (event.type === 'charge.refunded') {
       const charge = event.data.object as Stripe.Charge
-      const invoiceId = charge.metadata?.invoiceId || charge.metadata?.invoice_id
-      if (invoiceId) {
-        await supabase.from('invoices').update({ status: 'refunded' }).eq('id', invoiceId)
-      } else if (charge.id) {
-        await supabase.from('invoices').update({ status: 'refunded' }).eq('stripe_charge_id', charge.id)
+      // charge.refunded is only true once the full amount is refunded; partial
+      // refunds leave the invoice as paid.
+      if (charge.refunded && connectedAccount) {
+        // Invoices store the payment intent id (checkout) — older rows may hold the charge id.
+        const paymentIntentId = typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id
+        const ids = [paymentIntentId, charge.id].filter((v): v is string => Boolean(v))
+
+        const { data: matches } = await supabase
+          .from('invoices')
+          .select('id, user_id')
+          .in('stripe_charge_id', ids)
+
+        for (const invoice of matches ?? []) {
+          // Only the invoice owner's own Stripe account can refund it
+          const { data: owner } = await supabase
+            .from('users')
+            .select('stripe_account_id')
+            .eq('id', invoice.user_id)
+            .single()
+          if (owner?.stripe_account_id !== connectedAccount) {
+            console.error(`[Connect Webhook] Refund account mismatch for invoice ${invoice.id}`)
+            continue
+          }
+          await supabase.from('invoices').update({ status: 'refunded' }).eq('id', invoice.id)
+        }
       }
     }
 
@@ -293,20 +299,12 @@ export async function POST(request: Request) {
       }
     }
 
-    // REQUIREMENT (b): Update status to 'done' only on success
-    await supabase
-      .from('processed_stripe_events')
-      .update({ status: 'done', updated_at: new Date().toISOString() })
-      .eq('event_id', event.id)
+    await markStripeEventDone(supabase, event.id)
 
     return NextResponse.json({ received: true })
   } catch (err: unknown) {
-    // REQUIREMENT (b): Delete the row on failure so Stripe retry succeeds
     console.error(`[Connect Webhook] Handler failed on event ${event.id}:`, err)
-    await supabase
-      .from('processed_stripe_events')
-      .delete()
-      .eq('event_id', event.id)
+    await releaseStripeEvent(supabase, event.id)
 
     const msg = err instanceof Error ? err.message : 'Processing failed'
     return NextResponse.json({ error: msg }, { status: 500 })

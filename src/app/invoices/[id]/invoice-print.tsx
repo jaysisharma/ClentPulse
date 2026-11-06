@@ -22,6 +22,8 @@ interface Invoice {
   tax_rate?: number | null
   tax_id?: string | null
   is_deposit?: boolean | null
+  is_retainer?: boolean | null
+  retainer_period?: string | null
   items: LineItem[]
   notes: string | null
   created_at: string
@@ -77,7 +79,7 @@ export function InvoicePrint({
   // Dynamic invoice status resolver
   const normalizedStatus = invoice.status?.toLowerCase() || 'sent'
   let statusBadge = (
-    <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 print:text-slate-800">
+    <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-slate-700 dark:text-slate-300 print:text-slate-800">
       <span className="size-1.5 rounded-full bg-slate-400" />
       <span>PAYMENT DUE {dueDateFormatted ? `· DUE ${dueDateFormatted.toUpperCase()}` : ''}</span>
     </div>
@@ -85,42 +87,42 @@ export function InvoicePrint({
 
   if (isPaid) {
     statusBadge = (
-      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 print:text-emerald-800">
+      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400 print:text-emerald-800">
         <span className="size-1.5 rounded-full bg-emerald-500" />
         <span>PAID {paidDateFormatted ? `· ${paidDateFormatted.toUpperCase()}` : `· ${issueDateFormatted.toUpperCase()}`}</span>
       </div>
     )
   } else if (overdue) {
     statusBadge = (
-      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400 print:text-rose-800">
+      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-rose-600 dark:text-rose-400 print:text-rose-800">
         <span className="size-1.5 rounded-full bg-rose-500" />
         <span>OVERDUE {dueDateFormatted ? `· DUE ${dueDateFormatted.toUpperCase()}` : ''}</span>
       </div>
     )
   } else if (normalizedStatus === 'draft') {
     statusBadge = (
-      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 print:text-slate-600">
+      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-slate-500 dark:text-slate-400 print:text-slate-600">
         <span className="size-1.5 rounded-full bg-slate-400" />
         <span>DRAFT · NOT ISSUED</span>
       </div>
     )
   } else if (normalizedStatus === 'viewed') {
     statusBadge = (
-      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 print:text-indigo-700">
+      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-400 print:text-indigo-700">
         <span className="size-1.5 rounded-full bg-indigo-500" />
         <span>VIEWED BY CLIENT</span>
       </div>
     )
   } else if (normalizedStatus === 'partially_paid') {
     statusBadge = (
-      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 print:text-amber-800">
+      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-amber-600 dark:text-amber-400 print:text-amber-800">
         <span className="size-1.5 rounded-full bg-amber-500" />
         <span>PARTIALLY PAID</span>
       </div>
     )
   } else if (normalizedStatus === 'cancelled' || normalizedStatus === 'canceled') {
     statusBadge = (
-      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 print:text-slate-500">
+      <div className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-slate-400 dark:text-slate-500 print:text-slate-500">
         <span className="size-1.5 rounded-full bg-slate-400" />
         <span>CANCELLED</span>
       </div>
@@ -172,10 +174,10 @@ export function InvoicePrint({
       `}</style>
 
       {/* ── Outer Invoice Container (Quiet, modern document layout) ─────────── */}
-      <div className="print-invoice-sheet relative bg-white dark:bg-[#0c0d12] rounded-2xl border border-slate-200/90 dark:border-white/10 p-5 sm:p-8 md:p-12 shadow-sm dark:shadow-xl transition-colors duration-200">
+      <div className="print-invoice-sheet relative bg-white dark:bg-[#12141c] rounded-md border border-slate-200/90 dark:border-white/[0.08] p-5 sm:p-8 md:p-12 shadow-sm dark:shadow-xl transition-colors duration-200">
 
         {/* ── 1. HEADER: ISSUER & INVOICE DETAILS ──────────────────────────── */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-8 border-b border-slate-200 dark:border-white/10 print:border-slate-300">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 pb-8 border-b border-[#eaecf2] dark:border-white/[0.08] print:border-slate-300">
           
           {/* Left: Issuer / Studio */}
           <div className="space-y-1.5">
@@ -203,7 +205,7 @@ export function InvoicePrint({
 
           {/* Right: INVOICE Heading, Number & Dynamic Status */}
           <div className="text-left sm:text-right space-y-1.5">
-            <div className="text-2xl sm:text-3xl font-light tracking-tight text-slate-950 dark:text-white uppercase font-sans print:text-slate-950">
+            <div className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950 dark:text-white uppercase font-sans print:text-slate-950">
               INVOICE
             </div>
             
@@ -214,8 +216,13 @@ export function InvoicePrint({
             <div className="pt-2 flex items-center sm:justify-end gap-2 flex-wrap">
               {statusBadge}
               {invoice.is_deposit && (
-                <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-600 dark:text-indigo-400 font-medium px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 print:border-indigo-300">
+                <span className="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 font-medium px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 print:border-indigo-300">
                   Upfront Deposit
+                </span>
+              )}
+              {invoice.is_retainer && (
+                <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-medium px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 print:border-emerald-300">
+                  {invoice.retainer_period === 'quarterly' ? 'Quarterly' : invoice.retainer_period === 'annual' ? 'Annual' : 'Monthly'} Retainer
                 </span>
               )}
             </div>
@@ -224,7 +231,7 @@ export function InvoicePrint({
         </div>
 
         {/* ── 2. METADATA: BILLED TO & INVOICE DETAILS ─────────────────────── */}
-        <div className="py-8 border-b border-slate-200 dark:border-white/10 print:border-slate-300">
+        <div className="py-8 border-b border-[#eaecf2] dark:border-white/[0.08] print:border-slate-300">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
             
             {/* Left: BILLED TO */}
@@ -256,21 +263,21 @@ export function InvoicePrint({
               
               <div className="space-y-2 text-xs">
                 <div className="flex items-baseline justify-between sm:justify-start sm:gap-10">
-                  <span className="text-slate-400 dark:text-slate-500 font-light w-20 print:text-slate-500">Issued</span>
+                  <span className="text-slate-400 dark:text-slate-500 w-20 print:text-slate-500">Issued</span>
                   <span className="font-mono text-slate-900 dark:text-white font-medium print:text-slate-900">{issueDateFormatted}</span>
                 </div>
                 <div className="flex items-baseline justify-between sm:justify-start sm:gap-10">
-                  <span className="text-slate-400 dark:text-slate-500 font-light w-20 print:text-slate-500">Due</span>
+                  <span className="text-slate-400 dark:text-slate-500 w-20 print:text-slate-500">Due</span>
                   <span className={`font-mono font-medium ${overdue ? 'text-rose-600 dark:text-rose-400 print:text-rose-700' : 'text-slate-900 dark:text-white print:text-slate-900'}`}>
                     {dueDateFormatted || 'Upon Receipt'}
                   </span>
                 </div>
                 <div className="flex items-baseline justify-between sm:justify-start sm:gap-10">
-                  <span className="text-slate-400 dark:text-slate-500 font-light w-20 print:text-slate-500">Currency</span>
+                  <span className="text-slate-400 dark:text-slate-500 w-20 print:text-slate-500">Currency</span>
                   <span className="font-mono text-slate-900 dark:text-white font-medium print:text-slate-900">{currency}</span>
                 </div>
                 <div className="flex items-baseline justify-between sm:justify-start sm:gap-10">
-                  <span className="text-slate-400 dark:text-slate-500 font-light w-20 print:text-slate-500">Payment</span>
+                  <span className="text-slate-400 dark:text-slate-500 w-20 print:text-slate-500">Payment</span>
                   <span className="font-mono text-slate-900 dark:text-white font-medium print:text-slate-900">Stripe / Bank</span>
                 </div>
               </div>
@@ -284,7 +291,7 @@ export function InvoicePrint({
           <div className="overflow-x-auto no-scrollbar">
             <table className="w-full text-left border-collapse min-w-[460px] sm:min-w-full">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-white/10 print:border-slate-300">
+                <tr className="border-b border-[#eaecf2] dark:border-white/[0.08] print:border-slate-300">
                   <th className="pb-3 px-1 text-[10px] font-mono uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500 font-semibold print:text-slate-600">
                     DESCRIPTION
                   </th>
@@ -299,7 +306,7 @@ export function InvoicePrint({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-white/[0.05] print:divide-slate-200">
+              <tbody className="divide-y divide-[#f1f3f7] dark:divide-white/[0.05] print:divide-slate-200">
                 {(invoice.items ?? []).map((item, i) => (
                   <tr key={i} className="group">
                     <td className="py-4.5 px-1 text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-medium print:text-slate-900">
@@ -321,7 +328,7 @@ export function InvoicePrint({
           </div>
 
           {/* ── 4. TOTALS SUMMARY ────────────────────────────────────────── */}
-          <div className="mt-6 flex flex-col items-end border-t border-slate-200 dark:border-white/10 print:border-slate-300 pt-6">
+          <div className="mt-6 flex flex-col items-end border-t border-[#eaecf2] dark:border-white/[0.08] print:border-slate-300 pt-6">
             <div className="w-full sm:w-72 space-y-2.5">
               <div className="flex justify-between items-baseline text-xs text-slate-500 dark:text-slate-400 print:text-slate-600">
                 <span>Subtotal</span>
@@ -339,8 +346,8 @@ export function InvoicePrint({
                 </div>
               )}
 
-              <div className="pt-3 border-t border-slate-200 dark:border-white/10 print:border-slate-300 flex justify-between items-baseline">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white print:text-slate-950">
+              <div className="pt-3 border-t border-[#eaecf2] dark:border-white/[0.08] print:border-slate-300 flex justify-between items-baseline">
+                <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-white print:text-slate-950">
                   {isPaid ? 'Total Paid' : 'Total Due'}
                 </span>
                 <span className="font-mono font-bold text-2xl sm:text-3xl text-slate-950 dark:text-white tracking-tight print:text-slate-950">
@@ -352,7 +359,7 @@ export function InvoicePrint({
         </div>
 
         {/* ── 5. PAYMENT INFORMATION & NOTES ───────────────────────────────── */}
-        <div className="pt-6 pb-6 border-t border-slate-200 dark:border-white/10 print:border-slate-300 space-y-2">
+        <div className="pt-6 pb-6 border-t border-[#eaecf2] dark:border-white/[0.08] print:border-slate-300 space-y-2">
           <div className="text-[10px] font-mono uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500 font-semibold print:text-slate-500">
             PAYMENT INFORMATION
           </div>
@@ -383,7 +390,7 @@ export function InvoicePrint({
         </div>
 
         {/* ── 6. DOCUMENT FOOTER ───────────────────────────────────────────── */}
-        <div className="pt-6 border-t border-slate-100 dark:border-white/5 print:border-slate-200 text-[10px] font-mono text-slate-400 dark:text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2 print:text-slate-500">
+        <div className="pt-6 border-t border-[#f1f3f7] dark:border-white/[0.05] print:border-[#eaecf2] text-[10px] font-mono text-slate-400 dark:text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2 print:text-slate-500">
           <div>
             Invoice #{invoice.invoice_number} · Page 1 of 1
           </div>

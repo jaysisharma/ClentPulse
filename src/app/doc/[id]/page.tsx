@@ -35,9 +35,7 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
 
   useEffect(() => {
     const supabase = createClient()
-    supabase.from('documents')
-      .select('*, users(id, name, username, plan, accent_color, logo_url)')
-      .eq('id', id).single()
+    supabase.rpc('get_public_document', { p_id: id })
       .then(({ data }: { data: any }) => { setDoc(data); setLoading(false) })
   }, [id])
 
@@ -130,11 +128,11 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
     setSigning(true)
     setActionError('')
     const supabase = createClient()
-    const { error } = await supabase.from('documents').update({
-      status: 'signed',
-      signed_name: signName.trim(),
-      signed_at: new Date().toISOString(),
-    }).eq('id', id)
+    const { error } = await supabase.rpc('respond_to_document', {
+      p_id: id,
+      p_action: 'signed',
+      p_signed_name: signName.trim(),
+    })
     setSigning(false)
     if (error) { setActionError('We could not record your signature. Please try again.'); return }
     setOutcome('signed'); setDone(true)
@@ -146,10 +144,11 @@ export default function PublicDocPage({ params }: { params: Promise<{ id: string
     setResponding(true)
     setActionError('')
     const supabase = createClient()
-    const { error } = await supabase.from('documents').update({
-      status: action,
-      response_note: note.trim() || null,
-    }).eq('id', id)
+    const { error } = await supabase.rpc('respond_to_document', {
+      p_id: id,
+      p_action: action,
+      p_note: note.trim() || null,
+    })
     setResponding(false)
     if (error) { setActionError('We could not record your response. Please try again.'); return }
     setOutcome(action); setDone(true)

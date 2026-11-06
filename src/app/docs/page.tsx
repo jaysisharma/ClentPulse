@@ -14,7 +14,7 @@ const TYPE_META: Record<DocType, { label: string; icon: React.ElementType; color
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  draft:    'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/10',
+  draft:    'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border border-[#eaecf2] dark:border-white/[0.08]',
   sent:     'bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-500/20',
   accepted: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20',
   signed:   'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20',
@@ -50,19 +50,19 @@ export default async function DocsPage() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                   Contracts & Documents
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+              <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
                 Documents
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                 Proposals, master service agreements, and technical requirements with client e-signatures.
               </p>
             </div>
             <Link href="/docs/new">
-              <button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 w-fit shadow-xs flex-shrink-0">
+              <button className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 w-fit shadow-xs flex-shrink-0">
                 <Plus className="w-3.5 h-3.5" />
                 <span>New document</span>
               </button>
@@ -71,62 +71,62 @@ export default async function DocsPage() {
 
           {/* Stats strip */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Proposals</span>
-                <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 dark:text-indigo-400">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Proposals</span>
+                <div className="w-7 h-7 rounded-md bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-500 dark:text-indigo-400">
                   <FileText className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">{proposals.length}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">pitch & pricing documents</div>
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">{proposals.length}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">pitch & pricing documents</div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Agreements</span>
-                <div className="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 dark:text-blue-400">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Agreements</span>
+                <div className="w-7 h-7 rounded-md bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 dark:text-blue-400">
                   <FileSignature className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">{agreements.length}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">service contracts</div>
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">{agreements.length}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">service contracts</div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Requirements</span>
-                <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 dark:text-amber-400">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Requirements</span>
+                <div className="w-7 h-7 rounded-md bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 dark:text-amber-400">
                   <ClipboardList className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">{requirements.length}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">specifications & scope</div>
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">{requirements.length}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">specifications & scope</div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Executed</span>
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Executed</span>
+                <div className="w-7 h-7 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                   <CheckCircle2 className="w-4 h-4" />
                 </div>
               </div>
-              <div className="font-mono font-light text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">{signed.length}</div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400 font-light mt-1.5">signed or accepted</div>
+              <div className="text-2xl sm:text-[27px] font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight">{signed.length}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5">signed or accepted</div>
             </div>
           </div>
 
           {!allDocs.length ? (
-            <div className="rounded-2xl border border-dashed border-slate-200 dark:border-white/10 bg-white/60 dark:bg-[#0c0d12]/60 p-16 text-center ring-1 ring-slate-950/5 dark:ring-white/5">
-              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center mx-auto mb-4">
+            <div className="rounded-md border border-dashed border-[#eaecf2] dark:border-white/[0.08] bg-white/60 dark:bg-[#12141c]/60 p-16 text-center">
+              <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] flex items-center justify-center mx-auto mb-4">
                 <FileText className="w-6 h-6 text-slate-400" />
               </div>
-              <h3 className="font-light text-lg text-slate-900 dark:text-white mb-1">No documents created yet</h3>
-              <p className="text-slate-500 dark:text-slate-400 text-xs font-light max-w-sm mx-auto mb-6">
+              <h3 className="text-lg text-slate-900 dark:text-white mb-1">No documents created yet</h3>
+              <p className="text-slate-500 dark:text-slate-400 text-xs max-w-sm mx-auto mb-6">
                 Create proposals, service contracts, and scope requirements with integrated client signature workflows.
               </p>
               <Link href="/docs/new">
-                <button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all inline-flex items-center gap-1.5 shadow-xs">
+                <button className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-2 text-xs transition-all inline-flex items-center gap-1.5 shadow-xs">
                   <Plus className="w-3.5 h-3.5" />
                   <span>Create your first document</span>
                 </button>
@@ -145,24 +145,24 @@ export default async function DocsPage() {
                 return (
                   <div key={type} className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <div className={`w-6 h-6 rounded-lg border flex items-center justify-center ${meta.color}`}>
+                      <div className={`w-6 h-6 rounded-md border flex items-center justify-center ${meta.color}`}>
                         <Icon className="w-3 h-3" />
                       </div>
-                      <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                      <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                         {meta.label}s
                       </span>
-                      <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full px-2 py-0.5 ml-1">
+                      <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] rounded-full px-2 py-0.5 ml-1">
                         {items.length}
                       </span>
                     </div>
-                    <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 divide-y divide-slate-100 dark:divide-white/5 overflow-hidden ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+                    <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 divide-y divide-[#f1f3f7] dark:divide-white/[0.05] overflow-hidden shadow-xs dark:shadow-none backdrop-blur-md">
                       {items.map(doc => (
                         <Link
                           key={doc.id}
                           href={`/docs/${doc.id}`}
                           className="flex items-center gap-4 px-5 py-4 hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition-colors group"
                         >
-                          <div className={`w-8 h-8 rounded-lg border flex items-center justify-center flex-shrink-0 ${meta.color}`}>
+                          <div className={`w-8 h-8 rounded-md border flex items-center justify-center flex-shrink-0 ${meta.color}`}>
                             <Icon className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -170,12 +170,12 @@ export default async function DocsPage() {
                               <span className="font-medium text-slate-900 dark:text-white text-xs sm:text-sm truncate group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
                                 {doc.title}
                               </span>
-                              <span className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ${STATUS_STYLES[doc.status] ?? STATUS_STYLES.draft}`}>
+                              <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full flex-shrink-0 ${STATUS_STYLES[doc.status] ?? STATUS_STYLES.draft}`}>
                                 {doc.status}
                               </span>
                             </div>
                             {doc.client_name && (
-                              <p className="text-xs text-slate-500 dark:text-slate-400 font-light truncate">
+                              <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                                 Client: {doc.client_name}
                               </p>
                             )}

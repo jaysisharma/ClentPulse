@@ -61,7 +61,8 @@ describe('POST /api/change-orders/[id]/checkout', () => {
     mockChangeOrderSingle.mockResolvedValue({
       data: {
         id: 'co_123',
-        status: 'pending',
+        status: 'approved',
+        requires_payment: true,
         amount: 500,
         currency: 'USD',
         title: 'Extra scope',
@@ -118,6 +119,8 @@ describe('POST /api/change-orders/[id]/checkout', () => {
           changeOrderId: 'co_123',
           ownerStripeAccountId: 'acct_owner123',
         }),
+        // Returns the client to their portal's Billing tab, not a missing /portal route
+        success_url: 'https://clientpulse-one.vercel.app/p/portal-1?co_paid=co_123#billing',
       }),
       { stripeAccount: 'acct_owner123' }
     )
@@ -145,5 +148,15 @@ describe('POST /api/change-orders/[id]/checkout', () => {
     expect(res.status).toBe(400)
     const json = await res.json()
     expect(json.error).toBe('Change order already paid')
+  })
+
+  it('returns 400 when the change order has not been approved yet', async () => {
+    mockChangeOrderSingle.mockResolvedValue({
+      data: { id: 'co_123', status: 'pending', requires_payment: true, amount: 500, project_id: 'proj_abc', user_id: 'usr_owner' },
+    })
+    const { POST } = await import('./route')
+    const res = await POST(makeRequest({}), { params: Promise.resolve({ id: 'co_123' }) })
+    expect(res.status).toBe(400)
+    expect(mockCheckoutCreate).not.toHaveBeenCalled()
   })
 })

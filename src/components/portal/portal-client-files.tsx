@@ -112,14 +112,14 @@ export function PortalClientFiles({ slug, accentColor, isDemo = false }: PortalC
     <div id="client-uploads" className="space-y-3">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <div className="text-xs font-semibold text-white">Send files to your team</div>
-          <p className="text-[11px] text-slate-400 mt-0.5">Logos, copy, photos, documents. Up to 50 MB each.</p>
+          <div className="text-sm font-bold text-slate-900 dark:text-white">Send files to your team</div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Logos, copy, photos, documents. Up to 50 MB each.</p>
         </div>
       </div>
 
       <label
-        className={`flex flex-col items-center justify-center gap-2 p-6 rounded-2xl border border-dashed transition-colors text-center ${
-          uploading ? 'border-white/10 bg-white/[0.02] cursor-wait' : 'border-white/15 bg-[#0f111a] hover:bg-white/[0.03] cursor-pointer'
+        className={`flex flex-col items-center justify-center gap-2 p-6 rounded-md border border-dashed transition-colors text-center ${
+          uploading ? 'border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/[0.02] cursor-wait' : 'border-slate-300 dark:border-white/15 bg-slate-50/60 dark:bg-white/[0.02] hover:bg-slate-100 dark:hover:bg-white/[0.04] cursor-pointer'
         }`}
         onDragOver={e => e.preventDefault()}
         onDrop={e => {
@@ -130,12 +130,12 @@ export function PortalClientFiles({ slug, accentColor, isDemo = false }: PortalC
         {uploading ? (
           <>
             <Loader2 className="w-6 h-6 animate-spin" style={{ color: accentColor }} />
-            <span className="text-xs text-slate-300 truncate max-w-full">Uploading {uploading}</span>
+            <span className="text-xs text-slate-600 dark:text-slate-300 truncate max-w-full">Uploading {uploading}</span>
           </>
         ) : (
           <>
             <UploadCloud className="w-6 h-6" style={{ color: accentColor }} />
-            <span className="text-xs font-semibold text-white">Click to upload or drag files here</span>
+            <span className="text-xs font-semibold text-slate-900 dark:text-white">Click to upload or drag files here</span>
             <span className="text-[11px] text-slate-500">Your team is notified by email</span>
           </>
         )}
@@ -150,14 +150,14 @@ export function PortalClientFiles({ slug, accentColor, isDemo = false }: PortalC
       </label>
 
       {error && (
-        <div className="flex items-start gap-2 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300">
+        <div className="flex items-start gap-2 p-3 rounded-md bg-rose-500/10 border border-rose-500/20 text-xs text-rose-700 dark:text-rose-300">
           <AlertCircle className="w-4 h-4 flex-shrink-0 mt-px" />
           <span>{error}</span>
         </div>
       )}
 
       {justUploaded > 0 && !error && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300">
+        <div className="flex items-center gap-2 p-3 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-300">
           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
           <span>{justUploaded === 1 ? 'File sent.' : `${justUploaded} files sent.`} Your team has been notified.</span>
         </div>
@@ -166,13 +166,13 @@ export function PortalClientFiles({ slug, accentColor, isDemo = false }: PortalC
       {loading ? (
         <div className="p-4 text-xs text-slate-500">Loading your files…</div>
       ) : files.length > 0 && (
-        <div className="rounded-2xl border border-white/[0.08] bg-[#0f111a] divide-y divide-white/[0.06] overflow-hidden">
+        <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] divide-y divide-[#f1f3f7] dark:divide-white/[0.05] overflow-hidden">
           {files.map(file => (
             <div key={file.id} className="p-4 flex items-center justify-between gap-3 text-xs">
               <div className="flex items-center gap-3 min-w-0">
                 <FileText className="w-4 h-4 text-slate-400 flex-shrink-0" />
                 <div className="min-w-0">
-                  <span className="font-semibold text-white truncate block">{file.file_name}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white truncate block">{file.file_name}</span>
                   <span className="text-[10px] text-slate-500">
                     {[formatFileSize(file.size_bytes), formatDate(file.created_at)].filter(Boolean).join(' · ')}
                   </span>
@@ -181,7 +181,7 @@ export function PortalClientFiles({ slug, accentColor, isDemo = false }: PortalC
               {file.download_url && (
                 <a
                   href={file.download_url}
-                  className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors flex-shrink-0"
+                  className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors flex-shrink-0"
                   aria-label={`Download ${file.file_name}`}
                 >
                   <Download className="w-4 h-4" />

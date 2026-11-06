@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { FIRST_TOUCH_COOKIE, parseSignupSource } from '@/lib/attribution'
+import { openSecret } from '@/lib/server-secret'
 
 export async function POST(request: Request) {
   try {
@@ -63,11 +64,17 @@ export async function POST(request: Request) {
       )
     }
 
-    // 4. If staging signup details are present, create the auth user
-    if (record.temp_password) {
+    // 4. If staging signup details are present, create the auth user.
+    // Password-reset codes share this table (marked RESET_PASSWORD) and are not signups.
+    if (record.temp_password && record.temp_password !== 'RESET_PASSWORD') {
+      const signupPassword = openSecret(record.temp_password, 'otp-signup-password')
+      if (!signupPassword) {
+        await supabaseAdmin.from('otp_codes').delete().eq('email', cleanEmail)
+        return NextResponse.json({ error: 'This code has expired. Please sign up again.' }, { status: 400 })
+      }
       const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
         email: cleanEmail,
-        password: record.temp_password,
+        password: signupPassword,
         user_metadata: { full_name: record.temp_name || '' },
         email_confirm: true
       })

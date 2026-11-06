@@ -20,7 +20,7 @@ export function CopyLinkButton({ url }: { url: string }) {
   return (
     <button
       onClick={copy}
-      className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white px-3 py-1 text-xs transition-colors shadow-xs inline-flex items-center gap-1.5"
+      className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white px-3 py-1 text-xs transition-colors shadow-xs inline-flex items-center gap-1.5"
     >
       {copied ? <Check className="w-3.5 h-3.5 text-emerald-500 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
       <span>{copied ? 'Copied!' : 'Copy link'}</span>

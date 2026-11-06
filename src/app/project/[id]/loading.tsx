@@ -1,7 +1,7 @@
 import { AppLayout } from '@/components/layout/app-layout'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-lg ${className}`} />
+  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-md ${className}`} />
 }
 
 export default function Loading() {
@@ -25,17 +25,17 @@ export default function Loading() {
             </div>
           </div>
           <div className="flex gap-2">
-            <Sk className="h-8 w-20 rounded-lg" />
-            <Sk className="h-8 w-24 rounded-lg" />
-            <Sk className="h-8 w-8 rounded-lg" />
-            <Sk className="h-8 w-28 rounded-lg" />
+            <Sk className="h-8 w-20 rounded-md" />
+            <Sk className="h-8 w-24 rounded-md" />
+            <Sk className="h-8 w-8 rounded-md" />
+            <Sk className="h-8 w-28 rounded-md" />
           </div>
         </div>
 
         {/* Stats strip */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3">
+            <div key={i} className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] px-4 py-3 flex items-center gap-3">
               <Sk className="w-4 h-4 rounded" />
               <div className="space-y-1.5">
                 <Sk className="h-5 w-16" />
@@ -53,10 +53,10 @@ export default function Loading() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Sk className="h-4 w-20" />
-                <Sk className="h-8 w-20 rounded-lg" />
+                <Sk className="h-8 w-20 rounded-md" />
               </div>
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+                <div key={i} className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5 space-y-3">
                   <div className="flex items-center justify-between">
                     <Sk className="h-4 w-36" />
                     <Sk className="h-6 w-28 rounded-full" />
@@ -73,7 +73,7 @@ export default function Loading() {
 
           {/* Sidebar */}
           <div className="space-y-4">
-            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+            <div className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <Sk className="h-4 w-20" />
                 <Sk className="h-4 w-24" />
@@ -84,7 +84,7 @@ export default function Loading() {
                 <Sk className="h-3 w-20" />
               </div>
             </div>
-            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 space-y-3">
+            <div className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <Sk className="h-4 w-24" />
                 <Sk className="h-4 w-10" />
@@ -98,12 +98,12 @@ export default function Loading() {
                 </div>
               ))}
             </div>
-            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 space-y-2">
+            <div className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] p-4 space-y-2">
               <div className="flex items-center justify-between">
                 <Sk className="h-4 w-24" />
                 <div className="flex gap-2">
-                  <Sk className="h-7 w-20 rounded-lg" />
-                  <Sk className="h-7 w-12 rounded-lg" />
+                  <Sk className="h-7 w-20 rounded-md" />
+                  <Sk className="h-7 w-12 rounded-md" />
                 </div>
               </div>
               <Sk className="h-3 w-full" />

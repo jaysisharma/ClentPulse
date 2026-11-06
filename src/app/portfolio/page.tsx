@@ -181,21 +181,21 @@ export default function PortfolioPage() {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">
+                <span className="text-xs font-semibold text-accent dark:text-indigo-400">
                   Public Portfolio
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-light uppercase tracking-[-0.03em] text-slate-900 dark:text-white">
+              <h1 className="text-2xl sm:text-[27px] font-extrabold tracking-[-0.02em] text-slate-900 dark:text-white">
                 Portfolio
               </h1>
-              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-light mt-1">
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
                 Your public engineering & design showroom — share directly with prospective clients.
               </p>
             </div>
             <div className="flex items-center gap-2.5">
               <Link
                 href="/portfolio/item/new"
-                className="rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs"
+                className="rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add work item</span>
@@ -204,7 +204,7 @@ export default function PortfolioPage() {
                 href={`/portfolio/${userId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 w-fit shadow-xs flex-shrink-0"
+                className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 w-fit shadow-xs flex-shrink-0"
               >
                 <Eye className="w-3.5 h-3.5" />
                 <span>Preview profile</span>
@@ -215,11 +215,11 @@ export default function PortfolioPage() {
 
           {/* Missing Table Notice */}
           {missingTable && (
-            <div className="rounded-2xl border border-amber-300 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
+            <div className="rounded-md border border-amber-300 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 p-4 sm:p-5 shadow-xs flex items-start gap-3.5">
               <Database className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               <div className="space-y-2.5 flex-1">
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200">
+                  <h3 className="text-xs font-bold text-amber-900 dark:text-amber-200">
                     Database Setup Notice: `portfolio_items` Table
                   </h3>
                   <p className="text-xs text-amber-800/90 dark:text-amber-300/80 mt-0.5 leading-relaxed">
@@ -231,7 +231,7 @@ export default function PortfolioPage() {
                   <button
                     type="button"
                     onClick={copySql}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-amber-900 text-white dark:bg-amber-400 dark:text-amber-950 hover:opacity-90 px-3 py-1.5 text-xs font-semibold shadow-xs transition-opacity"
+                    className="inline-flex items-center gap-1.5 rounded-md bg-amber-900 text-white dark:bg-amber-400 dark:text-amber-950 hover:opacity-90 px-3 py-1.5 text-xs font-semibold shadow-xs transition-opacity"
                   >
                     {sqlCopied ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
                     {sqlCopied ? 'Copied migration SQL!' : 'Copy SQL Migration'}
@@ -240,7 +240,7 @@ export default function PortfolioPage() {
                     href="https://supabase.com/dashboard/project/_/sql"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 dark:border-amber-700 bg-white/60 dark:bg-amber-900/20 px-3 py-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:bg-white dark:hover:bg-amber-900/40 transition-colors shadow-xs"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-amber-300 dark:border-amber-700 bg-white/60 dark:bg-amber-900/20 px-3 py-1.5 text-xs font-semibold text-amber-900 dark:text-amber-200 hover:bg-white dark:hover:bg-amber-900/40 transition-colors shadow-xs"
                   >
                     <span>Open Supabase SQL Editor</span>
                     <ExternalLink className="w-3 h-3 opacity-60" />
@@ -251,20 +251,20 @@ export default function PortfolioPage() {
           )}
 
           {/* Public URL card */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+          <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
             <div className="flex items-center gap-2 mb-3">
               <Globe className="w-4 h-4 text-slate-400" />
-              <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                 Public profile address
               </span>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
-              <div className="flex-1 bg-slate-50 dark:bg-white/[0.04] rounded-full border border-slate-200 dark:border-white/10 px-4 py-2 text-xs text-slate-700 dark:text-slate-300 font-mono truncate">
+              <div className="flex-1 bg-slate-50 dark:bg-white/[0.04] rounded-full border border-[#eaecf2] dark:border-white/[0.08] px-4 py-2 text-xs text-slate-700 dark:text-slate-300 font-mono truncate">
                 {publicUrl || 'Generating public URL...'}
               </div>
               <button
                 onClick={copyLink}
-                className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 flex-shrink-0 shadow-xs"
+                className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all flex items-center justify-center gap-1.5 flex-shrink-0 shadow-xs"
               >
                 {copied ? (
                   <>
@@ -282,14 +282,14 @@ export default function PortfolioPage() {
           </div>
 
           {/* Bio editor */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 sm:p-6 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+          <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 sm:p-6 shadow-xs dark:shadow-none backdrop-blur-md">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Bio / Tagline</span>
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Bio / Tagline</span>
               <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">{bio.length} / 280</span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-light mb-3">Shown under your studio name on the public page. Keep it punchy (1–2 sentences).</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Shown under your studio name on the public page. Keep it punchy (1–2 sentences).</p>
             <textarea
-              className="w-full px-4 py-3 text-xs border border-slate-200 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 focus:ring-1 focus:ring-slate-300 dark:focus:ring-white/20 transition-all resize-none"
+              className="w-full px-4 py-3 text-xs border border-[#eaecf2] dark:border-white/[0.08] rounded-md bg-slate-50 dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-white/30 focus:ring-1 focus:ring-slate-300 dark:focus:ring-white/20 transition-all resize-none"
               rows={3}
               placeholder={`I'm a senior fullstack engineer building high-growth venture products. ${name ? `— ${name.split(' ')[0]}` : ''}`}
               value={bio}
@@ -302,7 +302,7 @@ export default function PortfolioPage() {
                   type="button"
                   onClick={saveBio}
                   disabled={saving}
-                  className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+                  className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-2 text-xs transition-all flex items-center gap-1.5 shadow-xs disabled:opacity-50"
                 >
                   {saved ? (
                     <>
@@ -322,11 +322,11 @@ export default function PortfolioPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
             {/* Testimonials */}
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Star className="w-4 h-4 text-amber-400" />
-                  <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Testimonials</span>
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Testimonials</span>
                 </div>
                 {testimonials.length > 0 && (
                   <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -351,7 +351,7 @@ export default function PortfolioPage() {
                     </div>
                   )}
                   {testimonials.slice(0, 3).map(t => (
-                    <div key={t.id} className="rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 p-3">
+                    <div key={t.id} className="rounded-md bg-slate-50 dark:bg-white/[0.03] border border-[#eaecf2] dark:border-white/[0.05] p-3">
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <span className="text-xs font-medium text-slate-900 dark:text-white truncate">{t.client_name}</span>
                         <div className="flex gap-0.5 flex-shrink-0">
@@ -360,7 +360,7 @@ export default function PortfolioPage() {
                           ))}
                         </div>
                       </div>
-                      <p className="text-[11px] text-slate-600 dark:text-slate-400 font-light line-clamp-2">&ldquo;{t.content}&rdquo;</p>
+                      <p className="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-2">&ldquo;{t.content}&rdquo;</p>
                     </div>
                   ))}
                   {testimonials.length > 3 && (
@@ -371,11 +371,11 @@ export default function PortfolioPage() {
             </div>
 
             {/* Projects & Work Selector */}
-            <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+            <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 shadow-xs dark:shadow-none backdrop-blur-md">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Briefcase className="w-4 h-4 text-slate-400" />
-                  <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Completed Projects</span>
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Completed Projects</span>
                 </div>
                 {projects.length > 0 && (
                   <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
@@ -392,7 +392,7 @@ export default function PortfolioPage() {
               ) : (
                 <div className="space-y-2">
                   {projects.slice(0, 6).map(p => (
-                    <div key={p.id} className="flex items-center justify-between gap-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 px-3 py-2">
+                    <div key={p.id} className="flex items-center justify-between gap-2.5 rounded-md bg-slate-50 dark:bg-white/[0.03] border border-[#eaecf2] dark:border-white/[0.05] px-3 py-2">
                       <div className="flex items-center gap-2 min-w-0">
                         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: p.color ?? accent }} />
                         <span className="text-xs font-medium text-slate-900 dark:text-white truncate">{p.project_name}</span>
@@ -417,7 +417,7 @@ export default function PortfolioPage() {
                             setLinkModalProject(p)
                             setModalUrl(p.live_url || '')
                           }}
-                          className="text-[10px] text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center gap-1 px-2 py-1 rounded-md border border-slate-200/80 dark:border-white/10 bg-white/60 dark:bg-white/5 transition-colors"
+                          className="text-[10px] text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white flex items-center gap-1 px-2 py-1 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white/60 dark:bg-white/5 transition-colors"
                           title={p.live_url ? 'Edit live website / app link' : 'Add live website or app link'}
                         >
                           <Globe className="w-3 h-3 text-slate-400" />
@@ -425,7 +425,7 @@ export default function PortfolioPage() {
                         </button>
                         <Link
                           href={`/portfolio/item/new?projectId=${p.id}`}
-                          className="text-[10px] font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 px-2 py-1 rounded-md bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 transition-colors"
+                          className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1 px-2 py-1 rounded-md bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200/60 dark:border-indigo-500/20 transition-colors"
                           title="Auto-fill showcase item from this project"
                         >
                           <Wand2 className="w-3 h-3" />
@@ -443,19 +443,19 @@ export default function PortfolioPage() {
           </div>
 
           {/* Work showcase */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c0d12]/90 p-5 sm:p-6 ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xs dark:shadow-none backdrop-blur-md">
+          <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-[#12141c]/90 p-5 sm:p-6 shadow-xs dark:shadow-none backdrop-blur-md">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-slate-400" />
-                <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Work Showcase</span>
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Work Showcase</span>
                 {items.length > 0 && (
-                  <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2 py-0.5 rounded-full ml-1">
+                  <span className="text-[10px] font-mono text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] px-2 py-0.5 rounded-full ml-1">
                     {items.length}
                   </span>
                 )}
               </div>
               <Link href="/portfolio/item/new">
-                <button className="rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-semibold px-4 py-1.5 text-xs transition-all flex items-center gap-1.5 shadow-xs">
+                <button className="bg-accent hover:bg-accent-hover rounded-md text-white font-semibold px-4 py-1.5 text-xs transition-all flex items-center gap-1.5 shadow-xs">
                   <Plus className="w-3.5 h-3.5" />
                   <span>Add item</span>
                 </button>
@@ -463,11 +463,11 @@ export default function PortfolioPage() {
             </div>
 
             {items.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.01] py-12 text-center">
+              <div className="rounded-md border border-dashed border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.01] py-12 text-center">
                 <ImageIcon className="w-8 h-8 text-slate-400 dark:text-slate-600 mx-auto mb-2" />
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4 font-light">No showcase items uploaded yet.</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">No showcase items uploaded yet.</p>
                 <Link href="/portfolio/item/new">
-                  <button className="rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all inline-flex items-center gap-1.5 shadow-xs">
+                  <button className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white transition-all inline-flex items-center gap-1.5 shadow-xs">
                     <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
                     <span>Auto-create from your work</span>
                   </button>
@@ -476,9 +476,9 @@ export default function PortfolioPage() {
             ) : (
               <div className="space-y-3">
                 {items.map(item => (
-                  <div key={item.id} className="flex items-start gap-4 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-white/[0.02] hover:bg-slate-100/70 dark:hover:bg-white/[0.04] p-4 transition-all group">
+                  <div key={item.id} className="flex items-start gap-4 rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/70 dark:bg-white/[0.02] hover:bg-slate-100/70 dark:hover:bg-white/[0.04] p-4 transition-all group">
                     {/* Thumbnail */}
-                    <div className="w-20 h-14 rounded-lg overflow-hidden bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex-shrink-0">
+                    <div className="w-20 h-14 rounded-md overflow-hidden bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] flex-shrink-0">
                       {item.screenshots?.[0]
                         ? <img src={item.screenshots[0]} alt="" className="w-full h-full object-cover" />
                         : <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-5 h-5 text-slate-400 dark:text-slate-600" /></div>
@@ -495,7 +495,7 @@ export default function PortfolioPage() {
                         )}
                       </div>
                       {item.description && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-light mt-0.5 line-clamp-1">{item.description}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">{item.description}</p>
                       )}
                       <div className="flex flex-wrap items-center gap-2 mt-2">
                         {item.screenshots?.length > 0 && (
@@ -516,7 +516,7 @@ export default function PortfolioPage() {
                     {/* Actions */}
                     <div className="flex items-center gap-1 flex-shrink-0">
                       <Link href={`/portfolio/item/${item.id}`}>
-                        <button className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/5 transition-colors">
+                        <button className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/5 transition-colors">
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                       </Link>
@@ -540,7 +540,7 @@ export default function PortfolioPage() {
                       ) : (
                         <button
                           onClick={() => setConfirmingDeleteId(item.id)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-200/60 dark:hover:bg-white/5 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-200/60 dark:hover:bg-white/5 transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -553,8 +553,8 @@ export default function PortfolioPage() {
           </div>
 
           {/* Profile card — what the visitor sees */}
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden ring-1 ring-slate-950/5 dark:ring-white/5 shadow-xl">
-            <div className="px-5 py-3 border-b border-slate-200 dark:border-white/10 flex items-center gap-2 bg-slate-100 dark:bg-[#0c0d12]">
+          <div className="rounded-md border border-[#eaecf2] dark:border-white/[0.08] overflow-hidden shadow-xl">
+            <div className="px-5 py-3 border-b border-[#eaecf2] dark:border-white/[0.08] flex items-center gap-2 bg-slate-100 dark:bg-[#12141c]">
               <div className="flex gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-white/20" />
                 <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-white/20" />
@@ -570,17 +570,17 @@ export default function PortfolioPage() {
               />
               <div className="relative z-10">
                 {logoUrl ? (
-                  <img src={logoUrl} alt={name} className="w-16 h-16 rounded-2xl object-contain bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 p-1.5 mx-auto mb-4 shadow-sm" />
+                  <img src={logoUrl} alt={name} className="w-16 h-16 rounded-md object-contain bg-white dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] p-1.5 mx-auto mb-4 shadow-sm" />
                 ) : (
-                  <div className="w-16 h-16 rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-900 dark:text-white text-xl font-mono mx-auto mb-4 shadow-sm">
+                  <div className="w-16 h-16 rounded-md bg-white dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] flex items-center justify-center text-slate-900 dark:text-white text-xl font-mono mx-auto mb-4 shadow-sm">
                     {(name || 'F').split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                 )}
-                <div className="text-xl sm:text-2xl font-light text-slate-900 dark:text-white tracking-tight mb-2">{name || 'Your studio'}</div>
+                <div className="text-xl sm:text-2xl text-slate-900 dark:text-white tracking-tight mb-2">{name || 'Your studio'}</div>
                 {bio ? (
-                  <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm font-light max-w-sm mx-auto leading-relaxed">{bio}</p>
+                  <p className="text-slate-600 dark:text-slate-400 text-xs sm:text-sm max-w-sm mx-auto leading-relaxed">{bio}</p>
                 ) : (
-                  <p className="text-slate-400 dark:text-slate-600 text-xs italic font-light">Add a bio above to complete your showroom profile</p>
+                  <p className="text-slate-400 dark:text-slate-600 text-xs italic">Add a bio above to complete your showroom profile</p>
                 )}
               </div>
             </div>
@@ -589,14 +589,14 @@ export default function PortfolioPage() {
           {/* Quick Link Modal */}
           {linkModalProject && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
-              <div className="bg-white dark:bg-[#0e1017] border border-slate-200 dark:border-white/10 rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl space-y-4">
+              <div className="bg-white dark:bg-[#0e1017] border border-[#eaecf2] dark:border-white/[0.08] rounded-md p-6 sm:p-7 max-w-md w-full shadow-2xl space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-md bg-indigo-500/10 text-indigo-500 flex items-center justify-center">
                       <Globe className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
+                      <h3 className="text-xs font-bold text-slate-900 dark:text-white">
                         {linkModalProject.live_url ? 'Edit Live Link' : 'Add Live Website or App Link'}
                       </h3>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate max-w-[240px]">
@@ -613,7 +613,7 @@ export default function PortfolioPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-[11px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Website, Web App, or App Store URL
                   </label>
                   <input
@@ -621,10 +621,10 @@ export default function PortfolioPage() {
                     value={modalUrl}
                     onChange={e => setModalUrl(e.target.value)}
                     placeholder="https://example.com or App Store link"
-                    className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none transition-colors font-mono"
+                    className="w-full rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.03] px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none transition-colors font-mono"
                     autoFocus
                   />
-                  <p className="text-[11px] text-slate-400 font-light mt-1.5 leading-relaxed">
+                  <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
                     Saves to the project settings and will be automatically extracted when creating your portfolio case study.
                   </p>
                 </div>
@@ -643,7 +643,7 @@ export default function PortfolioPage() {
                     type="button"
                     disabled={savingLink}
                     onClick={() => handleSaveProjectLink(false)}
-                    className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 font-semibold py-2 text-xs transition-colors shadow-xs disabled:opacity-50"
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-[#eaecf2] dark:border-white/[0.08] bg-white dark:bg-white/5 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/10 font-semibold py-2 text-xs transition-colors shadow-xs disabled:opacity-50"
                   >
                     <span>Save Link Only</span>
                   </button>

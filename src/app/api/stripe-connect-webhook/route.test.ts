@@ -37,6 +37,15 @@ const mockFrom = vi.fn((table: string) => {
   }
 })
 
+const mockClaim = vi.fn()
+const mockMarkDone = vi.fn()
+const mockRelease = vi.fn()
+vi.mock('@/lib/stripe-events', () => ({
+  claimStripeEvent: (...args: any[]) => mockClaim(...args),
+  markStripeEventDone: (...args: any[]) => mockMarkDone(...args),
+  releaseStripeEvent: (...args: any[]) => mockRelease(...args),
+}))
+
 vi.mock('@/lib/supabase/admin', () => ({
   createAdminClient: vi.fn(() => ({
     from: mockFrom,
@@ -57,6 +66,7 @@ function makeRequest(body: string, sig = 'sig_test_123'): Request {
 describe('POST /api/stripe-connect-webhook (Direct Charges & Connect)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockClaim.mockResolvedValue('process')
     process.env.STRIPE_CONNECT_WEBHOOK_SECRET = 'whsec_connect_test'
     mockMaybeSingle.mockResolvedValue({ data: null })
     mockUpdate.mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) })
@@ -74,9 +84,7 @@ describe('POST /api/stripe-connect-webhook (Direct Charges & Connect)', () => {
 
   it('returns duplicate when event status is done', async () => {
     mockConstructEvent.mockReturnValue({ id: 'evt_done_123', type: 'account.updated' })
-    mockMaybeSingle.mockResolvedValueOnce({
-      data: { event_id: 'evt_done_123', status: 'done', created_at: new Date().toISOString() },
-    })
+    mockClaim.mockResolvedValueOnce('duplicate')
 
     const { POST } = await import('./route')
     const res = await POST(makeRequest('{}'))
@@ -176,7 +184,7 @@ describe('POST /api/stripe-connect-webhook (Direct Charges & Connect)', () => {
     const res = await POST(makeRequest('{}'))
     expect(res.status).toBe(500)
     // Verify row was deleted so retry can succeed
-    expect(mockDelete).toHaveBeenCalled()
+    expect(mockRelease).toHaveBeenCalledWith(expect.anything(), expect.any(String))
   })
 
   it('syncs capabilities on account.updated', async () => {
@@ -203,5 +211,51 @@ describe('POST /api/stripe-connect-webhook (Direct Charges & Connect)', () => {
         stripe_connect_onboarded: true,
       })
     )
+  })
+
+  describe('charge.refunded', () => {
+    function refundEvent(charge: object, account = 'acct_creator_123') {
+      return { id: 'evt_refund_1', type: 'charge.refunded', account, data: { object: charge } }
+    }
+
+    function stubRefundTables(invoices: { id: string; user_id: string }[], ownerAccount: string) {
+      const invoiceUpdateEq = vi.fn().mockResolvedValue({ error: null })
+      const invoiceUpdate = vi.fn(() => ({ eq: invoiceUpdateEq }))
+      const invoiceIn = vi.fn().mockResolvedValue({ data: invoices })
+      mockFrom.mockImplementation((table: string) => {
+        if (table === 'invoices') return { select: () => ({ in: invoiceIn }), update: invoiceUpdate } as any
+        if (table === 'users') {
+          return { select: () => ({ eq: () => ({ single: async () => ({ data: { stripe_account_id: ownerAccount } }) }) }) } as any
+        }
+        return {} as any
+      })
+      return { invoiceIn, invoiceUpdate }
+    }
+
+    it('marks the invoice refunded by its payment intent on a full refund', async () => {
+      mockConstructEvent.mockReturnValue(refundEvent({ id: 'ch_1', payment_intent: 'pi_1', refunded: true }))
+      const { invoiceIn, invoiceUpdate } = stubRefundTables([{ id: 'inv_1', user_id: 'usr_creator' }], 'acct_creator_123')
+      const { POST } = await import('./route')
+      const res = await POST(makeRequest('{}'))
+      expect(res.status).toBe(200)
+      expect(invoiceIn).toHaveBeenCalledWith('stripe_charge_id', ['pi_1', 'ch_1'])
+      expect(invoiceUpdate).toHaveBeenCalledWith({ status: 'refunded' })
+    })
+
+    it('leaves the invoice paid on a partial refund', async () => {
+      mockConstructEvent.mockReturnValue(refundEvent({ id: 'ch_1', payment_intent: 'pi_1', refunded: false }))
+      const { invoiceUpdate } = stubRefundTables([{ id: 'inv_1', user_id: 'usr_creator' }], 'acct_creator_123')
+      const { POST } = await import('./route')
+      await POST(makeRequest('{}'))
+      expect(invoiceUpdate).not.toHaveBeenCalled()
+    })
+
+    it("ignores a refund from an account that doesn't own the invoice", async () => {
+      mockConstructEvent.mockReturnValue(refundEvent({ id: 'ch_1', payment_intent: 'pi_1', refunded: true }, 'acct_attacker'))
+      const { invoiceUpdate } = stubRefundTables([{ id: 'inv_1', user_id: 'usr_creator' }], 'acct_creator_123')
+      const { POST } = await import('./route')
+      await POST(makeRequest('{}'))
+      expect(invoiceUpdate).not.toHaveBeenCalled()
+    })
   })
 })

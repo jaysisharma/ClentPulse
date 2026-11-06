@@ -32,8 +32,8 @@ export function NotificationToast({ projectId }: { projectId: string }) {
   if (!toast.show) return null
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 animate-fade-in max-w-sm w-full bg-slate-900 text-white rounded-2xl p-4 shadow-2xl border border-slate-850 flex items-start gap-3">
-      <div className="p-1 rounded-lg bg-indigo-500 text-white mt-0.5 flex-shrink-0">
+    <div className="fixed bottom-6 right-6 z-50 animate-fade-in max-w-sm w-full bg-slate-900 text-white rounded-md p-4 shadow-2xl border border-slate-850 flex items-start gap-3">
+      <div className="p-1 rounded-md bg-indigo-500 text-white mt-0.5 flex-shrink-0">
         <Info className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">

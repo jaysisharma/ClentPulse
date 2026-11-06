@@ -64,7 +64,7 @@ export function UpdatesList({
   return (
     <div className="space-y-4">
       {visibleUpdates.map(update => (
-        <div key={update.id} className="bg-white dark:bg-[#0c0d12]/90 border border-slate-200 dark:border-white/10 rounded-2xl p-6 shadow-xs backdrop-blur-md transition-colors">
+        <div key={update.id} className="bg-white dark:bg-[#12141c]/90 border border-[#eaecf2] dark:border-white/[0.08] rounded-md p-6 shadow-xs backdrop-blur-md transition-colors">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-semibold text-slate-900 dark:text-white font-sans">{getWeekOf(update.created_at)}</span>
             <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ export function UpdatesList({
                     <button
                       onClick={() => handleApprove(update.id)}
                       disabled={approvingId === update.id}
-                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 px-2.5 py-0.5 rounded-full transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 px-2.5 py-0.5 rounded-md transition-colors cursor-pointer"
                     >
                       <ShieldCheck className="w-3 h-3" />
                       {approvingId === update.id ? 'Approving...' : 'Approve Draft'}
@@ -93,7 +93,7 @@ export function UpdatesList({
                   <CheckCircle className="w-3 h-3" />Approved for Client
                 </span>
               ) : (
-                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 px-2.5 py-0.5 rounded-full font-sans">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] px-2.5 py-0.5 rounded-full font-sans">
                   Draft
                 </span>
               )}
@@ -116,7 +116,7 @@ export function UpdatesList({
             ))}
           </ul>
           {update.note && (
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 italic border-t border-slate-100 dark:border-white/5 pt-3 mt-4 font-sans">{update.note}</p>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 italic border-t border-[#f1f3f7] dark:border-white/[0.05] pt-3 mt-4 font-sans">{update.note}</p>
           )}
           <UpdateCommentForm
             updateId={update.id}
@@ -132,7 +132,7 @@ export function UpdatesList({
       {visibleCount < updates.length && (
         <button
           onClick={() => setVisibleCount(prev => prev + 5)}
-          className="w-full py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full hover:bg-slate-50 dark:hover:bg-white/10 transition-colors mt-4 cursor-pointer shadow-xs font-sans"
+          className="w-full py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] rounded-full hover:bg-slate-50 dark:hover:bg-white/10 transition-colors mt-4 cursor-pointer shadow-xs font-sans"
         >
           Show more ({updates.length - visibleCount} remaining)
         </button>

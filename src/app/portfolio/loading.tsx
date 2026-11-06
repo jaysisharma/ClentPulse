@@ -1,7 +1,7 @@
 import { AppLayout } from '@/components/layout/app-layout'
 
 function Sk({ className }: { className: string }) {
-  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-lg ${className}`} />
+  return <div className={`bg-slate-200 dark:bg-slate-800 rounded-md ${className}`} />
 }
 
 export default function Loading() {
@@ -13,11 +13,11 @@ export default function Loading() {
             <Sk className="h-7 w-28" />
             <Sk className="h-4 w-44" />
           </div>
-          <Sk className="h-8 w-28 rounded-lg" />
+          <Sk className="h-8 w-28 rounded-md" />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div key={i} className="bg-white dark:bg-[#12141c] rounded-md border border-[#eaecf2] dark:border-white/[0.08] overflow-hidden">
               <Sk className="h-40 w-full rounded-none" />
               <div className="p-4 space-y-2">
                 <Sk className="h-4 w-36" />

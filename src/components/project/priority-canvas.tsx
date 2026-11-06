@@ -210,7 +210,7 @@ export const PriorityCanvas = forwardRef<
     <div className="space-y-4">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 rounded-2xl border border-indigo-500/30 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2.5 text-xs font-semibold shadow-2xl flex items-center gap-2 animate-fade-in">
+        <div className="bg-accent hover:bg-accent-hover fixed bottom-6 right-6 z-50 rounded-md border border-indigo-500/30 text-white px-4 py-2.5 text-xs font-semibold shadow-2xl flex items-center gap-2 animate-fade-in">
           <Sparkles className="w-4 h-4 text-indigo-400 dark:text-indigo-600 flex-shrink-0" />
           <span>{toastMessage}</span>
         </div>
@@ -236,23 +236,23 @@ export const PriorityCanvas = forwardRef<
               onDragOver={e => handleDragOver(e, tier)}
               onDragLeave={e => handleDragLeave(e, tier)}
               onDrop={e => handleDrop(e, tier)}
-              className={`rounded-2xl border border-slate-200/80 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] p-4 flex flex-col transition-all min-h-[380px] shadow-2xs ${
+              className={`rounded-md border border-[#eaecf2] dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4 flex flex-col transition-all min-h-[380px] shadow-2xs ${
                 isDropActive ? 'ring-2 ring-indigo-500/50 bg-indigo-50/30 dark:bg-indigo-950/20 scale-[1.01]' : ''
               }`}
             >
               {/* Zone Header */}
-              <div className="flex items-center justify-between gap-3 mb-3 pb-2.5 border-b border-slate-200/60 dark:border-white/5">
+              <div className="flex items-center justify-between gap-3 mb-3 pb-2.5 border-b border-[#eaecf2] dark:border-white/[0.05]">
                 <div className="flex items-center gap-2 min-w-0">
                   <span
                     className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                     style={{ backgroundColor: cfg.color }}
                   />
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-white truncate">
+                  <h3 className="text-sm font-bold tracking-tight text-slate-900 dark:text-white truncate">
                     {cfg.title}
                   </h3>
                 </div>
 
-                <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-white dark:bg-white/5 border border-slate-200/60 dark:border-white/10 text-slate-600 dark:text-slate-400">
+                <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded-full bg-white dark:bg-white/5 border border-[#eaecf2] dark:border-white/[0.08] text-slate-600 dark:text-slate-400">
                   {items.length}
                 </span>
               </div>
@@ -260,8 +260,8 @@ export const PriorityCanvas = forwardRef<
               {/* Cards Container */}
               <div className="space-y-2.5 flex-1 overflow-y-auto">
                 {items.length === 0 ? (
-                  <div className="h-full min-h-[140px] rounded-xl border border-dashed border-slate-200 dark:border-white/10 flex flex-col items-center justify-center p-5 text-center">
-                    <p className="text-xs text-slate-400 dark:text-slate-500 font-light">
+                  <div className="h-full min-h-[140px] rounded-md border border-dashed border-[#eaecf2] dark:border-white/[0.08] flex flex-col items-center justify-center p-5 text-center">
+                    <p className="text-xs text-slate-400 dark:text-slate-500">
                       No works in {cfg.shortLabel}
                     </p>
                     <p className="text-[10px] text-slate-400/80 dark:text-slate-600 mt-0.5">
@@ -274,7 +274,7 @@ export const PriorityCanvas = forwardRef<
                       key={p.id}
                       draggable
                       onDragStart={e => handleDragStart(e, p.id)}
-                      className={`group rounded-xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0c0d12] hover:border-slate-300 dark:hover:border-white/20 p-3.5 transition-all shadow-2xs hover:shadow-xs cursor-grab active:cursor-grabbing relative ${
+                      className={`group rounded-md border border-slate-200/90 dark:border-white/[0.08] bg-white dark:bg-[#12141c] hover:border-slate-300 dark:hover:border-white/20 p-3.5 transition-all shadow-2xs hover:shadow-xs cursor-grab active:cursor-grabbing relative ${
                         draggedId === p.id ? 'opacity-40' : ''
                       }`}
                     >
@@ -293,7 +293,7 @@ export const PriorityCanvas = forwardRef<
                               {p.project_name}
                             </Link>
                           </div>
-                          <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate pl-4 mt-0.5 font-light">
+                          <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate pl-4 mt-0.5">
                             {p.client_name}
                           </p>
                         </div>
@@ -348,7 +348,7 @@ export const PriorityCanvas = forwardRef<
 
                       {/* Budget micro-bar if set */}
                       {p.budgetVal && p.budgetVal > 0 ? (
-                        <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-white/5">
+                        <div className="mt-2.5 pt-2 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                           <div className="flex items-center justify-between text-[10px] font-mono text-slate-400 dark:text-slate-500 mb-1">
                             <span>Billed</span>
                             <span>{Math.round(p.pct ?? 0)}%</span>
@@ -363,7 +363,7 @@ export const PriorityCanvas = forwardRef<
                       ) : null}
 
                       {/* Card Footer: Quick Actions */}
-                      <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-slate-100 dark:border-white/5">
+                      <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-[#f1f3f7] dark:border-white/[0.05]">
                         <Link
                           href={`/project/${p.id}/update`}
                           className="inline-flex items-center gap-1 text-[11px] text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"

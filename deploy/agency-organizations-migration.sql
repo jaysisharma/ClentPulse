@@ -53,9 +53,8 @@ alter table public.organization_members enable row level security;
 alter table public.organization_invites enable row level security;
 
 -- Organizations policies: public can view organization names/branding; members can view their organizations
-create policy "Public can view organizations"
-  on public.organizations for select
-  using (true);
+-- Removed: "Public can view organizations" exposed every tenant's rows (using true).
+-- Scoped replacement lives in lockdown-public-rls-migration.sql.
 
 -- Authenticated users can create new organizations
 create policy "Authenticated users can create organizations"
